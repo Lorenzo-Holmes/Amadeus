@@ -185,6 +185,32 @@ def test_reports_symlink_entries_without_following_them(
     )
 
 
+def test_reports_junction_directory_without_traversing_it(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    package = tmp_path / "package"
+    package.mkdir()
+    junction = package / "junction"
+    junction.mkdir()
+    (junction / "hidden.py").write_text(
+        "import tools.hidden\n",
+        encoding="utf-8",
+    )
+    original_is_junction = Path.is_junction
+
+    def mark_entry_as_junction(path: Path) -> bool:
+        if path == junction:
+            return True
+        return original_is_junction(path)
+
+    monkeypatch.setattr(Path, "is_junction", mark_entry_as_junction)
+
+    assert check_imports(package) == [
+        f"{junction.as_posix()}:0:junction-entry"
+    ]
+
+
 def test_reports_absolute_parent_relative_and_dynamic_imports(
     tmp_path: Path,
 ) -> None:

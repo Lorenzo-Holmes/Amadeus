@@ -126,6 +126,35 @@ def test_behavior_oracle_distributions_and_aliases() -> None:
     assert legacy["normalized"]["canonical_oracle_kinds"] == ["H", "J"]
 
 
+def test_behavior_oracles_match_each_rows_raw_oracle_cell() -> None:
+    oracle_order = {"D": 0, "S": 1, "H": 2, "J": 3}
+    behavior_sources = [
+        source
+        for source in _compiled()["sources"]
+        if source["source_group"] in {"baseline", "increment"}
+    ]
+    assert len(behavior_sources) == 119
+
+    for source in behavior_sources:
+        raw_cell = source["raw_cells"][3].strip()
+        if raw_cell.startswith("[FRAME]"):
+            raw_cell = raw_cell.removeprefix("[FRAME]").strip()
+        expected_raw = [
+            token.strip()
+            for token in raw_cell.split("+")
+        ]
+        expected_canonical = sorted(
+            {"J" if token == "L" else token for token in expected_raw},
+            key=oracle_order.__getitem__,
+        )
+        normalized = source["normalized"]
+        assert normalized["raw_oracle_tokens"] == expected_raw
+        assert (
+            normalized["canonical_oracle_kinds"]
+            == expected_canonical
+        )
+
+
 def test_rejects_document_change_between_verification_and_source_read(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

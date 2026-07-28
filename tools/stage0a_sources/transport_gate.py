@@ -189,6 +189,10 @@ def _package_sources(package_root: Path) -> tuple[list[Path], list[str]]:
                 violations.append(
                     f"{entry.as_posix()}:0:symlink-entry"
                 )
+            elif entry.is_junction():
+                violations.append(
+                    f"{entry.as_posix()}:0:junction-entry"
+                )
             elif entry.is_dir():
                 child_directories.append(entry)
             elif entry.is_file():
