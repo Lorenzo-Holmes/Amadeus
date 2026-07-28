@@ -1,9 +1,9 @@
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
 
-from tools.stage0a_sources.canonical import _sha256_hex, canonical_bytes
 from tools.stage0a_sources.compiler import compile_source_index
 
 
@@ -11,9 +11,27 @@ ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "fixtures" / "stage0a" / "source_config_v0_1.json"
 
 
+def _stdlib_sha256_hex(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest().upper()
+
+
+def _stdlib_canonical_json_bytes(value: object) -> bytes:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+
+
 def _compiled() -> dict:
     raw_config = CONFIG_PATH.read_bytes()
-    return compile_source_index(ROOT, json.loads(raw_config), _sha256_hex(raw_config))
+    return compile_source_index(
+        ROOT,
+        json.loads(raw_config),
+        _stdlib_sha256_hex(raw_config),
+    )
 
 
 def _ids(prefix: str, first: int, last: int, width: int = 2) -> set[str]:
@@ -33,7 +51,9 @@ EXPECTED_SOURCE_IDS = {
 def test_compiles_exact_frozen_source_set() -> None:
     index = _compiled()
     assert index["schema_version"] == "0.1"
-    assert index["source_config_sha256"] == _sha256_hex(CONFIG_PATH.read_bytes())
+    assert index["source_config_sha256"] == _stdlib_sha256_hex(
+        CONFIG_PATH.read_bytes()
+    )
     assert index["source_counts"] == {"baseline": 53, "increment": 66, "core": 95}
     assert index["unique_source_count"] == 214
     assert index["missing_source_ids"] == []
@@ -54,12 +74,20 @@ def test_preserves_raw_source_evidence_and_binding() -> None:
         original = (ROOT / source["document_path"]).read_text(encoding="utf-8").splitlines()[source["line_number"] - 1]
         assert source["raw_line"] == original
         assert source["raw_cells"] == original[1:-1].split("|")
-        assert source["raw_row_sha256"] == _sha256_hex(original.encode("utf-8"))
-        assert source["source_binding_sha256"] == _sha256_hex(canonical_bytes({
+        assert source["raw_row_sha256"] == _stdlib_sha256_hex(
+            original.encode("utf-8")
+        )
+        binding_payload = {
             "document_sha256": source["document_sha256"],
-            "line_number": source["line_number"], "raw_line": original,
-        }))
-        assert source["raw_row_sha256"] != _sha256_hex((original + " ").encode("utf-8"))
+            "line_number": source["line_number"],
+            "raw_line": original,
+        }
+        assert source["source_binding_sha256"] == _stdlib_sha256_hex(
+            _stdlib_canonical_json_bytes(binding_payload)
+        )
+        assert source["raw_row_sha256"] != _stdlib_sha256_hex(
+            (original + " ").encode("utf-8")
+        )
 
 
 def test_core_oracle_is_undeclared_and_normalized() -> None:
@@ -119,4 +147,8 @@ def test_rejects_document_change_between_verification_and_source_read(
 
     monkeypatch.setattr(Path, "read_bytes", changed_on_second_baseline_read)
     with pytest.raises(ValueError, match=r"document drift: key=baseline"):
-        compile_source_index(ROOT, config, _sha256_hex(CONFIG_PATH.read_bytes()))
+        compile_source_index(
+            ROOT,
+            config,
+            _stdlib_sha256_hex(CONFIG_PATH.read_bytes()),
+        )

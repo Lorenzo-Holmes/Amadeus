@@ -1,5 +1,6 @@
 import argparse
 import json
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -108,10 +109,88 @@ def _output_entries(output_dir: Path) -> list[Path]:
         return []
 
 
+def _path_present(path: Path) -> bool:
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return False
+    return True
+
+
+def _staging_prefix(output_dir: Path) -> str:
+    return f".{output_dir.name}.stage0a-staging-"
+
+
+def _staging_residuals(output_dir: Path) -> list[Path]:
+    try:
+        entries = list(output_dir.parent.iterdir())
+    except FileNotFoundError:
+        return []
+    return sorted(
+        (
+            entry
+            for entry in entries
+            if entry.name.startswith(_staging_prefix(output_dir))
+        ),
+        key=lambda entry: entry.name,
+    )
+
+
+def _is_link_or_junction(path: Path) -> bool:
+    return path.is_symlink() or path.is_junction()
+
+
+def _validate_output_root(output_dir: Path) -> bool:
+    if not _path_present(output_dir):
+        return False
+    if _is_link_or_junction(output_dir) or not output_dir.is_dir():
+        raise OSError("output root must be a real directory")
+    return True
+
+
+def _output_parent_identity(output_dir: Path) -> tuple[int, int, int]:
+    directory = output_dir.parent
+    lineage = [directory]
+    while lineage[-1].parent != lineage[-1]:
+        lineage.append(lineage[-1].parent)
+    for ancestor in reversed(lineage):
+        if (
+            not _path_present(ancestor)
+            or _is_link_or_junction(ancestor)
+            or not ancestor.is_dir()
+        ):
+            raise OSError(
+                "output parent chain must contain only real directories"
+            )
+    status = directory.lstat()
+    return status.st_dev, status.st_ino, status.st_mode
+
+
+def _require_output_parent_identity(
+    output_dir: Path,
+    identity: tuple[int, int, int],
+) -> None:
+    try:
+        current = _output_parent_identity(output_dir)
+    except OSError as error:
+        raise OSError("output parent changed during operation") from error
+    if current != identity:
+        raise OSError("output parent changed during operation")
+
+
+def _is_plain_file(path: Path) -> bool:
+    if not _path_present(path):
+        return False
+    return (
+        not _is_link_or_junction(path)
+        and path.is_file()
+    )
+
+
 def _write_preflight(
     output_dir: Path,
     artifacts: dict[str, bytes],
-) -> bool:
+) -> tuple[bool, bool]:
     entries = _output_entries(output_dir)
     unexpected = sorted(
         entry.name
@@ -119,37 +198,51 @@ def _write_preflight(
         if entry.name not in artifacts
     )
     changed: list[str] = []
+    current_bytes: dict[str, bytes] = {}
     for entry in entries:
         if entry.name not in artifacts:
             continue
+        if not _is_plain_file(entry):
+            changed.append(entry.name)
+            continue
         try:
-            entry.read_bytes()
+            current_bytes[entry.name] = entry.read_bytes()
         except OSError:
             changed.append(entry.name)
     if changed or unexpected:
         _print_artifact_drift([], sorted(changed), unexpected)
-        return False
-    return True
+        return False, False
+    exact = (
+        set(current_bytes) == set(artifacts)
+        and all(
+            current_bytes[file_name] == payload
+            for file_name, payload in artifacts.items()
+        )
+    )
+    return True, exact
 
 
-def _remove_snapshot(snapshot_dir: Path) -> None:
-    try:
-        entries = list(snapshot_dir.iterdir())
-    except FileNotFoundError:
-        return
+def _safe_snapshot_entries(snapshot_dir: Path) -> list[Path]:
+    if not _path_present(snapshot_dir):
+        return []
+    if (
+        _is_link_or_junction(snapshot_dir)
+        or not snapshot_dir.is_dir()
+    ):
+        raise OSError("unsafe snapshot root")
+    entries = list(snapshot_dir.iterdir())
     for entry in entries:
-        entry.unlink()
-    snapshot_dir.rmdir()
+        if not _is_plain_file(entry):
+            raise OSError(f"unsafe snapshot entry: {entry.name}")
+    return entries
 
 
 def _validate_snapshot(
     snapshot_dir: Path,
     artifacts: dict[str, bytes],
 ) -> None:
-    actual_names = {
-        entry.name
-        for entry in snapshot_dir.iterdir()
-    }
+    entries = _safe_snapshot_entries(snapshot_dir)
+    actual_names = {entry.name for entry in entries}
     if actual_names != set(artifacts):
         raise OSError("staging file set mismatch")
     for file_name, expected in artifacts.items():
@@ -157,62 +250,161 @@ def _validate_snapshot(
             raise OSError(f"staging content mismatch: {file_name}")
 
 
+def _directory_identity(directory: Path) -> tuple[int, int, int]:
+    if not _validate_output_root(directory):
+        raise OSError("directory identity is missing")
+    status = directory.lstat()
+    return status.st_dev, status.st_ino, status.st_mode
+
+
+def _require_directory_identity(
+    directory: Path,
+    identity: tuple[int, int, int],
+    message: str,
+) -> None:
+    try:
+        current = _directory_identity(directory)
+    except OSError as error:
+        raise OSError(message) from error
+    if current != identity:
+        raise OSError(message)
+
+
 def _write(output_dir: Path, artifacts: dict[str, bytes]) -> int:
-    staging = output_dir.with_name(
-        f".{output_dir.name}.stage0a-staging"
-    )
     backup = output_dir.with_name(
         f".{output_dir.name}.stage0a-backup"
     )
+    staging: Path | None = None
     old_moved = False
     new_installed = False
-    staging_created = False
-    committed = False
+    parent_identity: tuple[int, int, int] | None = None
     try:
-        if not _write_preflight(output_dir, artifacts):
+        parent_identity = _output_parent_identity(output_dir)
+        output_was_present = _validate_output_root(output_dir)
+        preflight_ok, output_is_exact = _write_preflight(
+            output_dir,
+            artifacts,
+        )
+        if not preflight_ok:
             return 1
-        output_dir.parent.mkdir(parents=True, exist_ok=True)
-        if staging.exists() or backup.exists():
+        _require_output_parent_identity(output_dir, parent_identity)
+        if _staging_residuals(output_dir) or _path_present(backup):
             raise OSError("transaction path already exists")
-        staging.mkdir()
-        staging_created = True
-        for file_name, payload in artifacts.items():
-            (staging / file_name).write_bytes(payload)
-        _validate_snapshot(staging, artifacts)
+        if output_was_present and output_is_exact:
+            return 0
 
-        if output_dir.exists():
+        _require_output_parent_identity(output_dir, parent_identity)
+        staging = Path(tempfile.mkdtemp(
+            prefix=_staging_prefix(output_dir),
+            dir=output_dir.parent,
+        ))
+        _require_output_parent_identity(output_dir, parent_identity)
+        if _staging_residuals(output_dir) != [staging]:
+            raise OSError("transaction path changed during write")
+        staging_identity = _directory_identity(staging)
+        artifact_items = iter(artifacts.items())
+        guard_name, guard_payload = next(artifact_items)
+        _require_output_parent_identity(output_dir, parent_identity)
+        with (staging / guard_name).open("xb") as directory_guard:
+            guard_written = directory_guard.write(guard_payload)
+            directory_guard.flush()
+            if guard_written != len(guard_payload):
+                raise OSError(f"short staging write: {guard_name}")
+            _require_output_parent_identity(output_dir, parent_identity)
+            _require_directory_identity(
+                staging,
+                staging_identity,
+                "staging root changed during write",
+            )
+            for file_name, payload in artifact_items:
+                _require_output_parent_identity(
+                    output_dir,
+                    parent_identity,
+                )
+                with (staging / file_name).open("xb") as destination:
+                    written = destination.write(payload)
+                if written != len(payload):
+                    raise OSError(f"short staging write: {file_name}")
+                _require_output_parent_identity(
+                    output_dir,
+                    parent_identity,
+                )
+                _require_directory_identity(
+                    staging,
+                    staging_identity,
+                    "staging root changed during write",
+                )
+            _validate_snapshot(staging, artifacts)
+            _require_directory_identity(
+                staging,
+                staging_identity,
+                "staging root changed during write",
+            )
+            _require_output_parent_identity(
+                output_dir,
+                parent_identity,
+            )
+
+        _require_output_parent_identity(output_dir, parent_identity)
+        _require_directory_identity(
+            staging,
+            staging_identity,
+            "staging root changed during write",
+        )
+
+        if _validate_output_root(output_dir) != output_was_present:
+            raise OSError("output root changed during write")
+        if output_was_present:
+            _require_output_parent_identity(output_dir, parent_identity)
             output_dir.rename(backup)
             old_moved = True
+            _require_output_parent_identity(output_dir, parent_identity)
+        _require_output_parent_identity(output_dir, parent_identity)
         staging.rename(output_dir)
         new_installed = True
-        staging_created = False
-        committed = True
+        _require_output_parent_identity(output_dir, parent_identity)
+        _require_directory_identity(
+            output_dir,
+            staging_identity,
+            "installed output root is not the staged snapshot",
+        )
+        _validate_snapshot(output_dir, artifacts)
+        _require_directory_identity(
+            output_dir,
+            staging_identity,
+            "installed output root changed during validation",
+        )
         if old_moved:
-            _remove_snapshot(backup)
-            old_moved = False
+            print(f"backup_preserved={backup}")
         return 0
     except OSError as error:
         rollback_errors: list[str] = []
-        if not committed:
-            if new_installed:
-                try:
-                    output_dir.rename(staging)
-                    new_installed = False
-                    staging_created = True
-                except OSError as rollback_error:
-                    rollback_errors.append(str(rollback_error))
-            if old_moved:
-                try:
-                    backup.rename(output_dir)
-                    old_moved = False
-                except OSError as rollback_error:
-                    rollback_errors.append(str(rollback_error))
-            if staging_created:
-                try:
-                    _remove_snapshot(staging)
-                    staging_created = False
-                except OSError as cleanup_error:
-                    rollback_errors.append(str(cleanup_error))
+        if new_installed:
+            try:
+                if staging is None:
+                    raise OSError("staging identity is missing")
+                if parent_identity is None:
+                    raise OSError("output parent identity is missing")
+                _require_output_parent_identity(
+                    output_dir,
+                    parent_identity,
+                )
+                output_dir.rename(staging)
+                new_installed = False
+            except OSError as rollback_error:
+                rollback_errors.append(str(rollback_error))
+        if old_moved:
+            try:
+                if parent_identity is None:
+                    raise OSError("output parent identity is missing")
+                _require_output_parent_identity(
+                    output_dir,
+                    parent_identity,
+                )
+                backup.rename(output_dir)
+                old_moved = False
+            except OSError as rollback_error:
+                rollback_errors.append(str(rollback_error))
         suffix = (
             f";rollback_error={';'.join(rollback_errors)}"
             if rollback_errors
@@ -225,19 +417,34 @@ def _write(output_dir: Path, artifacts: dict[str, bytes]) -> int:
 def _check(output_dir: Path, artifacts: dict[str, bytes]) -> int:
     missing: list[str] = []
     changed: list[str] = []
-    for file_name, expected in artifacts.items():
-        try:
-            actual = (output_dir / file_name).read_bytes()
-        except (FileNotFoundError, NotADirectoryError):
-            missing.append(file_name)
-        except OSError:
-            changed.append(file_name)
-        else:
-            if actual != expected:
+    try:
+        parent_identity = _output_parent_identity(output_dir)
+        output_is_present = _validate_output_root(output_dir)
+        for file_name, expected in artifacts.items():
+            entry = output_dir / file_name
+            try:
+                _require_output_parent_identity(
+                    output_dir,
+                    parent_identity,
+                )
+                if not output_is_present or not _path_present(entry):
+                    missing.append(file_name)
+                elif not _is_plain_file(entry):
+                    changed.append(file_name)
+                elif entry.read_bytes() != expected:
+                    changed.append(file_name)
+            except (FileNotFoundError, NotADirectoryError):
+                missing.append(file_name)
+            except OSError:
                 changed.append(file_name)
+        _require_output_parent_identity(output_dir, parent_identity)
+        entries = _output_entries(output_dir)
+    except OSError as error:
+        print(f"check_error={error}")
+        return 1
     unexpected = sorted(
         entry.name
-        for entry in _output_entries(output_dir)
+        for entry in entries
         if entry.name not in artifacts
     )
     if missing or changed or unexpected:

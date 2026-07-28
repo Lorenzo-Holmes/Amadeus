@@ -17,6 +17,15 @@ def test_canonical_bytes_ignore_key_order() -> None:
     assert canonical_bytes({"b": 2, "a": 1}) == b'{"a":1,"b":2}'
 
 
+def test_canonical_bytes_preserve_unicode_and_json_scalars() -> None:
+    value = {"布尔": True, "空值": None, "中文": "记忆"}
+
+    assert canonical_bytes(value) == (
+        b'{"\xe4\xb8\xad\xe6\x96\x87":"\xe8\xae\xb0\xe5\xbf\x86",'
+        b'"\xe5\xb8\x83\xe5\xb0\x94":true,"\xe7\xa9\xba\xe5\x80\xbc":null}'
+    )
+
+
 def test_verify_documents_accepts_five_frozen_inputs() -> None:
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 
