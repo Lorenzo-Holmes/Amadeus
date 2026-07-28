@@ -1,0 +1,10 @@
+# Keep executable sources consistent across Windows and POSIX checkouts.
+*.py text eol=lf
+*.toml text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# These files participate in SHA-256 identity contracts; preserve raw bytes.
+outputs/*.md -text
+fixtures/stage0a/*.json -text
+fixtures/stage0a/generated/*.json -text
