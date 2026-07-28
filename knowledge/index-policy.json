@@ -4,8 +4,10 @@
   "glob_syntax": "gitwildmatch",
   "exclude_precedence": true,
   "default_index": false,
-  "follow_gitignore": true,
+  "follow_gitignore": false,
   "include": [
+    "README.md",
+    "knowledge/data_structure.md",
     "outputs/**/*.md",
     "knowledge/30_research/legacy/*.md",
     "knowledge/40_history/legacy/*.md"

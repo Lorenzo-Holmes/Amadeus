@@ -3,6 +3,10 @@
 *.toml text eol=lf
 .gitignore text eol=lf
 .gitattributes text eol=lf
+README.md text eol=lf
+knowledge/data_structure.md text eol=lf
+knowledge/index-policy.json text eol=lf
+knowledge/manifest.json text eol=lf
 
 # These files participate in SHA-256 identity contracts; preserve raw bytes.
 outputs/*.md -text
