@@ -8,3 +8,6 @@
 outputs/*.md -text
 fixtures/stage0a/*.json -text
 fixtures/stage0a/generated/*.json -text
+# Preserve imported legacy references byte-for-byte, including historical whitespace.
+knowledge/30_research/legacy/*.md -text -whitespace
+knowledge/40_history/legacy/*.md -text -whitespace

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "path_style": "repo-relative-posix",
+  "glob_syntax": "gitwildmatch",
+  "exclude_precedence": true,
+  "default_index": false,
+  "follow_gitignore": true,
+  "include": [
+    "outputs/**/*.md",
+    "knowledge/30_research/legacy/*.md",
+    "knowledge/40_history/legacy/*.md"
+  ],
+  "exclude": [
+    "knowledge/90_raw/**",
+    ".git/**",
+    ".local/**",
+    ".worktrees/**"
+  ]
+}

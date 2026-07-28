@@ -4,3 +4,10 @@ __pycache__/
 *.pyc
 *.egg-info/
 artifacts/
+# Canonical workspace-local state.
+/.worktrees/
+/.local/
+
+# Local raw archives; keep only the policy note tracked.
+knowledge/90_raw/**
+!knowledge/90_raw/README.md
