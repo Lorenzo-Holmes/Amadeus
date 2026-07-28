@@ -8,7 +8,7 @@
 
 ## 1. 分支与提交边界
 
-[KNOWN｜置信度：高] Stage 0A 工具链冻结验证点位于分支 `stage0a-sources`，实现 HEAD 为 `ed4a71a`。
+[KNOWN｜置信度：高] Stage 0A 工具链冻结验证点位于分支 `stage0a-sources`，实现 HEAD 为 `4a9a2c0`。
 
 | [FRAME] 提交 | [KNOWN] 已核验内容 |
 |---|---|
@@ -21,14 +21,15 @@
 | `56a7a07` | [KNOWN｜置信度：高] `test: enforce stage0a import allowlist`。 |
 | `1c03d65` | [KNOWN｜置信度：高] `build: preserve stage0a byte identities`。 |
 | `ed4a71a` | [KNOWN｜置信度：高] `fix: harden stage0a transaction and import gate`。 |
+| `4a9a2c0` | [KNOWN｜置信度：高] `test: close stage0a binding gaps`。 |
 
-[COMPUTED｜置信度：高] 从 `864e8fa` 到 `ed4a71a` 共 8 个 Stage 0A 实现或基础设施提交；`2553608` 为其前置基线，不计入这 8 个提交。
+[COMPUTED｜置信度：高] 从 `864e8fa` 到 `4a9a2c0` 共 9 个 Stage 0A 实现或基础设施提交；中间的执行记录提交 `7c4c09f` 不计入这 9 个实现提交，`2553608` 为其前置基线。
 
 ## 2. 最终验证
 
 [KNOWN｜置信度：高] 在项目根目录以 `.venv\Scripts\python.exe -m pytest tests/stage0a -q -p no:cacheprovider` 运行 Stage 0A 测试；禁用 pytest 缓存只用于避开既有 `.pytest_cache` 权限噪声，不改变测试收集或断言。
 
-[COMPUTED｜置信度：高] 测试结果为 `54 passed`，通过率为 `54 / 54`；其中 CLI 事务与路径测试为 `23 / 23`，import transport 门禁测试为 `13 / 13`。
+[COMPUTED｜置信度：高] 测试结果为 `56 passed`，通过率为 `56 / 56`；其中 CLI 事务与路径测试为 `23 / 23`，import transport 门禁测试为 `14 / 14`。
 
 [KNOWN｜置信度：高] 以 `.venv\Scripts\python.exe -m tools.stage0a_sources.cli --root . check` 运行已生成工件检查，退出码为 `0`，标准输出精确为三行：
 
@@ -81,7 +82,7 @@ pending_atomicity_reviews=214
 
 [KNOWN｜置信度：高] import transport 门禁对当前 `tools/stage0a_sources` 包返回空违规集。基础 allowlist 精确保持 9 项；只有根级 `cli.py` 可额外使用 `tempfile`，只有根级 `transport_gate.py` 可额外使用 `importlib`、`marshal` 与 `sys`，同名嵌套文件不继承例外。
 
-[KNOWN｜置信度：高] import transport 测试覆盖缺失目录、package 自身与真实祖先路径 symlink、包内链接条目、越出 package 的父级相对 import、项目绝对 import、裸 `import_module`、subscript/getattr/mapping.get 动态引用，以及 `.pyc/.pyo/.pyd/.so` 载体；junction 拒绝存在于实现分支，但本轮 transport 测试没有单独模拟该分支。
+[KNOWN｜置信度：高] import transport 测试覆盖缺失目录、package 自身与真实祖先路径 symlink、包内 symlink/junction 条目且不遍历、越出 package 的父级相对 import、项目绝对 import、裸 `import_module`、subscript/getattr/mapping.get 动态引用，以及 `.pyc/.pyo/.pyd/.so` 载体。
 
 [KNOWN｜置信度：高] 只有当前解释器规范路径中的 `.pyc`，且 magic、flags、源码 metadata/hash 与重编译 code object 全部匹配时才被接受；“有效 header + 不同 code body”的伪造缓存被拒绝。`sys.pycache_prefix` 非空时门禁直接 fail-closed，避免把 package 外缓存误报为已扫描。
 
@@ -96,6 +97,8 @@ pending_atomicity_reviews=214
 [COMPUTED｜置信度：高] 最终真实仓库同内容 `write` 返回 `0` 且不产生 rename；随后 `check` 返回 `0`。staging/backup 事务残留计数为 `0`，四份生成物字节与 SHA-256 均未变化。
 
 [KNOWN｜置信度：高] CLI、import transport 与规格复核最终均为 0 Critical、0 Important；其中 import transport 的伪造缓存、外置 pycache 与 `importlib` loader 探针已从原阻断状态转为拒绝。
+
+[KNOWN｜置信度：高] 最终总审查另补了两条闭环：package 内 junction 现在以 `junction-entry` 报告并停止遍历；119 条行为来源的 raw/canonical oracle 逐行由各自 `raw_cells[3]` 独立推导验证，不再只依赖分组汇总分布。定点复核为 0 Critical、0 Important。
 
 ## 7. 阶段边界
 
