@@ -54,10 +54,26 @@
 
 [KNOWN｜置信度：高] `Amadeus-Core-v0.1-实现计划审查记录-2026-07-28.md` 保持原字节不动，因为它是 Stage 0A 的五份冻结输入之一；本记录独立保存后续审查结论，避免让已冻结输入自引用漂移。
 
-## 6. 下一动作
+## 6. 下一动作（计划批准时记录；现已完成）
 
 1. [INFERRED｜置信度：高] 按已批准计划执行 Task 0–5，生成来源编译器、两份 pending 工作表、readiness report 与对应测试。
 2. [INFERRED｜置信度：高] 对实际生成物运行全套测试与 `check`，再冻结四份 JSON 的 SHA-256。
 3. [INFERRED｜置信度：高] 只有在 Stage 0A 实际执行通过后，才编写 Stage 0B 人工裁决计划。
+
+[我打破的规则 / RULES I BROKE]：无。
+
+## 7. 实施后补记（2026-07-28）
+
+[KNOWN｜置信度：高] 第 4 节“Python 包、测试与四份 generated JSON 尚未生成”及第 6 节原“下一动作”均是计划批准时的历史状态，原文保留；其后 Stage 0A 已在 `stage0a-sources` 分支完成 8 个实现或基础设施提交，工具链实现验证点为 `ed4a71a`。
+
+[COMPUTED｜置信度：高] `tests/stage0a` 最终结果为 `54 passed`；其中 CLI 为 `23 passed`，import transport 为 `13 passed`。CLI `check` 退出码为 `0`，并精确报告 `source_toolchain_ready=true`、`pending_oracle_assignments=95`、`pending_atomicity_reviews=214`。
+
+[KNOWN｜置信度：高] 四份 generated JSON 已生成；其精确路径、字节数、SHA-256、五份冻结输入指纹、配置原始字节指纹、文件级 import 例外、`.pyc` 正文验证、外置 pycache fail-closed、输出祖先路径校验与保留证据式事务结果，记录在 `Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md`。
+
+[KNOWN｜置信度：高] 实施后的 CLI、import transport 与规格独立终审均得到 0 Critical、0 Important；最终修复未改变四份 generated JSON 的字节身份或 readiness 边界。
+
+[KNOWN｜置信度：高] Stage 0A 只完成来源工具链；95 个 Core oracle 显式分配、214 个 atomicity 人工裁决与 source-clause manifest 仍属于 Stage 0B。
+
+[INFERRED｜置信度：高] 下一步先冻结四份 generated JSON 的当前 SHA-256，再执行经独立复核的 Stage 0B 计划；Stage 0B 门禁通过前不直接进入 Stage 0C。
 
 [我打破的规则 / RULES I BROKE]：无。
