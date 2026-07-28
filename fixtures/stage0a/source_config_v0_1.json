@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "documents": [
+    {
+      "key": "adr_006",
+      "path": "outputs/ADR-006-Amadeus记忆主权与Core生命周期治理.md",
+      "sha256": "EE6000E989872B4E2C6CD51F6F5CF4FF21166A54DABA3BDEA9543A10E3EBF7C6",
+      "source_group": null
+    },
+    {
+      "key": "core_spec",
+      "path": "outputs/Amadeus-Core-v0.1-数据契约与状态机规范.md",
+      "sha256": "3D9180E38250CF6EFD80FD082B8B4A740B3BC27C8815693E3AC6A663B264D695",
+      "source_group": "core"
+    },
+    {
+      "key": "baseline",
+      "path": "outputs/Amadeus身份与记忆评测基线-v0.1.md",
+      "sha256": "5C260EE19D9FF129633B968E87FACA79E93B7A01E3B86580E0FAD2DBC7147853",
+      "source_group": "baseline"
+    },
+    {
+      "key": "increment",
+      "path": "outputs/Amadeus主动性权限与关系安全评测增量-v0.1.md",
+      "sha256": "16ACDB17717AFEA5B5C19F39E91729385DB59B984F35CEF5B651BE9EEE8A37FC",
+      "source_group": "increment"
+    },
+    {
+      "key": "plan_review",
+      "path": "outputs/Amadeus-Core-v0.1-实现计划审查记录-2026-07-28.md",
+      "sha256": "865517363E5E3D6F2285BA30EDFC5C5405B0196E6007672E417F683C70995BED",
+      "source_group": null
+    }
+  ]
+}
