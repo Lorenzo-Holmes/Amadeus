@@ -11,7 +11,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "fd190105ff94fe98c8e914c3d43e4dd871042a197ed21e87c57e249eff242c50"
+      "sha256": "086ac2559d0c7f3d79531b79a579d1be2a6aac8b34e049ff190dfe318c9dd99c"
     },
     {
       "doc_id": "kb-navigation",
@@ -23,7 +23,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "6e9ac098d5227a9abbcdea4f24166a9997a1d002575e225a0b882cb38d8101ad"
+      "sha256": "ee03cad1f3908077e6e189749f66dc6a57d95c11df6bac933febb102ac04c7da"
     },
     {
       "doc_id": "adr-001",
@@ -168,6 +168,30 @@
       "index": true,
       "sensitivity": "internal",
       "sha256": "94e10f11e475c1fb84c51e4272a4da18de24bf2370c67e6d6082d21fae3340b9"
+    },
+    {
+      "doc_id": "stage0c-fixture-conversion-design",
+      "title": "Amadeus Core v0.1 Stage 0C Fixture Conversion and S Sandbox Design",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md",
+      "kind": "design-spec",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "stage0c",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "7a7626b69893a743caed07146e04c71061ec4482d740044259f79a7fc7c5f813"
+    },
+    {
+      "doc_id": "stage0c-design-review-2026-07-29",
+      "title": "Amadeus Core v0.1 Stage 0C Design Review Record (2026-07-29)",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md",
+      "kind": "design-review",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "stage0c",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "cd59c71aab048281028a608312d788edf1b6d28fc23004aefb56af3c9f1543f3"
     },
     {
       "doc_id": "core-v0.1-master-plan",
