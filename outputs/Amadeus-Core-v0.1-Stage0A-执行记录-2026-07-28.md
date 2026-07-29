@@ -114,4 +114,30 @@ pending_atomicity_reviews=214
 2. [INFERRED｜置信度：高] Stage 0B 按 source binding 逐项完成 95 个 Core oracle 显式分配、214 个 atomicity 人工裁决，并生成 source-clause manifest；任何拆句都必须保留到原 source row 的可核验绑定。
 3. [INFERRED｜置信度：高] Stage 0B 的裁决、manifest 与门禁通过前，不直接进入 Stage 0C。
 
+## 9. D 盘权威工作区迁移复验（2026-07-29）
+
+[KNOWN｜置信度：高] 项目权威本地工作区已统一为 `D:\amadues bot\Amadeus`；迁移前 23 个本地文件均已建立 SHA-256 备份并完成逐文件迁移校验。旧版重复文档与原始会话导出保存在本地 `knowledge/90_raw/` 隔离区，不进入 Git 或项目知识库 manifest。
+
+[KNOWN｜置信度：高] 迁移与接替开发准备形成两个已推送节点：`34db3926fddf53112fb7978845ea2a71ba34d14f`（建立 D 盘权威工作区）与 `a802d3bf38744903d4d669f259e592073f172595`（项目知识库、只读检索和根 README）。复验时本地分支与远端 `codex/project-kb-stage0b-bootstrap` 均指向 `a802d3bf38744903d4d669f259e592073f172595`。
+
+| [FRAME] 复验对象 | [COMPUTED] 结果 |
+|---|---|
+| Stage 0A 专项测试 | `56 passed` |
+| 项目知识库专项测试 | `38 passed` |
+| 全套测试 | `94 passed` |
+| Stage 0A CLI | `source_toolchain_ready=true`、`pending_oracle_assignments=95`、`pending_atomicity_reviews=214` |
+| 项目知识库 CLI | `project_kb_ready=true`、`indexed_documents=27`、`raw_paths_indexed=0` |
+| Git 与格式门禁 | 工作区干净；`git diff --check` 通过 |
+
+| [FRAME] Stage 0A 生成物 | [COMPUTED] 字节 | [COMPUTED] SHA-256 |
+|---|---:|---|
+| `source_index_v0_1.json` | 229,060 | `D29855B5F8ED870608CF52B91A9997E4D41922E4085FBAE41E385610D87DE25C` |
+| `oracle_assignment_worklist_v0_1.json` | 62,790 | `7BD9350A108B4274FA07D83A1315FC33226504DCD998DAA17AE3ED83C917DE51` |
+| `atomicity_worklist_v0_1.json` | 85,569 | `D93342C7E93F4C368DF44989BB3B341AAB364B472E9B6150FC7B97E469D0BFD2` |
+| `source_toolchain_report_v0_1.json` | 337 | `3154019197C1B6C16E951F278E9688F1DD6D18459BD5D2B3AD71A87C92BBD3F0` |
+
+[COMPUTED｜置信度：高] 四份生成物的字节数与 SHA-256 均与第 5 节原始执行记录一致；D 盘迁移没有改变 Stage 0A 冻结输入或生成物身份。
+
+[INFERRED｜置信度：高] 本次复验只确认权威工作区迁移、接替入口和 Stage 0A 工件身份；Stage 0B 的三项人工裁决工作仍保持 pending，下一节点继续编写并复核 Stage 0B 叶级实施计划。
+
 [我打破的规则 / RULES I BROKE]：无。
