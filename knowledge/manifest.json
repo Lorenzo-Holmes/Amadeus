@@ -11,7 +11,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "c24a0ebbf56697ff40126a75cb4c7dfc58e5592937c652427de5c869cca11c36"
+      "sha256": "fd190105ff94fe98c8e914c3d43e4dd871042a197ed21e87c57e249eff242c50"
     },
     {
       "doc_id": "kb-navigation",
@@ -23,7 +23,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "2373b9796e1515808e09a289ad9ed1f1d56c32a4fff805f07b465d674ba5e2d4"
+      "sha256": "6e9ac098d5227a9abbcdea4f24166a9997a1d002575e225a0b882cb38d8101ad"
     },
     {
       "doc_id": "adr-001",
@@ -143,7 +143,7 @@
       "stage": "stage0b",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "0127eb504433b3bd027e5fbdb82caede9ee73ac3f5d8e4ba83b4d1d152c6faef"
+      "sha256": "b90446c9c771927b772e28a1849974d09d5bd7e3dc51b1ce862874e6b72d9b6d"
     },
     {
       "doc_id": "stage0b-plan-review-2026-07-29",
@@ -156,6 +156,18 @@
       "index": true,
       "sensitivity": "internal",
       "sha256": "8be68b77f1026d5403b17cdd7dc055c038bf75ca4ef8a2678f4d475b94f0c542"
+    },
+    {
+      "doc_id": "stage0b-execution-2026-07-29",
+      "title": "Amadeus Core v0.1 Stage 0B Execution Record (2026-07-29)",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md",
+      "kind": "execution-record",
+      "authority": "canonical",
+      "status": "completed",
+      "stage": "stage0b",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "94e10f11e475c1fb84c51e4272a4da18de24bf2370c67e6d6082d21fae3340b9"
     },
     {
       "doc_id": "core-v0.1-master-plan",

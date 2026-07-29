@@ -1,6 +1,6 @@
 # Amadeus Core v0.1 Stage 0B：来源裁决实施计划
 
-> [FRAME｜置信度：高] 状态：待按本计划执行。Stage 0B 只冻结来源级 oracle 与原子性裁决，不生成可执行 case，不进入 Stage 0C。
+> [KNOWN｜置信度：高] 状态：已于 2026-07-29 执行完成；结果见 [Stage 0B 执行记录](Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md)。Stage 0B 只冻结来源级 oracle 与原子性裁决，不生成可执行 case，不进入 Stage 0C。
 
 ## 0. 反方边界
 
