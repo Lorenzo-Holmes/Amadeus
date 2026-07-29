@@ -12,6 +12,7 @@ test = ["pytest>=7.4,<9"]
 
 [project.scripts]
 amadeus-stage0a = "tools.stage0a_sources.cli:main"
+amadeus-stage0b = "tools.stage0b_adjudication.cli:main"
 amadeus-project-kb = "tools.project_kb.cli:main"
 
 [tool.setuptools.packages.find]
