@@ -11,7 +11,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "38f96ebd50e4af80ec427bc8df5a9f8a5c742aed8fde764c83a579c3b7c1e6b7"
+      "sha256": "c24a0ebbf56697ff40126a75cb4c7dfc58e5592937c652427de5c869cca11c36"
     },
     {
       "doc_id": "kb-navigation",
@@ -23,7 +23,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "1ec8793fb6d6b30e883f64cb862f9be7cce471eb8b7e9a7e84d71fd43d522a07"
+      "sha256": "2373b9796e1515808e09a289ad9ed1f1d56c32a4fff805f07b465d674ba5e2d4"
     },
     {
       "doc_id": "adr-001",
@@ -132,6 +132,30 @@
       "index": true,
       "sensitivity": "internal",
       "sha256": "db12ffc6c8fdde31e4930e50f3ba8d02c09fa7b37e3bd88e448f841df5a0c00c"
+    },
+    {
+      "doc_id": "stage0b-adjudication-plan",
+      "title": "Amadeus Core v0.1 Stage 0B Source Adjudication Implementation Plan",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md",
+      "kind": "implementation-plan",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "stage0b",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "0127eb504433b3bd027e5fbdb82caede9ee73ac3f5d8e4ba83b4d1d152c6faef"
+    },
+    {
+      "doc_id": "stage0b-plan-review-2026-07-29",
+      "title": "Amadeus Core v0.1 Stage 0B Implementation Plan Review (2026-07-29)",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md",
+      "kind": "plan-review",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "stage0b",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "8be68b77f1026d5403b17cdd7dc055c038bf75ca4ef8a2678f4d475b94f0c542"
     },
     {
       "doc_id": "core-v0.1-master-plan",

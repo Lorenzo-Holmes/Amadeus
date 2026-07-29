@@ -131,6 +131,7 @@ amadeus-project-kb --root . check
 3. [KNOWN｜置信度：高] [研究与设计交付索引](outputs/Amadeus研究与设计交付索引-2026-07-27.md) — 状态、阅读顺序和已冻结方向的总入口。
 4. [KNOWN｜置信度：高] [Stage 0A 执行记录](outputs/Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md) — 56 项测试、四份 generated JSON 与门禁证据。
 5. [KNOWN｜置信度：高] [Stage 0A 来源编译器实施计划](outputs/Amadeus-Core-v0.1-Stage0-场景夹具实施计划.md) 与 [Stage 0A 审查记录](outputs/Amadeus-Core-v0.1-Stage0A-实施计划审查记录-2026-07-28.md) — 已完成边界和 Stage 0B 入口。
+6. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [Stage 0B 审查记录](outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md) — 214 项来源、95 个 Core oracle 与 atomicity 裁决的叶级执行合同。
 6. [KNOWN｜置信度：高] [ADR-001](outputs/ADR-001-Amadeus身份与成长模型.md) → [ADR-002](outputs/ADR-002-Amadeus记忆生命周期.md) → [ADR-003](outputs/ADR-003-Amadeus主动性与事件循环.md) → [ADR-004](outputs/ADR-004-Amadeus工具权限与执行治理.md) → [ADR-005](outputs/ADR-005-Amadeus关系安全与退出协议.md) — 支持性裁决。
 7. [KNOWN｜置信度：高] [身份与记忆评测基线](outputs/Amadeus身份与记忆评测基线-v0.1.md) 是 Draft / 待实现；[主动性、权限及关系安全评测增量](outputs/Amadeus主动性权限与关系安全评测增量-v0.1.md) 是 Frozen-candidate；两者都尚待转为可执行 fixture。
 8. [KNOWN｜置信度：高] [项目开发知识库导航](knowledge/data_structure.md) — 00/10/20/30/40/90/99 分层及更新合同。
@@ -209,7 +210,7 @@ git push -u origin HEAD
 - [ ] [COMMON] 建立 Python 3.12 venv 并执行 <code>python -m pip install -e ".[test]"</code>。
 - [ ] [KNOWN] 按“权威文档阅读顺序”阅读 ADR-006、数据契约、交付索引与 Stage 0A 执行记录。
 - [ ] [KNOWN] 运行 Stage 0A CLI check；只接受 95 / 214 和 <code>source_toolchain_ready=true</code>。
-- [ ] [KNOWN] 运行项目知识库 check；当前应报告 27 个索引文档与 0 个 raw 路径。
+- [ ] [KNOWN] 运行项目知识库 check；当前应报告 29 个索引文档与 0 个 raw 路径。
 - [ ] [COMMON] 运行完整 pytest 与 <code>git diff --check</code>。
 - [ ] [KNOWN] 核对 <code>fixtures/stage0a/generated/</code> 未漂移，且 <code>outputs/</code> 与 Stage 0A 逻辑没有被接替准备工作改写。
 - [ ] [INFERRED] 从第一个尚未通过门禁的阶段继续：Stage 0B → 0C → 0D → 确定性 Core → 模型对照。

@@ -24,7 +24,7 @@ def test_current_manifest_is_complete_and_ready(capsys) -> None:
     assert main(["--root", str(ROOT), "check"]) == 0
     assert capsys.readouterr().out.splitlines() == [
         "project_kb_ready=true",
-        "indexed_documents=27",
+        "indexed_documents=29",
         "raw_paths_indexed=0",
     ]
 
@@ -32,8 +32,8 @@ def test_current_manifest_is_complete_and_ready(capsys) -> None:
         (ROOT / "knowledge" / "manifest.json").read_text(encoding="utf-8")
     )
     paths = [document["path"] for document in manifest["documents"]]
-    assert len(paths) == 27
-    assert len(set(paths)) == 27
+    assert len(paths) == 29
+    assert len(set(paths)) == 29
     assert all(document["index"] is True for document in manifest["documents"])
     assert not any(path.startswith("knowledge/90_raw/") for path in paths)
 

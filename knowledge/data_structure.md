@@ -73,5 +73,6 @@ git diff --check
 3. [KNOWN｜置信度：高] [Core 数据契约](../outputs/Amadeus-Core-v0.1-数据契约与状态机规范.md)：Draft v0.1 候选合同。
 4. [KNOWN｜置信度：高] [研究与设计交付索引](../outputs/Amadeus研究与设计交付索引-2026-07-27.md)：全部交付与研究阅读顺序。
 5. [KNOWN｜置信度：高] [Stage 0A 执行记录](../outputs/Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md)：当前已完成节点和 Stage 0B 边界。
+6. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](../outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [审查记录](../outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md)：当前来源裁决的唯一叶级执行入口。
 
 [我打破的规则 / RULES I BROKE]：无。
