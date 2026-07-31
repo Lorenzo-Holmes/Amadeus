@@ -14,3 +14,7 @@ fixtures/**/*.json -text
 # Preserve imported legacy references byte-for-byte, including historical whitespace.
 knowledge/30_research/legacy/*.md -text -whitespace
 knowledge/40_history/legacy/*.md -text -whitespace
+
+outputs/verification/*.json -text
+outputs/verification/stage0c-reviewed-batches/*.json -text
+fixtures/stage0c/.stage0c-write.lock -text
