@@ -1,14 +1,36 @@
 import hashlib
 import json
 import os
+from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 import stat
-from typing import NoReturn
+from typing import Iterable, NoReturn
 
+from .constants import (
+    EXPECTED_CLAUSE_COUNT,
+    EXPECTED_CLAUSE_ID_SET_SHA256,
+    EXPECTED_PENDING_H_OR_J_CLAUSE_COUNT,
+    EXPECTED_PENDING_H_OR_J_REQUIREMENT_COUNT,
+    EXPECTED_S_CLAUSE_COUNT,
+    EXPECTED_S_SOURCE_COUNT,
+    EXPECTED_SOURCE_COUNT,
+    EXPECTED_SOURCE_ID_SET_SHA256,
+    INPUT_IDENTITIES,
+    SCHEMA_VERSION,
+)
 from .types import FixtureInputError, JsonObject, JsonValue
 
 
 _REPARSE_POINT = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+
+
+@dataclass(frozen=True)
+class FrozenInputs:
+    manifest: dict[str, JsonValue]
+    report: dict[str, JsonValue]
+    clauses_by_id: dict[str, dict[str, JsonValue]]
+    sources_by_id: dict[str, dict[str, JsonValue]]
+    raw_sha256_by_key: dict[str, str]
 
 
 def _raise_input(
@@ -66,6 +88,20 @@ def canonical_bytes(value: JsonValue) -> bytes:
 
 def sha256_upper(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest().upper()
+
+
+def _require_frozen(condition: bool, code: str) -> None:
+    if not condition:
+        raise FixtureInputError(code)
+
+
+def canonical_id_set_sha256(values: Iterable[str]) -> str:
+    values_list = list(values)
+    _require_frozen(
+        len(values_list) == len(set(values_list)),
+        "frozen_id_duplicate",
+    )
+    return sha256_upper(canonical_bytes(sorted(values_list)))
 
 
 def load_strict_json_bytes(data: bytes, *, source: str) -> JsonValue:
@@ -245,3 +281,168 @@ def tree_entries(root: Path) -> list[dict[str, JsonValue]]:
 
 def tree_sha256(root: Path) -> str:
     return sha256_upper(canonical_bytes(tree_entries(root)))
+
+
+def validate_frozen_semantics(
+    manifest: dict[str, JsonValue],
+    report: dict[str, JsonValue],
+) -> None:
+    _require_frozen(
+        manifest.get("schema_version") == SCHEMA_VERSION
+        and report.get("schema_version") == SCHEMA_VERSION,
+        "frozen_schema_version_mismatch",
+    )
+    _require_frozen(
+        report.get("source_adjudication_ready") is True
+        and type(report.get("pending_atomicity_reviews")) is int
+        and report.get("pending_atomicity_reviews") == 0
+        and type(report.get("pending_oracle_assignments")) is int
+        and report.get("pending_oracle_assignments") == 0,
+        "stage0b_not_ready",
+    )
+
+    sources = manifest.get("sources")
+    clauses = manifest.get("clauses")
+    _require_frozen(type(sources) is list, "frozen_source_count_mismatch")
+    _require_frozen(type(clauses) is list, "frozen_clause_count_mismatch")
+    _require_frozen(
+        type(manifest.get("source_count")) is int
+        and manifest.get("source_count") == EXPECTED_SOURCE_COUNT
+        and type(report.get("reviewed_sources")) is int
+        and report.get("reviewed_sources") == EXPECTED_SOURCE_COUNT
+        and len(sources) == EXPECTED_SOURCE_COUNT,
+        "frozen_source_count_mismatch",
+    )
+    _require_frozen(
+        type(manifest.get("clause_count")) is int
+        and manifest.get("clause_count") == EXPECTED_CLAUSE_COUNT
+        and type(report.get("clause_count")) is int
+        and report.get("clause_count") == EXPECTED_CLAUSE_COUNT
+        and len(clauses) == EXPECTED_CLAUSE_COUNT,
+        "frozen_clause_count_mismatch",
+    )
+
+    _require_frozen(
+        sum("S" in row["assigned_oracle_kinds"] for row in sources)
+        == EXPECTED_S_SOURCE_COUNT,
+        "frozen_s_source_count_mismatch",
+    )
+    _require_frozen(
+        sum("S" in row["required_oracle_kinds"] for row in clauses)
+        == EXPECTED_S_CLAUSE_COUNT,
+        "frozen_s_clause_count_mismatch",
+    )
+    _require_frozen(
+        sum(
+            bool({"H", "J"} & set(row["required_oracle_kinds"]))
+            for row in clauses
+        )
+        == EXPECTED_PENDING_H_OR_J_CLAUSE_COUNT,
+        "frozen_h_or_j_clause_count_mismatch",
+    )
+    _require_frozen(
+        sum(
+            kind in {"H", "J"}
+            for row in clauses
+            for kind in row["required_oracle_kinds"]
+        )
+        == EXPECTED_PENDING_H_OR_J_REQUIREMENT_COUNT,
+        "frozen_h_or_j_requirement_count_mismatch",
+    )
+
+    source_ids = [row["source_id"] for row in sources]
+    clause_ids = [row["clause_id"] for row in clauses]
+    _require_frozen(
+        len(source_ids) == len(set(source_ids))
+        and canonical_id_set_sha256(source_ids)
+        == EXPECTED_SOURCE_ID_SET_SHA256,
+        "frozen_source_set_mismatch",
+    )
+    _require_frozen(
+        len(clause_ids) == len(set(clause_ids))
+        and canonical_id_set_sha256(clause_ids)
+        == EXPECTED_CLAUSE_ID_SET_SHA256,
+        "frozen_clause_set_mismatch",
+    )
+
+    sources_by_id = {row["source_id"]: row for row in sources}
+    _require_frozen(
+        all(
+            row["source_id"] in sources_by_id
+            and row["source_group"]
+            == sources_by_id[row["source_id"]]["source_group"]
+            and row["source_binding_sha256"]
+            == sources_by_id[row["source_id"]]["source_binding_sha256"]
+            and row["decision_sha256"]
+            == sources_by_id[row["source_id"]]["decision_sha256"]
+            for row in clauses
+        ),
+        "frozen_clause_source_join_mismatch",
+    )
+    _require_frozen(
+        report.get("source_clause_manifest_sha256")
+        == INPUT_IDENTITIES["stage0b_manifest"]["sha256"],
+        "frozen_report_manifest_identity_mismatch",
+    )
+
+
+def load_frozen_inputs(root: Path) -> FrozenInputs:
+    raw_by_key: dict[str, bytes] = {}
+    raw_sha256_by_key: dict[str, str] = {}
+
+    # Complete every path/type gate before considering any byte identity.
+    for key, identity in INPUT_IDENTITIES.items():
+        relative = identity["path"]
+        assert type(relative) is str
+        try:
+            raw_by_key[key] = read_repo_regular_file(root, relative)
+        except FixtureInputError as error:
+            if error.code != "repo_path_missing":
+                raise
+            raise FixtureInputError(
+                "frozen_input_missing",
+                source=relative,
+            ) from error
+
+    # Complete size/hash identity before parsing either JSON document.
+    for key, identity in INPUT_IDENTITIES.items():
+        raw_value = raw_by_key[key]
+        digest = sha256_upper(raw_value)
+        if len(raw_value) != identity["size"] or digest != identity["sha256"]:
+            relative = identity["path"]
+            assert type(relative) is str
+            raise FixtureInputError(
+                "frozen_input_size_or_hash_mismatch",
+                source=relative,
+            )
+        raw_sha256_by_key[key] = digest
+
+    manifest_path = INPUT_IDENTITIES["stage0b_manifest"]["path"]
+    report_path = INPUT_IDENTITIES["stage0b_report"]["path"]
+    assert type(manifest_path) is str
+    assert type(report_path) is str
+    manifest = load_strict_json_bytes(
+        raw_by_key["stage0b_manifest"],
+        source=manifest_path,
+    )
+    report = load_strict_json_bytes(
+        raw_by_key["stage0b_report"],
+        source=report_path,
+    )
+    _require_frozen(type(manifest) is dict, "frozen_manifest_type_invalid")
+    _require_frozen(type(report) is dict, "frozen_report_type_invalid")
+    validate_frozen_semantics(manifest, report)
+
+    sources = manifest["sources"]
+    clauses = manifest["clauses"]
+    assert type(sources) is list
+    assert type(clauses) is list
+    sources_by_id = {row["source_id"]: row for row in sources}
+    clauses_by_id = {row["clause_id"]: row for row in clauses}
+    return FrozenInputs(
+        manifest=manifest,
+        report=report,
+        clauses_by_id=clauses_by_id,
+        sources_by_id=sources_by_id,
+        raw_sha256_by_key=raw_sha256_by_key,
+    )
