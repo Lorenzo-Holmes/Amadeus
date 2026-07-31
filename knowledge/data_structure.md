@@ -76,5 +76,6 @@ git diff --check
 6. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](../outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [审查记录](../outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md)：已执行的来源裁决叶级合同。
 7. [KNOWN｜置信度：高] [Stage 0B 执行记录](../outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md)：214 项裁决、259 个 clause、产物 hash 与 Stage 0C 边界。
 8. [KNOWN｜置信度：高] [Stage 0C 夹具转换设计](../outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md) 与 [设计审查记录](../outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md)：Frozen fixture DSL、完整 binding、S sandbox、恢复与 readiness 合同。
+9. [KNOWN｜置信度：高] [Stage 0C 夹具转换实施计划](../outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md) 与 [实施计划审查记录](../outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md)：Frozen 259-case 转换、sandbox、publication、smoke 与 CLI 叶级执行合同。
 
 [我打破的规则 / RULES I BROKE]：无。

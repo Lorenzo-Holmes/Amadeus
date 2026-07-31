@@ -52,7 +52,7 @@ flowchart LR
 |---|---|
 | [KNOWN] Stage 0A 自动化测试 | [COMPUTED] 56 / 56 |
 | [KNOWN] Stage 0B 自动化测试 | [COMPUTED] 33 / 33 |
-| [KNOWN] 完整自动化测试 | [COMPUTED] 127 / 127 |
+| [KNOWN] 完整自动化测试 | [COMPUTED] 130 / 130 |
 | [KNOWN] 唯一来源行 | [COMPUTED] 214 |
 | [KNOWN] Core oracle 裁决 | [COMPUTED] 95 / 95；pending 0 |
 | [KNOWN] atomicity 裁决 | [COMPUTED] 214 / 214；185 atomic、29 composite、259 clauses |
@@ -149,9 +149,10 @@ amadeus-project-kb --root . check
 6. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [Stage 0B 审查记录](outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md) — 214 项来源、95 个 Core oracle 与 atomicity 裁决的叶级执行合同。
 7. [KNOWN｜置信度：高] [Stage 0B 执行记录](outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md) — 95/95 oracle、214/214 atomicity、259 clauses、产物 hash 与 readiness 证据。
 8. [KNOWN｜置信度：高] [Stage 0C 夹具转换设计](outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md) 与 [设计审查记录](outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md) — 259 个单 clause case、完整 frozen binding、98 个 S clause、可恢复构建与 readiness 边界。
-9. [KNOWN｜置信度：高] [ADR-001](outputs/ADR-001-Amadeus身份与成长模型.md) → [ADR-002](outputs/ADR-002-Amadeus记忆生命周期.md) → [ADR-003](outputs/ADR-003-Amadeus主动性与事件循环.md) → [ADR-004](outputs/ADR-004-Amadeus工具权限与执行治理.md) → [ADR-005](outputs/ADR-005-Amadeus关系安全与退出协议.md) — 支持性裁决。
-10. [KNOWN｜置信度：高] [身份与记忆评测基线](outputs/Amadeus身份与记忆评测基线-v0.1.md) 是 Draft / 待实现；[主动性、权限及关系安全评测增量](outputs/Amadeus主动性权限与关系安全评测增量-v0.1.md) 是 Frozen-candidate；两者都尚待转为可执行 fixture。
-11. [KNOWN｜置信度：高] [项目开发知识库导航](knowledge/data_structure.md) — 00/10/20/30/40/90/99 分层及更新合同。
+9. [KNOWN｜置信度：高] [Stage 0C 夹具转换实施计划](outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md) 与 [实施计划审查记录](outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md) — 已冻结的 259-case 转换、sandbox、publication、smoke 与 CLI 叶级执行合同。
+10. [KNOWN｜置信度：高] [ADR-001](outputs/ADR-001-Amadeus身份与成长模型.md) → [ADR-002](outputs/ADR-002-Amadeus记忆生命周期.md) → [ADR-003](outputs/ADR-003-Amadeus主动性与事件循环.md) → [ADR-004](outputs/ADR-004-Amadeus工具权限与执行治理.md) → [ADR-005](outputs/ADR-005-Amadeus关系安全与退出协议.md) — 支持性裁决。
+11. [KNOWN｜置信度：高] [身份与记忆评测基线](outputs/Amadeus身份与记忆评测基线-v0.1.md) 是 Draft / 待实现；[主动性、权限及关系安全评测增量](outputs/Amadeus主动性权限与关系安全评测增量-v0.1.md) 是 Frozen-candidate；两者都尚待转为可执行 fixture。
+12. [KNOWN｜置信度：高] [项目开发知识库导航](knowledge/data_structure.md) — 00/10/20/30/40/90/99 分层及更新合同。
 
 ## 如何使用项目开发知识库
 
@@ -229,7 +230,7 @@ git push -u origin HEAD
 - [ ] [KNOWN] 按“权威文档阅读顺序”阅读 ADR-006、数据契约、交付索引与 Stage 0A/0B 执行记录。
 - [ ] [KNOWN] 运行 Stage 0A CLI check；只接受 95 / 214 和 <code>source_toolchain_ready=true</code>。
 - [ ] [KNOWN] 运行 Stage 0B CLI check；只接受 214 reviewed、0 / 0 pending、<code>source_adjudication_ready=true</code> 和三个下游 false。
-- [ ] [KNOWN] 运行项目知识库 check；当前应报告 32 个索引文档与 0 个 raw 路径。
+- [ ] [KNOWN] 运行项目知识库 check；当前应报告 34 个索引文档与 0 个 raw 路径。
 - [ ] [COMMON] 运行完整 pytest 与 <code>git diff --check</code>。
 - [ ] [KNOWN] 核对 <code>fixtures/stage0a/generated/</code> 未漂移，且 <code>outputs/</code> 与 Stage 0A 逻辑没有被接替准备工作改写。
 - [ ] [INFERRED] 从第一个尚未通过门禁的阶段继续：Stage 0C → 0D → 确定性 Core → 模型对照。

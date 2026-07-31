@@ -11,7 +11,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "086ac2559d0c7f3d79531b79a579d1be2a6aac8b34e049ff190dfe318c9dd99c"
+      "sha256": "e629fe5e639a6cf72ec98646560b0edf739a9e9dd619043d3130366ed62ef2c0"
     },
     {
       "doc_id": "kb-navigation",
@@ -23,7 +23,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "ee03cad1f3908077e6e189749f66dc6a57d95c11df6bac933febb102ac04c7da"
+      "sha256": "426720562e2f9363ff6b56148f7e538bcc1a5a6a6b83c995a133dcb7224cbdb0"
     },
     {
       "doc_id": "adr-001",
@@ -192,6 +192,30 @@
       "index": true,
       "sensitivity": "internal",
       "sha256": "cd59c71aab048281028a608312d788edf1b6d28fc23004aefb56af3c9f1543f3"
+    },
+    {
+      "doc_id": "stage0c-fixture-conversion-plan",
+      "title": "Amadeus Core v0.1 Stage 0C 夹具转换 Implementation Plan",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md",
+      "kind": "implementation-plan",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "stage0c",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "76e2a23696a936dd2dfb6d7b5083ba5622d6ae147eab207db660ede19faced7b"
+    },
+    {
+      "doc_id": "stage0c-implementation-plan-review-2026-07-29",
+      "title": "Amadeus Core v0.1 Stage 0C 实施计划审查记录（2026-07-29）",
+      "path": "outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md",
+      "kind": "plan-review",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "stage0c",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "7ec9d6678a6d894f085a20a7d03e4c6b0d2a4f455b810ed006fdc14bf7156c8f"
     },
     {
       "doc_id": "core-v0.1-master-plan",
