@@ -203,7 +203,7 @@
       "stage": "stage0c",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "76e2a23696a936dd2dfb6d7b5083ba5622d6ae147eab207db660ede19faced7b"
+      "sha256": "d42258fb05ad818fe94409aa11fe4fdb9c163e437a30fccc636cdca043939069"
     },
     {
       "doc_id": "stage0c-implementation-plan-review-2026-07-29",
@@ -215,7 +215,7 @@
       "stage": "stage0c",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "7ec9d6678a6d894f085a20a7d03e4c6b0d2a4f455b810ed006fdc14bf7156c8f"
+      "sha256": "dc1c3e27a4c10103d814f5b3e4c0e375a99f5e7e29e17116adfd0076a6c3fd72"
     },
     {
       "doc_id": "core-v0.1-master-plan",

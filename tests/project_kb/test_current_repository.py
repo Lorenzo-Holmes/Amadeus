@@ -106,9 +106,9 @@ def test_handoff_markdown_relative_links_exist() -> None:
             assert resolved.exists(), f"missing link target: {source}: {target}"
 
 
-STAGE0C_APPROVED_DRAFT_PLAN_SHA256 = "7EDD144EA501912B17F1BCC575E6A35EEC49DF47A6FC20767FBF36366F623657"
-STAGE0C_APPROVED_FROZEN_PLAN_SHA256 = "76E2A23696A936DD2DFB6D7B5083BA5622D6AE147EAB207DB660EDE19FACED7B"
-STAGE0C_APPROVED_REVIEW_SHA256 = "7EC9D6678A6D894F085A20A7D03E4C6B0D2A4F455B810ED006FDC14BF7156C8F"
+STAGE0C_APPROVED_DRAFT_PLAN_SHA256 = "777A4FFDC327D8D5210B3BDCB0FF1F840F48A8C780252B9207676D1ED287CCE9"
+STAGE0C_APPROVED_FROZEN_PLAN_SHA256 = "D42258FB05AD818FE94409AA11FE4FDB9C163E437A30FCCC636CDCA043939069"
+STAGE0C_APPROVED_REVIEW_SHA256 = "DC1C3E27A4C10103D814F5B3E4C0E375A99F5E7E29E17116ADFD0076A6C3FD72"
 
 
 def test_stage0c_plan_is_frozen_and_review_is_approved() -> None:
@@ -561,8 +561,8 @@ def test_stage0c_plan_is_frozen_and_review_is_approved() -> None:
     assert hashlib.sha256(
         powershell_source.encode("utf-8")
     ).hexdigest().upper() == (
-        "0F3AF63CE78C14E18E44FBA3CEFC4992"
-        "3BDAFEA95A97A0CD305B39C716CA2C3B"
+        "8F805AAD277E8532770C5754ED08E12C7"
+        "DA4085036B33E42F5213E8AC7542E8F"
     )
     powershell_executable = shutil.which("pwsh") or shutil.which("powershell")
     assert powershell_executable is not None
@@ -651,8 +651,8 @@ ConvertTo-Json -InputObject (
     assert hashlib.sha256(
         "\n".join(ast_git_extents).encode("utf-8")
     ).hexdigest().upper() == (
-        "0FD6CF50EFF9CD6012F209A0DAA72D97"
-        "BF2E21ACB284F25D1B9C9D5FC021E833"
+        "77CFCB59FC6BB835C8D5891CC1392EFB"
+        "FA30D77898FBD4A1F37FE114134F1A0B"
     )
     ast_commit_extents = powershell_ast_payload["commits"]
     assert isinstance(ast_commit_extents, list)

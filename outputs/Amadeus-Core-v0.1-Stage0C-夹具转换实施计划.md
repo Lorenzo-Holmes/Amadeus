@@ -104,6 +104,7 @@ tools/stage0c_fixtures/
   verification.py
   cli.py
 tests/stage0c/
+  __init__.py
   conftest.py
   test_import_contract.py
   test_io.py
@@ -799,8 +800,8 @@ def test_stage0c_plan_is_frozen_and_review_is_approved() -> None:
     assert hashlib.sha256(
         powershell_source.encode("utf-8")
     ).hexdigest().upper() == (
-        "0F3AF63CE78C14E18E44FBA3CEFC4992"
-        "3BDAFEA95A97A0CD305B39C716CA2C3B"
+        "8F805AAD277E8532770C5754ED08E12C"
+        "7DA4085036B33E42F5213E8AC7542E8F"
     )
     powershell_executable = shutil.which("pwsh") or shutil.which("powershell")
     assert powershell_executable is not None
@@ -889,8 +890,8 @@ ConvertTo-Json -InputObject (
     assert hashlib.sha256(
         "\n".join(ast_git_extents).encode("utf-8")
     ).hexdigest().upper() == (
-        "0FD6CF50EFF9CD6012F209A0DAA72D97"
-        "BF2E21ACB284F25D1B9C9D5FC021E833"
+        "77CFCB59FC6BB835C8D5891CC1392EFB"
+        "FA30D77898FBD4A1F37FE114134F1A0B"
     )
     ast_commit_extents = powershell_ast_payload["commits"]
     assert isinstance(ast_commit_extents, list)
@@ -1433,6 +1434,7 @@ git commit -m "docs: freeze reviewed stage0c fixture conversion plan"
 - Create: `tools/stage0c_fixtures/__init__.py`
 - Create: `tools/stage0c_fixtures/constants.py`
 - Create: `tools/stage0c_fixtures/types.py`
+- Create: `tests/stage0c/__init__.py`
 - Create: `tests/stage0c/test_import_contract.py`
 - Create: `tests/stage0c/conftest.py`
 - Create: `fixtures/stage0c/.stage0c-write.lock`
@@ -1441,6 +1443,8 @@ git commit -m "docs: freeze reviewed stage0c fixture conversion plan"
 - [ ] **Step 1: 写 import 与常量红灯**
 
 ```python
+import os
+import stat
 from dataclasses import FrozenInstanceError
 from pathlib import Path
 
@@ -1506,11 +1510,24 @@ def test_stage0c_import_and_constants_are_frozen() -> None:
     }
 
 
-def test_lock_carrier_is_precreated_empty_regular_file() -> None:
-    path = Path("fixtures/stage0c/.stage0c-write.lock")
-    assert path.is_file()
-    assert not path.is_symlink()
+def _assert_empty_regular_non_reparse(path: Path) -> None:
+    metadata = os.lstat(path)
+    assert stat.S_ISREG(metadata.st_mode)
+    file_attributes = getattr(metadata, "st_file_attributes", 0)
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+    assert (file_attributes & reparse_flag) == 0
     assert path.read_bytes() == b""
+
+
+def test_lock_carrier_is_precreated_empty_regular_file() -> None:
+    _assert_empty_regular_non_reparse(
+        Path("fixtures/stage0c/.stage0c-write.lock")
+    )
+
+
+def test_stage0c_test_package_boundary_is_frozen() -> None:
+    _assert_empty_regular_non_reparse(Path("tests/stage0c/__init__.py"))
+    assert __package__ == "stage0c"
 
 
 def test_shared_types_and_error_protocol_are_frozen() -> None:
@@ -1827,9 +1844,11 @@ def repository_root() -> Path:
     return Path(__file__).resolve().parents[2]
 ```
 
-- [ ] **Step 4: 创建零字节 lock carrier 与 checkout 属性**
+- [ ] **Step 4: 验证测试包边界并创建零字节 carriers 与 checkout 属性**
 
-创建 `fixtures/stage0c/.stage0c-write.lock`，内容精确为零字节。在 `.gitattributes` 追加：
+在 `tests/stage0c/__init__.py` 不存在时，从仓库根运行 `.\.venv\Scripts\python.exe -B -m pytest tests/stage0a/test_import_contract.py tests/stage0c/test_import_contract.py -q`。Expected: FAIL，`import file mismatch` 必须同时指向 Stage 0A 与 Stage 0C 的 `test_import_contract.py`；该 RED 证明失败来自默认 pytest prepend 模式下的同名顶层 module，而不是 pyc/cache。
+
+随后创建 `tests/stage0c/__init__.py` 与 `fixtures/stage0c/.stage0c-write.lock`，两者内容都精确为零字节、必须是普通非 reparse 文件。前者是所有 Stage 0C tests 的显式 package boundary，使本计划内与 Stage 0A/0B 同名的 test modules 进入 `stage0c.*` 命名空间；不得以全局 `--import-mode=importlib` 或逐文件改名替代。随后在 `.gitattributes` 追加：
 
 ```gitattributes
 outputs/verification/*.json -text
@@ -1843,23 +1862,24 @@ fixtures/stage0c/.stage0c-write.lock -text
 .\.venv\Scripts\python.exe -B -m pytest tests/stage0c/test_import_contract.py -q
 ```
 
-Expected: 4 passed。
+Expected: 5 passed。
 
 - [ ] **Step 6: 重构并回归**
 
 确认 `constants.py` 只包含冻结常量，不读取文件、不执行 import-time I/O；随后运行：
 
 ```powershell
-.\.venv\Scripts\python.exe -B -m pytest tests/stage0c/test_import_contract.py tests/test_repository_checkout_contract.py -q
+.\.venv\Scripts\python.exe -B -m pytest tests/stage0a/test_import_contract.py tests/stage0c/test_import_contract.py tests/test_repository_checkout_contract.py -q
+.\.venv\Scripts\python.exe -B -m pytest -q
 git diff --check
 ```
 
-Expected: exit code 0。
+Expected: 第一条 pytest 为 7 passed，默认完整 pytest 为 135 passed，`git diff --check` exit code 0；两条 pytest 都不得增加 `--import-mode` 覆盖。
 
 - [ ] **Step 7: 提交**
 
 ```powershell
-git add .gitattributes fixtures/stage0c/.stage0c-write.lock tools/stage0c_fixtures/__init__.py tools/stage0c_fixtures/constants.py tools/stage0c_fixtures/types.py tests/stage0c/conftest.py tests/stage0c/test_import_contract.py
+git add .gitattributes fixtures/stage0c/.stage0c-write.lock tools/stage0c_fixtures/__init__.py tools/stage0c_fixtures/constants.py tools/stage0c_fixtures/types.py tests/stage0c/__init__.py tests/stage0c/conftest.py tests/stage0c/test_import_contract.py
 git diff --cached --check
 git commit -m "feat(stage0c): freeze package constants and lock carrier"
 ```
