@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+from tools.stage0c_fixtures.checklist import build_conversion_checklist
 from tools.stage0c_fixtures.io import load_frozen_inputs
 
 
@@ -14,3 +15,8 @@ def repository_root() -> Path:
 @pytest.fixture
 def frozen_inputs(repository_root: Path):
     return load_frozen_inputs(repository_root)
+
+
+@pytest.fixture
+def checklist(frozen_inputs):
+    return build_conversion_checklist(frozen_inputs)
