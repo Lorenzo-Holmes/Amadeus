@@ -5,6 +5,7 @@ import pytest
 
 from tools.stage0c_fixtures.checklist import build_conversion_checklist
 from tools.stage0c_fixtures.io import load_frozen_inputs
+from tools.stage0c_fixtures.schema import build_fixture_case_schema
 
 
 @pytest.fixture
@@ -20,3 +21,8 @@ def frozen_inputs(repository_root: Path):
 @pytest.fixture
 def checklist(frozen_inputs):
     return build_conversion_checklist(frozen_inputs)
+
+
+@pytest.fixture
+def fixture_schema():
+    return build_fixture_case_schema()

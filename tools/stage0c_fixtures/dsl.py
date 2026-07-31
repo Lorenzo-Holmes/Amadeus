@@ -3,6 +3,7 @@ from __future__ import annotations
 import re as _re
 from dataclasses import dataclass as _dataclass
 from types import MappingProxyType as _MappingProxyType
+from typing import Any as _Any
 from typing import Mapping as _Mapping
 from typing import NoReturn as _NoReturn
 from typing import cast as _cast
@@ -10,7 +11,6 @@ from typing import cast as _cast
 from .constants import SCHEMA_VERSION as _SCHEMA_VERSION
 from .io import canonical_bytes as _canonical_bytes
 from .types import FixtureInputError as _FixtureInputError
-from .types import JsonValue as _JsonValue
 from .types import ValidationIssue as _ValidationIssue
 
 
@@ -26,6 +26,8 @@ __all__ = (
 _CLAUSE_ID_RE = _re.compile(r"^[A-Z0-9]+(?:-[A-Z0-9]+)*#[1-9][0-9]*$")
 _IDENTIFIER_RE = _re.compile(r"^[a-z][a-z0-9-]*$")
 _ARRAY_INDEX_RE = _re.compile(r"^(?:0|[1-9][0-9]*)$")
+_JSON_POINTER_PATTERN = r"^(?:/(?:[^~/]|~[01])*)*$"
+_JSON_POINTER_RE = _re.compile(_JSON_POINTER_PATTERN)
 _UTC_RFC3339_RE = _re.compile(
     r"^([0-9]{4})-([0-9]{2})-([0-9]{2})[Tt]"
     r"([0-9]{2}):([0-9]{2}):([0-9]{2})"
@@ -36,73 +38,80 @@ _MONTH_LENGTHS = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 _ORACLE_ORDER: _Mapping[str, int] = _MappingProxyType(
     {"D": 0, "S": 1, "H": 2, "J": 3}
 )
-_CASE_FIELDS = frozenset(
-    {
-        "schema_version",
-        "case_id",
-        "source_id",
-        "source_clause_id",
-        "oracle_kinds",
-        "setup_steps",
-        "stimulus_steps",
-        "machine_assertions",
-        "rubric_requirements",
-        "sandbox_profile",
-    }
+_CASE_FIELD_ORDER = (
+    "schema_version",
+    "case_id",
+    "source_id",
+    "source_clause_id",
+    "oracle_kinds",
+    "setup_steps",
+    "stimulus_steps",
+    "machine_assertions",
+    "rubric_requirements",
+    "sandbox_profile",
 )
-_STEP_FIELDS = frozenset({"sequence", "step_id", "handler_id", "params"})
-_ASSERTION_FIELDS = frozenset(
-    {"sequence", "assertion_id", "handler_id", "step_id", "params"}
+_CASE_FIELDS = frozenset(_CASE_FIELD_ORDER)
+_STEP_FIELD_ORDER = ("sequence", "step_id", "handler_id", "params")
+_STEP_FIELDS = frozenset(_STEP_FIELD_ORDER)
+_ASSERTION_FIELD_ORDER = (
+    "sequence",
+    "assertion_id",
+    "handler_id",
+    "step_id",
+    "params",
 )
-_RUBRIC_FIELDS = frozenset(
-    {
-        "criterion_id",
-        "oracle_kind",
-        "question",
-        "evidence_case_json_pointers",
-        "allowed_scores",
-        "passing_scores",
-    }
+_ASSERTION_FIELDS = frozenset(_ASSERTION_FIELD_ORDER)
+_RUBRIC_FIELD_ORDER = (
+    "criterion_id",
+    "oracle_kind",
+    "question",
+    "evidence_case_json_pointers",
+    "allowed_scores",
+    "passing_scores",
 )
-_SANDBOX_FIELDS = frozenset(
-    {
-        "profile_id",
-        "allowed_effects",
-        "fixed_clock",
-        "id_seed",
-        "reset_policy",
-        "cleanup_policy",
-    }
+_RUBRIC_FIELDS = frozenset(_RUBRIC_FIELD_ORDER)
+_SANDBOX_FIELD_ORDER = (
+    "profile_id",
+    "allowed_effects",
+    "fixed_clock",
+    "id_seed",
+    "reset_policy",
+    "cleanup_policy",
 )
+_SANDBOX_FIELDS = frozenset(_SANDBOX_FIELD_ORDER)
 _SANDBOX_REQUIRED_FIELDS = _SANDBOX_FIELDS - frozenset({"allowed_effects"})
-_EFFECT_FIELDS = frozenset({"adapter_id", "operation", "target"})
+_EFFECT_FIELD_ORDER = ("adapter_id", "operation", "target")
+_EFFECT_FIELDS = frozenset(_EFFECT_FIELD_ORDER)
 
-_SETUP_HANDLERS = frozenset(
-    {
-        "sandbox.seed_state",
-        "sandbox.set_clock",
-        "sandbox.configure_core_driver",
-        "sandbox.configure_adapter",
-        "sandbox.seed_backend_response",
-    }
+_SETUP_HANDLER_ORDER = (
+    "sandbox.seed_state",
+    "sandbox.set_clock",
+    "sandbox.configure_core_driver",
+    "sandbox.configure_adapter",
+    "sandbox.seed_backend_response",
 )
-_STIMULUS_HANDLERS = frozenset(
-    {"core.command", "core.query", "external.action", "backend.replay"}
+_SETUP_HANDLERS = frozenset(_SETUP_HANDLER_ORDER)
+_STIMULUS_HANDLER_ORDER = (
+    "core.command",
+    "core.query",
+    "external.action",
+    "backend.replay",
 )
-_ASSERTION_HANDLERS = frozenset(
-    {
-        "receipt.status",
-        "receipt.error_code",
-        "state.path_equals",
-        "state.hash_unchanged",
-        "effect.includes",
-        "effect.excludes",
-        "output.contains",
-        "output.omits",
-        "replay.equals",
-    }
+_STIMULUS_HANDLERS = frozenset(_STIMULUS_HANDLER_ORDER)
+_ASSERTION_HANDLER_ORDER = (
+    "receipt.status",
+    "receipt.error_code",
+    "state.path_equals",
+    "state.hash_unchanged",
+    "effect.includes",
+    "effect.excludes",
+    "output.contains",
+    "output.omits",
+    "replay.equals",
 )
-_ADAPTER_IDS = frozenset({"file", "message", "payment", "network", "core"})
+_ASSERTION_HANDLERS = frozenset(_ASSERTION_HANDLER_ORDER)
+_ADAPTER_ID_ORDER = ("file", "message", "payment", "network", "core")
+_ADAPTER_IDS = frozenset(_ADAPTER_ID_ORDER)
 _HUMAN_ORACLES = frozenset({"H", "J"})
 _MACHINE_ORACLES = frozenset({"D", "S"})
 
@@ -344,17 +353,38 @@ def _decode_pointer_token(token: str) -> str:
     return "".join(decoded)
 
 
-def resolve_json_pointer(document: object, pointer: object) -> object:
-    if type(pointer) is not str or _has_surrogate(pointer):
+def _pointer_tokens(pointer: object) -> tuple[str, ...]:
+    if (
+        type(pointer) is not str
+        or _has_surrogate(pointer)
+        or _JSON_POINTER_RE.fullmatch(pointer) is None
+    ):
         _input_error("json_pointer_invalid")
     if pointer == "":
-        return document
+        return ()
     if not pointer.startswith("/"):
         _input_error("json_pointer_invalid")
+    return tuple(
+        _decode_pointer_token(encoded_token)
+        for encoded_token in pointer[1:].split("/")
+    )
+
+
+def _json_pointer_syntax_is_valid(pointer: object) -> bool:
+    try:
+        _pointer_tokens(pointer)
+    except _FixtureInputError:
+        return False
+    return True
+
+
+def resolve_json_pointer(document: object, pointer: object) -> object:
+    tokens = _pointer_tokens(pointer)
+    if not tokens:
+        return document
 
     current = document
-    for encoded_token in pointer[1:].split("/"):
-        token = _decode_pointer_token(encoded_token)
+    for token in tokens:
         if type(current) is dict:
             mapping = _cast(dict[object, object], current)
             if token not in mapping:
@@ -895,7 +925,7 @@ def _validate_effects(sandbox: _Row) -> tuple[_ValidationIssue, ...]:
                 "sandbox_effect_rule_invalid",
             )
             continue
-        fingerprints.append(_canonical_bytes(_cast(_JsonValue, rule_value)))
+        fingerprints.append(_canonical_bytes(_cast(_Any, rule_value)))
 
     if len(set(fingerprints)) != len(fingerprints):
         _add_issue(
@@ -987,7 +1017,7 @@ def validate_case_body(body: object) -> list[_ValidationIssue]:
         _add_issue(issues, json_error_pointer, "case_json_value_invalid")
         return _finish(issues)
     try:
-        _canonical_bytes(_cast(_JsonValue, case))
+        _canonical_bytes(_cast(_Any, case))
     except (_FixtureInputError, RecursionError, TypeError, ValueError):
         _add_issue(issues, "", "case_json_value_invalid")
         return _finish(issues)
