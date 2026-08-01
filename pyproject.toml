@@ -3,9 +3,10 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "amadeus-stage0a-sources"
+name = "amadeus-core"
 version = "0.1.0"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
+dependencies = ["pydantic>=2.10,<3"]
 
 [project.optional-dependencies]
 test = ["pytest>=7.4,<9"]
@@ -16,7 +17,11 @@ amadeus-stage0b = "tools.stage0b_adjudication.cli:main"
 amadeus-project-kb = "tools.project_kb.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["tools*"]
+where = [".", "src"]
+include = ["tools*", "amadeus_core*"]
+
+[tool.setuptools.package-data]
+amadeus_core = ["contracts/*.json", "contracts/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

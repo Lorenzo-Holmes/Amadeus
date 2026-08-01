@@ -11,6 +11,8 @@ knowledge/manifest.json text eol=lf
 # These files participate in SHA-256 identity contracts; preserve raw bytes.
 outputs/*.md -text
 fixtures/**/*.json -text
+src/amadeus_core/contracts/*.json -text
+src/amadeus_core/contracts/*.txt -text
 # Preserve imported legacy references byte-for-byte, including historical whitespace.
 knowledge/30_research/legacy/*.md -text -whitespace
 knowledge/40_history/legacy/*.md -text -whitespace
