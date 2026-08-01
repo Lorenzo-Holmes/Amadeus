@@ -28,7 +28,7 @@ def test_current_manifest_is_complete_and_ready(capsys) -> None:
     assert main(["--root", str(ROOT), "check"]) == 0
     assert capsys.readouterr().out.splitlines() == [
         "project_kb_ready=true",
-        "indexed_documents=34",
+        "indexed_documents=37",
         "raw_paths_indexed=0",
     ]
 
@@ -36,8 +36,8 @@ def test_current_manifest_is_complete_and_ready(capsys) -> None:
         (ROOT / "knowledge" / "manifest.json").read_text(encoding="utf-8")
     )
     paths = [document["path"] for document in manifest["documents"]]
-    assert len(paths) == 34
-    assert len(set(paths)) == 34
+    assert len(paths) == 37
+    assert len(set(paths)) == 37
     assert all(document["index"] is True for document in manifest["documents"])
     assert not any(path.startswith("knowledge/90_raw/") for path in paths)
 
@@ -1028,8 +1028,8 @@ def test_stage0c_plan_and_independent_review_are_indexed() -> None:
         },
     }
     assert set(expected) <= set(by_id)
-    assert len(documents) == 34
-    assert len(by_id) == 34
+    assert len(documents) == 37
+    assert len(by_id) == 37
     for doc_id, expected_row in expected.items():
         row = by_id[doc_id]
         assert set(row) == set(expected_row) | {"sha256"}
@@ -1048,8 +1048,15 @@ def test_stage0c_plan_and_independent_review_are_indexed() -> None:
         for row in documents[design_review_index + 1 : design_review_index + 3]
     ) == new_doc_ids
 
+    route_b_doc_ids = {
+        "route-b-design-v1.0",
+        "adr-007-route-b-vertical-slice",
+        "route-b-m0-m1-plan-v1.0",
+    }
     existing_documents = [
-        row for row in documents if row["doc_id"] not in expected
+        row
+        for row in documents
+        if row["doc_id"] not in set(expected) | route_b_doc_ids
     ]
     assert len(existing_documents) == 32
     existing_projection = [
@@ -1092,15 +1099,6 @@ def test_stage0c_plan_and_independent_review_are_indexed() -> None:
         target = expected_row["path"]
         assert _MARKDOWN_LINK.findall(readme_section).count(target) == 1
         assert _MARKDOWN_LINK.findall(navigation_section).count(f"../{target}") == 1
-    assert hashlib.sha256((ROOT / "README.md").read_bytes()).hexdigest() == (
-        "e629fe5e639a6cf72ec98646560b0edf739a9e9dd619043d3130366ed62ef2c0"
-    )
-    assert hashlib.sha256(
-        (ROOT / "knowledge" / "data_structure.md").read_bytes()
-    ).hexdigest() == (
-        "426720562e2f9363ff6b56148f7e538bcc1a5a6a6b83c995a133dcb7224cbdb0"
-    )
-
     expected_paths = {
         "README.md",
         "knowledge/data_structure.md",
@@ -1112,3 +1110,60 @@ def test_stage0c_plan_and_independent_review_are_indexed() -> None:
     for path in expected_paths:
         raw = (ROOT / path).read_bytes()
         assert hashlib.sha256(raw).hexdigest() == by_path[path]["sha256"]
+
+
+def test_route_b_documents_are_indexed_and_authoritative() -> None:
+    manifest = json.loads(
+        (ROOT / "knowledge" / "manifest.json").read_text(encoding="utf-8")
+    )
+    by_id = {row["doc_id"]: row for row in manifest["documents"]}
+    expected = {
+        "route-b-design-v1.0": {
+            "title": "Amadeus 路线 B：需求一致性与真实纵向闭环设计 v1.0",
+            "path": "outputs/Amadeus-路线B-需求一致性与纵向闭环设计-v1.0.md",
+            "kind": "design-spec",
+            "authority": "canonical",
+            "status": "approved",
+            "stage": "cross-stage",
+            "index": True,
+            "sensitivity": "internal",
+        },
+        "adr-007-route-b-vertical-slice": {
+            "title": "ADR-007：路线 B——真实 Core 纵向闭环优先",
+            "path": "outputs/ADR-007-Amadeus路线B-真实Core纵向闭环优先.md",
+            "kind": "adr",
+            "authority": "canonical",
+            "status": "accepted",
+            "stage": "cross-stage",
+            "index": True,
+            "sensitivity": "internal",
+        },
+        "route-b-m0-m1-plan-v1.0": {
+            "title": "Amadeus 路线 B M0–M1 Implementation Plan",
+            "path": "outputs/Amadeus-路线B-M0-M1-实施计划-v1.0.md",
+            "kind": "implementation-plan",
+            "authority": "canonical",
+            "status": "approved",
+            "stage": "route-b-m0-m1",
+            "index": True,
+            "sensitivity": "internal",
+        },
+    }
+    assert set(expected) <= set(by_id)
+    for doc_id, expected_fields in expected.items():
+        row = by_id[doc_id]
+        assert set(row) == {"doc_id", *expected_fields, "sha256"}
+        assert {key: row[key] for key in expected_fields} == expected_fields
+        raw = (ROOT / row["path"]).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == row["sha256"]
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    navigation = (ROOT / "knowledge" / "data_structure.md").read_text(
+        encoding="utf-8"
+    )
+    for row in expected.values():
+        assert _MARKDOWN_LINK.findall(readme).count(row["path"]) == 1
+        assert _MARKDOWN_LINK.findall(navigation).count(f"../{row['path']}") == 1
+
+    assert "完成 B01 后暂停 B02–B13" in readme
+    assert "M2：Core 骨架与权威契约" in readme

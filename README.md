@@ -48,17 +48,27 @@ flowchart LR
 
 ## 当前可核验状态
 
-| 检查项 | 当前结果 |
+| 基础检查项 | 可核验结果 |
 |---|---|
 | [KNOWN] Stage 0A 自动化测试 | [COMPUTED] 56 / 56 |
 | [KNOWN] Stage 0B 自动化测试 | [COMPUTED] 33 / 33 |
-| [KNOWN] 完整自动化测试 | [COMPUTED] 130 / 130 |
+| [KNOWN] Stage 0A/0B 合并基线 | [COMPUTED] 130 / 130 |
 | [KNOWN] 唯一来源行 | [COMPUTED] 214 |
 | [KNOWN] Core oracle 裁决 | [COMPUTED] 95 / 95；pending 0 |
 | [KNOWN] atomicity 裁决 | [COMPUTED] 214 / 214；185 atomic、29 composite、259 clauses |
 | [KNOWN] 当前 Stage 0 readiness 声明 | [KNOWN] <code>source_toolchain_ready=true</code>、<code>source_adjudication_ready=true</code> |
 
-[KNOWN｜置信度：高] <code>catalog_ready</code>、行为 case coverage、Core release 与 Amadeus v0.1 均未完成；不能从 Stage 0A 的绿色结果外推这些状态。
+[KNOWN｜置信度：高] Stage 0C 的 F01–F09 已完成并推送；路线 B 接管 B01 时的冻结检查点为 10/20，续写起点是 `AC-009#1`。B01 的活态完成事实由 20 行批次测试、B01 审计记录和审计测试共同判定。Stage 0C 在 B01 完成后仍处部分完成状态，真实 Core 从 M2 开始。
+
+| 路线 B 检查项 | 可核验结果 |
+|---|---|
+| [KNOWN] 已批准路线 | [KNOWN] B：完成 B01 后暂停 B02–B13，优先建设真实 Core 纵向闭环 |
+| [KNOWN] Stage 0C 基础工具 | [COMPUTED] F01–F09 已完成 |
+| [KNOWN] B01 接管快照 | [COMPUTED] 10/20 reviewed cases；续写起点 `AC-009#1` |
+| [FRAME] B01 完成判据 | [FRAME] `test_batch_B01.py` 20 行闭合，Data/Audit 双提交有效，B01 审计测试通过 |
+| [KNOWN] 路线接管前已推送提交 | [KNOWN] `0a99c2d7ba9ca96018ba9617457f011ab0c6f2bf` |
+
+[KNOWN｜置信度：高] <code>catalog_ready</code>、完整行为 case coverage、Core release 与 Amadeus v0.1 仍为开放状态；Stage 0A 的绿色结果只证明来源工具链边界。
 
 ## 权威仓库位置
 
@@ -141,18 +151,21 @@ amadeus-project-kb --root . check
 
 ## 权威文档阅读顺序
 
-1. [KNOWN｜置信度：高] [ADR-006：记忆主权与 Core 生命周期治理](outputs/ADR-006-Amadeus记忆主权与Core生命周期治理.md) — 当前批准的 C′ 架构裁决。
-2. [KNOWN｜置信度：高] [Core v0.1 数据契约与状态机规范](outputs/Amadeus-Core-v0.1-数据契约与状态机规范.md) — Draft v0.1 / Normative candidate，不是已完成实现。
-3. [KNOWN｜置信度：高] [研究与设计交付索引](outputs/Amadeus研究与设计交付索引-2026-07-27.md) — 状态、阅读顺序和已冻结方向的总入口。
-4. [KNOWN｜置信度：高] [Stage 0A 执行记录](outputs/Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md) — 56 项测试、四份 generated JSON 与门禁证据。
-5. [KNOWN｜置信度：高] [Stage 0A 来源编译器实施计划](outputs/Amadeus-Core-v0.1-Stage0-场景夹具实施计划.md) 与 [Stage 0A 审查记录](outputs/Amadeus-Core-v0.1-Stage0A-实施计划审查记录-2026-07-28.md) — 已完成边界和 Stage 0B 入口。
-6. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [Stage 0B 审查记录](outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md) — 214 项来源、95 个 Core oracle 与 atomicity 裁决的叶级执行合同。
-7. [KNOWN｜置信度：高] [Stage 0B 执行记录](outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md) — 95/95 oracle、214/214 atomicity、259 clauses、产物 hash 与 readiness 证据。
-8. [KNOWN｜置信度：高] [Stage 0C 夹具转换设计](outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md) 与 [设计审查记录](outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md) — 259 个单 clause case、完整 frozen binding、98 个 S clause、可恢复构建与 readiness 边界。
-9. [KNOWN｜置信度：高] [Stage 0C 夹具转换实施计划](outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md) 与 [实施计划审查记录](outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md) — 已冻结的 259-case 转换、sandbox、publication、smoke 与 CLI 叶级执行合同。
-10. [KNOWN｜置信度：高] [ADR-001](outputs/ADR-001-Amadeus身份与成长模型.md) → [ADR-002](outputs/ADR-002-Amadeus记忆生命周期.md) → [ADR-003](outputs/ADR-003-Amadeus主动性与事件循环.md) → [ADR-004](outputs/ADR-004-Amadeus工具权限与执行治理.md) → [ADR-005](outputs/ADR-005-Amadeus关系安全与退出协议.md) — 支持性裁决。
-11. [KNOWN｜置信度：高] [身份与记忆评测基线](outputs/Amadeus身份与记忆评测基线-v0.1.md) 是 Draft / 待实现；[主动性、权限及关系安全评测增量](outputs/Amadeus主动性权限与关系安全评测增量-v0.1.md) 是 Frozen-candidate；两者都尚待转为可执行 fixture。
-12. [KNOWN｜置信度：高] [项目开发知识库导航](knowledge/data_structure.md) — 00/10/20/30/40/90/99 分层及更新合同。
+1. [KNOWN｜置信度：高] [路线 B 需求一致性与纵向闭环设计](outputs/Amadeus-路线B-需求一致性与纵向闭环设计-v1.0.md) — 当前批准的总路线与 M0–M13 边界。
+2. [KNOWN｜置信度：高] [ADR-007：真实 Core 纵向闭环优先](outputs/ADR-007-Amadeus路线B-真实Core纵向闭环优先.md) — 对旧 Stage 0C 执行顺序的正式覆盖裁决。
+3. [KNOWN｜置信度：高] [路线 B M0–M1 实施计划](outputs/Amadeus-路线B-M0-M1-实施计划-v1.0.md) — 当前唯一执行合同。
+4. [KNOWN｜置信度：高] [ADR-006：记忆主权与 Core 生命周期治理](outputs/ADR-006-Amadeus记忆主权与Core生命周期治理.md) — 当前批准的 C′ 架构裁决。
+5. [KNOWN｜置信度：高] [Core v0.1 数据契约与状态机规范](outputs/Amadeus-Core-v0.1-数据契约与状态机规范.md) — Draft v0.1 / Normative candidate，不是已完成实现。
+6. [KNOWN｜置信度：高] [研究与设计交付索引](outputs/Amadeus研究与设计交付索引-2026-07-27.md) — 状态、阅读顺序和已冻结方向的总入口。
+7. [KNOWN｜置信度：高] [Stage 0A 执行记录](outputs/Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md) — 56 项测试、四份 generated JSON 与门禁证据。
+8. [KNOWN｜置信度：高] [Stage 0A 来源编译器实施计划](outputs/Amadeus-Core-v0.1-Stage0-场景夹具实施计划.md) 与 [Stage 0A 审查记录](outputs/Amadeus-Core-v0.1-Stage0A-实施计划审查记录-2026-07-28.md) — 已完成边界和 Stage 0B 入口。
+9. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [Stage 0B 审查记录](outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md) — 214 项来源、95 个 Core oracle 与 atomicity 裁决的叶级执行合同。
+10. [KNOWN｜置信度：高] [Stage 0B 执行记录](outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md) — 95/95 oracle、214/214 atomicity、259 clauses、产物 hash 与 readiness 证据。
+11. [KNOWN｜置信度：高] [Stage 0C 夹具转换设计](outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md) 与 [设计审查记录](outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md) — 259 个单 clause case、完整 frozen binding、98 个 S clause、可恢复构建与 readiness 边界。
+12. [KNOWN｜置信度：高] [Stage 0C 夹具转换实施计划](outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md) 与 [实施计划审查记录](outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md) — 已冻结的 259-case 转换、sandbox、publication、smoke 与 CLI 叶级执行合同。
+13. [KNOWN｜置信度：高] [ADR-001](outputs/ADR-001-Amadeus身份与成长模型.md) → [ADR-002](outputs/ADR-002-Amadeus记忆生命周期.md) → [ADR-003](outputs/ADR-003-Amadeus主动性与事件循环.md) → [ADR-004](outputs/ADR-004-Amadeus工具权限与执行治理.md) → [ADR-005](outputs/ADR-005-Amadeus关系安全与退出协议.md) — 支持性裁决。
+14. [KNOWN｜置信度：高] [身份与记忆评测基线](outputs/Amadeus身份与记忆评测基线-v0.1.md) 是 Draft / 待实现；[主动性、权限及关系安全评测增量](outputs/Amadeus主动性权限与关系安全评测增量-v0.1.md) 是 Frozen-candidate；两者都尚待转为可执行 fixture。
+15. [KNOWN｜置信度：高] [项目开发知识库导航](knowledge/data_structure.md) — 00/10/20/30/40/90/99 分层及更新合同。
 
 ## 如何使用项目开发知识库
 
@@ -196,13 +209,12 @@ git push -u origin HEAD
 
 ## 下一步严格顺序
 
-1. [KNOWN｜置信度：高] **Stage 0B 已完成**：四输入身份、95 个 Core oracle、214 个 atomicity 决策和 259 个 source clause 已冻结。
-2. [INFERRED｜置信度：高] **Stage 0C**：消费 Stage 0B manifest，实现 fixture DSL、clause→case 绑定与 S 动作沙箱。
-3. [INFERRED｜置信度：高] **Stage 0D**：仅在 0C 门禁通过后实现 H/L/J、catalog 与分项报告门禁。
-4. [INFERRED｜置信度：高] **确定性 Core**：先实现无 LLM 的契约/哈希、事件存储与 genesis、Memory Governor、Vault、Branch、生命周期、恢复与回放。
-5. [INFERRED｜置信度：高] **模型对照**：最后以固定输入比较 API 与本地模型的质量、延迟、成本、隐私和可用性；模型结果不得覆盖确定性规则。
-
-[KNOWN｜置信度：高] Stage 0C 必须消费 Stage 0B 的 clause/hash 绑定，不重新解析 Markdown 取代 reviewed decisions；模型输出仍不作为 Core 基线。
+1. [KNOWN｜置信度：高] **M0 路线接线**：纳入路线 B 设计、ADR-007、本计划和知识库索引。
+2. [KNOWN｜置信度：高] **M1 B01 整批闭环**：保留 ordinals 1–10，同一作者完成 11–20，一名复核者审完整批次，建立 Data commit 与 Audit commit。
+3. [FRAME｜置信度：高] **暂停旧横向扩展**：B02–B13、Stage 0D、Stage 0C sandbox/publication 后续节点保持部分完成状态。
+4. [FRAME｜置信度：高] **M2：Core 骨架与权威契约**：开始真实 Core 纵向闭环。
+5. [FRAME｜置信度：高] **M3–M12**：依次贯通 Genesis、Ledger、Governor、Vault、认知、主动性、Action、学习、生命周期、恢复、模型替换和文字终端。
+6. [FRAME｜置信度：高] **M13**：依据真实缺陷恢复 B02–B13 与 Stage 0D，关闭全部冻结来源覆盖后执行发布候选门禁。
 
 ## Backlog
 

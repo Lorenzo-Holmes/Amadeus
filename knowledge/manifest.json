@@ -11,7 +11,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "e629fe5e639a6cf72ec98646560b0edf739a9e9dd619043d3130366ed62ef2c0"
+      "sha256": "8e4f0f3ce9b812ef4d3d7d2f5c29ad3554f9817ddb738de35793407c0e6dd834"
     },
     {
       "doc_id": "kb-navigation",
@@ -23,7 +23,7 @@
       "stage": "cross-stage",
       "index": true,
       "sensitivity": "internal",
-      "sha256": "426720562e2f9363ff6b56148f7e538bcc1a5a6a6b83c995a133dcb7224cbdb0"
+      "sha256": "308d8e3e49be5faa14d9bcfde49424f01a6f0f10c332695a911ea5fb6e5ae7eb"
     },
     {
       "doc_id": "adr-001",
@@ -96,6 +96,42 @@
       "index": true,
       "sensitivity": "internal",
       "sha256": "ee6000e989872b4e2c6cd51f6f5cf4ff21166a54daba3bdea9543a10e3ebf7c6"
+    },
+    {
+      "doc_id": "route-b-design-v1.0",
+      "title": "Amadeus 路线 B：需求一致性与真实纵向闭环设计 v1.0",
+      "path": "outputs/Amadeus-路线B-需求一致性与纵向闭环设计-v1.0.md",
+      "kind": "design-spec",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "cross-stage",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "a4ba84763cd9d60ad064baf429f50524bdc63a800ea025dab6b4a3f720f3dac8"
+    },
+    {
+      "doc_id": "adr-007-route-b-vertical-slice",
+      "title": "ADR-007：路线 B——真实 Core 纵向闭环优先",
+      "path": "outputs/ADR-007-Amadeus路线B-真实Core纵向闭环优先.md",
+      "kind": "adr",
+      "authority": "canonical",
+      "status": "accepted",
+      "stage": "cross-stage",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "e279250271bf7ef248233ab3ac144f5dc8c0d6ed2216364f131bb80d6b9d0b81"
+    },
+    {
+      "doc_id": "route-b-m0-m1-plan-v1.0",
+      "title": "Amadeus 路线 B M0–M1 Implementation Plan",
+      "path": "outputs/Amadeus-路线B-M0-M1-实施计划-v1.0.md",
+      "kind": "implementation-plan",
+      "authority": "canonical",
+      "status": "approved",
+      "stage": "route-b-m0-m1",
+      "index": true,
+      "sensitivity": "internal",
+      "sha256": "9e1863c13ab0eeb902bb32aad83b555b778337b82ba71a47d896d27d26e5deec"
     },
     {
       "doc_id": "stage0a-source-compiler-plan",

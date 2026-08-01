@@ -68,14 +68,17 @@ git diff --check
 
 ## 5. 权威恢复入口
 
-1. [KNOWN｜置信度：高] [根 README](../README.md)：项目定位、安装、状态、命令、顺序与接替清单。
-2. [KNOWN｜置信度：高] [ADR-006](../outputs/ADR-006-Amadeus记忆主权与Core生命周期治理.md)：已批准架构边界。
-3. [KNOWN｜置信度：高] [Core 数据契约](../outputs/Amadeus-Core-v0.1-数据契约与状态机规范.md)：Draft v0.1 候选合同。
-4. [KNOWN｜置信度：高] [研究与设计交付索引](../outputs/Amadeus研究与设计交付索引-2026-07-27.md)：全部交付与研究阅读顺序。
-5. [KNOWN｜置信度：高] [Stage 0A 执行记录](../outputs/Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md)：来源工具链完成证据和 Stage 0B 输入边界。
-6. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](../outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [审查记录](../outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md)：已执行的来源裁决叶级合同。
-7. [KNOWN｜置信度：高] [Stage 0B 执行记录](../outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md)：214 项裁决、259 个 clause、产物 hash 与 Stage 0C 边界。
-8. [KNOWN｜置信度：高] [Stage 0C 夹具转换设计](../outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md) 与 [设计审查记录](../outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md)：Frozen fixture DSL、完整 binding、S sandbox、恢复与 readiness 合同。
-9. [KNOWN｜置信度：高] [Stage 0C 夹具转换实施计划](../outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md) 与 [实施计划审查记录](../outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md)：Frozen 259-case 转换、sandbox、publication、smoke 与 CLI 叶级执行合同。
+1. [KNOWN｜置信度：高] [路线 B 需求一致性与纵向闭环设计](../outputs/Amadeus-路线B-需求一致性与纵向闭环设计-v1.0.md)：当前批准的总路线。
+2. [KNOWN｜置信度：高] [ADR-007](../outputs/ADR-007-Amadeus路线B-真实Core纵向闭环优先.md)：从完整 Fixture 前置转为真实 Core 纵向闭环优先的裁决。
+3. [KNOWN｜置信度：高] [路线 B M0–M1 实施计划](../outputs/Amadeus-路线B-M0-M1-实施计划-v1.0.md)：当前唯一执行合同和 B01 恢复点。
+4. [KNOWN｜置信度：高] [根 README](../README.md)：项目定位、安装、状态、命令、顺序与接替清单。
+5. [KNOWN｜置信度：高] [ADR-006](../outputs/ADR-006-Amadeus记忆主权与Core生命周期治理.md)：已批准架构边界。
+6. [KNOWN｜置信度：高] [Core 数据契约](../outputs/Amadeus-Core-v0.1-数据契约与状态机规范.md)：Draft v0.1 候选合同。
+7. [KNOWN｜置信度：高] [研究与设计交付索引](../outputs/Amadeus研究与设计交付索引-2026-07-27.md)：全部交付与研究阅读顺序。
+8. [KNOWN｜置信度：高] [Stage 0A 执行记录](../outputs/Amadeus-Core-v0.1-Stage0A-执行记录-2026-07-28.md)：来源工具链完成证据和 Stage 0B 输入边界。
+9. [KNOWN｜置信度：高] [Stage 0B 来源裁决实施计划](../outputs/Amadeus-Core-v0.1-Stage0B-来源裁决实施计划.md) 与 [审查记录](../outputs/Amadeus-Core-v0.1-Stage0B-实施计划审查记录-2026-07-29.md)：已执行的来源裁决叶级合同。
+10. [KNOWN｜置信度：高] [Stage 0B 执行记录](../outputs/Amadeus-Core-v0.1-Stage0B-执行记录-2026-07-29.md)：214 项裁决、259 个 clause、产物 hash 与 Stage 0C 边界。
+11. [KNOWN｜置信度：高] [Stage 0C 夹具转换设计](../outputs/Amadeus-Core-v0.1-Stage0C-夹具转换设计.md) 与 [设计审查记录](../outputs/Amadeus-Core-v0.1-Stage0C-设计审查记录-2026-07-29.md)：Frozen fixture DSL、完整 binding、S sandbox、恢复与 readiness 合同。
+12. [KNOWN｜置信度：高] [Stage 0C 夹具转换实施计划](../outputs/Amadeus-Core-v0.1-Stage0C-夹具转换实施计划.md) 与 [实施计划审查记录](../outputs/Amadeus-Core-v0.1-Stage0C-实施计划审查记录-2026-07-29.md)：Frozen 259-case 转换、sandbox、publication、smoke 与 CLI 叶级执行合同。
 
 [我打破的规则 / RULES I BROKE]：无。
