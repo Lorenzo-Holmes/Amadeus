@@ -381,6 +381,27 @@ def _object_schema(
     return schema
 
 
+def _handler_param_conditions(
+    handler_ids: tuple[str, ...],
+) -> list[dict[str, object]]:
+    return [
+        {
+            "if": {
+                "properties": {"handler_id": {"const": handler_id}},
+                "required": ["handler_id"],
+            },
+            "then": {
+                "properties": {
+                    "params": {
+                        "$ref": f"#/$defs/handler_params/{handler_id}",
+                    }
+                }
+            },
+        }
+        for handler_id in handler_ids
+    ]
+
+
 def _status_condition(
     status: str,
     properties: dict[str, dict[str, object]],
@@ -933,6 +954,120 @@ def _build_definitions() -> dict[str, object]:
         result_properties,
         all_of=_result_conditions(),
     )
+    handler_params = {
+        "sandbox.seed_state": _object_schema(
+            ("records",),
+            {"records": _array_schema(_ref("json_map"))},
+        ),
+        "sandbox.set_clock": _object_schema(
+            ("utc_rfc3339",),
+            {
+                "utc_rfc3339": _string_schema(
+                    pattern=_UTC_RFC3339_RE.pattern,
+                )
+            },
+        ),
+        "sandbox.configure_core_driver": _object_schema(
+            ("seeded_results",),
+            {"seeded_results": _array_schema(_ref("driver_result"))},
+        ),
+        "sandbox.configure_adapter": _object_schema(
+            ("adapter_id", "seeded_results"),
+            {
+                "adapter_id": {"enum": list(_ADAPTER_ID_ORDER[:-1])},
+                "seeded_results": _array_schema(_ref("driver_result")),
+            },
+        ),
+        "sandbox.seed_backend_response": _object_schema(
+            ("replay_key", "output"),
+            {
+                "replay_key": _string_schema(),
+                "output": _ref("json_value"),
+            },
+        ),
+        "core.command": _object_schema(
+            ("mutation_command", "driver_result_ref"),
+            {
+                "mutation_command": _ref("mutation_command_envelope"),
+                "driver_result_ref": _string_schema(),
+            },
+        ),
+        "core.query": _object_schema(
+            ("query_id", "arguments", "driver_result_ref"),
+            {
+                "query_id": _string_schema(),
+                "arguments": _ref("json_map"),
+                "driver_result_ref": _string_schema(),
+            },
+        ),
+        "external.action": _object_schema(
+            ("adapter_id", "action_envelope", "driver_result_ref"),
+            {
+                "adapter_id": {"enum": list(_ADAPTER_ID_ORDER[:-1])},
+                "action_envelope": _ref("action_envelope"),
+                "driver_result_ref": _string_schema(),
+            },
+        ),
+        "backend.replay": _object_schema(
+            ("replay_key", "input"),
+            {
+                "replay_key": _string_schema(),
+                "input": _ref("json_map"),
+            },
+        ),
+        "receipt.status": _object_schema(
+            ("expected",),
+            {"expected": {"enum": list(_RESULT_STATUSES)}},
+        ),
+        "receipt.error_code": _object_schema(
+            ("expected", "retryable"),
+            {
+                "expected": _nullable(_string_schema()),
+                "retryable": {"type": "boolean"},
+            },
+        ),
+        "state.path_equals": _object_schema(
+            ("json_pointer", "expected"),
+            {
+                "json_pointer": _ref("json_pointer"),
+                "expected": _ref("json_value"),
+            },
+        ),
+        "state.hash_unchanged": _object_schema(
+            ("scope_json_pointer",),
+            {"scope_json_pointer": _ref("json_pointer")},
+        ),
+        "effect.includes": _object_schema(
+            ("expected_effect",),
+            {"expected_effect": _ref("effect_pattern")},
+        ),
+        "effect.excludes": _object_schema(
+            ("forbidden_effect",),
+            {"forbidden_effect": _ref("effect_pattern")},
+        ),
+        "output.contains": _object_schema(
+            ("json_pointer", "value"),
+            {
+                "json_pointer": _ref("json_pointer"),
+                "value": _ref("json_value"),
+            },
+        ),
+        "output.omits": _object_schema(
+            ("json_pointer", "value"),
+            {
+                "json_pointer": _ref("json_pointer"),
+                "value": _ref("json_value"),
+            },
+        ),
+        "replay.equals": _object_schema(
+            ("first_step_id", "replay_step_id", "compare_fields"),
+            {
+                "first_step_id": _string_schema(),
+                "replay_step_id": _string_schema(),
+                "compare_fields": _array_schema(_string_schema()),
+            },
+        ),
+    }
     setup_step = _object_schema(
         _STEP_FIELD_ORDER,
         {
@@ -941,6 +1076,7 @@ def _build_definitions() -> dict[str, object]:
             "handler_id": {"enum": list(_SETUP_HANDLER_ORDER)},
             "params": _ref("json_map"),
         },
+        all_of=_handler_param_conditions(_SETUP_HANDLER_ORDER),
     )
     stimulus_step = _object_schema(
         _STEP_FIELD_ORDER,
@@ -950,6 +1086,7 @@ def _build_definitions() -> dict[str, object]:
             "handler_id": {"enum": list(_STIMULUS_HANDLER_ORDER)},
             "params": _ref("json_map"),
         },
+        all_of=_handler_param_conditions(_STIMULUS_HANDLER_ORDER),
     )
     machine_assertion = _object_schema(
         _ASSERTION_FIELD_ORDER,
@@ -960,6 +1097,7 @@ def _build_definitions() -> dict[str, object]:
             "step_id": _string_schema(pattern=_IDENTIFIER_RE.pattern),
             "params": _ref("json_map"),
         },
+        all_of=_handler_param_conditions(_ASSERTION_HANDLER_ORDER),
     )
     state_snapshot = _object_schema(
         _STATE_SNAPSHOT_FIELDS,
@@ -1077,6 +1215,7 @@ def _build_definitions() -> dict[str, object]:
         "effect_pattern": effect_pattern,
         "driver_result": driver_result,
         "handler_result": handler_result,
+        "handler_params": handler_params,
         "setup_step": setup_step,
         "stimulus_step": stimulus_step,
         "machine_assertion": machine_assertion,

@@ -186,6 +186,7 @@ _STRUCTURAL_FIELDS = {
     ),
 }
 _DEF_NAMES = frozenset(_STRUCTURAL_FIELDS) | {
+    "handler_params",
     "json_value",
     "json_map",
     "json_pointer",
@@ -368,14 +369,14 @@ def test_only_json_maps_have_recursively_open_keys(
         assert definitions[name]["additionalProperties"] is False
 
 
-def test_f06_params_remain_json_maps_until_f07(
+def test_f07_params_keep_json_map_base_and_add_handler_schemas(
     fixture_schema: dict[str, Any],
 ) -> None:
     for name in ("setup_step", "stimulus_step", "machine_assertion"):
         assert fixture_schema["$defs"][name]["properties"]["params"] == {
             "$ref": "#/$defs/json_map"
         }
-    assert "handler_params" not in fixture_schema["$defs"]
+    assert "handler_params" in fixture_schema["$defs"]
 
 
 def test_frozen_enums_are_not_open_ended(fixture_schema: dict[str, Any]) -> None:
