@@ -21,7 +21,7 @@ where = [".", "src"]
 include = ["tools*", "amadeus_core*"]
 
 [tool.setuptools.package-data]
-amadeus_core = ["contracts/*.json", "contracts/*.txt"]
+amadeus_core = ["contracts/*.json", "contracts/*.txt", "storage/migrations/*.sql"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
