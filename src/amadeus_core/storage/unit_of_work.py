@@ -150,14 +150,32 @@ def _decode_result(
 
 
 class SQLiteUnitOfWork:
+    __slots__ = ("_database", "_clock")
+
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        del kwargs
+        raise TypeError("SQLiteUnitOfWork is final")
+
     def __init__(
         self,
         database: SQLiteDatabase,
         *,
         clock: Clock | None = None,
     ) -> None:
-        self._database = database
-        self._clock = clock or SystemClock()
+        object.__setattr__(self, "_database", database)
+        object.__setattr__(
+            self,
+            "_clock",
+            SystemClock() if clock is None else clock,
+        )
+
+    def __setattr__(self, name: str, value: object) -> None:
+        del name, value
+        raise AttributeError("SQLiteUnitOfWork configuration is immutable")
+
+    def __delattr__(self, name: str) -> None:
+        del name
+        raise AttributeError("SQLiteUnitOfWork configuration is immutable")
 
     def execute_command(
         self,
@@ -200,7 +218,7 @@ def execute_command_on_connection(
     mutation_command = prepared.mutation_command
     address = prepared.idempotency_address
     command_hash = prepared.execution_context.command_hash
-    receipt_clock = clock or SystemClock()
+    receipt_clock = SystemClock() if clock is None else clock
 
     try:
         with serialized_transaction(connection):

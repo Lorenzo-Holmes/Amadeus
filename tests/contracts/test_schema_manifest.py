@@ -57,6 +57,7 @@ def test_manifest_freezes_all_authoritative_models_in_order() -> None:
     manifest = _load_schema_manifest()
 
     assert tuple(entry.class_name for entry in manifest.entries) == EXPECTED_CLASS_ORDER
+    assert len(manifest.entries) == 17
     assert all(entry.fields[0].name == "record_header" for entry in manifest.entries)
     assert all(entry.fields[-1].name == "version" for entry in manifest.entries)
 

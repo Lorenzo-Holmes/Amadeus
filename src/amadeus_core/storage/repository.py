@@ -5,13 +5,19 @@ from __future__ import annotations
 import sqlite3
 from collections.abc import Iterable, Mapping
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+from pydantic import ValidationError
 
 from amadeus_core.contracts import validation as contract_validation
 from amadeus_core.contracts.commands import CommandExecutionContext
 from amadeus_core.contracts.common import FrozenModel
 from amadeus_core.contracts.errors import CoreContractViolation, CoreErrorCode
 from amadeus_core.contracts.hashing import canonical_json
+from amadeus_core.contracts.ledger import LedgerEvent
+from amadeus_core.contracts.memory import AutobiographicalMemory
 from amadeus_core.contracts.registry import AUTHORITATIVE_MODELS, TYPE_REGISTRY
+from amadeus_core.contracts.views import MaterializedViewManifest
 
 from .payloads import (
     StoredLedgerPayload,
@@ -21,6 +27,9 @@ from .payloads import (
     validate_authority_bound_payload,
 )
 from ._records import _SESSION_LEDGER_EVENT_TYPES
+
+if TYPE_CHECKING:
+    from .ledger import LedgerReplayResult
 
 
 _CAPABILITY_TYPE_BY_RECORD = {
@@ -160,6 +169,76 @@ class AuthorityRepository:
         self._assert_core_projection_matches(record)
         return record
 
+    def validated_vault_candidates(
+        self,
+        identity_id: str,
+        lineage_id: str,
+        branch_id: str,
+        vault_id: str,
+    ) -> tuple[AutobiographicalMemory | LedgerEvent, ...]:
+        """Return integrity-checked memory and Ledger candidates for one vault."""
+
+        memory_rows = self._connection.execute(
+            """
+            SELECT record_id
+            FROM authority_records
+            WHERE record_type = 'AutobiographicalMemory'
+               OR json_extract(
+                    content_json,
+                    '$.record_header.record_type'
+                  ) = 'AutobiographicalMemory'
+            ORDER BY record_id
+            """
+        ).fetchall()
+        memories: list[AutobiographicalMemory] = []
+        for row in memory_rows:
+            candidate = self.get_validated(row["record_id"])
+            if not isinstance(candidate, AutobiographicalMemory):
+                raise CoreContractViolation(
+                    CoreErrorCode.RECORD_TYPE_SCHEMA_MISMATCH
+                )
+            if (
+                candidate.identity_id,
+                candidate.lineage_id,
+                candidate.branch_id,
+                candidate.governing_vault_id,
+            ) == (identity_id, lineage_id, branch_id, vault_id):
+                memories.append(candidate)
+
+        events = tuple(
+            event
+            for event in self.validated_ledger_replay(branch_id).events
+            if (
+                event.identity_id,
+                event.lineage_id,
+                event.branch_id,
+                event.vault_id,
+            ) == (identity_id, lineage_id, branch_id, vault_id)
+        )
+        return (
+            *sorted(memories, key=lambda memory: memory.memory_id),
+            *sorted(events, key=lambda event: (event.ledger_seq, event.event_id)),
+        )
+
+    def verified_ledger_head(self, branch_id: str) -> LedgerEvent | None:
+        """Return this transaction snapshot's integrity-checked Ledger head."""
+
+        from .ledger import get_verified_ledger_head
+
+        return get_verified_ledger_head(self._connection, branch_id)
+
+    def validated_ledger_events(self, branch_id: str) -> tuple[LedgerEvent, ...]:
+        """Return this transaction snapshot's integrity-checked Ledger events."""
+
+        return self.validated_ledger_replay(branch_id).events
+
+    def validated_ledger_replay(self, branch_id: str) -> LedgerReplayResult:
+        """Return an integrity-checked replay in this transaction snapshot."""
+
+        from .ledger import replay_ledger
+
+        return replay_ledger(self._connection, branch_id)
+
     def _assert_core_projection_matches(self, record: FrozenModel) -> None:
         record_type = type(record).__name__
         if record_type == "Identity":
@@ -227,6 +306,46 @@ class AuthorityRepository:
                 record.version,
             ):
                 raise CoreContractViolation(CoreErrorCode.HEADER_BODY_MISMATCH)
+        elif record_type == "Proposal":
+            row = self._connection.execute(
+                """
+                SELECT
+                    proposal_id,
+                    identity_id,
+                    branch_id,
+                    status,
+                    expires_at,
+                    version
+                FROM proposals
+                WHERE proposal_id = ?
+                """,
+                (record.proposal_id,),
+            ).fetchone()
+            if row is None or tuple(row) != (
+                record.proposal_id,
+                record.identity_id,
+                record.branch_id,
+                record.status,
+                _datetime_text(record.expires_at),
+                record.version,
+            ):
+                raise CoreContractViolation(CoreErrorCode.HEADER_BODY_MISMATCH)
+        elif record_type == "GovernorDecision":
+            row = self._connection.execute(
+                """
+                SELECT decision_id, proposal_id, result, version
+                FROM governor_decisions
+                WHERE decision_id = ?
+                """,
+                (record.decision_id,),
+            ).fetchone()
+            if row is None or tuple(row) != (
+                record.decision_id,
+                record.proposal_id,
+                record.result,
+                record.version,
+            ):
+                raise CoreContractViolation(CoreErrorCode.HEADER_BODY_MISMATCH)
 
     def count_active_branches(self, identity_id: str) -> int:
         row = self._connection.execute(
@@ -244,6 +363,14 @@ class AuthorityRepository:
         schema_root: str,
         body: Mapping[str, object],
     ) -> FrozenModel:
+        if schema_root == "materialized_view_manifest":
+            raise CoreContractViolation(CoreErrorCode.MATERIALIZED_VIEW_NOT_AUTHORITY)
+        try:
+            MaterializedViewManifest.model_validate(body)
+        except ValidationError:
+            pass
+        else:
+            raise CoreContractViolation(CoreErrorCode.MATERIALIZED_VIEW_NOT_AUTHORITY)
         record = contract_validation.validate_authoritative_record(schema_root, body)
         if type(record).__name__ == "LedgerEvent":
             raise TypeError("LedgerEvent must be appended with append_ledger_event")

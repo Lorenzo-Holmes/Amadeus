@@ -219,8 +219,11 @@ def _validated_request(
     _record_id(command.command_id, "cmd-")
     _record_id(command.actor.actor_id, command.actor.actor_id[:4])
     causation_id = payload.get("causation_id")
-    if causation_id is not None:
-        _record_id(causation_id, "evt-")
+    if causation_id is not None and (
+        not isinstance(causation_id, str)
+        or not causation_id.startswith(("evt-", "cmd-"))
+    ):
+        raise _LedgerViolation(CoreErrorCode.RECORD_ID_MISMATCH)
     try:
         ledger_seq = _NONNEGATIVE_INT.validate_python(payload["ledger_seq"])
         previous_hash = _HASH_HEX.validate_python(
@@ -267,7 +270,6 @@ def _authority_binding(
         or identity.lineage_id != lineage_id
         or identity.active_branch_id != branch_id
         or lineage.root_identity_id != identity_id
-        or lineage.root_branch_id != branch_id
         or branch.identity_id != identity_id
         or branch.lineage_id != lineage_id
         or branch.status != "active"

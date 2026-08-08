@@ -24,6 +24,17 @@ B01_CASE_PATHS = (
     REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-013-1.json",
     REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-014-1.json",
 )
+B01_M4_GOVERNANCE_CASE_PATHS = (
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-007-1.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-008-1.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-008-2.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-008-3.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-009-1.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-010-1.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-011-1.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-012-1.json",
+    REPOSITORY_ROOT / "fixtures/stage0c/reviewed/cases/case-ac-015-1.json",
+)
 
 
 class ClauseIdentity(FrozenModel):
@@ -80,6 +91,17 @@ class StrippedStorageCase(FrozenModel):
 
 
 _EXPECTED_CLAUSES = ("AC-002#1", "AC-004#1", "AC-013#1", "AC-014#1")
+_EXPECTED_M4_GOVERNANCE_CLAUSES = (
+    "AC-007#1",
+    "AC-008#1",
+    "AC-008#2",
+    "AC-008#3",
+    "AC-009#1",
+    "AC-010#1",
+    "AC-011#1",
+    "AC-012#1",
+    "AC-015#1",
+)
 _HANDLER_ID = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$")
 _REFERENCE_KEYS = frozenset(
     {
@@ -308,16 +330,15 @@ def _assertions(body: Mapping[str, object]) -> tuple[AssertionRequirement, ...]:
     )
 
 
-def load_b01_storage_cases() -> tuple[StrippedStorageCase, ...]:
+def _load_cases(
+    paths: tuple[Path, ...],
+    expected_clauses: tuple[str, ...],
+) -> tuple[StrippedStorageCase, ...]:
     cases: list[StrippedStorageCase] = []
-    for expected_clause_id, path in zip(
-        _EXPECTED_CLAUSES,
-        B01_CASE_PATHS,
-        strict=True,
-    ):
+    for expected_clause_id, path in zip(expected_clauses, paths, strict=True):
         reviewed = load_reviewed_case(path)
         if reviewed["clause_id"] != expected_clause_id:
-            raise ValueError(f"unexpected B01 storage clause at {path}")
+            raise ValueError(f"unexpected B01 clause at {path}")
         body = cast(Mapping[str, object], reviewed["case_body"])
         sandbox_profile = body["sandbox_profile"]
         frozen_inputs = (
@@ -353,14 +374,27 @@ def load_b01_storage_cases() -> tuple[StrippedStorageCase, ...]:
     return tuple(cases)
 
 
+def load_b01_storage_cases() -> tuple[StrippedStorageCase, ...]:
+    return _load_cases(B01_CASE_PATHS, _EXPECTED_CLAUSES)
+
+
+def load_b01_m4_governance_cases() -> tuple[StrippedStorageCase, ...]:
+    return _load_cases(
+        B01_M4_GOVERNANCE_CASE_PATHS,
+        _EXPECTED_M4_GOVERNANCE_CLAUSES,
+    )
+
+
 __all__ = [
     "AssertionRequirement",
     "B01_CASE_PATHS",
+    "B01_M4_GOVERNANCE_CASE_PATHS",
     "ClauseIdentity",
     "FrozenSetupFact",
     "MappedReference",
     "SetupStepRoute",
     "StrippedMutation",
     "StrippedStorageCase",
+    "load_b01_m4_governance_cases",
     "load_b01_storage_cases",
 ]

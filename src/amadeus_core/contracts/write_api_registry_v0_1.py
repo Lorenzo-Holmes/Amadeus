@@ -75,6 +75,8 @@ WRITE_API_REGISTRY = (
             "memory_created",
             "memory_state_changed",
             "memory_expression_policy_changed",
+            "proposal_reopened",
+            "proposal_expired",
         ),
     ),
     WriteApiSpec(
@@ -85,11 +87,36 @@ WRITE_API_REGISTRY = (
         ("vault_read_capability_issued", "vault_read_capability_denied"),
     ),
     WriteApiSpec(
+        "revoke_vault_read_capability",
+        "mutation_command",
+        ("governor", "system"),
+        ("VaultReadCapability", "LedgerEvent"),
+        ("vault_read_capability_revoked", "vault_read_capability_denied"),
+    ),
+    WriteApiSpec(
+        "expire_vault_read_capability",
+        "mutation_command",
+        ("governor", "system"),
+        ("VaultReadCapability", "LedgerEvent"),
+        ("vault_read_capability_expired", "vault_read_capability_denied"),
+    ),
+    WriteApiSpec(
         "record_vault_read_decision",
         "mutation_command",
         ("governor", "system"),
         ("LedgerEvent",),
         ("vault_read_capability_used", "vault_read_capability_denied"),
+    ),
+    WriteApiSpec(
+        "rebuild_materialized_views",
+        "mutation_command",
+        ("maintainer",),
+        ("LedgerEvent",),
+        (
+            "materialized_view_rebuilt",
+            "derived_view_validation_failed",
+            "derived_view_fallback",
+        ),
     ),
 )
 

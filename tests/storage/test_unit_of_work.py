@@ -11,7 +11,7 @@ from amadeus_core.contracts.commands import CommandResult
 from amadeus_core.contracts.errors import CoreContractViolation, CoreErrorCode
 from amadeus_core.contracts.hashing import canonical_json, sha256_hex
 
-from conftest import (
+from tests.storage.conftest import (
     CAPABILITY_ID,
     make_break_glass_grant,
     make_capability,

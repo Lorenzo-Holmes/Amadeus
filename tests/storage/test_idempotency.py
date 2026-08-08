@@ -35,8 +35,19 @@ def _fault_inject_receipt_update(
 ) -> None:
     connection = database.connect()
     try:
-        connection.execute("DROP TRIGGER IF EXISTS command_receipts_reject_update")
-        connection.execute(statement, parameters)
+        try:
+            connection.execute(
+                "DROP TRIGGER IF EXISTS command_receipts_reject_update"
+            )
+            connection.execute(statement, parameters)
+        finally:
+            connection.execute(
+                "CREATE TRIGGER IF NOT EXISTS command_receipts_reject_update\n"
+                "BEFORE UPDATE ON command_receipts\n"
+                "BEGIN\n"
+                "    SELECT RAISE(ABORT, 'command receipt is immutable');\n"
+                "END;"
+            )
     finally:
         connection.close()
 
