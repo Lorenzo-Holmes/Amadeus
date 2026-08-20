@@ -45,4 +45,3 @@ def test_authoritative_preview_is_repeatable_and_side_effect_free(
     assert first.result == "commit"
     assert first.evidence_refs == (evidence.event_id,)
     assert _database_snapshot(database) == before
-

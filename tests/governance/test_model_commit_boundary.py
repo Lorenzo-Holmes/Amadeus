@@ -1306,5 +1306,3 @@ def test_governor_defer_receipt_replays_after_real_proposal_reopen(
     assert old_after_commit.value == first.value
     assert new_after_commit.replayed is True
     assert new_after_commit.value == committed.value
-
-

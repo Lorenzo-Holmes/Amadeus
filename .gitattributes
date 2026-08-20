@@ -1,6 +1,7 @@
 # Keep executable sources consistent across Windows and POSIX checkouts.
 *.py text eol=lf
 *.toml text eol=lf
+src/amadeus_core/storage/migrations/*.sql text eol=lf
 .gitignore text eol=lf
 .gitattributes text eol=lf
 README.md text eol=lf

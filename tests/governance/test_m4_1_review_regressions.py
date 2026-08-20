@@ -591,4 +591,3 @@ def test_request_submit_result_is_not_invalidated_by_post_commit_advance(
     assert result.error is None
     assert result.value == request
     assert result.replayed is False
-

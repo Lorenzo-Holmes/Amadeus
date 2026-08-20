@@ -323,4 +323,3 @@ def request_factory() -> Callable[..., MemoryRequest]:
 @pytest.fixture
 def request_command_factory() -> Callable[..., MutationCommandEnvelope]:
     return _make_request_command
-

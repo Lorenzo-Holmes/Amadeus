@@ -35,4 +35,3 @@ def test_memory_proposal_profiles_are_complete_frozen_and_fail_closed() -> None:
     with pytest.raises(CoreContractViolation) as captured:
         memory_proposal_profile("future_memory_operation")
     assert captured.value.code is CoreErrorCode.GOVERNOR_POLICY_MISMATCH
-
