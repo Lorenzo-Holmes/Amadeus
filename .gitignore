@@ -11,3 +11,10 @@ artifacts/
 # Local raw archives; keep only the policy note tracked.
 knowledge/90_raw/**
 !knowledge/90_raw/README.md
+
+# ASTER_01 local source snapshots, intermediate renders, and historical archives.
+# The signed v5 release below is the only generated asset set tracked in git.
+/work/aster01_tune_20260830/
+/outputs/ASTER_01_v3_texture_tune_20260830/
+/outputs/ASTER_01_v4_gemini_texture_tune_20260830/
+/outputs/*.zip

@@ -1,0 +1,58 @@
+{
+  "schema": "aster01-mip-outlier-fix-v5",
+  "status": "PASS",
+  "threshold_delta_e": 0.85,
+  "atlas_lock_radius_px": 64,
+  "view_counts": {
+    "front": {
+      "outlier_pixels_over_0_85": 6,
+      "max_delta_e_before": 1.2528886795043945
+    },
+    "front_right_3q": {
+      "outlier_pixels_over_0_85": 8,
+      "max_delta_e_before": 0.9934692978858948
+    },
+    "right": {
+      "outlier_pixels_over_0_85": 1,
+      "max_delta_e_before": 0.9294424653053284
+    },
+    "back_right_3q": {
+      "outlier_pixels_over_0_85": 2,
+      "max_delta_e_before": 0.8941977620124817
+    },
+    "back": {
+      "outlier_pixels_over_0_85": 1,
+      "max_delta_e_before": 0.8542489409446716
+    },
+    "back_left_3q": {
+      "outlier_pixels_over_0_85": 0,
+      "max_delta_e_before": 0.8055790066719055
+    },
+    "left": {
+      "outlier_pixels_over_0_85": 1,
+      "max_delta_e_before": 1.0437387228012085
+    },
+    "front_left_3q": {
+      "outlier_pixels_over_0_85": 0,
+      "max_delta_e_before": 0.8290179371833801
+    }
+  },
+  "atlas_locked_texels": 116925,
+  "input_texture_sha256": "b168bcf4af11b752fd50d2bcf5cdba4ef75b445a83873a1324445d49b25dc463",
+  "output_texture_sha256": "f5d1565cd74c32ee4342f81c3bf733fd97b4d61e7398aad00d19bb1eba5aac19",
+  "output_model_sha256": "f0db9367b2e6b48e26b6a76a0b78288be037e16bcd40dc9b2b3e238b60799b46",
+  "replacement": {
+    "source": "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\model\\ASTER_01_rigged_original.glb",
+    "source_sha256": "92e474b811e1cb1d5810f03da0a9fbf0598e881e8702ecc173d9c41e17404960",
+    "image": "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\textures\\ASTER_01_BASE_COLOR_v5_gemini_converged.png",
+    "image_sha256": "f5d1565cd74c32ee4342f81c3bf733fd97b4d61e7398aad00d19bb1eba5aac19",
+    "destination": "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\model\\ASTER_01_rigged_v5_gemini_converged.glb",
+    "destination_sha256": "f0db9367b2e6b48e26b6a76a0b78288be037e16bcd40dc9b2b3e238b60799b46",
+    "image_index": 0,
+    "old_image_bytes": 31877041,
+    "new_image_bytes": 31330290,
+    "old_binary_bytes": 40865568,
+    "new_binary_bytes": 40318816,
+    "delta_padded_bytes": -546752
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "aster01-protected-padding-v5",
+  "status": "PASS",
+  "category_screen_samples": {
+    "band": 0,
+    "head_geometry": 546540,
+    "hair_core": 787234,
+    "skin_core": 81155,
+    "white_core": 138227,
+    "lower_body_core": 1117879,
+    "atlas_hair_guard_texels": 15576553,
+    "atlas_skin_guard_texels": 2490592,
+    "atlas_white_guard_texels": 3718715
+  },
+  "protected_core_texels": 27648783,
+  "padding_texels": 37073343,
+  "padding_radius_px_8192": 32,
+  "changed_pixels_vs_v4": 1194007,
+  "v3_texture_sha256": "4f39719976cba3219fdca0943fafc327b4c46f2beaa385860f5a886c7c1e119c",
+  "v4_texture_sha256": "4572dd93563381077d53066a3d00e235f2cad1e4a47136008ca457bd5e80a12a",
+  "output_texture_sha256": "b168bcf4af11b752fd50d2bcf5cdba4ef75b445a83873a1324445d49b25dc463",
+  "output_model_sha256": "07f01b91b3a00a4613024d9123e5cbc161d2a23054b914c13bc3ff3ae22606a2",
+  "replacement": {
+    "source": "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\model\\ASTER_01_rigged_original.glb",
+    "source_sha256": "92e474b811e1cb1d5810f03da0a9fbf0598e881e8702ecc173d9c41e17404960",
+    "image": "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\textures\\ASTER_01_BASE_COLOR_v5_gemini_converged.png",
+    "image_sha256": "b168bcf4af11b752fd50d2bcf5cdba4ef75b445a83873a1324445d49b25dc463",
+    "destination": "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\model\\ASTER_01_rigged_v5_gemini_converged.glb",
+    "destination_sha256": "07f01b91b3a00a4613024d9123e5cbc161d2a23054b914c13bc3ff3ae22606a2",
+    "image_index": 0,
+    "old_image_bytes": 31877041,
+    "new_image_bytes": 31335607,
+    "old_binary_bytes": 40865568,
+    "new_binary_bytes": 40324132,
+    "delta_padded_bytes": -541436
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "aster01-gemini-final-signoff-v5",
+  "status": "APPROVED_AND_FROZEN",
+  "gemini_decision": "BaseColor converged; further pixel edits are prohibited because they would create negative marginal value.",
+  "automated_gates": {
+    "eight_view_protected_l0_zero_delta": true,
+    "mipmap_0_to_4_cross_material_delta_e_max_le_1": true,
+    "coat_dark_and_bright_clipping_within_threshold": true,
+    "continuous_uv_seam_p95_delta_e_le_2_5": true
+  },
+  "topology_decision": {
+    "bone_ownership_pass": true,
+    "uv_reuse_pass": false,
+    "hair_gutter_16px_pass": false,
+    "safe_to_edit": false
+  },
+  "structural": {
+    "accessor_payloads_unchanged": true,
+    "accessor_count_unchanged": true,
+    "node_count_unchanged": true,
+    "mesh_count_unchanged": true,
+    "skin_count_unchanged": true,
+    "animation_count_unchanged": true,
+    "material_count_unchanged": true,
+    "image_count_unchanged": true
+  },
+  "texture_spec": {
+    "size": [
+      8192,
+      8192
+    ],
+    "mode": "RGB"
+  },
+  "hashes": {
+    "source_model": "92e474b811e1cb1d5810f03da0a9fbf0598e881e8702ecc173d9c41e17404960",
+    "output_model": "f0db9367b2e6b48e26b6a76a0b78288be037e16bcd40dc9b2b3e238b60799b46",
+    "source_texture": "6d493514f2766c79ae925911a67bc3b658e96f4ed1c5341286bc6689972347dc",
+    "v3_texture": "4f39719976cba3219fdca0943fafc327b4c46f2beaa385860f5a886c7c1e119c",
+    "v4_texture": "4572dd93563381077d53066a3d00e235f2cad1e4a47136008ca457bd5e80a12a",
+    "output_texture": "f5d1565cd74c32ee4342f81c3bf733fd97b4d61e7398aad00d19bb1eba5aac19"
+  },
+  "uv_seam_continuity": {
+    "candidate_pairs": 29624,
+    "baseline_continuous_pairs": 18847,
+    "baseline_mean_delta_e": 0.6197119471328089,
+    "v4_mean_delta_e": 0.7628566837938492,
+    "v4_max_delta_e": 31.108821348567187,
+    "v4_p95_delta_e": 2.244461695500794,
+    "pairs_exceeding_2_5": 546
+  }
+}

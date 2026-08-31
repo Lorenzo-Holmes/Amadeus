@@ -1,0 +1,2497 @@
+{
+  "schema": "aster01-final-convergence-qa-v5",
+  "status": "PASS",
+  "checks": {
+    "eight_view_protected_l0_zero_delta": true,
+    "mipmap_0_to_4_cross_material_delta_e_max_le_1": true,
+    "coat_dark_and_bright_clipping_within_threshold": true,
+    "continuous_uv_seam_p95_delta_e_le_2_5": true
+  },
+  "views": [
+    {
+      "view": "front",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 42027,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 12975,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 48218,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 66394,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 143955,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 2,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 120508,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 42027,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 12975,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66394,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 2,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 48218,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 60.21744482540033
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 42027,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 12975,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66394,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 2,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 48218,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 42027,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 12975,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66394,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 2,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 48218,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 42027,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 12975,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66394,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 2,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 48218,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 42027,
+              "mean": 9.795447112992406e-05,
+              "max": 0.5033915638923645,
+              "p95": 0.0,
+              "changed_pixels": 13,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 12975,
+              "mean": 2.9839571652701125e-05,
+              "max": 0.38716843724250793,
+              "p95": 0.0,
+              "changed_pixels": 1,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 66394,
+              "mean": 6.165636295918375e-05,
+              "max": 0.7371034026145935,
+              "p95": 0.0,
+              "changed_pixels": 8,
+              "max_rgb_delta": 1
+            },
+            "back_band_exact": {
+              "pixels": 2,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 48218,
+              "mean": 4.626833106158301e-05,
+              "max": 0.47050580382347107,
+              "p95": 0.0,
+              "changed_pixels": 5,
+              "max_rgb_delta": 1
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "front_right_3q",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 58236,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 14030,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 31102,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 69595,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 161839,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 19,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 137680,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 58236,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 14030,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69595,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 19,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 31102,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 60.92039466762463
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 58236,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 14030,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69595,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 19,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 31102,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 58236,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 14030,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69595,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 19,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 31102,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 58236,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 14030,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69595,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 19,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 31102,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 58236,
+              "mean": 5.410851736087352e-05,
+              "max": 0.4801720678806305,
+              "p95": 0.0,
+              "changed_pixels": 10,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 14030,
+              "mean": 0.001671531586907804,
+              "max": 0.8039793968200684,
+              "p95": 0.0,
+              "changed_pixels": 40,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 69595,
+              "mean": 6.178271723911166e-05,
+              "max": 0.7496007084846497,
+              "p95": 0.0,
+              "changed_pixels": 8,
+              "max_rgb_delta": 1
+            },
+            "back_band_exact": {
+              "pixels": 19,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 31102,
+              "mean": 1.4515231669065543e-05,
+              "max": 0.45145273208618164,
+              "p95": 0.0,
+              "changed_pixels": 1,
+              "max_rgb_delta": 1
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "right",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 74520,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 9140,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 9634,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 68703,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 90684,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 75,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 110096,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 74520,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 9140,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68703,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 75,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 9634,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 61.33684395326992
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 74520,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 9140,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68703,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 75,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 9634,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 74520,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 9140,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68703,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 75,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 9634,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 74520,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 9140,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68703,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 75,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 9634,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 74520,
+              "mean": 4.0371269278693944e-05,
+              "max": 0.5361819267272949,
+              "p95": 0.0,
+              "changed_pixels": 7,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 9140,
+              "mean": 0.0004267372714821249,
+              "max": 0.7629876732826233,
+              "p95": 0.0,
+              "changed_pixels": 7,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 68703,
+              "mean": 2.350706563447602e-05,
+              "max": 0.48971259593963623,
+              "p95": 0.0,
+              "changed_pixels": 4,
+              "max_rgb_delta": 1
+            },
+            "back_band_exact": {
+              "pixels": 75,
+              "mean": 0.03180058300495148,
+              "max": 0.8769855499267578,
+              "p95": 0.1378175139427172,
+              "changed_pixels": 4,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 9634,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "back_right_3q",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 137583,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 7865,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 1603,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 68686,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 162458,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 578,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 160663,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137583,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 7865,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68686,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 578,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1603,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 61.46840240884036
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137583,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 7865,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68686,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 578,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1603,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137583,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 7865,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68686,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 578,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1603,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137583,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 7865,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68686,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 578,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1603,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137583,
+              "mean": 2.2761363652534783e-05,
+              "max": 0.4796796441078186,
+              "p95": 0.0,
+              "changed_pixels": 7,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 7865,
+              "mean": 0.0031748234760016203,
+              "max": 0.8098810315132141,
+              "p95": 0.0,
+              "changed_pixels": 49,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 68686,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 578,
+              "mean": 0.01964564062654972,
+              "max": 0.8768129348754883,
+              "p95": 0.0,
+              "changed_pixels": 19,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 1603,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "back",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 161642,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 4977,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 1788,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 66135,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 143811,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 1073,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 150690,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 161642,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 4977,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66135,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 1073,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1788,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 61.03425970950673
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 161642,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 4977,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66135,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 1073,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1788,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 161642,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 4977,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66135,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 1073,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1788,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 161642,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 4977,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 66135,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 1073,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1788,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 161642,
+              "mean": 1.101083034882322e-05,
+              "max": 0.4522092044353485,
+              "p95": 0.0,
+              "changed_pixels": 4,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 4977,
+              "mean": 0.0035243360325694084,
+              "max": 0.815210223197937,
+              "p95": 0.0,
+              "changed_pixels": 34,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 66135,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 1073,
+              "mean": 0.01145692728459835,
+              "max": 0.8989849090576172,
+              "p95": 0.0,
+              "changed_pixels": 20,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 1788,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "back_left_3q",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 137038,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 8334,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 1907,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 69434,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 163232,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 901,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 157411,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137038,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8334,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69434,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 901,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1907,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 61.120721297801836
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137038,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8334,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69434,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 901,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1907,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137038,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8334,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69434,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 901,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 1907,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137038,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8334,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 69434,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 901,
+              "mean": 0.0005559076671488583,
+              "max": 0.500872790813446,
+              "p95": 0.0,
+              "changed_pixels": 1,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 1907,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 137038,
+              "mean": 5.1175713451812044e-05,
+              "max": 0.722357988357544,
+              "p95": 0.0,
+              "changed_pixels": 15,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 8334,
+              "mean": 0.00033908398472703993,
+              "max": 0.8055790066719055,
+              "p95": 0.0,
+              "changed_pixels": 6,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 69434,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 901,
+              "mean": 0.014055893756449223,
+              "max": 0.8851437568664551,
+              "p95": 0.0,
+              "changed_pixels": 21,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 1907,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "left",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 78303,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 8276,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 5606,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 68701,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 90716,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 216,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 105189,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 78303,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8276,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68701,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 216,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 5606,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 61.51010161073962
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 78303,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8276,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68701,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 216,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 5606,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 78303,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8276,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68701,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 216,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 5606,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 78303,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 8276,
+              "mean": 0.00010826535435626283,
+              "max": 0.8960040807723999,
+              "p95": 0.0,
+              "changed_pixels": 1,
+              "max_rgb_delta": 1
+            },
+            "head_geometry": {
+              "pixels": 68701,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 216,
+              "mean": 0.003737848484888673,
+              "max": 0.8073752522468567,
+              "p95": 0.0,
+              "changed_pixels": 1,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 5606,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 78303,
+              "mean": 0.00012153096758993343,
+              "max": 0.6525977253913879,
+              "p95": 0.0,
+              "changed_pixels": 20,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 8276,
+              "mean": 0.0010427002562209964,
+              "max": 0.7105862498283386,
+              "p95": 0.0,
+              "changed_pixels": 18,
+              "max_rgb_delta": 2
+            },
+            "head_geometry": {
+              "pixels": 68701,
+              "mean": 0.00024938254500739276,
+              "max": 0.7832420468330383,
+              "p95": 0.0,
+              "changed_pixels": 30,
+              "max_rgb_delta": 1
+            },
+            "back_band_exact": {
+              "pixels": 216,
+              "mean": 0.0232497937977314,
+              "max": 0.8186716437339783,
+              "p95": 0.0,
+              "changed_pixels": 8,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 5606,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    },
+    {
+      "view": "front_left_3q",
+      "protected_l0": {
+        "hair_core": {
+          "pixels": 56929,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "skin_core": {
+          "pixels": 15558,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "white_core": {
+          "pixels": 23916,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "head_geometry": {
+          "pixels": 68892,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "lower_dark_core": {
+          "pixels": 161184,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        },
+        "back_band_exact": {
+          "pixels": 27,
+          "mean": 0.0,
+          "max": 0.0,
+          "p95": 0.0,
+          "changed_pixels": 0,
+          "max_rgb_delta": 0
+        }
+      },
+      "coat_changed_screen_pixels": 140496,
+      "coat_dark_below_18_ratio": 0.0,
+      "coat_bright_above_240_ratio": 0.0,
+      "mipmaps": [
+        {
+          "level": 0,
+          "texture_size": [
+            8192,
+            8192
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 56929,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 15558,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68892,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 27,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 23916,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": 60.163001109621625
+        },
+        {
+          "level": 1,
+          "texture_size": [
+            4096,
+            4096
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 56929,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 15558,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68892,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 27,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 23916,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 2,
+          "texture_size": [
+            2048,
+            2048
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 56929,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 15558,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68892,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 27,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 23916,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 3,
+          "texture_size": [
+            1024,
+            1024
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 56929,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "skin_core": {
+              "pixels": 15558,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "head_geometry": {
+              "pixels": 68892,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "back_band_exact": {
+              "pixels": 27,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            },
+            "white_core": {
+              "pixels": 23916,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        },
+        {
+          "level": 4,
+          "texture_size": [
+            512,
+            512
+          ],
+          "semantic_delta_e": {
+            "hair_core": {
+              "pixels": 56929,
+              "mean": 7.846327207516879e-05,
+              "max": 0.5802574157714844,
+              "p95": 0.0,
+              "changed_pixels": 12,
+              "max_rgb_delta": 1
+            },
+            "skin_core": {
+              "pixels": 15558,
+              "mean": 0.0012122568441554904,
+              "max": 0.8290179371833801,
+              "p95": 0.0,
+              "changed_pixels": 37,
+              "max_rgb_delta": 2
+            },
+            "head_geometry": {
+              "pixels": 68892,
+              "mean": 0.00023013721511233598,
+              "max": 0.7988499402999878,
+              "p95": 0.0,
+              "changed_pixels": 30,
+              "max_rgb_delta": 1
+            },
+            "back_band_exact": {
+              "pixels": 27,
+              "mean": 0.023316621780395508,
+              "max": 0.6295487880706787,
+              "p95": 0.0,
+              "changed_pixels": 1,
+              "max_rgb_delta": 1
+            },
+            "white_core": {
+              "pixels": 23916,
+              "mean": 0.0,
+              "max": 0.0,
+              "p95": 0.0,
+              "changed_pixels": 0,
+              "max_rgb_delta": 0
+            }
+          },
+          "coat_luma_mean": null
+        }
+      ]
+    }
+  ],
+  "uv_seam_continuity": {
+    "candidate_pairs": 29624,
+    "baseline_continuous_pairs": 18847,
+    "baseline_mean_delta_e": 0.6197119471328089,
+    "v4_mean_delta_e": 0.7628566837938492,
+    "v4_max_delta_e": 31.108821348567187,
+    "v4_p95_delta_e": 2.244461695500794,
+    "pairs_exceeding_2_5": 546
+  },
+  "saved_mipmap_images": [
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_front_mip0.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_front_mip1.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_front_mip2.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_front_mip3.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_front_mip4.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_back_mip0.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_back_mip1.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_back_mip2.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_back_mip3.png",
+    "D:\\amadues bot\\Amadeus\\work\\aster01_tune_20260830\\staging\\previews\\v5_mipmap_qa\\ASTER_01_v5_back_mip4.png"
+  ]
+}

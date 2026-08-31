@@ -15,3 +15,8 @@ fixtures/stage0a/generated/*.json -text
 # Preserve imported legacy references byte-for-byte, including historical whitespace.
 knowledge/30_research/legacy/*.md -text -whitespace
 knowledge/40_history/legacy/*.md -text -whitespace
+
+# The signed ASTER_01 v5 binaries are below GitHub's per-file limit and are
+# kept directly in the release tree for a self-contained public checkout.
+outputs/ASTER_01_v5_gemini_converged_20260831/model/*.glb -text
+outputs/ASTER_01_v5_gemini_converged_20260831/textures/*.png -text
