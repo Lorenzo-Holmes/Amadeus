@@ -52,3 +52,16 @@ jobs:
           retention-days: 1
           compression-level: 0
           path: /tmp/aster_guides/*.png
+
+      - name: Upload model and renderer tools
+        uses: actions/upload-artifact@v4
+        with:
+          name: aster01-model-tools
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+          path: |
+            outputs/ASTER_01_v5_gemini_converged_20260831/model/ASTER_01_rigged_v5_gemini_converged.glb
+            outputs/ASTER_01_v5_gemini_converged_20260831/tools/render_glb_numba.py
+            outputs/ASTER_01_v5_gemini_converged_20260831/tools/replace_glb_texture.py
+            outputs/ASTER_01_v5_gemini_converged_20260831/tools/final_convergence_qa_v5.py
