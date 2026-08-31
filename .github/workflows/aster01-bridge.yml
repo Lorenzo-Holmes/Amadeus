@@ -12,7 +12,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Upload ASTER_01 assets
+
+      - name: Extract visual guides from qualified archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/aster_guides
+          mkdir -p /tmp/aster_guides
+          unzip -j outputs/ASTER_01_qualified_visual_assets_20260831.zip \
+            'images/v3_gpt_image2_art_direction.png' \
+            'images/v3_gpt_image2_back_art_direction.png' \
+            'images/v3_review_board.png' \
+            'images/v3_front.png' \
+            'images/v3_back.png' \
+            'images/v4_review_board.png' \
+            'images/v4_front.png' \
+            'images/v4_back.png' \
+            -d /tmp/aster_guides
+
+      - name: Upload ASTER_01 textures
         uses: actions/upload-artifact@v4
         with:
           name: aster01-gptimage2-inputs
@@ -25,3 +43,12 @@ jobs:
             outputs/ASTER_01_v5_gemini_converged_20260831/textures/ASTER_01_BASE_COLOR_v5_gemini_converged.png
             outputs/ASTER_01_v5_gemini_converged_20260831/previews/ASTER_01_v5_final_multiview_contact_sheet.png
             outputs/ASTER_01_v5_gemini_converged_20260831/previews/ASTER_01_v5_mipmap_0_4_contact_sheet.png
+
+      - name: Upload GPT Image 2 and review guides
+        uses: actions/upload-artifact@v4
+        with:
+          name: aster01-gptimage2-guides
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+          path: /tmp/aster_guides/*.png
