@@ -1,0 +1,27 @@
+name: ASTER01 binary bridge
+
+on:
+  push:
+    branches:
+      - aster01-gptimage2-bridge
+  workflow_dispatch:
+
+jobs:
+  export-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Upload ASTER_01 assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: aster01-gptimage2-inputs
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+          path: |
+            outputs/ASTER_01_v3_texture_tune_20260830/textures/ASTER_01_BASE_COLOR_v3.png
+            outputs/ASTER_01_v4_gemini_texture_tune_20260830/textures/ASTER_01_BASE_COLOR_v4_gemini.png
+            outputs/ASTER_01_v5_gemini_converged_20260831/textures/ASTER_01_BASE_COLOR_v5_gemini_converged.png
+            outputs/ASTER_01_v5_gemini_converged_20260831/previews/ASTER_01_v5_final_multiview_contact_sheet.png
+            outputs/ASTER_01_v5_gemini_converged_20260831/previews/ASTER_01_v5_mipmap_0_4_contact_sheet.png
