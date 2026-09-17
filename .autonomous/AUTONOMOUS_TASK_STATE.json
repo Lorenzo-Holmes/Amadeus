@@ -1,14 +1,14 @@
 {
   "schema_version": "amadeus-autonomous-task-state-1",
-  "ORCHESTRATOR_RUN_ID": "ORCH-20260918T045812+0800-04",
-  "generated_at_utc": "2026-09-17T20:58:12Z",
+  "ORCHESTRATOR_RUN_ID": "ORCH-20260918T060051+0800-05",
+  "generated_at_utc": "2026-09-17T22:00:51Z",
   "CONTROL_BRANCH": "autonomous/orchestrator-state",
   "CONTROL_PR": "https://github.com/Lorenzo-Holmes/Amadeus/pull/3",
   "DEFAULT_BRANCH": "main",
   "BASE_SHA": "a6ffaa388ebdab03620070c3990ffc9788425e8f",
   "PERSONA_SNAPSHOT_BRANCH": "codex/persona-core-operations-v1-20260917",
   "PERSONA_SNAPSHOT_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
-  "PRIOR_STATE_BLOB": "a08cc35ff951f2d34516087465c1a77159d50520",
+  "PRIOR_STATE_BLOB": "205c7349a2300145998fc139b395a84cccfafbad",
   "TARGET_CONCURRENCY": 4,
   "ACTIVE_WORKERS": 1,
   "AVAILABLE_SLOTS": 3,
@@ -145,7 +145,7 @@
       "LEASE_EXPIRES_AT": null,
       "BRANCH": null,
       "PR": null,
-      "RESEARCH_REFERENCES": ["OpenTelemetry GenAI semantic conventions", "arXiv:2609.01481", "arXiv:2609.13463"],
+      "RESEARCH_REFERENCES": ["OpenTelemetry GenAI semantic conventions", "arXiv:2609.01481", "arXiv:2609.13463", "mpi-dsg/agent-flight-recorder"],
       "NOVELTY_SIGNATURE": {
         "AREA": "Observability / orchestration research",
         "CURRENT_STATE": "Durable evidence exists but trace vocabulary/RCA research is not standardized.",
@@ -240,7 +240,10 @@
     {"id": "R-20260918-10", "source": "arXiv:2603.20953 + microsoft/agent-governance-toolkit", "source_date": "2026-03-21 / observed 2026-09-18", "title": "Deterministic pre-action authorization", "disposition": "Comparative host-enforcement vocabulary only; no production framework import."},
     {"id": "R-20260918-11", "source": "facebook/mcpguard-dynamic", "source_date": "observed 2026-09-18", "title": "Kernel-level MCP tool sandboxing", "disposition": "Future defense-in-depth reference only; no sandbox task without a real tool executor."},
     {"id": "R-20260918-12", "source": "arXiv:2606.10062", "source_date": "2026-06-08", "title": "Deployment-Time Memorization in Foundation-Model Agents", "disposition": "Creates research-only verified-forgetting/deletion-fidelity task B02; no deletion implementation."},
-    {"id": "R-20260918-13", "source": "las7/memharness", "source_date": "observed 2026-09-18", "title": "Bi-temporal provenance and provenance-scoped tombstones", "disposition": "Comparative design reference for B02 only; Apache-2.0 repository, no code import or storage replacement."}
+    {"id": "R-20260918-13", "source": "las7/memharness", "source_date": "observed 2026-09-18", "title": "Bi-temporal provenance and provenance-scoped tombstones", "disposition": "Comparative design reference for B02 only; Apache-2.0 repository, no code import or storage replacement."},
+    {"id": "R-20260918-14", "source": "arXiv:2609.09404", "source_date": "2026-09-08", "title": "MMPIBench multimodal prompt-injection propagation", "disposition": "Novel future observation-boundary research; defer task until an actual multimodal ingestion/execution surface exists."},
+    {"id": "R-20260918-15", "source": "arXiv:2605.09934", "source_date": "2026-05-11", "title": "TRACER claim-level multimodal tool provenance", "disposition": "Comparative provenance reference only; complements PR #2 and future multimodal evaluation, no current task."},
+    {"id": "R-20260918-16", "source": "mpi-dsg/agent-flight-recorder", "source_date": "observed 2026-09-18 / BCCA 2026 citation", "title": "Tamper-evident long-horizon agent audit trails", "disposition": "Fold into D01 observability research; MIT-licensed reference, no second audit authority or blockchain migration."}
   ],
   "DUPLICATES_REJECTED": [
     "Reimplement R044-R047",
@@ -250,20 +253,22 @@
     "Replace AdmissionController because of poisoning research",
     "Implement OAP/Agent Governance Toolkit/MCPGuard wholesale before a reviewed tool execution surface",
     "Create a separate stale-memory/ghost-memory implementation task from A-TMA because B01 already covers correction/supersession freshness evaluation",
-    "Adopt utility-driven or learned forgetting directly as Persona/memory authority before verified deletion semantics exist"
+    "Adopt utility-driven or learned forgetting directly as Persona/memory authority before verified deletion semantics exist",
+    "Create a separate Agent Flight Recorder implementation or second audit ledger because D01 already owns observability research and RuntimeStore/ProviderJournal remain authoritative",
+    "Open multimodal tool/voice security implementation before an actual integrated multimodal execution surface exists"
   ],
   "WRITE_CONFLICTS": [],
   "OPEN_PRS": [
     {"number": 1, "head": "codex/persona-core-operations-v1-20260917", "base": "main", "status": "open", "head_sha": "34ae8a3d95dbe1cc565893b81306be235a36a4cb"},
     {"number": 2, "head": "feat/amadeus-runtime-vnext-foundation", "base": "codex/persona-core-operations-v1-20260917", "status": "open_draft", "head_sha": "bbb99d73c80b77445ae9d1a5fa82ad4607ccbc69"},
-    {"number": 3, "head": "autonomous/orchestrator-state", "base": "codex/persona-core-operations-v1-20260917", "status": "open_draft", "head_sha_at_run_start": "04294008ae82d0327ff625f18c18977e2fa119df", "head_sha_before_task_state_write": "1deb572aaf973db5b4b1ad23a916d2b6d59b9fc0"},
+    {"number": 3, "head": "autonomous/orchestrator-state", "base": "codex/persona-core-operations-v1-20260917", "status": "open_draft", "head_sha_at_run_start": "ff78f5577c591534ba224596b794a0a1d11a98e8", "head_sha_before_task_state_write": "8cc5d4e6c8e8de80b3da0a3296ff213b72ffe12d"},
     {"number": 4, "head": "research/worker-b-memory-transition-provenance-20260918", "base": "codex/persona-core-operations-v1-20260917", "status": "open_draft", "head_sha": "29c9a00a69ce8358a3af58904f4d940b77263ae2"},
     {"number": 5, "head": "feat/worker-c-state-drift-auditor-20260918", "base": "codex/persona-core-operations-v1-20260917", "status": "open_draft", "head_sha": "2e421263af0ecac0c51ac68a07066f3b8ec5c370"}
   ],
   "RECENTLY_MERGED_PRS": [],
   "BRANCH_OBSERVATIONS": [
     {"branch": "test/worker-c-memory-poisoning-eval-20260918", "head_sha": "34ae8a3d95dbe1cc565893b81306be235a36a4cb", "observed_state": "identical_to_base", "lease_expires_at": "2026-09-17T23:27:00Z", "concurrency_effect": "ACTIVE: lease remains valid; absence of commits is not release evidence"},
-    {"branch": "research/worker-d-observability-durable-orchestration-20260918", "head_sha": "fff3633c2f3ecf93dd1c039726b9bf4e1fb9d7a8", "observed_state": "existing branch, no valid D01 lease/PR", "concurrency_effect": "NOT_ACTIVE"},
+    {"branch": "research/worker-d-observability-durable-orchestration-20260918", "head_sha": "fff3633c2f3ecf93dd1c039726b9bf4e1fb9d7a8", "observed_state": "existing branch, no valid D01 lease/PR; head is an old C01 control-claim commit", "concurrency_effect": "NOT_ACTIVE"},
     {"branch": "AUTO-20260918-A02", "observed_state": "no task branch yet", "concurrency_effect": "READY_NOT_ACTIVE"},
     {"branch": "AUTO-20260918-B02", "observed_state": "no task branch yet", "concurrency_effect": "READY_NOT_ACTIVE"}
   ],
@@ -277,5 +282,5 @@
     "real natural-day requirement",
     "production activation"
   ],
-  "NEXT_ACTION": "Keep AUTO-20260918-C02 active while its valid lease remains in force; do not release it merely because its branch has no commits. WORKER-D may claim D01, WORKER-A may claim A02, and WORKER-B may claim B02 only after rereading the latest control blob and acquiring a non-overlapping lease. If those three are all claimed while C02 remains active, TARGET_CONCURRENCY=4 is full and no fifth implementation/research Worker task may be created. Continue REVIEW for PR #1/#2/#3/#4/#5, keep HOLD-G6-07-CANONICAL blocked, preserve N06_T4 and all UNKNOWN requests without replay, do not inherit Operations PASS/natural days into G6, do not auto-merge, and do not activate production."
+  "NEXT_ACTION": "Keep AUTO-20260918-C02 active until its lease expires or an evidence-backed handoff occurs; do not release it merely because its branch has no commits. WORKER-D may claim D01, WORKER-A may claim A02, and WORKER-B may claim B02 only after rereading the latest control blob and acquiring a non-overlapping lease. No new READY task was created in this run (NO_SAFE_NEW_TASK): Agent Flight Recorder overlaps D01, and the novel multimodal-observation findings are deferred until an actual multimodal ingestion/execution surface exists. If D01, A02 and B02 are all claimed while C02 remains active, TARGET_CONCURRENCY=4 is full and no fifth implementation/research Worker task may be created. Continue REVIEW for PR #1/#2/#3/#4/#5, keep HOLD-G6-07-CANONICAL blocked, preserve N06_T4 and all UNKNOWN requests without replay, do not inherit Operations PASS/natural days into G6, do not auto-merge, and do not activate production."
 }
