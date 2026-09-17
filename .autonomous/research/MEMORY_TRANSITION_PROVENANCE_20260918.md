@@ -176,3 +176,245 @@ No replacement memory store, graph migration, RL writer, provider retry, model o
 Research disposition: **a narrow, source-grounded evaluation gap exists; not IDLE_NO_MEMORY_GAP**. Deliver for review. The next action is an orchestrator-scoped assembled-runtime freshness experiment, not a Persona change. Any direct G6 continuation must separately resolve the canonical-source/ledger blocker and preserve UNKNOWN no-replay semantics.
 
 Rollback: decline/close the research PR, or revert its memo commit after any future explicitly authorized merge. There is no database migration or Persona-state rollback. Keep control-plane lifecycle history; do not force-push, erase prior approvals or restore an old database over new experiences.
+
+## 8. Evidence supplement: exact executable probe
+
+Save the following code block as `probe.py` with LF line endings and a final newline. Run in a new Python process, not inside the application. Point it at the pinned `persona_growth.py`; it refuses other blob hashes. The script substitutes all its imported project dependencies, uses in-memory SQLite only, and writes JSON to stdout. It does not run the real admission/reducer/index chain.
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python probe.py /path/to/pinned/persona_growth.py
+```
+
+```python
+"""Offline module-boundary probe, not RuntimeStore/product acceptance.
+Run in a new Python process: python probe.py /path/to/pinned/persona_growth.py
+Dependencies are explicit in-memory doubles; no provider or production imports.
+"""
+import copy
+import hashlib
+import importlib.util
+import json
+import pathlib
+import platform
+import sqlite3
+import sys
+import types
+from dataclasses import dataclass
+from datetime import datetime, timezone
+
+SOURCE_BLOB = 'f750c38b75485703132cc8dcc01d90aac60b4df5'
+path = pathlib.Path(sys.argv[1]).resolve()
+raw = path.read_bytes()
+blob = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+if blob != SOURCE_BLOB:
+    raise SystemExit('Refusing an unpinned module: ' + blob)
+
+class Guard(ValueError):
+    pass
+
+def ensure(value, reason):
+    if not value:
+        raise Guard(reason)
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, ensure_ascii=False,
+                      separators=(',', ':')).encode('utf-8')
+
+def digest(value):
+    return hashlib.sha256(canonical(value)).hexdigest()
+
+@dataclass(frozen=True)
+class Handle:
+    entity_id: str = 'fixture-A'
+    principal_id: str = 'fixture-principal'
+    mode: str = 'PRODUCT_RUNTIME'  # synthetic label, not actual product evidence
+
+class StoreDouble:
+    def __init__(self):
+        self.db = sqlite3.connect(':memory:')
+        self.db.row_factory = sqlite3.Row
+        self.db.execute('PRAGMA foreign_keys=ON')
+    def _authenticate(self, handle):
+        ensure(isinstance(handle, Handle), 'Fixture handle required')
+    def transaction(self):
+        return self.db
+
+class RuntimeDouble:
+    def __init__(self):
+        self.store = StoreDouble()
+        self.events = {}
+        self.superseded = {}
+        self.reads = 0
+        for number in (1, 2):
+            self.events['e' + str(number)] = {
+                'event_id': 'e' + str(number), 'event_type': 'FACT_CORRECTED',
+                'entity_id': 'fixture-A', 'session_id': 's' + str(number),
+                'mode': 'PRODUCT_RUNTIME',
+                'payload': {'supersedes_event_id': 'original-' + str(number),
+                            'replacement': 'I prefer brief project explanations.'}}
+    def get_event(self, handle, event_id):
+        self.reads += 1
+        event = self.events[event_id]
+        ensure(event['entity_id'] == handle.entity_id, 'Entity mismatch')
+        return copy.deepcopy(event)
+    def append_correction(self):
+        self.events['e3'] = {
+            'event_id': 'e3', 'event_type': 'FACT_CORRECTED',
+            'entity_id': 'fixture-A', 'session_id': 's3', 'mode': 'PRODUCT_RUNTIME',
+            'payload': {'supersedes_event_id': 'e1',
+                        'replacement': 'Correction: that preference was temporary.'}}
+        self.superseded['e1'] = 'e3'
+
+for name, values in {
+    'provider': {'canonical': canonical, 'digest': digest},
+    'runtime_store': {'RuntimeStore': RuntimeDouble},
+    'transcript_store': {'SessionHandle': Handle, 'ensure': ensure,
+                         'utc_now': lambda: '2000-01-01T00:00:00+00:00'}
+}.items():
+    module = types.ModuleType(name)
+    module.__dict__.update(values)
+    sys.modules[name] = module
+spec = importlib.util.spec_from_file_location('pinned_growth', path)
+growth = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = growth
+spec.loader.exec_module(growth)
+
+CANDIDATE = {'statement': 'Use brief explanations with fixture-A.',
+             'conditions': ['During this project'],
+             'limits': ['Not source Persona or autobiographical authority'],
+             'confidence': 0.7}
+
+def setup():
+    runtime = RuntimeDouble()
+    controller = growth.PersonaGrowthController(runtime)
+    handle = Handle()
+    return runtime, controller, handle
+
+def propose(controller, handle):
+    return controller.propose(handle, key='fixture-proposal',
+        scope_kind='ENTITY_RELATIONSHIP', dimension='communication_preference',
+        candidate=CANDIDATE, evidence_event_ids=['e1', 'e2'])
+
+def approve(controller, proposal):
+    controller.review(proposal.proposal_id, verdict='APPROVE',
+                      rationale='Synthetic explicit host review for boundary probe')
+
+cases = []
+for timing in ('UNCHANGED_CONTROL', 'SUPERSEDED_BEFORE_APPROVAL',
+               'SUPERSEDED_AFTER_APPROVAL'):
+    r, c, h = setup()
+    p = propose(c, h)
+    original = copy.deepcopy(r.events['e1'])
+    if timing == 'SUPERSEDED_BEFORE_APPROVAL':
+        r.append_correction()
+    reads_at_proposal = r.reads
+    approve(c, p)
+    if timing == 'SUPERSEDED_AFTER_APPROVAL':
+        r.append_correction()
+    view = c.active_view(h)
+    audit = c.audit()
+    assert r.events['e1'] == original, 'Original evidence must remain immutable'
+    assert len(view) == 1 and view[0]['evidence_event_ids'] == ['e1', 'e2']
+    assert audit['integrity'] == 'ok' and r.reads == reads_at_proposal
+    assert not view[0]['genesis_mutated'] and not view[0]['model_output_is_authority']
+    cases.append({'case': timing, 'emitted_versions': len(view),
+                  'post_proposal_event_reads': r.reads - reads_at_proposal,
+                  'audit_integrity': audit['integrity'],
+                  'basis_superseded': 'e1' in r.superseded,
+                  'interpretation': 'BASELINE_CONTROL' if timing == 'UNCHANGED_CONTROL'
+                     else 'FRESHNESS_NOT_CHECKED_AT_MODULE_BOUNDARY'})
+    if timing == 'UNCHANGED_CONTROL':
+        assert c.active_view(Handle(entity_id='fixture-B')) == []
+        cases.append({'case': 'OTHER_ENTITY_CONTROL', 'emitted_versions': 0,
+                      'interpretation': 'EXISTING_SCOPE_FILTER_PRESERVED'})
+    r.store.db.close()
+
+for kind in ('RAW_UTTERANCE_CONTROL', 'ONE_SESSION_CONTROL'):
+    r, c, h = setup()
+    if kind == 'RAW_UTTERANCE_CONTROL':
+        r.events['e1']['event_type'] = 'UTTERANCE_OBSERVED'
+    else:
+        r.events['e2']['session_id'] = 's1'
+    try:
+        propose(c, h)
+    except Guard as error:
+        cases.append({'case': kind, 'interpretation': 'REJECTED_AS_EXPECTED',
+                      'reason': str(error)})
+    else:
+        raise AssertionError('Expected rejection: ' + kind)
+    r.store.db.close()
+
+report = {'observed_at_utc': datetime.now(timezone.utc).isoformat(),
+          'python': platform.python_version(), 'sqlite': sqlite3.sqlite_version,
+          'scope': 'EXACT_SOURCE_MODULE_WITH_EXPLICIT_IN_MEMORY_DEPENDENCY_DOUBLES',
+          'source_blob_sha1': blob, 'source_sha256': hashlib.sha256(raw).hexdigest(),
+          'harness_sha256': hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+          'observational_cases_completed': len(cases), 'control_cases': 4,
+          'freshness_gap_cases': 2, 'project_provider_calls': 0,
+          'production_or_genesis_accessed': False,
+          'full_runtime_or_G6_acceptance': 'NOT_TESTED', 'cases': cases}
+print(json.dumps(report, indent=2, ensure_ascii=False))
+```
+
+### Actual stdout from the recorded run
+
+Timestamps change on reproduction; fixture outcomes and pinned hashes should not. The four control cases and two gap observations are separated deliberately.
+
+```json
+{
+  "observed_at_utc": "2026-09-17T18:38:02.793731+00:00",
+  "python": "3.13.5",
+  "sqlite": "3.46.1",
+  "scope": "EXACT_SOURCE_MODULE_WITH_EXPLICIT_IN_MEMORY_DEPENDENCY_DOUBLES",
+  "source_blob_sha1": "f750c38b75485703132cc8dcc01d90aac60b4df5",
+  "source_sha256": "1d4da263adfb2ac3a221ebdb56e317cc6727d1a34b07e7a4092a019a5d06451f",
+  "harness_sha256": "a76a661b2767b5b8b31fafd8bd3942077a7da64bd6dbca67ed1462e77e9a70d4",
+  "observational_cases_completed": 6,
+  "control_cases": 4,
+  "freshness_gap_cases": 2,
+  "project_provider_calls": 0,
+  "production_or_genesis_accessed": false,
+  "full_runtime_or_G6_acceptance": "NOT_TESTED",
+  "cases": [
+    {
+      "case": "UNCHANGED_CONTROL",
+      "emitted_versions": 1,
+      "post_proposal_event_reads": 0,
+      "audit_integrity": "ok",
+      "basis_superseded": false,
+      "interpretation": "BASELINE_CONTROL"
+    },
+    {
+      "case": "OTHER_ENTITY_CONTROL",
+      "emitted_versions": 0,
+      "interpretation": "EXISTING_SCOPE_FILTER_PRESERVED"
+    },
+    {
+      "case": "SUPERSEDED_BEFORE_APPROVAL",
+      "emitted_versions": 1,
+      "post_proposal_event_reads": 0,
+      "audit_integrity": "ok",
+      "basis_superseded": true,
+      "interpretation": "FRESHNESS_NOT_CHECKED_AT_MODULE_BOUNDARY"
+    },
+    {
+      "case": "SUPERSEDED_AFTER_APPROVAL",
+      "emitted_versions": 1,
+      "post_proposal_event_reads": 0,
+      "audit_integrity": "ok",
+      "basis_superseded": true,
+      "interpretation": "FRESHNESS_NOT_CHECKED_AT_MODULE_BOUNDARY"
+    },
+    {
+      "case": "RAW_UTTERANCE_CONTROL",
+      "interpretation": "REJECTED_AS_EXPECTED",
+      "reason": "Raw utterances and unsupported events cannot support Persona/Self growth"
+    },
+    {
+      "case": "ONE_SESSION_CONTROL",
+      "interpretation": "REJECTED_AS_EXPECTED",
+      "reason": "Stable growth proposal requires evidence across at least two sessions"
+    }
+  ]
+}
+```
