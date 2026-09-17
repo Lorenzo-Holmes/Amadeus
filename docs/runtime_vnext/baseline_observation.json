@@ -1,0 +1,23 @@
+{
+  "record_kind": "GITHUB_SOURCE_OBSERVATION_NOT_CANONICAL_TASK_STATE",
+  "observed_on": "2026-09-18",
+  "repository": "Lorenzo-Holmes/Amadeus",
+  "default_branch": "main",
+  "default_branch_sha": "a6ffaa388ebdab03620070c3990ffc9788425e8f",
+  "source_branch": "codex/persona-core-operations-v1-20260917",
+  "source_sha": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+  "source_tree_sha": "f2bcd2fd85db2a6e4bb82a4ca04e2b5adef1ecd7",
+  "work_branch": "feat/amadeus-runtime-vnext-foundation",
+  "canonical_directory_expected": "persona_core/gpt6_optimization_v2/",
+  "canonical_directory_present_in_selected_source": false,
+  "windows_workspace_verified": false,
+  "g6_canonical_baseline_verified": false,
+  "user_expected_phase": "WAITING_PROVIDER_OUTCOME_WITH_SEMANTIC_REPAIR_PENDING",
+  "published_progress_state": "GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS",
+  "published_last_completed": "G6-06",
+  "published_unknown_slot": "N06_T4",
+  "provider_ledger_revalidated": false,
+  "legacy_completion_inherited": false,
+  "production_integration_allowed_by_this_record": false,
+  "scope": "source-grounded architecture and offline contract reference only"
+}
