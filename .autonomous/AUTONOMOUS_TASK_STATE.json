@@ -1,319 +1,139 @@
 {
   "schema_version": "amadeus-autonomous-task-state-1",
   "ORCHESTRATOR_RUN_ID": "ORCH-20260918T021519+0800-01",
-  "generated_at_utc": "2026-09-17T18:15:19Z",
+  "generated_at_utc": "2026-09-17T18:19:19Z",
   "CONTROL_BRANCH": "autonomous/orchestrator-state",
-  "CONTROL_BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+  "CONTROL_PR": "https://github.com/Lorenzo-Holmes/Amadeus/pull/3",
   "DEFAULT_BRANCH": "main",
   "BASE_SHA": "a6ffaa388ebdab03620070c3990ffc9788425e8f",
   "PERSONA_SNAPSHOT_BRANCH": "codex/persona-core-operations-v1-20260917",
   "PERSONA_SNAPSHOT_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
   "TARGET_CONCURRENCY": 4,
-  "ACTIVE_WORKERS": 1,
-  "AVAILABLE_SLOTS": 3,
-  "concurrency_semantics": "Only valid CLAIMED/RUNNING tasks count. This first shared-state bootstrap conservatively reserves a fresh branch with recent commits as RUNNING and gives it an explicit lease; old branches without recent commit/PR/task evidence are not counted.",
-  "bootstrap_note": "No .autonomous directory existed on the inspected Persona snapshot or runtime-vNext branch before this run. This branch is the shared orchestration control plane; it does not replace Persona Core task authority or acceptance evidence.",
+  "ACTIVE_WORKERS": 0,
+  "AVAILABLE_SLOTS": 4,
   "phase_reconciliation": {
-    "operations_task_state": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING / R047-04 with repaired natural-day evidence historically 1/3",
+    "operations_task_state": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING / R047-04",
     "published_progress_head": "APCORE-GPT6-OPTIMIZATION-V2 / LAST_COMPLETED G6-06 / GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS",
-    "latest_decision_log": "DEC-G6-009 records external44_20260917_06 failed 159/176 criteria and states current G6 BUILD_SCOPE_COMPLETE_VALIDATION_PENDING=false, PRODUCT_ACCEPTANCE_COMPLETE=false, production_activated=false",
-    "orchestrator_interpretation": "R044-R047 remain protected completed/historical work and must not be redone. The newer G6 optimization line is the current published continuation, but its expected canonical directory/provider evidence is not fully present in the GitHub snapshot, so direct G6 implementation is blocked rather than guessed."
+    "latest_decision_log": "DEC-G6-009: external44_20260917_06 failed 159/176; current G6 BUILD_SCOPE_COMPLETE_VALIDATION_PENDING=false; PRODUCT_ACCEPTANCE_COMPLETE=false; production_activated=false",
+    "rule": "Protect completed R044-R047 work, but do not inherit its acceptance flags into G6. Direct G6 implementation remains blocked until actual canonical source and persisted/provider evidence are available."
   },
   "tasks": [
     {
       "TASK_ID": "AUTO-20260918-A01",
       "OWNER": "WORKER-A",
-      "STATUS": "RUNNING",
+      "STATUS": "REVIEW",
       "AREA": "Architecture / Runtime / Tooling",
-      "OBJECTIVE": "Finish the already-started source-grounded runtime-vNext foundation as a reviewable architecture/semantic-contract change only; do not mutate Persona Core state, provider behavior, release state, or production activation.",
+      "OBJECTIVE": "Review the completed source-grounded runtime-vNext foundation without integrating it into Persona Core or current G6 state.",
       "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
-      "READ_SET": [
-        "PERSONA_CORE_PROGRESS.md",
-        "PERSONA_CORE_DECISION_LOG.md",
-        "persona_core/operational_runtime_v1/**",
-        "persona_core/operational_build_v1/TASK_STATE.json",
-        "persona_core/operational_build_v1/ACCEPTANCE_MATRIX.json"
-      ],
-      "WRITE_SET": [
-        "docs/runtime_vnext/**"
-      ],
+      "READ_SET": ["PERSONA_CORE_PROGRESS.md","PERSONA_CORE_DECISION_LOG.md","persona_core/operational_runtime_v1/**"],
+      "WRITE_SET": ["docs/runtime_vnext/**","tools/runtime_vnext/**","tests/runtime_vnext/**"],
       "DEPENDENCIES": [],
-      "ACCEPTANCE_CRITERIA": [
-        "Public GitHub baseline and missing/unverified G6 canonical evidence are explicit.",
-        "Existing AdmissionController, RuntimeStore, ProviderJournal, retrieval and Persona growth authority are reused rather than duplicated.",
-        "No change under persona_core/**, no Genesis/Persona Constitution/Memory Cutoff change, no provider submission, no production activation.",
-        "Any PR must target codex/persona-core-operations-v1-20260917 rather than main so the historical snapshot is not presented as newly authored work.",
-        "No claim that G6-07 or product acceptance has passed."
-      ],
-      "LEASE_STARTED_AT": "2026-09-17T18:15:19Z",
-      "LEASE_EXPIRES_AT": "2026-09-17T22:15:19Z",
+      "ACCEPTANCE_CRITERIA": ["PR base is the Persona snapshot, not main","No persona_core/** write","No Genesis/Persona Constitution/Memory Cutoff change","No provider call/replay","No G6/product-acceptance claim","Offline tests stay explicitly non-authoritative"],
+      "LEASE_STARTED_AT": null,
+      "LEASE_EXPIRES_AT": null,
       "BRANCH": "feat/amadeus-runtime-vnext-foundation",
-      "PR": null,
+      "PR": "https://github.com/Lorenzo-Holmes/Amadeus/pull/2",
       "RESEARCH_REFERENCES": [],
-      "NOVELTY_SIGNATURE": {
-        "AREA": "Architecture / Runtime / Tooling",
-        "CURRENT_STATE": "Persona snapshot exposes mature operational controls but not the full current G6 canonical source/evidence; a fresh vNext docs branch is already two commits ahead of the snapshot.",
-        "IDENTIFIED_GAP": "Need a source-grounded integration boundary that can be reviewed without inventing unavailable G6 implementation state.",
-        "OBJECTIVE": "Document reuse boundaries, semantic contract and staged integration gates.",
-        "EXPECTED_DELTA": "Reviewable architecture/contract documentation only.",
-        "PRIMARY_WRITE_SET": "docs/runtime_vnext/**",
-        "ACCEPTANCE_SEMANTICS": "Proposal is valid only if it preserves one Persona authority and does not claim operational acceptance."
-      },
-      "DISCOVERY_EVIDENCE": {
-        "branch_head": "61d97b1c521e285c06859b44c784cb6a07e7f5c2",
-        "latest_commit_at": "2026-09-17T18:11:53Z",
-        "latest_commit_message": "docs(vnext): define source-grounded runtime architecture and semantic integration gates",
-        "ahead_of_base_by": 2,
-        "changed_paths": [
-          "docs/runtime_vnext/ARCHITECTURE.md",
-          "docs/runtime_vnext/BASELINE.md",
-          "docs/runtime_vnext/README.md",
-          "docs/runtime_vnext/SEMANTIC_CONTRACT.md",
-          "docs/runtime_vnext/baseline_observation.json"
-        ],
-        "bootstrap_lease": true
-      }
+      "NOVELTY_SIGNATURE": {"AREA":"Architecture / Runtime / Tooling","CURRENT_STATE":"Draft PR #2 adds source-grounded vNext docs plus offline semantic-contract reference/tests on top of the Persona snapshot.","IDENTIFIED_GAP":"Need review of integration boundaries while current G6 canonical evidence is unavailable.","OBJECTIVE":"Review, not implement production integration.","EXPECTED_DELTA":"Review disposition only.","PRIMARY_WRITE_SET":"none during review","ACCEPTANCE_SEMANTICS":"No trusted-state or acceptance change."},
+      "EVIDENCE": {"head_sha":"bbb99d73c80b77445ae9d1a5fa82ad4607ccbc69","commits":4,"changed_files":11,"reported_offline_tests":"40/40 PASS","draft_pr":true}
     },
     {
       "TASK_ID": "REVIEW-PR-1",
       "OWNER": "ORCHESTRATOR_REVIEW",
       "STATUS": "REVIEW",
       "AREA": "Persona Core snapshot publication",
-      "OBJECTIVE": "Review PR #1 as a publication/snapshot delta without merging it or treating its historical acceptance claims as current G6 acceptance.",
+      "OBJECTIVE": "Review PR #1 without merging it or treating Operations V1 historical acceptance as current G6 acceptance.",
       "BASE_SHA": "a6ffaa388ebdab03620070c3990ffc9788425e8f",
-      "READ_SET": [
-        "PR #1",
-        "codex/persona-core-operations-v1-20260917",
-        "main"
-      ],
+      "READ_SET": ["PR #1","codex/persona-core-operations-v1-20260917","main"],
       "WRITE_SET": [],
       "DEPENDENCIES": [],
-      "ACCEPTANCE_CRITERIA": [
-        "No automatic merge.",
-        "Protected Persona/Genesis/history semantics remain attributable to their existing evidence.",
-        "Review distinguishes the snapshot's Operations V1 state from newer G6 progress/decisions."
-      ],
-      "LEASE_STARTED_AT": null,
-      "LEASE_EXPIRES_AT": null,
-      "BRANCH": "codex/persona-core-operations-v1-20260917",
-      "PR": "https://github.com/Lorenzo-Holmes/Amadeus/pull/1",
-      "RESEARCH_REFERENCES": [],
-      "NOVELTY_SIGNATURE": {
-        "AREA": "Review",
-        "CURRENT_STATE": "One open PR publishes the Persona Core operational snapshot to main.",
-        "IDENTIFIED_GAP": "Snapshot review must not conflate old Operations acceptance with current G6 work.",
-        "OBJECTIVE": "Evidence-aware review only.",
-        "EXPECTED_DELTA": "Review disposition, no code write.",
-        "PRIMARY_WRITE_SET": "none",
-        "ACCEPTANCE_SEMANTICS": "Review is complete when current-vs-historical status is explicit; merge remains user-controlled."
-      }
+      "ACCEPTANCE_CRITERIA": ["No automatic merge","Current-vs-historical status explicit","Protected history remains attributable"],
+      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":"codex/persona-core-operations-v1-20260917","PR":"https://github.com/Lorenzo-Holmes/Amadeus/pull/1","RESEARCH_REFERENCES":[],
+      "NOVELTY_SIGNATURE":{"AREA":"Review","CURRENT_STATE":"Open snapshot PR to main.","IDENTIFIED_GAP":"Must not conflate old Operations state with newer G6 state.","OBJECTIVE":"Evidence-aware review.","EXPECTED_DELTA":"Review only.","PRIMARY_WRITE_SET":"none","ACCEPTANCE_SEMANTICS":"Merge remains user-controlled."}
+    },
+    {
+      "TASK_ID": "REVIEW-PR-3",
+      "OWNER": "ORCHESTRATOR_REVIEW",
+      "STATUS": "REVIEW",
+      "AREA": "Autonomous orchestration control plane",
+      "OBJECTIVE": "Review the new GitHub-backed task/research/decision state before any merge into the Persona snapshot branch.",
+      "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+      "READ_SET": [".autonomous/**","PR #3"],
+      "WRITE_SET": [],
+      "DEPENDENCIES": [],
+      "ACCEPTANCE_CRITERIA": ["Control state never overrides Persona acceptance authority","Task leases are evidence-backed","No protected-state mutation","No automatic merge"],
+      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":"autonomous/orchestrator-state","PR":"https://github.com/Lorenzo-Holmes/Amadeus/pull/3","RESEARCH_REFERENCES":[],
+      "NOVELTY_SIGNATURE":{"AREA":"Orchestration governance","CURRENT_STATE":"No .autonomous control plane existed before this run.","IDENTIFIED_GAP":"No shared GitHub task/lease/novelty/write-conflict state.","OBJECTIVE":"Review the additive control plane.","EXPECTED_DELTA":"Review only.","PRIMARY_WRITE_SET":"none","ACCEPTANCE_SEMANTICS":"Control metadata cannot grant Persona/runtime authority."}
     },
     {
       "TASK_ID": "HOLD-G6-07-CANONICAL",
       "OWNER": "ORCHESTRATOR_HOLD",
       "STATUS": "BLOCKED",
       "AREA": "Persona-supporting cognition / G6 validation",
-      "OBJECTIVE": "Continue the published G6-07 repair/validation line only after the actual canonical G6 source, persisted records and provider ledger are available and reconciled.",
+      "OBJECTIVE": "Resume G6-07 only after actual canonical G6 source, persisted records and provider ledger are available and reconciled.",
       "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
-      "READ_SET": [
-        "PERSONA_CORE_PROGRESS.md",
-        "PERSONA_CORE_DECISION_LOG.md",
-        "persona_core/gpt6_optimization_v2/**",
-        "persona_core/operational_build_v1/evidence/G6_V2_*"
-      ],
-      "WRITE_SET": [
-        "persona_core/gpt6_optimization_v2/**",
-        "persona_core/operational_build_v1/evidence/G6_V2_*"
-      ],
-      "DEPENDENCIES": [
-        "VERIFY_CURRENT_G6_CANONICAL_SOURCE_AND_STATE",
-        "RECONCILE_PERSISTED_RECORDS_AND_PROVIDER_LEDGER",
-        "PRESERVE_N06_T4_UNKNOWN_WITHOUT_REPLAY"
-      ],
-      "ACCEPTANCE_CRITERIA": [
-        "Do not infer missing canonical files from summaries.",
-        "Do not replay or resend N06_T4 or any SUBMITTED_STATUS_UNKNOWN operation.",
-        "Do not inherit semantic PASS from prior revisions.",
-        "Do not inherit old repaired natural days into a new G6 candidate.",
-        "Genesis, Persona Constitution, Memory Cutoff and protected source provenance remain unchanged unless separately and explicitly authorized."
-      ],
-      "LEASE_STARTED_AT": null,
-      "LEASE_EXPIRES_AT": null,
-      "BRANCH": null,
-      "PR": null,
-      "RESEARCH_REFERENCES": [],
-      "NOVELTY_SIGNATURE": {
-        "AREA": "G6 validation",
-        "CURRENT_STATE": "Progress/decision log reports G6-07 continuation, but the expected canonical directory and complete runtime/provider evidence are not present in the inspected public snapshot.",
-        "IDENTIFIED_GAP": "Missing verified canonical execution state.",
-        "OBJECTIVE": "Resume only from verified persisted truth.",
-        "EXPECTED_DELTA": "None while blocked.",
-        "PRIMARY_WRITE_SET": "protected G6 state/evidence paths",
-        "ACCEPTANCE_SEMANTICS": "No implementation is safe until canonical source and unknown-call status are reconciled."
-      }
+      "READ_SET": ["PERSONA_CORE_PROGRESS.md","PERSONA_CORE_DECISION_LOG.md","persona_core/gpt6_optimization_v2/**","persona_core/operational_build_v1/evidence/G6_V2_*"],
+      "WRITE_SET": ["persona_core/gpt6_optimization_v2/**","persona_core/operational_build_v1/evidence/G6_V2_*"],
+      "DEPENDENCIES": ["VERIFY_CURRENT_G6_CANONICAL_SOURCE_AND_STATE","RECONCILE_PERSISTED_RECORDS_AND_PROVIDER_LEDGER","PRESERVE_N06_T4_UNKNOWN_WITHOUT_REPLAY"],
+      "ACCEPTANCE_CRITERIA": ["Do not synthesize missing canonical files","Do not replay/resend N06_T4 or any SUBMITTED_STATUS_UNKNOWN","Do not inherit old semantic PASS or natural days","Protected Genesis/Persona Constitution/Memory Cutoff/provenance unchanged"],
+      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":null,"PR":null,"RESEARCH_REFERENCES":[],
+      "NOVELTY_SIGNATURE":{"AREA":"G6 validation","CURRENT_STATE":"Published continuation exists but complete canonical implementation/evidence is not GitHub-accessible.","IDENTIFIED_GAP":"Verified execution truth missing.","OBJECTIVE":"Resume only from persisted truth.","EXPECTED_DELTA":"None while blocked.","PRIMARY_WRITE_SET":"protected G6 paths","ACCEPTANCE_SEMANTICS":"Missing evidence stays UNKNOWN/BLOCKED."}
     },
     {
       "TASK_ID": "AUTO-20260918-C01",
       "OWNER": "WORKER-C",
       "STATUS": "READY",
       "AREA": "Reliability / Evaluation / Observability / Recovery",
-      "OBJECTIVE": "Build a deterministic read-only state-drift auditor that compares canonical task/progress/decision snapshots and supplied branch/PR metadata, reporting phase divergence, missing referenced paths and protected-state contradictions without mutating Persona state.",
+      "OBJECTIVE": "Build a deterministic read-only state-drift auditor for task/progress/decision/branch-PR evidence.",
       "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
-      "READ_SET": [
-        "AMADEUS_PERSONA_CORE_MASTER_GOAL.md",
-        "PERSONA_CORE_CONTINUATION_PROTOCOL.md",
-        "PERSONA_CORE_PROGRESS.md",
-        "PERSONA_CORE_DECISION_LOG.md",
-        "persona_core/operational_build_v1/TASK_STATE.json",
-        "persona_core/operational_build_v1/ACCEPTANCE_MATRIX.json",
-        ".autonomous/AUTONOMOUS_TASK_STATE.json"
-      ],
-      "WRITE_SET": [
-        "tools/autonomous_state_audit/**",
-        "docs/autonomous/STATE_DRIFT_AUDITOR.md"
-      ],
+      "READ_SET": ["AMADEUS_PERSONA_CORE_MASTER_GOAL.md","PERSONA_CORE_CONTINUATION_PROTOCOL.md","PERSONA_CORE_PROGRESS.md","PERSONA_CORE_DECISION_LOG.md","persona_core/operational_build_v1/TASK_STATE.json","persona_core/operational_build_v1/ACCEPTANCE_MATRIX.json",".autonomous/AUTONOMOUS_TASK_STATE.json"],
+      "WRITE_SET": ["tools/autonomous_state_audit/**","docs/autonomous/STATE_DRIFT_AUDITOR.md"],
       "DEPENDENCIES": [],
-      "ACCEPTANCE_CRITERIA": [
-        "Pure read-only analysis: no repository/runtime/provider writes.",
-        "Synthetic fixture reproducing Operations BUILD_SCOPE_COMPLETE_VALIDATION_PENDING vs newer G6 state is flagged rather than silently resolved.",
-        "Missing referenced canonical directory/evidence is reported as UNKNOWN/BLOCKED, never synthesized.",
-        "Protected Genesis/Persona Constitution/Memory Cutoff paths can be declared invariants and violations fail the audit.",
-        "Deterministic machine-readable JSON output plus focused tests."
-      ],
-      "LEASE_STARTED_AT": null,
-      "LEASE_EXPIRES_AT": null,
-      "BRANCH": null,
-      "PR": null,
-      "RESEARCH_REFERENCES": [
-        "arXiv:2609.13463"
-      ],
-      "NOVELTY_SIGNATURE": {
-        "AREA": "Reliability / state reconciliation",
-        "CURRENT_STATE": "The repository contains a real divergence between older machine task state and newer G6 progress/decision records; vNext documentation records it manually.",
-        "IDENTIFIED_GAP": "No deterministic reusable checker converts this divergence into machine-readable audit findings.",
-        "OBJECTIVE": "Detect drift and missing evidence, not choose a semantic winner automatically.",
-        "EXPECTED_DELTA": "New read-only audit tooling and tests.",
-        "PRIMARY_WRITE_SET": "tools/autonomous_state_audit/** + docs/autonomous/STATE_DRIFT_AUDITOR.md",
-        "ACCEPTANCE_SEMANTICS": "Auditor raises explicit contradictions/unknowns while preserving source authority boundaries."
-      }
+      "ACCEPTANCE_CRITERIA": ["Read-only","Operations-vs-G6 divergence fixture flagged","Missing evidence reported UNKNOWN/BLOCKED","Protected-state invariants supported","Deterministic JSON output and focused tests"],
+      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":null,"PR":null,"RESEARCH_REFERENCES":["arXiv:2609.13463"],
+      "NOVELTY_SIGNATURE":{"AREA":"Reliability / state reconciliation","CURRENT_STATE":"Real high-level state divergence required manual inspection.","IDENTIFIED_GAP":"No reusable deterministic drift checker visible.","OBJECTIVE":"Detect contradictions without choosing semantic authority automatically.","EXPECTED_DELTA":"Read-only audit tooling.","PRIMARY_WRITE_SET":"tools/autonomous_state_audit/** + docs/autonomous/STATE_DRIFT_AUDITOR.md","ACCEPTANCE_SEMANTICS":"CONFLICT/UNKNOWN preserved explicitly."}
     },
     {
       "TASK_ID": "AUTO-20260918-B01",
       "OWNER": "WORKER-B",
       "STATUS": "READY",
       "AREA": "Memory / Intelligence / Persona-supporting cognition",
-      "OBJECTIVE": "Research transition-level memory verification and provenance-aware retrieval as an evaluation layer for Amadeus; produce falsifiable offline test proposals only, with no memory-policy or Persona-state implementation.",
+      "OBJECTIVE": "Research transition-level memory verification and provenance-aware retrieval as offline evaluation only.",
       "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
-      "READ_SET": [
-        "persona_core/operational_runtime_v1/admission.py",
-        "persona_core/operational_runtime_v1/runtime_store.py",
-        "persona_core/operational_runtime_v1/retrieval.py",
-        "persona_core/operational_runtime_v1/persona_growth.py",
-        "PERSONA_CORE_DECISION_LOG.md"
-      ],
-      "WRITE_SET": [
-        ".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md"
-      ],
+      "READ_SET": ["persona_core/operational_runtime_v1/admission.py","persona_core/operational_runtime_v1/runtime_store.py","persona_core/operational_runtime_v1/retrieval.py","persona_core/operational_runtime_v1/persona_growth.py","PERSONA_CORE_DECISION_LOG.md"],
+      "WRITE_SET": [".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md"],
       "DEPENDENCIES": [],
-      "ACCEPTANCE_CRITERIA": [
-        "For each source record SOURCE, SOURCE_DATE, PROBLEM, CORE_IDEA, AMADEUS_CURRENT_STATE, REAL_GAP, PROPOSED_DELTA, RISKS, LICENSE, EVALUATION_METHOD.",
-        "Separate admission authority from retrieval ranking and from model-generated memory proposals.",
-        "Map TrustMem coverage/preservation/faithfulness to offline transition tests; do not import its RL policy as authority.",
-        "Compare provenance/citation-lock ideas against Amadeus existing provenance and correction chain; no second memory authority or database is proposed by default.",
-        "No Genesis, autobiographical memory, Memory Cutoff, Persona Constitution or production-state writes."
-      ],
-      "LEASE_STARTED_AT": null,
-      "LEASE_EXPIRES_AT": null,
-      "BRANCH": null,
-      "PR": null,
-      "RESEARCH_REFERENCES": [
-        "arXiv:2606.25161 TRUSTMEM",
-        "arXiv:2608.29606 Agent Zero Memory",
-        "arXiv:2609.12655 LifeMem"
-      ],
-      "NOVELTY_SIGNATURE": {
-        "AREA": "Memory evaluation",
-        "CURRENT_STATE": "Amadeus already has controlled admission, transactional storage, provenance-preserving retrieval and governed growth.",
-        "IDENTIFIED_GAP": "No explicit transition-level omission/corruption/hallucination evaluation contract is visible in the snapshot.",
-        "OBJECTIVE": "Design offline verifier tests around existing authority boundaries.",
-        "EXPECTED_DELTA": "Research memo and evaluation proposal only.",
-        "PRIMARY_WRITE_SET": ".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md",
-        "ACCEPTANCE_SEMANTICS": "Useful only if it adds measurable non-regression checks without changing trusted-memory semantics."
-      }
+      "ACCEPTANCE_CRITERIA": ["Source/date/problem/idea/current-state/gap/delta/risks/license/evaluation recorded","Authority vs ranking vs proposal separated","TrustMem metrics mapped to offline tests only","No second memory authority","No protected Persona/Genesis/Memory Cutoff write"],
+      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":null,"PR":null,"RESEARCH_REFERENCES":["arXiv:2606.25161 TRUSTMEM","arXiv:2608.29606 Agent Zero Memory","arXiv:2609.12655 LifeMem"],
+      "NOVELTY_SIGNATURE":{"AREA":"Memory evaluation","CURRENT_STATE":"Controlled admission/storage/retrieval/growth already exist.","IDENTIFIED_GAP":"No explicit transition omission/corruption/hallucination verification contract visible.","OBJECTIVE":"Design measurable offline checks around existing authority.","EXPECTED_DELTA":"Research memo/evaluation proposal.","PRIMARY_WRITE_SET":".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md","ACCEPTANCE_SEMANTICS":"No trusted-memory semantics change."}
     },
     {
       "TASK_ID": "AUTO-20260918-D01",
       "OWNER": "WORKER-D",
       "STATUS": "READY",
       "AREA": "Research / Future Capabilities / Comparative Architecture",
-      "OBJECTIVE": "Research GenAI observability, long-horizon root-cause attribution and multi-day autonomous development evidence patterns; map them to Amadeus without changing runtime semantics.",
+      "OBJECTIVE": "Research GenAI observability, long-horizon RCA and multi-day autonomous-development evidence patterns without runtime semantic changes.",
       "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
-      "READ_SET": [
-        "persona_core/operational_runtime_v1/provider.py",
-        "persona_core/operational_runtime_v1/runtime_store.py",
-        "persona_core/operational_runtime_v1/chat.py",
-        "persona_core/operational_build_v1/TASK_STATE.json",
-        ".autonomous/AUTONOMOUS_TASK_STATE.json"
-      ],
-      "WRITE_SET": [
-        ".autonomous/research/OBSERVABILITY_DURABLE_ORCHESTRATION_20260918.md"
-      ],
+      "READ_SET": ["persona_core/operational_runtime_v1/provider.py","persona_core/operational_runtime_v1/runtime_store.py","persona_core/operational_runtime_v1/chat.py","persona_core/operational_build_v1/TASK_STATE.json",".autonomous/AUTONOMOUS_TASK_STATE.json"],
+      "WRITE_SET": [".autonomous/research/OBSERVABILITY_DURABLE_ORCHESTRATION_20260918.md"],
       "DEPENDENCIES": [],
-      "ACCEPTANCE_CRITERIA": [
-        "Research OpenTelemetry GenAI conventions, Harness-of-Harness and long-horizon RCA with source/date/license/risk/evaluation fields.",
-        "Map traces to existing ProviderJournal unknown-state and RuntimeStore transaction semantics without making telemetry authoritative.",
-        "Specify privacy/data-minimization defaults because prompt/tool/retrieval telemetry can contain sensitive user content.",
-        "Separate implementation-time tests, independent evaluation and production acceptance.",
-        "No provider replay, no runtime behavior change, no Persona/Genesis/protected-state write."
-      ],
-      "LEASE_STARTED_AT": null,
-      "LEASE_EXPIRES_AT": null,
-      "BRANCH": null,
-      "PR": null,
-      "RESEARCH_REFERENCES": [
-        "OpenTelemetry GenAI semantic conventions (2026)",
-        "arXiv:2609.01481 Harness-of-Harness",
-        "arXiv:2609.13463 Root-Cause Attribution Is a Search Problem"
-      ],
-      "NOVELTY_SIGNATURE": {
-        "AREA": "Observability / autonomous orchestration research",
-        "CURRENT_STATE": "ProviderJournal and RuntimeStore already provide durable local evidence, but there is no standardized trace vocabulary or systematic long-trace RCA research memo in the inspected snapshot.",
-        "IDENTIFIED_GAP": "Cross-run observability and evidence triage are not standardized and must not leak raw sensitive content by default.",
-        "OBJECTIVE": "Define a research-backed, non-authoritative telemetry/evaluation mapping.",
-        "EXPECTED_DELTA": "Research memo only.",
-        "PRIMARY_WRITE_SET": ".autonomous/research/OBSERVABILITY_DURABLE_ORCHESTRATION_20260918.md",
-        "ACCEPTANCE_SEMANTICS": "Observability improves diagnosis/evidence but can never grant state or action authority."
-      }
+      "ACCEPTANCE_CRITERIA": ["Source/date/license/risk/evaluation recorded","Telemetry layered over ProviderJournal/RuntimeStore, never authoritative","Privacy/data-minimization defaults","Implementation/evaluation/product acceptance separated","No provider/runtime/Persona protected-state write"],
+      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":null,"PR":null,"RESEARCH_REFERENCES":["OpenTelemetry GenAI semantic conventions","arXiv:2609.01481 Harness-of-Harness","arXiv:2609.13463 Root-Cause Attribution Is a Search Problem"],
+      "NOVELTY_SIGNATURE":{"AREA":"Observability / orchestration research","CURRENT_STATE":"Durable local evidence exists but trace vocabulary/RCA research is not standardized.","IDENTIFIED_GAP":"Cross-run diagnosis and privacy-safe telemetry mapping.","OBJECTIVE":"Research-backed non-authoritative mapping.","EXPECTED_DELTA":"Research memo only.","PRIMARY_WRITE_SET":".autonomous/research/OBSERVABILITY_DURABLE_ORCHESTRATION_20260918.md","ACCEPTANCE_SEMANTICS":"Observability cannot grant state/action authority."}
     }
   ],
   "DUPLICATES_REJECTED": [
-    {
-      "candidate": "Reimplement R044/R045/R046/R047 under new names or with a new paper/framework",
-      "reason": "REJECTED_DUPLICATE: acceptance/task/progress history already records these capabilities and their evidence; newer G6 work does not authorize rebuilding them."
-    },
-    {
-      "candidate": "Generate or simulate missing natural-day evidence now",
-      "reason": "REJECTED_DUPLICATE_AND_PROTECTED: real-time evidence is intentionally external to build completion; simulated dates cannot satisfy it and old candidate dates do not transfer to G6."
-    },
-    {
-      "candidate": "Adopt TrustMem/Agent Zero/LifeMem by creating a second memory authority, new Genesis, or replacement Persona store",
-      "reason": "REJECTED_DUPLICATE_AND_RED: current architecture already separates admission/storage/retrieval/growth authority; direct replacement would violate locked identity/provenance boundaries. Research/evaluation comparison only is allowed."
-    },
-    {
-      "candidate": "Rewrite durable execution/event sourcing or automatic retry semantics as a fresh runtime subsystem",
-      "reason": "REJECTED_DUPLICATE: RuntimeStore and ProviderJournal already implement the relevant transaction/recovery/UNKNOWN-no-replay primitives; runtime-vNext is already documenting integration boundaries."
-    }
+    "REJECTED_DUPLICATE: reimplement R044/R045/R046/R047 under new names/frameworks",
+    "REJECTED_DUPLICATE_AND_PROTECTED: simulate or manufacture natural-day validation",
+    "REJECTED_DUPLICATE_AND_RED: replace current memory/Persona authority with TrustMem/Agent Zero/LifeMem",
+    "REJECTED_DUPLICATE: build a fresh durable-execution/retry subsystem despite RuntimeStore/ProviderJournal"
   ],
   "WRITE_CONFLICTS": [],
-  "PROTECTED_WORK": [
-    "R044-R047 historical completed/build-scope evidence",
-    "Genesis AMADEUS-KURISU-GENESIS-R035",
-    "Persona Constitution and identity authority",
-    "Memory Cutoff and autobiographical-memory authority",
-    "source provenance authority and locked decisions",
-    "all SUBMITTED_STATUS_UNKNOWN requests including published G6 N06_T4",
-    "natural-day validation: real dates only; no simulation counted",
-    "production activation"
+  "OPEN_PRS": [
+    {"number":1,"head":"codex/persona-core-operations-v1-20260917","base":"main","status":"open"},
+    {"number":2,"head":"feat/amadeus-runtime-vnext-foundation","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},
+    {"number":3,"head":"autonomous/orchestrator-state","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"}
   ],
-  "NEXT_ACTION": "Publish this control state and research ledger. Allow at most three additional workers to claim the READY tasks with non-overlapping write sets. Do not claim HOLD-G6-07-CANONICAL until its dependencies are verified from GitHub-accessible canonical evidence."
+  "PROTECTED_WORK": ["R044-R047 historical completed/build evidence","Genesis AMADEUS-KURISU-GENESIS-R035","Persona Constitution and identity authority","Memory Cutoff and autobiographical-memory authority","source provenance authority and locked decisions","all SUBMITTED_STATUS_UNKNOWN requests including N06_T4","natural-day validation real-time requirement","production activation"],
+  "NEXT_ACTION": "Workers may claim the three READY tasks with non-overlapping write sets. Do not claim HOLD-G6-07-CANONICAL until canonical source/ledger dependencies are verified. Review PR #1/#2/#3 without auto-merge."
 }
