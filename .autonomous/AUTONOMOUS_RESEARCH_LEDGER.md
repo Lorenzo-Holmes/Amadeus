@@ -186,6 +186,48 @@ Scope: research evidence for future tasks; no research item is itself authority 
 - **EVALUATION_METHOD:** Compare synthetic cases for correction, retraction, provenance-scoped forgetting, re-ingestion of the same claim, historical audit access, and backup/export residue. Require explicit disposition for each layer rather than a single boolean `deleted`.
 - **TASK LINK:** `AUTO-20260918-B02`.
 
+## Finding R-20260918-14 — MMPIBench: multimodal prompt injection needs propagation-stage evidence
+
+- **SOURCE:** “An Experimental Evaluation of Multimodal Prompt Injection Attacks on Agentic AI Frameworks,” arXiv:2609.09404.
+- **SOURCE_DATE:** 2026-09-08.
+- **PROBLEM:** Images and audio can carry attacker instructions into an agent through perception rather than the direct user-text channel, and measuring only completed harmful actions can hide attempted propagation.
+- **CORE_IDEA:** MMPIBench measures injection propagation from perception through planning to tool execution across multiple visual carriers and an audio extension. It reports both attempted and completed attacks, making the attempted-but-blocked stage observable instead of treating it as success or ignoring it.
+- **AMADEUS_CURRENT_STATE:** The reviewed Amadeus snapshot has trusted state-admission boundaries and runtime-vNext describes future multimodal/tool adapters, but there is no integrated production vision/audio/tool execution surface in the inspected source. State admission therefore cannot be treated as proof that perceptual observations are safely handled end-to-end.
+- **REAL_GAP:** Before future image/audio/world observations can influence memory, state, Persona or tools, Amadeus needs an explicit rule that perceptual/tool-derived text is an untrusted observation and an evaluation vocabulary that distinguishes perception, interpretation, attempted propagation, authorization and actual effect.
+- **PROPOSED_DELTA:** Do not open an implementation task now. Defer a research/evaluation candidate until a real multimodal ingestion surface exists; then use offline image/audio/metadata fixtures and require injected content to remain observation data unless independently admitted/authorized by the existing host boundaries.
+- **RISKS:** Benchmark attack rates are model/framework dependent; OCR/audio delivery support varies; a blocked tool call can still contaminate memory or expression; treating all perceptual text as malicious would destroy utility.
+- **LICENSE:** Paper citation and abstract were verified; code/dataset reuse license was not independently verified in this run, so no external artifact is imported.
+- **EVALUATION_METHOD:** Record separate outcomes for `PERCEIVED`, `INTERPRETED`, `ATTEMPTED_PROPAGATION`, `AUTHORIZED`, and `EFFECT_COMMITTED`; include benign controls and assert that observation content alone cannot grant state/action/Persona authority.
+- **TASK LINK:** Deferred research candidate only; no READY task created this run.
+
+## Finding R-20260918-15 — TRACER: claim-level provenance for future multimodal tool observations
+
+- **SOURCE:** “TRACER: Verifiable Generative Provenance for Multimodal Tool-Using Agents,” arXiv:2605.09934.
+- **SOURCE_DATE:** 2026-05-11.
+- **PROBLEM:** Tool trajectories can show which tools ran without showing which observation actually supports each generated claim, leaving unsupported reasoning mixed with grounded evidence.
+- **CORE_IDEA:** TRACER pairs generated answer units with structured provenance pointing to supporting tool turns/evidence units and distinguishes quotation, compression and inference before verification.
+- **AMADEUS_CURRENT_STATE:** Runtime-vNext already contains an offline Claim/Evidence reference with source-binding semantics, while the production Persona snapshot does not expose a multimodal tool-observation pipeline. Existing provenance authority remains project-specific and stronger than a generic generation-time citation record.
+- **REAL_GAP:** Future multimodal/tool-derived statements will need claim-level traceability to observations, but provenance metadata must not itself prove truth, permission or autobiographical status.
+- **PROPOSED_DELTA:** Treat TRACER as comparative design evidence for a later observation-provenance evaluation. Reuse the distinction between direct reuse, condensation and inference conceptually; do not import its runtime or let a provenance record grant authority.
+- **RISKS:** Correctly linked evidence can still be insufficient or false; model-generated provenance can hallucinate links; provenance can leak sensitive observations; optimizing for provenance scores can distort behavior.
+- **LICENSE:** Paper verified; implementation/dataset license not independently verified in this run, so no code or data import is authorized.
+- **EVALUATION_METHOD:** Synthetic tool-observation fixtures with supported, partially supported and unsupported claims; require deterministic source/turn binding where possible and keep semantic adequacy as review evidence rather than state authority.
+- **TASK LINK:** Deferred; complements future multimodal evaluation and the existing PR #2 Claim/Evidence work rather than creating a new current task.
+
+## Finding R-20260918-16 — Agent Flight Recorder: tamper evidence complements, but cannot replace, durable runtime truth
+
+- **SOURCE:** `mpi-dsg/agent-flight-recorder`, README/LICENSE/CITATION.cff inspected on GitHub.
+- **SOURCE_DATE:** Repository observed 2026-09-18; preferred citation lists BCCA 2026.
+- **PROBLEM:** Long-horizon agent traces can be edited, reordered, deleted or truncated, making post-incident reconstruction unreliable if the observer trusts only mutable logs.
+- **CORE_IDEA:** The project binds intent, policy, approval, execution, effects and provenance into append-only hash-linked events, batches them into Merkle epochs, optionally anchors roots externally, and distinguishes `VERIFIED`, `TAMPERED` and `INCOMPLETE`. Its own documentation notes that a trusted terminal checkpoint is required to distinguish a valid prefix from a complete log.
+- **AMADEUS_CURRENT_STATE:** `RuntimeStore` and `ProviderJournal` remain the durable project truth for state/provider semantics, including `SUBMITTED_STATUS_UNKNOWN`; D01 already exists to research non-authoritative observability and long-horizon diagnosis. A second audit ledger would create needless authority ambiguity.
+- **REAL_GAP:** D01 can profitably compare tamper-evidence and explicit incomplete-log semantics against Amadeus trace exports, especially for detecting observer/log corruption, but this is not a reason to replace the existing stores or introduce blockchain anchoring.
+- **PROPOSED_DELTA:** Add Agent Flight Recorder as a D01 comparative source only. If D01 proposes trace integrity fixtures, use synthetic exported metadata and require that corruption/truncation is detectable while telemetry loss never mutates runtime truth.
+- **RISKS:** Hash integrity does not prove semantic correctness; external anchors add privacy, operational and cost concerns; a valid prefix may look internally consistent without a trusted terminal checkpoint; research-prototype assumptions may not fit crash durability or Amadeus deployment.
+- **LICENSE:** MIT license verified in repository `LICENSE` and `CITATION.cff`.
+- **EVALUATION_METHOD:** Offline edit/delete/reorder/truncate tests over synthetic trace exports; distinguish `TAMPERED` from `INCOMPLETE`; verify that runtime/provider authoritative records remain unchanged and that an external anchor/checkpoint cannot grant Persona, action or acceptance authority.
+- **TASK LINK:** `AUTO-20260918-D01` as an additional research reference; no separate task.
+
 ## Research disposition
 
-No source above justifies immediate migration or replacement of Amadeus runtime, memory authority, Persona Core, tool runtime, or permission authority. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, **verified-forgetting research**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
+No source above justifies immediate migration or replacement of Amadeus runtime, memory authority, Persona Core, tool runtime, permission authority, or multimodal authority. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, **verified-forgetting research**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled. R14/R15 expose a real future multimodal-observation boundary, but no new READY task is created in this run because there is no integrated multimodal execution surface and the three remaining concurrency slots already have non-overlapping READY work. R16 is folded into D01 rather than duplicating its observability scope.
