@@ -53,3 +53,15 @@ Fresh research on persistent memory poisoning is relevant because cross-session 
 A new READY task, `AUTO-20260918-C02`, is therefore limited to an offline adversarial regression suite and report. It must exercise persistence/retrieval across sessions, entity isolation, correction/supersession and attempted state/action escalation, with benign negative controls. Provider calls and external side effects remain zero. Any discovered defect is evidence for later review, not permission to silently patch protected runtime or declare product acceptance.
 
 This task is novel relative to C01 state-drift auditing, B01 growth-basis freshness, D01 observability research, the existing admission contract, and PR #2 claim/evidence reference work. Its WRITE_SET is disjoint from all current REVIEW work and there are no valid CLAIMED/RUNNING tasks at this checkpoint.
+
+## AUTO-DEC-009 — Security prose is not proof of enforcement
+
+Date: 2026-09-18. Status: ACTIVE.
+
+A security requirement written in documentation, a prompt, a worker instruction, or a model-facing policy is an obligation or advisory constraint, not evidence that the runtime deterministically blocks the prohibited effect. The control plane may mark a requirement `ENFORCED` only when it can cite a concrete host/runtime/OS enforcement point and the scope of that control.
+
+The currently inspected `AdmissionController` is real enforcement evidence for its explicitly supported state-admission effects: untrusted text cannot manufacture host-issued evidence, request forbidden state authority, or cross entity boundaries. That evidence must not be generalized into a claim that future tool execution is already protected. Runtime-vNext's `ActionIntent -> host authorization -> execution ledger -> tool` path is an architecture proposal in PR #2, not an integrated production tool gate.
+
+Fresh research on prose-vs-built-in deny controls, deterministic pre-action authorization, Agent Control Specification, and MCP tool sandboxing therefore creates one bounded GREEN task: `AUTO-20260918-A02`. It is a read-only/offline permission-enforcement coverage audit. It must distinguish state admission, action/tool authorization, OS sandboxing, user approval, and provider UNKNOWN/replay handling; documentation alone cannot satisfy an enforcement classification.
+
+OAP, Microsoft Agent Governance Toolkit/ACS, and MCPGuard-Dynamic are comparative references only. This decision does not authorize a parallel permission authority, a new production tool executor, a sandbox migration, or replacement of existing AdmissionController/ProviderJournal semantics. No Persona, Genesis, Memory Cutoff, provenance, locked decision, G6 acceptance, historical evidence, or production activation state is changed.
