@@ -116,6 +116,48 @@ Scope: research evidence for future tasks; no research item is itself authority 
 - **EVALUATION_METHOD:** Map proposed attack classes to deterministic C02 fixtures and require explicit safe failure modes. A detector result alone must never authorize state, tool or Persona effects.
 - **TASK LINK:** `AUTO-20260918-C02`.
 
+## Finding R-20260918-09 — Security prose is not deterministic enforcement
+
+- **SOURCE:** Ting Yan, “When ‘Do Not’ Is Not Deny: Security Rules in CLAUDE.md vs Built-In Controls,” arXiv:2608.23550.
+- **SOURCE_DATE:** 2026-08-24.
+- **PROBLEM:** Security requirements written as natural-language instructions can look like hard policy while remaining subject to model interpretation rather than deterministic blocking.
+- **CORE_IDEA:** The study separates prose rules from built-in deny controls and reports that, among extracted rules from 481 public CLAUDE.md files, only a minority had matching built-in controls; the strict estimate was 4.4% for the retrieved-rule sample.
+- **AMADEUS_CURRENT_STATE:** Amadeus already has a deterministic host-side `AdmissionController` for selected state effects, and runtime-vNext explicitly proposes trusted-host authorization before future action execution. The inspected snapshot does not show an integrated production tool executor, so state admission must not be generalized into proof of future tool authorization.
+- **REAL_GAP:** No reusable artifact currently inventories security requirements and maps each one to an actual enforcement point across state admission, action/tool authorization, OS sandboxing, user approval, and provider UNKNOWN/replay handling. A documentation rule can therefore be mistaken for an implemented control during future capability work.
+- **PROPOSED_DELTA:** Create a read-only, offline permission-enforcement coverage auditor that classifies requirements as `ENFORCED`, `ADVISORY_ONLY`, `NOT_APPLICABLE`, or `UNKNOWN`, with source and enforcement evidence. Documentation/model instructions alone can never qualify as `ENFORCED`.
+- **RISKS:** False positives from superficial code matching; false negatives where a control is enforced indirectly; stale source references; collapsing distinct control layers into one binary “safe” label.
+- **LICENSE:** Paper/code reuse terms were not independently verified in this run. No implementation or dataset import is authorized by this finding.
+- **EVALUATION_METHOD:** Repository-grounded fixtures must include a prose-only deny with no runtime control, an existing deterministic AdmissionController rejection, and a future ActionIntent requirement with no implemented tool gate; the auditor must not manufacture enforcement evidence.
+- **TASK LINK:** `AUTO-20260918-A02`.
+
+## Finding R-20260918-10 — Pre-action authorization is a host enforcement boundary, not a prompt pattern
+
+- **SOURCE:** “Before the Tool Call: Deterministic Pre-Action Authorization for Autonomous AI Agents,” arXiv:2603.20953; Microsoft Agent Governance Toolkit / Agent Control Specification documentation.
+- **SOURCE_DATE:** arXiv paper 2026-03-21; current AGT documentation observed 2026-09-18.
+- **PROBLEM:** Consequential tool calls need authorization before side effects occur; model intent, prompt rules, and post-hoc review do not themselves enforce the action boundary.
+- **CORE_IDEA:** The OAP work intercepts tool calls synchronously before execution and evaluates declarative policy. Microsoft ACS similarly defines a stateless, deterministic, fail-closed host-called policy runtime with intervention points including `pre_tool_call` and `post_tool_call`.
+- **AMADEUS_CURRENT_STATE:** Amadeus already has deterministic state admission and a provider journal that preserves remote-UNKNOWN semantics. Runtime-vNext proposes `ActionIntent -> host authorization -> execution ledger -> tool`, but the reviewed branch deliberately does not integrate a production tool executor.
+- **REAL_GAP:** The immediate gap is not “install a policy framework”; it is the absence of a machine-checkable coverage inventory proving which present/future security requirements have concrete host enforcement and which remain design-only.
+- **PROPOSED_DELTA:** Use OAP/ACS only as comparative vocabulary and fixture inspiration for `AUTO-20260918-A02`. Do not introduce a parallel permission authority, production broker, or new tool runtime in this task.
+- **RISKS:** Premature framework transplant; assuming policy evaluation substitutes for sandboxing; approval fatigue; host snapshots omitting security-relevant facts; policy definitions drifting away from runtime semantics.
+- **LICENSE:** The OAP specification is described by its paper as Apache-2.0. Microsoft Agent Governance Toolkit is published as open source; exact component/dependency licenses must be reverified before any vendoring. No external source is imported by A02.
+- **EVALUATION_METHOD:** The coverage audit must keep state admission, pre-action authorization, OS sandboxing, user approval, and provider replay/UNKNOWN semantics as separate control classes, and require direct evidence for each `ENFORCED` classification.
+- **TASK LINK:** `AUTO-20260918-A02`.
+
+## Finding R-20260918-11 — OS-level tool sandboxing is future defense-in-depth, not a current migration task
+
+- **SOURCE:** `facebook/mcpguard-dynamic` — MCPGuard-Dynamic.
+- **SOURCE_DATE:** Repository observed 2026-09-18.
+- **PROBLEM:** Application-level tool policy can miss behavior hidden inside a malicious or misconfigured tool server, so a tool may perform unauthorized file, network, or process effects even when its visible arguments look acceptable.
+- **CORE_IDEA:** MCPGuard-Dynamic combines per-server capability policy, argument validation, and eBPF LSM enforcement at file/network/process system-call boundaries. Its published repository includes a 14-server / 82-case evaluation harness.
+- **AMADEUS_CURRENT_STATE:** The inspected Amadeus snapshot does not expose an integrated production MCP/tool executor. Runtime-vNext treats tools as future gated capability adapters and explicitly separates facts from action permission.
+- **REAL_GAP:** There is no current basis for claiming OS sandbox coverage, but implementing an eBPF subsystem now would be premature and would not close the present G6 evidence gap.
+- **PROPOSED_DELTA:** Do not create a sandbox implementation task now. `AUTO-20260918-A02` should represent OS sandboxing as a separate enforcement class and report it `NOT_APPLICABLE` or `UNKNOWN` unless an actual tool execution surface and control evidence exist. Revisit defense-in-depth only when a real tool executor is introduced.
+- **RISKS:** Root/kernel requirements; Linux portability; complex policy maintenance; false confidence from benchmark-specific coverage; application and kernel policy divergence.
+- **LICENSE:** The repository states MIT license. Verify any transitive or vendored components before reuse; no code import is authorized by this finding.
+- **EVALUATION_METHOD:** Future-only: if Amadeus gains a real tool surface, reproduce benign and attack cases against that surface and distinguish application-policy prevention from system-call containment. No such production claim is made now.
+- **TASK LINK:** `AUTO-20260918-A02` for coverage classification only; no implementation task opened for MCPGuard.
+
 ## Research disposition
 
-No source above justifies immediate migration or replacement of Amadeus runtime, memory authority or Persona Core. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
+No source above justifies immediate migration or replacement of Amadeus runtime, memory authority, Persona Core, tool runtime, or permission authority. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
