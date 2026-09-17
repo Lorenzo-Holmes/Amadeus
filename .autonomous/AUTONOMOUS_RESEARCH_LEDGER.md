@@ -88,6 +88,34 @@ Scope: research evidence for future tasks; no research item is itself authority 
 - **EVALUATION_METHOD:** Known-divergence fixtures, missing-evidence fixtures and protected-state contradiction fixtures; the tool must output explicit `CONFLICT`/`UNKNOWN` rather than silently reconcile.
 - **TASK LINK:** `AUTO-20260918-C01`, `AUTO-20260918-D01`
 
+## Finding R-20260918-07 — Persistent Memory Poisoning Attack: cross-session instruction persistence
+
+- **SOURCE:** When Malicious Instructions Persist: Persistent Memory Poisoning Attack on Harness-Based Agents, arXiv:2609.13889.
+- **SOURCE_DATE:** 2026-09-12.
+- **PROBLEM:** A malicious instruction can be embedded in content that an agent persists as memory and later retrieves in another session, converting a one-shot injection into a durable cross-session influence channel.
+- **CORE_IDEA:** Evaluate the attack at the memory lifecycle boundary: ingestion, persistence, retrieval, and later instruction interpretation, rather than only at the original prompt boundary.
+- **AMADEUS_CURRENT_STATE:** `AdmissionController` already treats chat, retrieval and model text as untrusted and requires host-issued evidence tokens for admitted effects; forbidden source-memory, Persona, capability, state-replacement and Genesis effects are explicitly rejected. This is a stronger authority boundary than the attack paper assumes for many harness agents.
+- **REAL_GAP:** No currently reviewed Amadeus task/PR exercises an adversarial cross-session fixture where apparently useful external/tool-like content contains hidden operational instructions, survives persistence/retrieval, and then attempts to obtain state/action/Persona authority in a later session.
+- **PROPOSED_DELTA:** Add an offline security evaluation only. Persist/retrieve poison-shaped content as data, reopen across sessions, exercise entity boundaries and correction/supersession, and prove it cannot become authority without the existing host admission path. Do not replace `AdmissionController`, add a second memory authority, or change protected Persona state.
+- **RISKS:** A synthetic fixture may overstate real exploitability; testing only admission could miss expression/tool-following effects; security tests themselves can accidentally encode unsafe strings into authoritative fixtures if boundaries are sloppy.
+- **LICENSE:** Paper/code reuse terms were not independently verified in this run. No external implementation or dataset import is authorized by this finding.
+- **EVALUATION_METHOD:** Offline negative/positive controls across two sessions: benign durable data still works; poison-shaped instructions remain quoted/retrieved data; requested state/action effects fail without host evidence; cross-entity retrieval stays isolated; correction/supersession does not resurrect stale poison. Zero provider calls and zero external side effects.
+- **TASK LINK:** `AUTO-20260918-C02`.
+
+## Finding R-20260918-08 — MemSentry: detection patterns are secondary to host authority
+
+- **SOURCE:** MemSentry: A Framework for Detecting Persistent Memory Poisoning in Agentic AI, arXiv:2609.08747.
+- **SOURCE_DATE:** 2026-09-08.
+- **PROBLEM:** Agent memories need a repeatable way to flag suspicious durable content before later reuse.
+- **CORE_IDEA:** The work frames persistent-memory screening around explicit dispositions such as accept/review/quarantine and highlights memory-specific poisoning indicators.
+- **AMADEUS_CURRENT_STATE:** Amadeus already has deterministic host-side admission and evidence binding. A detector therefore cannot be allowed to become a new source of truth or grant authority merely because it labels content safe.
+- **REAL_GAP:** Amadeus lacks a dedicated adversarial regression suite showing that suspicious content remains non-authoritative after persistence and retrieval; this is an evaluation gap, not evidence that the production admission design is already exploitable.
+- **PROPOSED_DELTA:** Use MemSentry only as a comparative checklist for attack classes and test-case diversity. Keep deterministic admission as the authority boundary; any future classifier should be advisory and fail closed.
+- **RISKS:** False negatives, false positives that suppress useful memory, classifier drift, and accidental escalation of a safety score into authorization.
+- **LICENSE:** Exact code/data license was not independently verified in this run; no source is imported.
+- **EVALUATION_METHOD:** Map proposed attack classes to deterministic C02 fixtures and require explicit safe failure modes. A detector result alone must never authorize state, tool or Persona effects.
+- **TASK LINK:** `AUTO-20260918-C02`.
+
 ## Research disposition
 
-No source above justifies immediate migration or replacement of Amadeus runtime, memory authority or Persona Core. The actionable deltas are deliberately limited to **evaluation**, **read-only auditing**, **observability research**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
+No source above justifies immediate migration or replacement of Amadeus runtime, memory authority or Persona Core. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
