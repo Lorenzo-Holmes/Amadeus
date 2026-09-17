@@ -43,3 +43,13 @@ The inspected GitHub snapshot does not expose the expected `persona_core/gpt6_op
 Date: 2026-09-18. Status: ACTIVE.
 
 TrustMem, Agent Zero Memory, LifeMem, OpenTelemetry GenAI conventions, Harness-of-Harness and long-horizon RCA research are useful only after mapping them against Amadeus's current architecture. No external project is considered a reason to replace the existing Persona, memory-admission, provenance, RuntimeStore or ProviderJournal authorities. Proposed near-term deltas are restricted to offline evaluation, read-only state auditing, observability research and comparative architecture.
+
+## AUTO-DEC-008 — Persistent-memory-poisoning research creates an evaluation task, not an authority rewrite
+
+Date: 2026-09-18. Status: ACTIVE.
+
+Fresh research on persistent memory poisoning is relevant because cross-session reuse can turn injected text into a durable influence channel. The inspected Amadeus admission layer already treats chat, retrieval and model text as untrusted and requires host-issued evidence for admitted effects, so the research does not justify replacing `AdmissionController`, adding a second memory authority, or changing Persona/Genesis state.
+
+A new READY task, `AUTO-20260918-C02`, is therefore limited to an offline adversarial regression suite and report. It must exercise persistence/retrieval across sessions, entity isolation, correction/supersession and attempted state/action escalation, with benign negative controls. Provider calls and external side effects remain zero. Any discovered defect is evidence for later review, not permission to silently patch protected runtime or declare product acceptance.
+
+This task is novel relative to C01 state-drift auditing, B01 growth-basis freshness, D01 observability research, the existing admission contract, and PR #2 claim/evidence reference work. Its WRITE_SET is disjoint from all current REVIEW work and there are no valid CLAIMED/RUNNING tasks at this checkpoint.
