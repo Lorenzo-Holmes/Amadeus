@@ -3,21 +3,21 @@
 
 LAST_COMPLETED: G6-06
 
-CURRENT_STATE: GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS
+CURRENT_STATE: WAITING_PROVIDER_READINESS_WITH_OFFLINE_CLAIM_EVIDENCE_VALIDATED
 
-NEXT_ACTION: The quarantined revision07 is reviewed for all15 displayed replies:46PASS14FAILof60,116unjudged. Never resume or replay the unknown N06_T4. Complete authenticated persisted-record capability projection, focused and full compatibility tests, then freeze the whole new external44_20260917_08_pro plan; do not inherit semantic PASS. New blind-package and real-day tools are preparation only; external and real-time remain waiting.
+NEXT_ACTION: Read CURRENT_EXECUTION_RUNBOOK.md and G6_07_CLAIM_EVIDENCE_ADJUDICATION.json. The complete current-source offline mechanism checks are finished; do not redo without source change or new evidence. Keep both historical UNKNOWNs quarantined and inspect only genuine existing receipts. No reliable long-generation transport readiness evidence is available; do not infer it from HTTP401 or create a renamed replay. Once independent readiness and a substantive new experiment basis are available, freeze a new complete source/model/configuration/price/finite-spend scope with automatic_paid_retries=0, then complete fresh external44 44/176 quote-bound review, heldout113/452 and original82/328 in order before candidate/review/new real dates. The two MAJOR findings remain OPEN and all build/product/production flags false.
 
-RECOVERY_POINT: persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_07/CURSOR.json
+RECOVERY_POINT: persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json
 
-BLOCKER: null
+BLOCKER: Two remote outcomes remain UNKNOWN and non-replayable; long-generation transport readiness is not established. The offline evidence representation is implemented and tested, but its actual model semantic effectiveness and naturalness are unproven. R8-N02-01/R8-N06-01 remain OPEN; no new paid batch is ready.
 
-IN_FLIGHT: {"local_execution_active": false, "revision_cursor": "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_07/CURSOR.json", "external_effect": null, "unresolved_requests": [{"call_id": "call_8e8d8eba92354b6bb12c8fb4e6eed8b8", "raw_sha256": null, "request_sha256": "28cff25a89feae542c8753152f576685d0043b287bc5a3c8b9f59ef4b9bf8199", "reserve_micro_cny": 288182, "session_id": "session_95a1451406ab41f3b2d98930c0e3d027", "slot_id": "N06_T4", "turn_id": "turn_530d1ec3e1a5445c946427d970065355"}]}
+OFFLINE_RESULT: claim/evidence20; components279/279; legacy449/450 with one retained historical binding error; protected310 unchanged.
 
-SPEND: {"revision_id": "external44_20260917_07", "batch_id": "APCORE-G6-V2-external44_20260917_07", "journal": "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_07/runtime/runtime.sqlite3", "source_manifest_sha256": "3b3f1832029ad79fc4ed2ea7d8ed83c563936538bfa249c739b8c55d0f88f66f", "calls": 16, "captured_displayed": 15, "not_submitted": 28, "unknown_count": 1, "guard_cny": 15.71, "known_usage_estimate_cny": 0.144073, "total_usage_estimate_cny": null, "unknown_cost_reserve_cny": 0.288182, "automatic_paid_retries": 0, "billing_certified": false}
+IN_FLIGHT: {"local_execution_active": false, "external_effect": null, "unresolved_requests": [{"call_id": "call_8e8d8eba92354b6bb12c8fb4e6eed8b8", "slot_id": "N06_T4", "status": "SUBMITTED_STATUS_UNKNOWN", "request_sha256": "28cff25a89feae542c8753152f576685d0043b287bc5a3c8b9f59ef4b9bf8199", "raw_sha256": null, "reserve_micro_cny": 288182, "revision": "external44_20260917_07"}, {"call_id": "call_b4bb72bc78f74acaaadba41011a03cf4", "slot_id": "N07_T3", "status": "SUBMITTED_STATUS_UNKNOWN", "request_sha256": "b3fdd4ce377f556901ecc164e2018d158946411a8eff64b1423e3b865b2493a1", "raw_sha256": null, "reserve_micro_cny": 997344, "revision": "external44_20260917_08_pro"}]}
 
-VALIDATION_PENDING: ["G6-07 quote-bound semantic and quality review", "G6-08 frozen 24/113/452", "G6-09 fresh original82/328", "G6-10 candidate V2", "G6-11 new blind package", "G6-12 actual external return", "G6-13 new real dates 0/3", "G6-14 product rollup"]
+SPEND: new generation0; automatic retries0; total submitted271; known usage estimate3.793624 CNY; unknown reserve1.285526 CNY; actual total unknown.
 
-Historical repair44/full82 and natural days are not current G6 evidence. R005 provenance closure remains NOT_ENOUGH_EVIDENCE. PRODUCT_ACCEPTANCE_COMPLETE=false; production_activated=false.
+BUILD_SCOPE_COMPLETE_VALIDATION_PENDING=false; GPT6_CORE_BUILD_COMPLETE_VALIDATION_PENDING=false; PRODUCT_ACCEPTANCE_COMPLETE=false; production_activated=false; new candidate days0/3.
 
 <!-- G6_ACTIVE_END -->
 

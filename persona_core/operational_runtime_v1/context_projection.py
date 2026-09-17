@@ -248,10 +248,14 @@ def compact_retrieval(records: list[dict], *, source_memory_in_host: bool,
         if source_memory_in_host and item.get('record_kind')=='FROZEN_SOURCE':
             continue
         row={k:item[k] for k in ('record_id','record_kind','source_turn_id','content','provenance','admitted_scope',
-             'superseded','content_truncated','sequence') if k in item}
+             'superseded','superseded_origins','content_truncated','assistant_content_truncated','sequence','event_ids') if k in item}
         if item.get('record_kind')=='COMMITMENT':
             row['status']=item['status']
             row['agreed_submission_requirement']=item.get('agreed_submission_requirement')
+            for key in ('submission_actor','assistant_role','verification_scope','requirement_evidence_status',
+                        'opened_event_id','closed_event_id','verified_submission_turn_id'):
+                if key in item:
+                    row[key]=item[key]
         if item.get('record_kind')=='UTTERANCE_OBSERVED':
             row['assistant_utterance']=item.get('assistant_utterance','')
             row['assistant_utterance_is_fact_authority']=False

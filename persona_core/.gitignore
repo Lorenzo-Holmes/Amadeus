@@ -3,6 +3,22 @@ operational_build_v1/evidence/
 operational_recovery_*/
 operational_sync_*/
 
+# GPT6 optimization local evidence / hidden evaluation material.
+gpt6_optimization_v2/checkpoints/
+gpt6_optimization_v2/component_checks/
+gpt6_optimization_v2/context_path_measurement_*/
+gpt6_optimization_v2/external_failure_v1/
+gpt6_optimization_v2/heldout_v1/
+gpt6_optimization_v2/resume_*/
+gpt6_optimization_v2/review*/
+gpt6_optimization_v2/*RAW_DIALOGUE.json
+gpt6_optimization_v2/SPEND_LEDGER.json
+gpt6_optimization_v2/G6_07_REVIEW*.json
+gpt6_optimization_v2/G6_07_PARALLEL_EVIDENCE_AUDIT*.json
+gpt6_optimization_v2/BASELINE_SOURCE.zip
+gpt6_optimization_v2/G6_07_*BEFORE.zip
+gpt6_optimization_v2/G6_07_RUNNER_BEFORE.zip
+
 # Runtime databases and transient SQLite files.
 **/*.sqlite3
 **/*.sqlite3-shm

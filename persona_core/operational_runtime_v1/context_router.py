@@ -9,6 +9,7 @@ from typing import Any
 from transcript_store import TranscriptStore, SessionHandle, ensure
 from expression_policy import memory_expression_view, retrieval_expression_view, response_focus
 from expression_prompt import build_system, compact_focus
+from claim_evidence import build_graph, evidence_message, prompt_projection
 from context_projection import (active_prior_users, source_memory_relevant, compact_runtime_state,
     compact_source_memory, compact_observation, compact_retrieval, is_topic_reset,
     runtime_counts_requested, quoted_history, history_message, current_submission_phase)
@@ -164,10 +165,25 @@ def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
         core['memory']['source_language_glosses'] = _source_language_glosses(
             genesis['source_fact_only_not_first_person_memory'])
     retrieved = memory_provider(store, handle, current["user_text"]) if memory_provider else []
-    if memory_provider is not None and hasattr(memory_provider, 'context_state'):
+    # Only the authenticated built-in service can project authoritative state.
+    # A custom callable's records remain quotation data regardless of labels.
+    from retrieval import RetrievalService
+    known_retrieval = type(memory_provider) is RetrievalService
+    if known_retrieval:
         core['runtime_state'] = memory_provider.context_state(handle)
-    if memory_provider is not None and hasattr(memory_provider, 'context_observation'):
         core['host_observation'] = memory_provider.context_observation(handle, current)
+    # A custom callable does not establish the built-in persistence contract.
+    # The local import avoids retrieval's frozen-source helper import cycle.
+    if known_retrieval:
+        capability = memory_provider.memory_capability(store, handle)
+        capability['query'] = {
+            'stage': 'AUTHORIZED_RETRIEVAL_BEFORE_CONTEXT_COMPACTION',
+            'returned_record_count': sum(r.get('record_kind') != 'FROZEN_SOURCE' for r in retrieved),
+            'returned_source_count': sum(r.get('record_kind') == 'FROZEN_SOURCE' for r in retrieved),
+        }
+    else:
+        capability = {'status': 'UNKNOWN', 'scope': 'PERSISTENCE_CONTRACT_NOT_CONFIRMED'}
+    core['runtime_memory_capability'] = capability
     prompt_core = dict(core)
     memory_view = None
     if core.get('memory') is not None:
@@ -207,9 +223,16 @@ def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
         visible_turn_ids = [r['turn_id'] for r in history_rows]
         projected_retrieval = compact_retrieval(retrieval_view, source_memory_in_host=source_query,
                                                 visible_turn_ids=visible_turn_ids)
-        messages = with_retrieval(projected_retrieval) + history_message(history_rows) + [focus_message, tail]
+        graph = build_graph(entity_id=handle.entity_id, mode=handle.mode, current=current,
+            history=history_rows, retrieval=projected_retrieval,
+            observation=core.get('host_observation'), source_memory=prompt_core.get('memory'),
+            trusted_runtime=known_retrieval)
+        messages = (with_retrieval(projected_retrieval) + history_message(history_rows)
+                    + [evidence_message(graph), focus_message, tail])
         if size(messages) <= max_prompt_bytes:
             break
+        # Selected retrieval evidence is required. Refuse before submission if
+        # it cannot fit whole; never silently discard a late qualifier or quote.
         ensure(history_rows, "Current context exceeds input budget; no provider call allowed")
         # Drop one whole chronological turn, preserving speaker association.
         omitted = history_rows.pop(0)
@@ -217,8 +240,14 @@ def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
     return {"messages": messages, "route": asdict(route), "context_turn_ids": [r["turn_id"] for r in recent],
             "retrieval": retrieved, "history_messages_truncated": dropped,
             "prompt_bytes": size(messages), "mode": handle.mode, "turn_id": turn_id,
-            "context_is_state_authority": False, "long_term_retrieval_implemented": memory_provider is not None,
-            "expression_projection_version": "G6_COMPACT_CONTEXT_4",
+            "context_is_state_authority": False,
+            "long_term_retrieval_implemented": True if known_retrieval else False if memory_provider is None else None,
+            "memory_capability_projection": capability,
+            "retrieval_provider_attached": memory_provider is not None,
+            "expression_projection_version": "G6_CLAIM_EVIDENCE_CONTEXT_1",
+            "claim_evidence_graph": graph,
+            "prompt_claim_evidence_projection": prompt_projection(graph),
+            "retrieval_records_omitted": [],
             "visible_history_turn_ids": visible_turn_ids,
             "prompt_history_projection": quoted_history(history_rows),
             "history_before_projection": [{k: r[k] for k in

@@ -37,6 +37,35 @@ MAX_RESPONSE_BYTES = 1_000_000
 MAX_WORKER_TIMEOUT_SECONDS = 1200
 WORKER_LOCAL_REJECTION_HEADER = b'AMADEUS_WORKER_NOT_SUBMITTED_V1\n'
 WORKER_REMOTE_UNKNOWN_HEADER = b'AMADEUS_WORKER_REMOTE_OUTCOME_UNKNOWN_V1\n'
+NETWORK_ERROR_CLASSES = frozenset({
+    'URLError', 'OSError', 'TimeoutError', 'SSLError', 'SSLCertVerificationError',
+    'ConnectionError', 'ConnectionResetError', 'ConnectionRefusedError',
+    'ConnectionAbortedError', 'BrokenPipeError', 'gaierror', 'herror',
+    'RemoteDisconnected', 'HTTPException', 'IncompleteRead', 'OTHER',
+})
+
+
+def _os_error_number(value) -> int | None:
+    return value if type(value) is int and -(2 ** 31) <= value < 2 ** 31 else None
+
+
+def network_error_details(exc: BaseException) -> dict:
+    """Bounded diagnostics only; never serialize exception text or arguments."""
+    reason = getattr(exc, 'reason', None)
+    cause = reason if isinstance(reason, BaseException) else exc
+    name = type(cause).__name__
+    return {'reason_class': name if name in NETWORK_ERROR_CLASSES else 'OTHER',
+            'errno': _os_error_number(getattr(cause, 'errno', None)),
+            'winerror': _os_error_number(getattr(cause, 'winerror', None))}
+
+
+def validate_network_error(value) -> None:
+    ensure(isinstance(value, dict) and set(value) == {'reason_class', 'errno', 'winerror'},
+           'PROVIDER_WORKER_NETWORK_ERROR_SHAPE_INVALID')
+    ensure(isinstance(value['reason_class'], str) and value['reason_class'] in NETWORK_ERROR_CLASSES,
+           'PROVIDER_WORKER_NETWORK_ERROR_CLASS_INVALID')
+    ensure(all(value[k] is None or (type(value[k]) is int and _os_error_number(value[k]) == value[k])
+               for k in ('errno', 'winerror')), 'PROVIDER_WORKER_NETWORK_ERROR_NUMBER_INVALID')
 
 class WorkerNotSubmitted(StoreGuard):
     """A validated private-pipe receipt emitted before the worker's HTTP call."""
@@ -47,11 +76,14 @@ class WorkerNotSubmitted(StoreGuard):
 
 class WorkerRemoteOutcomeUnknown(StoreGuard):
     """Sanitized worker receipt after entering the HTTP path; never retryable."""
-    def __init__(self, request_sha256: str, reason: str, stage: str):
+    def __init__(self, request_sha256: str, reason: str, stage: str, network_error: dict | None = None):
         super().__init__('PROVIDER_WORKER_REMOTE_OUTCOME_UNKNOWN')
         self.request_sha256 = request_sha256
         self.reason = reason
         self.stage = stage
+        if network_error is not None:
+            validate_network_error(network_error)
+        self.network_error = network_error
 
 # Wire-name compatibility is not immutable model identity. The old Flash alias
 # is now served by V4.1-Flash too; accepting its canonical response must never
@@ -129,7 +161,8 @@ unknown; ProviderJournal keeps its intent and stops the batch.
     if child.returncode == 2 and output.startswith(WORKER_REMOTE_UNKNOWN_HEADER):
         ensure(len(output) <= 2048, 'PROVIDER_WORKER_INVALID_REMOTE_UNKNOWN_RECEIPT')
         receipt = json.loads(output[len(WORKER_REMOTE_UNKNOWN_HEADER):])
-        ensure(set(receipt) == {'stage', 'network_phase_entered', 'remote_outcome_known', 'frame_sha256', 'error_class'},
+        required = {'stage', 'network_phase_entered', 'remote_outcome_known', 'frame_sha256', 'error_class'}
+        ensure(set(receipt) in (required, required | {'network_error'}),
                'PROVIDER_WORKER_INVALID_REMOTE_UNKNOWN_RECEIPT')
         ensure(receipt['stage'] == 'HTTP_CALL_OR_RESPONSE_READ' and receipt['network_phase_entered'] is True
                and receipt['remote_outcome_known'] is False, 'PROVIDER_WORKER_REMOTE_UNKNOWN_STAGE_INVALID')
@@ -137,7 +170,10 @@ unknown; ProviderJournal keeps its intent and stops the batch.
                'PROVIDER_WORKER_REMOTE_UNKNOWN_BINDING_MISMATCH')
         ensure(isinstance(receipt['error_class'], str) and re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,63}', receipt['error_class']),
                'PROVIDER_WORKER_REMOTE_UNKNOWN_CLASS_INVALID')
-        raise WorkerRemoteOutcomeUnknown(hashlib.sha256(payload).hexdigest(), receipt['error_class'], receipt['stage'])
+        if 'network_error' in receipt:
+            validate_network_error(receipt['network_error'])
+        raise WorkerRemoteOutcomeUnknown(hashlib.sha256(payload).hexdigest(), receipt['error_class'],
+                                         receipt['stage'], receipt.get('network_error'))
     ensure(child.returncode == 0, 'PROVIDER_WORKER_FAILED_OUTCOME_UNKNOWN')
     ensure(len(output) <= MAX_RESPONSE_BYTES + 40, 'PROVIDER_WORKER_RESPONSE_TOO_LARGE')
     header, raw = output.split(b'\n', 1)
@@ -338,6 +374,7 @@ class ProviderJournal:
                     'call_id': call_id, 'request_sha256': exc.request_sha256,
                     'worker_stage': exc.stage, 'network_phase_entered': True,
                     'remote_outcome_known': False, 'child_error_class': exc.reason,
+                    'network_error': exc.network_error,
                     'batch_stopped': True, 'automatic_paid_retries': 0})
             key = None
             return self.get_call(handle, call_id)

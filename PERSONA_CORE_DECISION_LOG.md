@@ -929,3 +929,30 @@ New independent revision external44_20260917_06 keeps all44 original inputs,176 
 ROOT-07已补齐100/1000/5000事件真实上下文路径测量及5000事件分析。重复全量验证占该带分析开销样本约89%；没有证据支持该样本因已应用ID列表增长变慢。优化仅有设计，无跨上下文缓存或略过验证，无100k真实多轮就绪声明。
 
 新候选/真实日期工具仍为离线准备，三个当前源码完整语义gate通过前不得造候选或继承旧日期。外部独立评审WAITING_EXTERNAL，真实日期WAITING_REAL_TIME（新候选0/3）；BUILD_SCOPE_COMPLETE_VALIDATION_PENDING=false，PRODUCT_ACCEPTANCE_COMPLETE=false，production_activated=false。
+
+
+## DEC-G6-010 — 2026-09-18 持久检索能力投影及新配置验证
+
+rev07的16个提交已终态核对：15显示、1远端UNKNOWN、28未提交。未知N06_T4永久隔离、继续保留0.288182CNY保护预留，不重发；15显示回答的60项评审为46PASS14FAIL，116项未评。
+
+对持久检索的正向实现事实只在经过身份核验的内置RetrievalService上声明，现已进入实际messages。跨session/进程重开、对象与模式隔离、单次空召回与能力的区别均有离线证据；自定义或无provider的持久契约保持UNKNOWN，不推导记忆不存在。原准入/回执算法、expression v9和所有冻结历史不变，无额外全量verify。专项110/110；旧回归449兼容通过+1旧源码身份预期错误，完整分母450不变。
+
+按此前冻结G6_07_REVISION08_PLAN启动external44_20260917_08_pro，标识继承计划日期，实际执行时间为2026-09-18本地。Pro主模型、Flash同实例换模，同32768输出及600秒时限，全部44题/176标准、零自动重试、48.64CNY保护上限。金额授权沿USER_OBJECTIVE最后追加的无限测试费用及DEC-G6-001；这是完整新源码/模型配置验证，不是旧未知请求恢复。新源码和模型角色同时变化，不作单因果改善归因。旧Pro试验失败保持历史。当天官方页面实取及hash已保存；当前价格页明确继续供应Pro，旧停服公告不作为当前路由判断。
+
+新候选/外评/真实日工具仍只是准备；所有内部语义gate通过前不创建当前候选、不继承旧日期。跨日结构检查已额外绑定实际request中约定检索记录，而非只看trace。BUILD_SCOPE_COMPLETE_VALIDATION_PENDING=false，PRODUCT_ACCEPTANCE_COMPLETE=false，production_activated=false。
+
+## DEC-G6-011 — 2026-09-18 第二次未知提交隔离、诊断修复与恢复入口
+
+rev08 已在 N07_T3 停批：21 次提交、20 条显示、1 UNKNOWN、23 未提交，无存活执行器。20 条回答的内部非盲逐项评审为 70 PASS / 10 FAIL，另有 96 项未评；N02 候选排除范围和 N06 计划/完成/贡献扩张两类 MAJOR 仍 OPEN。实际请求核查证明相邻候选原文、原始分工、说话人以及分工/开始/完成约束已发送，尚未证明唯一根因，不能靠继续堆同义规则声称修复。
+
+传输诊断是独立的本地修复：保留 journal-first、UNKNOWN、停批、费用预留与零重试，仅新增受限异常类型和有界 OS 错误码，兼容旧五字段回执，不记录异常正文或凭据。旧两条 URLError 无法回填新诊断。首次专项暴露测试夹具错误：本机 OSError(10060) 实际构造 TimeoutError；保留失败后改为显式跨平台 TimeoutError 夹具，不放宽诊断允许列表。最终专项 116/116，旧完整回归 449 兼容通过及 1 个保留的历史源码身份错误，43 模块/450 分母再次核验；无新增功能失败、历史与正式 Runtime 未改。一次不带凭据及对话的连接观察收到 HTTP 401，不能用于裁定两次历史 UNKNOWN 或证明长回复网络已恢复。
+
+候选、交互入口、中性盲包、跨日 checkpoint 与逐条纵向评审工具合并离线 79/79。实际发送的检索/历史与仅存 trace 的数据已区分；签名及结构通过不等于真人输入、独立评审或语义质量通过。三套当前源码完整语义门未过，因此没有新受控候选、当前外评包、真实外部回传或新自然日。旧候选及旧日期继续仅作为历史。
+
+恢复入口为 persona_core/gpt6_optimization_v2/CURRENT_EXECUTION_RUNBOOK.md 与 RECOVERY_CURSOR.json。G6 累计 271 次提交，已知用量保守估算 3.793624 CNY；两条 UNKNOWN 预留 1.285526 CNY 单列，总实际费用仍未知。当前诊断工作没有新增生成调用。不得通过更名批次重发未知请求；后续新实验须先有实质根因修复与冻结完整范围。BUILD_SCOPE_COMPLETE_VALIDATION_PENDING=false，GPT6_CORE_BUILD_COMPLETE_VALIDATION_PENDING=false，PRODUCT_ACCEPTANCE_COMPLETE=false，production_activated=false；WAITING_EXTERNAL、WAITING_REAL_TIME（新候选 0/3）保持。
+
+
+2026-09-18 — DEC-G6-012 — 通用陈述/证据表示。普通话语保留原文和来源身份；语义候选不获得准入权限，未解析阶段/条件/否定保持未决。选中检索原话须完整发送，预算不足在调用前拒绝。已核验更正提供版本沿革，宿主核验仅覆盖文字约定/提交。18项新增离线机制测试通过；全量回归进行中，两个MAJOR仍OPEN，旧UNKNOWN未重放。
+
+
+2026-09-18 claim/evidence final checkpoint: 20 new mechanism tests (12 authored language examples); all 19 G6 component modules pass 279/279. Complete unchanged legacy denominator 450: 449 compatible passes and the retained historical-source identity error, independently verified against all 43 module logs and exact current source. The bounded-summary gap is closed by carrying receipt/correction lineage in selected verified retrieval itself. An exact 24576-byte component boundary exposed metadata overhead; redundant index wording was compacted, with no budget/threshold increase. 310 protected files and both frozen heldout members unchanged. No model generation or automatic retry; two old UNKNOWNs preserved. Offline construction and structural binding do not prove semantic repair, naturalness or nonleakage. The two MAJOR findings remain OPEN; no new paid revision/candidate/blind package/real date. Evidence: persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json.

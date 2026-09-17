@@ -11,7 +11,7 @@ from context_router import _load_frozen, _source_language_glosses
 from runtime_store import RuntimeStore
 from transcript_store import TranscriptStore, SessionHandle, ensure
 
-VERSION = 'RETRIEVAL_47_1'
+VERSION = 'RETRIEVAL_FULL_EVIDENCE_1'
 
 def terms(text: str) -> set[str]:
     result = set(re.findall(r'[a-z0-9_]+', text.casefold()))
@@ -49,12 +49,15 @@ class RetrievalService:
             aliases = []
             previous = event
             chain = []
+            chain_origins = []
             while previous['event_type'] == 'FACT_CORRECTED':
                 old_id = previous['payload']['supersedes_event_id']
                 ensure(old_id in by_id and old_id not in chain, 'Invalid correction chain')
                 aliases.append(by_id[old_id]['text_content'])
                 chain.append(old_id)
                 previous = self.runtime.get_event(handle, old_id)
+                chain_origins.append({'event_id': old_id, 'event_type': previous['event_type'],
+                                      'source_turn_id': previous['payload'].get('turn_id')})
             rank_terms = terms(content + ' ' + ' '.join(aliases))
             overlap = sorted(query_terms.intersection(rank_terms))
             score = len(overlap)
@@ -79,14 +82,17 @@ class RetrievalService:
                 if score == 0:
                     continue
                 record = {'record_id': event['event_id'], 'record_kind': event['event_type'], 'entity_id': handle.entity_id,
-                    'content': content[:900], 'content_truncated': len(content) > 900, 'provenance': doc['provenance'],
+                    'content': content, 'content_truncated': False, 'provenance': doc['provenance'],
                     'admitted_scope': doc['admitted_scope'], 'event_ids': [event['event_id']],
                     'superseded_event_ids': chain, 'superseded': False, 'first_person_scope': 'RECORD_SCOPE_ONLY_NOT_DESCRIBED_WORLD_EVENTS'}
                 if event['event_type'] == 'UTTERANCE_OBSERVED':
                     record['source_turn_id'] = payload.get('turn_id')
-                    record['assistant_utterance'] = payload.get('assistant_text', '')[:600]
+                    record['assistant_utterance'] = payload.get('assistant_text', '')
+                    record['assistant_content_truncated'] = False
                     record['assistant_utterance_is_fact_authority'] = False
                 if chain:
+                    record['source_turn_id'] = payload.get('turn_id')
+                    record['superseded_origins'] = chain_origins
                     score += 3
             record['ranking_reason'] = {'method': 'AUTHORIZED_RECORD_TERM_OVERLAP', 'matching_terms': overlap[:16],
                                          'resolved_corrections_before_ranking': True, 'version': VERSION}
@@ -120,6 +126,27 @@ class RetrievalService:
     def __call__(self, store: TranscriptStore, handle: SessionHandle, query: str) -> list[dict]:
         ensure(store is self.runtime.store, 'Retrieval database and conversation mismatch')
         return self.search(handle, query)
+
+    def memory_capability(self, store: TranscriptStore, handle: SessionHandle) -> dict:
+        """Authenticated implementation facts, distinct from any query result.
+
+        Context building has already verified the store while retrieving. This
+        description grants no authority and does not need another full replay.
+        """
+        ensure(store is self.runtime.store, 'Retrieval database and conversation mismatch')
+        store._authenticate(handle)
+        return {
+            'status': 'AVAILABLE', 'retrieval_provider_attached': True,
+            'scope': {'entity_id': handle.entity_id, 'mode': handle.mode},
+            'record_scope': 'RECORDED_UTTERANCES_AND_ADMITTED_RUNTIME_EVENTS',
+            'same_entity_mode_across_sessions': True, 'after_store_reopen': True,
+            'retrieval_coverage': 'BOUNDED_RELEVANCE_SEARCH_OF_THIS_PERSISTENT_STORE',
+            'empty_result_proves_no_records': False, 'all_future_recall_guaranteed': False,
+            'current_input_recording': 'NOT_IMPLIED_BY_CAPABILITY',
+            'described_world_events_verified_by_utterance': False,
+            'source_memory': 'SEPARATE_FROZEN_SOURCE_PROVENANCE',
+            'external_tools_or_cross_entity_access': False, 'scheduled_reminders': False,
+        }
 
     def context_state(self, handle: SessionHandle) -> dict:
         return {'state': self.runtime.snapshot(handle),

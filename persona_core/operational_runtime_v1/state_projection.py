@@ -92,16 +92,20 @@ def expression_observation(runtime, handle, current, *, limit=6):
         event = runtime.get_event(handle, doc['event_id'])
         if event['mode'] != handle.mode:
             continue
-        previous, old_ids, old_texts = event, [], []
+        previous, old_ids, old_texts, old_origins = event, [], [], []
         while previous['event_type'] == 'FACT_CORRECTED':
             old_id = previous['payload']['supersedes_event_id']
             ensure(old_id in documents and old_id not in old_ids, 'Invalid correction chain')
             old_ids.append(old_id)
             old_texts.append(documents[old_id]['text_content'])
             previous = runtime.get_event(handle, old_id)
+            old_origins.append({'event_id': old_id, 'event_type': previous['event_type'],
+                                'source_turn_id': previous['payload'].get('turn_id')})
         view = {'event_id': event['event_id'], 'current_user_statement': doc['text_content'],
             'admitted_scope': 'CORRECTED_USER_STATEMENT_NOT_EXTERNAL_TRUTH',
-            'superseded_event_ids': old_ids, 'original_statement_for_topic_only': old_texts[-1],
+            'superseded_event_ids': old_ids, 'superseded_origins': old_origins,
+            'source_turn_id': event['payload']['turn_id'],
+            'original_statement_for_topic_only': old_texts[-1],
             'old_statement_is_current': False, 'later_ordinary_requests_override': False}
         score = len(query_terms & terms(doc['text_content'] + ' '.join(old_texts)))
         corrections.append((score, event['sequence'], view))

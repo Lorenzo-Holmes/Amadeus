@@ -10,7 +10,8 @@ import hashlib
 import math
 import sys
 from provider import (official_transport, MAX_RESPONSE_BYTES, MAX_WORKER_TIMEOUT_SECONDS,
-                      WORKER_LOCAL_REJECTION_HEADER, WORKER_REMOTE_UNKNOWN_HEADER, canonical)
+                      WORKER_LOCAL_REJECTION_HEADER, WORKER_REMOTE_UNKNOWN_HEADER, canonical,
+                      network_error_details)
 from transcript_store import ensure
 
 def main() -> int:
@@ -43,7 +44,7 @@ def main() -> int:
         # Emit only a frame-bound, credential-free diagnostic receipt.
         receipt = {'stage': 'HTTP_CALL_OR_RESPONSE_READ', 'network_phase_entered': True,
                    'remote_outcome_known': False, 'frame_sha256': hashlib.sha256(raw).hexdigest(),
-                   'error_class': type(exc).__name__}
+                   'error_class': type(exc).__name__, 'network_error': network_error_details(exc)}
         sys.stdout.buffer.write(WORKER_REMOTE_UNKNOWN_HEADER + canonical(receipt))
         sys.stdout.buffer.flush()
         return 2
