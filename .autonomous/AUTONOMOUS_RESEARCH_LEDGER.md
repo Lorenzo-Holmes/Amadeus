@@ -158,6 +158,34 @@ Scope: research evidence for future tasks; no research item is itself authority 
 - **EVALUATION_METHOD:** Future-only: if Amadeus gains a real tool surface, reproduce benign and attack cases against that surface and distinguish application-policy prevention from system-call containment. No such production claim is made now.
 - **TASK LINK:** `AUTO-20260918-A02` for coverage classification only; no implementation task opened for MCPGuard.
 
+## Finding R-20260918-12 — Deployment-time memorization exposes deletion-fidelity residue
+
+- **SOURCE:** “Deployment-Time Memorization in Foundation-Model Agents,” arXiv:2606.10062.
+- **SOURCE_DATE:** 2026-06-08.
+- **PROBLEM:** Long-lived agent memory creates a privacy/utility surface where deleting a raw record may not remove information that has already propagated into summaries or other derived memory tiers.
+- **CORE_IDEA:** The paper separates personalization utility, adversarial extraction risk, and deletion fidelity, and introduces a Forgetting Residue Score to measure whether information remains recoverable after a deletion request. Its experiments report that raw-only deletion can leave derived summary residue, while broader purge/tombstone strategies reduce that residue.
+- **AMADEUS_CURRENT_STATE:** The inspected `RuntimeStore` intentionally keeps the authoritative runtime ledger append-only, maintains a derived `retrieval_documents` index, and handles changed user facts through explicit `FACT_CORRECTED` supersession. `RetrievalService` excludes superseded documents and resolves correction chains before ranking. This is good audit/correction behavior, but it is not a documented user-facing forgetting/deletion contract.
+- **REAL_GAP:** Amadeus currently has no reviewed artifact that distinguishes “no longer actively retrieved,” “superseded/corrected,” “removed from derived representations,” “retained only for protected audit history,” and “physically purged from all eligible storage/backup tiers.” Those states have different continuity, privacy, provenance, and rollback implications.
+- **PROPOSED_DELTA:** Research-only verified-forgetting semantics and an offline evaluation plan. Define residue surfaces across retrieval documents, projections/growth outputs, exports/backups, and future summaries without modifying the append-only ledger or protected evidence. No deletion implementation is authorized by this finding.
+- **RISKS:** Treating retrieval suppression as proof of erasure; accidentally deleting evidence needed for continuity or incident audit; derived copies or backups outliving the primary record; overgeneralizing privacy requirements without product/legal scope; using learned forgetting to rewrite identity.
+- **LICENSE:** Paper/code reuse terms were not independently verified in this run; no implementation or dataset import is authorized.
+- **EVALUATION_METHOD:** Synthetic provenance-tagged canaries across raw event, retrieval index, derived view and backup/export representations; after a simulated governance disposition, report per-tier residue explicitly. The oracle must distinguish tombstoned/not-recalled from physically absent, and must never delete protected Persona/history fixtures.
+- **TASK LINK:** `AUTO-20260918-B02`.
+
+## Finding R-20260918-13 — memharness provides a useful tombstone/provenance comparison without replacing Amadeus storage
+
+- **SOURCE:** `las7/memharness` GitHub repository, README and LICENSE inspected via GitHub on 2026-09-18.
+- **SOURCE_DATE:** Repository observed 2026-09-18.
+- **PROBLEM:** Corrections, historical auditability, current-state recall and “forget by provenance” are different operations; collapsing them into overwrite/delete makes it difficult to prove what remains visible or why.
+- **CORE_IDEA:** memharness is a deterministic SQLite memory primitive with bi-temporal facts, supersession, provenance, and a `forget` operation described as tombstoning by id or source. Its README explicitly separates supersession from deletion and emphasizes provenance-scoped forgetting.
+- **AMADEUS_CURRENT_STATE:** Amadeus already has stronger project-specific identity/Persona authority boundaries and an append-only runtime ledger; it should not import a generic memory store as a second authority. Its current correction path marks retrieval documents superseded, while audit events remain immutable.
+- **REAL_GAP:** There is no current Amadeus research contract for a negative-knowledge/tombstone layer that could suppress future re-derivation or future recall without rewriting the protected event history. Whether such a layer is desirable must be evaluated against continuity and privacy semantics before implementation.
+- **PROPOSED_DELTA:** Use memharness only as a comparative design reference in B02: provenance-scoped tombstones, explainable historical/current views, and deletion receipts. Do not vendor it, replace RuntimeStore, or claim its semantics fit Amadeus unchanged.
+- **RISKS:** A tombstone can become a second state authority; provenance identifiers may be too coarse; re-extraction can resurrect content if negative knowledge is not enforced; privacy purge and audit retention can conflict; historical `as_of` access may violate a future product deletion policy even when operationally useful.
+- **LICENSE:** Repository LICENSE is Apache-2.0. Exact dependency licenses would still require review before any reuse; B02 imports no code.
+- **EVALUATION_METHOD:** Compare synthetic cases for correction, retraction, provenance-scoped forgetting, re-ingestion of the same claim, historical audit access, and backup/export residue. Require explicit disposition for each layer rather than a single boolean `deleted`.
+- **TASK LINK:** `AUTO-20260918-B02`.
+
 ## Research disposition
 
-No source above justifies immediate migration or replacement of Amadeus runtime, memory authority, Persona Core, tool runtime, or permission authority. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
+No source above justifies immediate migration or replacement of Amadeus runtime, memory authority, Persona Core, tool runtime, or permission authority. The actionable deltas remain deliberately limited to **evaluation**, **read-only auditing**, **observability research**, **security regression testing**, **verified-forgetting research**, and **comparative design** until the current G6 canonical source/evidence is available and reconciled.
