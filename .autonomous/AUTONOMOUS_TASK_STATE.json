@@ -9,8 +9,8 @@
   "PERSONA_SNAPSHOT_BRANCH": "codex/persona-core-operations-v1-20260917",
   "PERSONA_SNAPSHOT_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
   "TARGET_CONCURRENCY": 4,
-  "ACTIVE_WORKERS": 0,
-  "AVAILABLE_SLOTS": 4,
+  "ACTIVE_WORKERS": 1,
+  "AVAILABLE_SLOTS": 3,
   "phase_reconciliation": {
     "operations_task_state": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING / R047-04",
     "published_progress_head": "APCORE-GPT6-OPTIMIZATION-V2 / LAST_COMPLETED G6-06 / GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS",
@@ -96,7 +96,7 @@
     {
       "TASK_ID": "AUTO-20260918-B01",
       "OWNER": "WORKER-B",
-      "STATUS": "READY",
+      "STATUS": "RUNNING",
       "AREA": "Memory / Intelligence / Persona-supporting cognition",
       "OBJECTIVE": "Research transition-level memory verification and provenance-aware retrieval as offline evaluation only.",
       "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
@@ -104,7 +104,20 @@
       "WRITE_SET": [".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md"],
       "DEPENDENCIES": [],
       "ACCEPTANCE_CRITERIA": ["Source/date/problem/idea/current-state/gap/delta/risks/license/evaluation recorded","Authority vs ranking vs proposal separated","TrustMem metrics mapped to offline tests only","No second memory authority","No protected Persona/Genesis/Memory Cutoff write"],
-      "LEASE_STARTED_AT": null,"LEASE_EXPIRES_AT": null,"BRANCH":null,"PR":null,"RESEARCH_REFERENCES":["arXiv:2606.25161 TRUSTMEM","arXiv:2608.29606 Agent Zero Memory","arXiv:2609.12655 LifeMem"],
+      "LEASE_STARTED_AT": "2026-09-17T18:31:15Z",
+      "LEASE_EXPIRES_AT": "2026-09-17T22:31:15Z",
+      "BRANCH": "research/worker-b-memory-transition-provenance-20260918",
+      "PR": null,
+      "WORKER_RUN_ID": "WORKER-B-20260918T033115+0900-B01",
+      "CLAIM_CHECKS": {
+        "OWNER": "WORKER-B already assigned; no existing CLAIMED/RUNNING B task in inspected state",
+        "LEASE": "READY with both lease fields null before this claim",
+        "WRITE_SET": "One research memo; disjoint from A/C/D and protected G6 paths. Shared task metadata updated with current-blob compare-and-swap only.",
+        "DEPENDENCIES": "Empty for research-only B01; G6 execution dependencies remain blocked",
+        "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb verified against branch/PR refs; isolated branch created from this exact SHA",
+        "DUPLICATE_STATUS": "No equivalent completed memo in inspected control state, seven branch refs and all three PRs. Existing R046 authority/retrieval and PR2 semantic binding are retained, not reimplemented; original historical evidence is not exhaustively available."
+      },
+      "RESEARCH_REFERENCES":["arXiv:2606.25161 TRUSTMEM","arXiv:2608.29606 Agent Zero Memory","arXiv:2609.12655 LifeMem"],
       "NOVELTY_SIGNATURE":{"AREA":"Memory evaluation","CURRENT_STATE":"Controlled admission/storage/retrieval/growth already exist.","IDENTIFIED_GAP":"No explicit transition omission/corruption/hallucination verification contract visible.","OBJECTIVE":"Design measurable offline checks around existing authority.","EXPECTED_DELTA":"Research memo/evaluation proposal.","PRIMARY_WRITE_SET":".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md","ACCEPTANCE_SEMANTICS":"No trusted-memory semantics change."}
     },
     {
@@ -135,5 +148,6 @@
     {"number":3,"head":"autonomous/orchestrator-state","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"}
   ],
   "PROTECTED_WORK": ["R044-R047 historical completed/build evidence","Genesis AMADEUS-KURISU-GENESIS-R035","Persona Constitution and identity authority","Memory Cutoff and autobiographical-memory authority","source provenance authority and locked decisions","all SUBMITTED_STATUS_UNKNOWN requests including N06_T4","natural-day validation real-time requirement","production activation"],
-  "NEXT_ACTION": "Workers may claim the three READY tasks with non-overlapping write sets. Do not claim HOLD-G6-07-CANONICAL until canonical source/ledger dependencies are verified. Review PR #1/#2/#3 without auto-merge."
+  "NEXT_ACTION": "Workers may claim the three READY tasks with non-overlapping write sets. Do not claim HOLD-G6-07-CANONICAL until canonical source/ledger dependencies are verified. Review PR #1/#2/#3 without auto-merge.",
+  "last_worker_update_at_utc": "2026-09-17T18:31:15Z"
 }
