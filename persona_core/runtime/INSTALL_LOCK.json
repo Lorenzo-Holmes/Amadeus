@@ -1,0 +1,8 @@
+{
+  "schema_version": "pcore-install-lock-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "genesis_sha256": "9f10697003d72c9f33ae88ff72618092fb24ea8d9a4b1e5e1021d4f0ade0f840",
+  "r034_manifest_sha256": "cdf6e3d4828d7fab45374f5393a7a56b88733c14b47c1fbf571addf70dedbe2f",
+  "installed_at_utc": "2026-09-06T17:57:57.406883+00:00",
+  "reinstall_policy": "FORBIDDEN_WITHOUT_EXPLICIT_MIGRATION_OR_NEW_GENESIS_REVISION"
+}

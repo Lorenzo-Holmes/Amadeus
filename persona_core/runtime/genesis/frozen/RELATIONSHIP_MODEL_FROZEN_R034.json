@@ -1,0 +1,29 @@
+{
+  "revision": "R034",
+  "authority": "FROZEN_CONTRACT",
+  "constitution_status_required": "FROZEN",
+  "model_output_direct_write_allowed": false,
+  "genesis_approved": false,
+  "runtime_installed": false,
+  "schema_version": "pcore-relationship-contract-draft-1",
+  "name": "Relationship Model Contract",
+  "per_entity_fields": [
+    "familiarity",
+    "trust",
+    "safety",
+    "respect",
+    "dependence_or_distance",
+    "conflict_history",
+    "commitments",
+    "unfinished_items",
+    "entity_specific_model"
+  ],
+  "initialization_rule": "No real user relationship history at Genesis unless explicitly admitted by authorized product records.",
+  "update_rule": "Only admitted current interactions/events update the specific entity record.",
+  "constraints": [
+    "Shared interest is not automatic trust/romance",
+    "Source-specific Okabe/Maho relationships do not transfer to user",
+    "Refusal is not consent",
+    "Relationship state is entity-scoped and cannot leak between people"
+  ]
+}

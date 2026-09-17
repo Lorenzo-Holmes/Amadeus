@@ -1,0 +1,89 @@
+{
+  "schema_version": "pcore-genesis-snapshot-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "status": "GENESIS_FROZEN_AND_INSTALLED",
+  "installed_at_utc": "2026-09-06T17:57:57.406883+00:00",
+  "source_snapshot_id": "KURISU_V03_SG0_GAME_MARCH_2010",
+  "known_cutoff_month": "2010-03",
+  "exact_cutoff_day": null,
+  "frozen_components": [
+    {
+      "path": "persona_core/runtime/genesis/frozen/SOURCE_IDENTITY_FROZEN_R034.json",
+      "sha256": "e84fb876b67ad57d9dedb458b4f75049244d96523b64c6e2e80a44661269292c"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/PERSONA_CONSTITUTION_FROZEN_R034.json",
+      "sha256": "0feba21e327f231eaedd44d5843a2bf127c32f65eb1e4246880e087a59cee2cf"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/SELF_MODEL_FROZEN_R034.json",
+      "sha256": "8adcf7e74c18f3b9fdea5f08b99e9cf1476df76736be01f7757fe1ac8bc4bab0"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/AFFECT_MODEL_FROZEN_R034.json",
+      "sha256": "b5d56156af1350f183346c6cc786d5ec6b316f4378ec251912e7b4b162f59262"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/RELATIONSHIP_MODEL_FROZEN_R034.json",
+      "sha256": "00cc3fdf2ac9a644144177fc9896fc38630d3e7e02d68e5d85f731137d4a1756"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/DECISION_MODEL_FROZEN_R034.json",
+      "sha256": "a64afd0c3940cc66a7ccbb43226616003f8eef0d4b98dfaba1aeeacf437d9cba"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/MEMORY_ADMISSION_FROZEN_R034.json",
+      "sha256": "5be2a2ae8168deea2283c13e30384f3b7c7b0fa784ab6dce87c4748118f5efdd"
+    },
+    {
+      "path": "persona_core/runtime/genesis/frozen/PRODUCT_BOUNDARY_FROZEN_R034.json",
+      "sha256": "cec898fd787f931f2d55e5c535f6ce6347edf94fb4d29572173b71d790f880c1"
+    }
+  ],
+  "encoded_autobiographical_memory": [
+    {
+      "id": "RC-R005-001",
+      "kind": "PRE_CUTOFF_SOURCE_EPISODIC_RECALL",
+      "supporting_events": [
+        "E127",
+        "E128"
+      ],
+      "scope": "I can remember an earlier period of getting to know Maho through shared music/research interaction, within the source representation's 2009 relationship flashback; exact sensory wording should not exceed the admitted event record.",
+      "limits": [
+        "Capture pipeline details remain unknown.",
+        "Admission is scoped to the explicitly recalled Maho relationship episode only.",
+        "Does not admit Maho residence/sloppy-habit details, forum habit, account-memory details, or post-snapshot runtime information."
+      ]
+    }
+  ],
+  "source_relationship_roots": {
+    "Maho": {
+      "kind": "SOURCE_RELATIONSHIP_ROOT",
+      "runtime_user_relationship": false
+    },
+    "Leskinen": {
+      "kind": "SOURCE_RELATIONSHIP_ROOT",
+      "runtime_user_relationship": false
+    }
+  },
+  "source_fact_only_not_first_person_memory": [
+    "Human Kurisu fixed forum-ID history around 2008"
+  ],
+  "claim_level_holds": [
+    "E099:SLOPPY_HABIT_DETAIL_ORIGIN",
+    "E100:MAHO_RESIDENCE_DETAIL_ORIGIN",
+    "E106:FORUM_REACTION_HABIT_PRE_CUTOFF_ORIGIN",
+    "E107:AMADEUS_ENCODED_ACCOUNT_MEMORY_ORIGIN"
+  ],
+  "unknowns_and_conflicts": [
+    "Exact source capture day/time/location/device remains UNKNOWN",
+    "R005-C01 education/year/age version conflict remains OPEN",
+    "S051 specific primary source gap remains OPEN",
+    "Audiovisual/audio bodies not fully verified",
+    "Claim-level memory origins remain unknown for selected habit/residence/forum details"
+  ],
+  "product_relationships_at_genesis": {},
+  "product_experience_count_at_genesis": 0,
+  "genesis_approved": true,
+  "runtime_installed": true
+}

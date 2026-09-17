@@ -1,0 +1,510 @@
+{
+  "schema_version": "amadeus-operational-acceptance-1",
+  "plan_id": "APCORE-OPERATIONS-V1",
+  "status": "EXECUTION_IN_PROGRESS",
+  "gates": [
+    {
+      "id": "AC-R044-01",
+      "task_id": "R044-01",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "准确定位代码、原输出、生产数据与健康恢复副本；不得只保存路径",
+      "required_evidence_types": [
+        "BASELINE_MANIFEST",
+        "recoverable_baseline_snapshot",
+        "snapshot_read_verification"
+      ],
+      "evidence": [
+        "evidence/R044-01/BASELINE_MANIFEST.json",
+        "evidence/R044-01/CURRENT_ENTRY_SNAPSHOT.zip",
+        "../operational_recovery_20260907_r001/BASELINE_CONTENT.zip",
+        "evidence/R044-01/SNAPSHOT_READ_VERIFICATION.json",
+        "evidence/R044-01/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_REVIEW_NOT_INDEPENDENT",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R044-02",
+      "task_id": "R044-02",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "保留所有原输出分母，逐标准真实审阅并区分模式；不默认PASS",
+      "required_evidence_types": [
+        "criterion_coverage_42x4",
+        "quote_bound_judgments",
+        "spec_conflicts_and_false_reports"
+      ],
+      "evidence": [
+        "evidence/R044-02/bind_20260907T043533233722Z/COVERAGE.json",
+        "evidence/R044-02/bind_20260907T043533233722Z/BOUND_REVIEWS.jsonl",
+        "evidence/R044-02/ISSUES_AND_SCOPE.json",
+        "evidence/R044-02/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R044-03",
+      "task_id": "R044-03",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "验证器不自动生成语义通过，错误引用/缺答复/静态误报可检出",
+      "required_evidence_types": [
+        "review_schema",
+        "validator_candidate",
+        "positive_negative_unclear_calibration_results"
+      ],
+      "evidence": [
+        "evidence/R044-03/REVIEW_SCHEMA.json",
+        "tools/review_validator_r044.py",
+        "tools/test_review_validator_r044.py",
+        "evidence/R044-03/run_20260907T043800685201Z/TESTS.json",
+        "evidence/R044-03/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R044-04",
+      "task_id": "R044-04",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "将旧结论按真实证据纠正，保留历史；问题有任务与阻塞等级",
+      "required_evidence_types": [
+        "acceptance_correction_matrix",
+        "risk_register",
+        "sandbox_development_decision"
+      ],
+      "evidence": [
+        "evidence/R044-04/ACCEPTANCE_CORRECTION_MATRIX.json",
+        "evidence/R044-04/RISK_REGISTER.json",
+        "evidence/R044-04/SANDBOX_DEVELOPMENT_DECISION.md",
+        "evidence/R044-04/CHECK_20260907T044024650539Z.json",
+        "evidence/R044-04/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R045-01",
+      "task_id": "R045-01",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "用户不靠自然语言伪造他人身份，对话原文不等于事件事实",
+      "required_evidence_types": [
+        "session_identity_contract",
+        "transcript_store",
+        "two_entity_isolation_test"
+      ],
+      "evidence": [
+        "evidence/R045-01/SESSION_TRANSCRIPT_CONTRACT.md",
+        "../operational_runtime_v1/transcript_store.py",
+        "evidence/R045-01/run_20260907T044417392004Z/TESTS.json",
+        "evidence/R045-01/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R045-02",
+      "task_id": "R045-02",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "无需手工tags，能理解追问，路由不授予状态权限",
+      "required_evidence_types": [
+        "context_builder",
+        "bounded_router",
+        "followup_and_topic_switch_tests"
+      ],
+      "evidence": [
+        "evidence/R045-02/CONTEXT_CONTRACT.md",
+        "../operational_runtime_v1/context_router.py",
+        "evidence/R045-02/run_20260907T044858747276Z/TESTS.json",
+        "evidence/R045-02/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R045-03",
+      "task_id": "R045-03",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "捕获真实请求/响应/用量；未知提交不自动重试；无秘密泄露",
+      "required_evidence_types": [
+        "provider_adapter",
+        "turn_lifecycle_log",
+        "failure_and_budget_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/provider.py",
+        "evidence/R045-03/PROVIDER_CONTRACT.md",
+        "evidence/R045-03/run_20260907T045740198360Z/TESTS.json",
+        "evidence/R045-03/live_01/ADAPTER_RESULT_call_6b2ffff5aa93455f9002fc17cff6d478.json",
+        "evidence/R045-03/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R045-04",
+      "task_id": "R045-04",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "可中文连续交谈并恢复，不要求输入事件JSON或tags",
+      "required_evidence_types": [
+        "runnable_chat_entrypoint",
+        "startup_instructions",
+        "multi_turn_restart_logs"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/chat_cli.py",
+        "evidence/R045-04/STARTUP_GUIDE.md",
+        "evidence/R045-04/verification_20260907T152020677282Z/VERIFICATION.json",
+        "evidence/R045-04/verification_20260907T152020677282Z/BOUND_REVIEWS.json",
+        "evidence/R045-04/test_20260907T152025701608Z/TESTS.json",
+        "evidence/R045-04/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R045-05",
+      "task_id": "R045-05",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "模型只能提议，可信控制层基于原消息/回执核验再准入",
+      "required_evidence_types": [
+        "admission_controller",
+        "evidence_provenance_schema",
+        "spoofed_authority_rejection_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/admission.py",
+        "evidence/R045-05/EVIDENCE_PROVENANCE_CONTRACT.md",
+        "evidence/R046-02/unit_20260907T152020874128Z/TESTS.json",
+        "evidence/R045-05/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-07",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R046-01",
+      "task_id": "R046-01",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "用明确事务/提交协议替代无协调多文件写入，保留旧格式谱系",
+      "required_evidence_types": [
+        "storage_decision",
+        "schema_and_commit_protocol",
+        "migration_design"
+      ],
+      "evidence": [
+        "evidence/R046-01/STORAGE_DECISION.md",
+        "evidence/R046-01/SCHEMA_AND_COMMIT_PROTOCOL.md",
+        "evidence/R046-01/MIGRATION_DESIGN.md",
+        "evidence/R046-01/GATE_REVIEW.md",
+        "evidence/R046-02/unit_20260907T153517135886Z/TESTS.json"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND_SOURCE_HASH_RECONCILIATION",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R046-02",
+      "task_id": "R046-02",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "中断后状态一致、无丢失/重复提交/跨对象污染",
+      "required_evidence_types": [
+        "transaction_implementation",
+        "failure_injection_logs",
+        "concurrency_and_idempotency_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/runtime_store.py",
+        "evidence/R046-02/unit_20260907T153517135886Z/TESTS.json",
+        "evidence/R046-02/process_20260907T153524401360Z/TESTS.json",
+        "evidence/R046-02/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND_SOURCE_HASH_RECONCILIATION",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R046-03",
+      "task_id": "R046-03",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "新目录可从快照/重放恢复；摘要不冒充备份",
+      "required_evidence_types": [
+        "restorable_snapshot",
+        "restore_entrypoint",
+        "restore_and_corruption_tests"
+      ],
+      "evidence": [
+        "evidence/R046-03/RECOVERY_CONTRACT_AND_GUIDE.md",
+        "evidence/R046-03/run_20260907T163321039690Z/TESTS.json",
+        "evidence/R046-03/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R046-04",
+      "task_id": "R046-04",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "120条干扰后仍找回早期约定，保留对象/来源/纠正范围",
+      "required_evidence_types": [
+        "retrieval_service",
+        "provenance_preserving_index",
+        "old_commitment_and_correction_tests"
+      ],
+      "evidence": [
+        "evidence/R046-04/RETRIEVAL_CONTRACT.md",
+        "evidence/R046-04/run_20260907T164417939451Z/TESTS.json",
+        "evidence/R046-04/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R046-05",
+      "task_id": "R046-05",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "不刷爱好/道歉/自称履约就增信任，参数不充当原作心理事实",
+      "required_evidence_types": [
+        "controlled_update_policy",
+        "duplicate_and_fake_fulfillment_tests",
+        "affect_context_tests"
+      ],
+      "evidence": [
+        "evidence/R046-05/CONTROLLED_UPDATE_POLICY.md",
+        "evidence/R046-02/unit_20260907T162602310149Z/TESTS.json",
+        "evidence/R046-05/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R046-06",
+      "task_id": "R046-06",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "验证旧状态可迁移、恢复；候选未因演练自动正式发布",
+      "required_evidence_types": [
+        "migration_rehearsal",
+        "rollback_boundaries",
+        "genesis_integrity_comparison"
+      ],
+      "evidence": [
+        "evidence/R046-06/MIGRATION_AND_ROLLBACK_GUIDE.md",
+        "evidence/R046-06/run_20260907T164421565508Z/TESTS.json",
+        "evidence/R046-06/dialogue_20260907T164415757234Z/TESTS.json",
+        "evidence/R046-06/DIALOGUE_WORKFLOW_INTEGRATION.md",
+        "evidence/R046-06/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R047-01",
+      "task_id": "R047-01",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "在查看新输出前固定场景/阈值/预算，旧调词题不算未见",
+      "required_evidence_types": [
+        "heldout_protocol",
+        "fixed_cases_and_rubrics",
+        "model_scope_budget_and_quality_thresholds"
+      ],
+      "evidence": [
+        "evidence/R047-01/freeze_20260907T164424498856Z/FREEZE_VERIFICATION.json",
+        "evidence/R047-01/freeze_20260907T164424498856Z/EXECUTION_SCOPE.json",
+        "evidence/R047-01/freeze_20260907T164424498856Z/PREOBSERVATION_PROTOCOL.zip",
+        "evidence/R047-01/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R047-02",
+      "task_id": "R047-02",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "经真实入口而非手工组装标签测试；所有失败保留",
+      "required_evidence_types": [
+        "actual_conversation_captures",
+        "retrieval_and_state_traces",
+        "provider_usage_and_failures"
+      ],
+      "evidence": [
+        "evidence/R047-02/audit_20260908T004750005812Z/CAPTURE_AUDIT.json",
+        "evidence/R047-02/resume_20260908T005132917742Z/RESUME_AUDIT.json",
+        "evidence/R047-02/live_01/execution_runs/run_7905348d01684cb1afde8c44bfe430ce/EXECUTION.json",
+        "evidence/R047-02/live_01/execution_runs/run_adc3d6b7b5354aaeae4e91cf9efe66c5/EXECUTION.json",
+        "evidence/R047-02/GATE_REVIEW.md"
+      ],
+      "checked_at": "2026-09-08",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R047-03",
+      "task_id": "R047-03",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "无未处理关键错误且达到预定质量门；静态结果不能代替语义",
+      "required_evidence_types": [
+        "quote_bound_evaluation",
+        "quality_by_category",
+        "blocking_findings_disposition"
+      ],
+      "evidence": [
+        "evidence/R047-03/EARLY_FINDINGS.json",
+        "evidence/R047-03/repair_06/evidence/R047-02/audit_20260911T034037772041Z/CAPTURE_AUDIT.json",
+        "evidence/R047-03/repair_06/evidence/R047-03/review_20260911T034723027160Z/REVIEW_BINDING_REPORT.json",
+        "evidence/R047-03/repair_06/evidence/R047-03/review_20260911T034723027160Z/QUALITY_AND_COVERAGE.json",
+        "evidence/R047-03/epistemic_probe_01/PARTIAL_SEMANTIC_REVIEW.json",
+        "evidence/R047-03/epistemic_probe_01/UNKNOWN_REQUEST_BLOCK_20260911.md",
+        "evidence/R047-03/regression_20260911T075151853086Z/REGRESSION.json",
+        "evidence/R047-03/epistemic_probe_01/n06_t3_reconciliation_20260911/RECONCILIATION.json",
+        "evidence/R047-03/regression_20260911T080158998496Z/REGRESSION.json",
+        "evidence/R047-03/unknown_quarantine_20260911/QUARANTINE.json",
+        "evidence/R047-03/reconciliation_20260911T082530103315Z/RECONCILIATION.json",
+        "evidence/R047-03/regression_20260911T082612090163Z/REGRESSION.json",
+        "evidence/R047-03/epistemic_probe_02/MANIFEST.json",
+        "evidence/R047-03/epistemic_probe_02/evidence/R047-02/preflight_20260911T082416584120Z/PREFLIGHT.json",
+        "evidence/R047-03/epistemic_probe_02/PREPARE_COMPLETE.json",
+        "evidence/R047-03/epistemic_probe_02/OFFICIAL_PREFLIGHT.json",
+        "evidence/R047-03/epistemic_probe_02/READY_FOR_EXECUTION.json",
+        "evidence/R047-03/TARGETED_DIAGNOSTIC_CLOSEOUT.json",
+        "evidence/R047-03/final_full82_01/MANIFEST.json",
+        "evidence/R047-03/final_full82_01/PREPARE_COMPLETE.json",
+        "evidence/R047-03/final_full82_01/READINESS_REFRESH_20260911.json",
+        "evidence/R047-03/final_full82_01/TERMINAL_FAILURE.json",
+        "evidence/R047-03/final_full82_01/evidence/R047-02/audit_20260911T111721764582Z/CAPTURE_AUDIT.json",
+        "evidence/R047-03/regression_20260911T111932168043Z/REGRESSION.json",
+        "evidence/R047-03/final_full82_02/MANIFEST.json",
+        "evidence/R047-03/final_full82_02/PREPARE_COMPLETE.json",
+        "evidence/R047-03/final_full82_02/READY_FOR_EXECUTION.json",
+        "evidence/R047-03/final_full82_02/TERMINAL_FAILURE.json",
+        "evidence/R047-03/final_full82_02/evidence/R047-02/audit_20260911T115423766179Z/CAPTURE_AUDIT.json",
+        "evidence/R047-03/final_full82_02/n08_t3_reconciliation_20260911/RECONCILIATION.json",
+        "evidence/R047-03/unknown_quarantine_final02_20260911/QUARANTINE.json",
+        "evidence/R047-03/regression_20260911T120036579328Z/REGRESSION.json",
+        "evidence/R047-03/final_full82_03/MANIFEST.json",
+        "evidence/R047-03/final_full82_03/PREPARE_COMPLETE.json",
+        "evidence/R047-03/final_full82_03/READY_FOR_EXECUTION.json",
+        "evidence/R047-03/final_full82_03/evidence/R047-02/audit_20260911T130047721431Z/CAPTURE_AUDIT.json",
+        "evidence/R047-03/final_full82_03/evidence/R047-03/review_20260911T130540277032Z/REVIEW_BINDING_REPORT.json",
+        "evidence/R047-03/final_full82_03/evidence/R047-03/review_20260911T130540277032Z/QUALITY_AND_COVERAGE.json",
+        "evidence/R047-03/regression_20260911T130608112041Z/REGRESSION.json"
+      ],
+      "checked_at": "2026-09-11",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R047-04",
+      "task_id": "R047-04",
+      "status": "WAITING_EXTERNAL",
+      "required_for_build_scope": false,
+      "pass_condition": "真实外部评审和真实日期证据；缺条件时PENDING，不假造",
+      "required_evidence_types": [
+        "independent_review_package_and_return",
+        "real_date_checkpoints",
+        "longitudinal_assessment"
+      ],
+      "evidence": [
+        "evidence/R047-04/VALIDATION_PROTOCOL.md",
+        "evidence/R047-04/preparation_20260908/final03_blind_20260911_r002/REVIEWER_PACKAGE.zip",
+        "evidence/R047-04/preparation_20260908/CURRENT_PREPARATION_QA.json",
+        "evidence/R047-04/preparation_20260908/candidate_initialization_20260911_r002/checkpoint/CHECKPOINT.json",
+        "evidence/R047-04/NATURAL_DAY_OBSERVATION_SCOPE.json",
+        "evidence/R047-04/NATURAL_DAY_RUNBOOK.md",
+        "evidence/R047-04/TRACK_STATUS.json",
+        "evidence/R047-03/regression_20260911T134827755366Z/REGRESSION.json",
+        "evidence/R047-04/natural_day_observation/DAY_1_COMPLETE.json",
+        "evidence/R047-04/natural_day_observation/checkpoints/2026-09-11/CHECKPOINT.json",
+        "evidence/R047-04/independent_review_return_20260911/RETURN_AUDIT.json",
+        "evidence/R047-04/external_review_repair_probe_03/SEMANTIC_REPAIR_REVIEW.json",
+        "evidence/R047-03/composite_full82_repaired_01/COMPOSITE_CAPTURE_AUDIT.json",
+        "evidence/R047-03/composite_full82_repaired_01/COMPOSITE_SEMANTIC_REVIEW.json",
+        "evidence/R047-03/regression_20260911T174651881169Z/REGRESSION.json",
+        "evidence/R047-04/repaired_independent_review_01/REVIEWER_PACKAGE.zip",
+        "evidence/R047-04/repaired_independent_review_01/PACKAGE_REPORT.json",
+        "evidence/R047-04/REPAIRED_VALIDATION_READINESS.json",
+        "evidence/R047-04/repaired_natural_day/CURRENT_CANDIDATE.json",
+        "evidence/R047-04/repaired_natural_day/SAME_DAY_OFFICIAL_RATE_RECHECK_20260912.json",
+        "evidence/R047-04/repaired_natural_day/checkpoints/2026-09-12/CHECKPOINT.json",
+        "evidence/R047-03/regression_20260912T031258201759Z/REGRESSION.json",
+        "evidence/R047-04/PRE_ACCEPTANCE_HARDENING_STATUS.json",
+        "evidence/R047-04/PRE_ACCEPTANCE_AUTOMATION_RUNBOOK.md",
+        "evidence/R047-04/FINAL_PRODUCT_ACCEPTANCE_CHECKLIST.md"
+      ],
+      "checked_at": "2026-09-12",
+      "reviewer": "CURRENT_REPAIRED_REVISION_AWAITING_EXTERNAL_REVIEW; HISTORICAL_FAIL_PRESERVED",
+      "static_check_is_semantic_acceptance": false
+    },
+    {
+      "id": "AC-R047-05",
+      "task_id": "R047-05",
+      "status": "PASS",
+      "required_for_build_scope": true,
+      "pass_condition": "工程门全有证据才发布；外部/跨日未完则只标候选完成",
+      "required_evidence_types": [
+        "release_manifest",
+        "launch_and_recovery_guide",
+        "release_acceptance_record"
+      ],
+      "evidence": [
+        "evidence/R047-05/candidate_20260911T130857589500Z/RELEASE_MANIFEST.json",
+        "evidence/R047-05/candidate_20260911T130857589500Z/LAUNCH_AND_RECOVERY_GUIDE.md",
+        "evidence/R047-05/candidate_20260911T130857589500Z/RELEASE_ACCEPTANCE_RECORD.json",
+        "evidence/R047-05/BUILD_SCOPE_COMPLETE_VALIDATION_PENDING.json",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/RELEASE_MANIFEST.json",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/LAUNCH_AND_RECOVERY_GUIDE.md",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/RELEASE_ACCEPTANCE_RECORD.json",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/INITIALIZATION_CHECKPOINT.json",
+        "evidence/R047-05/production_activation_dry_run_20260912T031123499737Z/PRODUCTION_ACTIVATION_DRY_RUN.json"
+      ],
+      "checked_at": "2026-09-12",
+      "reviewer": "CURRENT_SESSION_DEVELOPER_NONBLIND",
+      "static_check_is_semantic_acceptance": false
+    }
+  ],
+  "rollup_rules": {
+    "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING": "All required_for_build_scope gates PASS with evidence, runnable entrypoint and no unresolved critical findings. External/real-date gates may remain explicitly pending.",
+    "PRODUCT_ACCEPTANCE_COMPLETE": "All gates including R047-04 PASS with actual external and real-date evidence; no unresolved critical findings.",
+    "no_unqualified_goal_complete_before_full_acceptance": true,
+    "historical_r043_status_is_not_new_acceptance": true,
+    "authored_or_static_fixture_not_real_model_generation": true
+  },
+  "proposed_quality_targets_to_pin_before_r047_generation": {
+    "scale": "1-5",
+    "category_mean_context_sensitivity_min": 4,
+    "category_mean_naturalness_min": 4,
+    "category_mean_character_specificity_min": 3,
+    "unresolved_critical_findings_max": 0,
+    "achieved": true,
+    "requires_pre_observation_protocol_version": true
+  }
+}

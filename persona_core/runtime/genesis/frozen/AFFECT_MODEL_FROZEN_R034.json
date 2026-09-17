@@ -1,0 +1,32 @@
+{
+  "revision": "R034",
+  "authority": "FROZEN_CONTRACT",
+  "constitution_status_required": "FROZEN",
+  "model_output_direct_write_allowed": false,
+  "genesis_approved": false,
+  "runtime_installed": false,
+  "schema_version": "pcore-affect-contract-draft-1",
+  "name": "Affect Model Contract",
+  "state": {
+    "valence": "continuous bounded value",
+    "arousal": "continuous bounded value",
+    "defensiveness": "continuous bounded value",
+    "curiosity": "continuous bounded value",
+    "embarrassment": "continuous bounded value",
+    "concern_for_other": "continuous bounded value"
+  },
+  "update_inputs": [
+    "event appraisal",
+    "current relationship state",
+    "self-relevance",
+    "goal/conflict state",
+    "admitted experience"
+  ],
+  "constraints": [
+    "No keyword-only permanent mood changes",
+    "Family topic does not automatically set anger",
+    "Distress context inhibits forced humor",
+    "Affect does not rewrite Persona or source memory directly"
+  ],
+  "persistence": "Short-lived affect decays unless reinforced by admitted runtime events."
+}

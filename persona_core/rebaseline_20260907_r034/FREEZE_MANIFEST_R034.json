@@ -1,0 +1,51 @@
+{
+  "schema_version": "pcore-freeze-manifest-1",
+  "revision": "R034",
+  "status": "FREEZE_PACKAGE_COMPLETE_NOT_GENESIS_INSTALLED",
+  "files": [
+    {
+      "path": "persona_core/rebaseline_20260907_r034/SOURCE_IDENTITY_FROZEN_R034.json",
+      "sha256": "e84fb876b67ad57d9dedb458b4f75049244d96523b64c6e2e80a44661269292c"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/PERSONA_CONSTITUTION_FROZEN_R034.json",
+      "sha256": "0feba21e327f231eaedd44d5843a2bf127c32f65eb1e4246880e087a59cee2cf"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/SELF_MODEL_FROZEN_R034.json",
+      "sha256": "8adcf7e74c18f3b9fdea5f08b99e9cf1476df76736be01f7757fe1ac8bc4bab0"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/AFFECT_MODEL_FROZEN_R034.json",
+      "sha256": "b5d56156af1350f183346c6cc786d5ec6b316f4378ec251912e7b4b162f59262"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/RELATIONSHIP_MODEL_FROZEN_R034.json",
+      "sha256": "00cc3fdf2ac9a644144177fc9896fc38630d3e7e02d68e5d85f731137d4a1756"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/DECISION_MODEL_FROZEN_R034.json",
+      "sha256": "a64afd0c3940cc66a7ccbb43226616003f8eef0d4b98dfaba1aeeacf437d9cba"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/MEMORY_ADMISSION_FROZEN_R034.json",
+      "sha256": "5be2a2ae8168deea2283c13e30384f3b7c7b0fa784ab6dce87c4748118f5efdd"
+    },
+    {
+      "path": "persona_core/rebaseline_20260907_r034/PRODUCT_BOUNDARY_FROZEN_R034.json",
+      "sha256": "cec898fd787f931f2d55e5c535f6ce6347edf94fb4d29572173b71d790f880c1"
+    }
+  ],
+  "source_snapshot_id": "KURISU_V03_SG0_GAME_MARCH_2010",
+  "known_cutoff_month": "2010-03",
+  "persona_frozen": true,
+  "state_contracts_frozen": true,
+  "memory_admission_frozen": true,
+  "product_boundary_frozen": true,
+  "formation_causal_truth_fully_resolved": false,
+  "unknowns_preserved": true,
+  "independent_blind_acceptance": false,
+  "natural_day_runtime_validation_complete": false,
+  "genesis_approved": false,
+  "runtime_installed": false
+}

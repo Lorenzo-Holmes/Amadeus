@@ -1,0 +1,52 @@
+"""One HTTP operation for a host-owned provider deadline worker.
+
+Receives credentials only through inherited stdin, never CLI arguments or files.
+Writes status plus bounded raw body to the private parent pipe, not user output.
+No retry, no tool execution and no runtime database access.
+"""
+from __future__ import annotations
+import json
+import hashlib
+import math
+import sys
+from provider import (official_transport, MAX_RESPONSE_BYTES, MAX_WORKER_TIMEOUT_SECONDS,
+                      WORKER_LOCAL_REJECTION_HEADER, WORKER_REMOTE_UNKNOWN_HEADER, canonical)
+from transcript_store import ensure
+
+def main() -> int:
+    raw = b''
+    try:
+        raw = sys.stdin.buffer.read(250001)
+        ensure(len(raw) <= 250000, 'Worker input too large')
+        request = json.loads(raw.decode('utf-8'))
+        ensure(isinstance(request, dict) and set(request) == {'payload', 'credential', 'timeout_seconds'}, 'Invalid worker contract')
+        ensure(isinstance(request['payload'], str) and isinstance(request['credential'], str), 'Invalid worker data')
+        ensure(type(request['timeout_seconds']) in {int, float} and math.isfinite(request['timeout_seconds'])
+               and 0 < request['timeout_seconds'] <= MAX_WORKER_TIMEOUT_SECONDS, 'Invalid worker timeout')
+    except Exception as exc:
+        # This branch is strictly before the HTTP call. The receipt is bound to
+        # the private input frame; no credential or payload is echoed.
+        receipt = {'stage': 'INPUT_VALIDATION', 'network_attempted': False,
+                   'frame_sha256': hashlib.sha256(raw).hexdigest(), 'error_class': type(exc).__name__}
+        sys.stdout.buffer.write(WORKER_LOCAL_REJECTION_HEADER + canonical(receipt))
+        sys.stdout.buffer.flush()
+        return 2
+    try:
+        status, body = official_transport(request['payload'].encode('utf-8'), request['credential'],
+                                          timeout_seconds=request['timeout_seconds'], hard_deadline=False)
+        ensure(len(body) <= MAX_RESPONSE_BYTES + 1, 'Worker response exceeds capture bound')
+        sys.stdout.buffer.write(str(status).encode('ascii') + b'\n' + body)
+        sys.stdout.buffer.flush()
+        return 0
+    except Exception as exc:
+        # The HTTP path was entered, so the remote outcome must remain unknown.
+        # Emit only a frame-bound, credential-free diagnostic receipt.
+        receipt = {'stage': 'HTTP_CALL_OR_RESPONSE_READ', 'network_phase_entered': True,
+                   'remote_outcome_known': False, 'frame_sha256': hashlib.sha256(raw).hexdigest(),
+                   'error_class': type(exc).__name__}
+        sys.stdout.buffer.write(WORKER_REMOTE_UNKNOWN_HEADER + canonical(receipt))
+        sys.stdout.buffer.flush()
+        return 2
+
+if __name__ == '__main__':
+    raise SystemExit(main())
