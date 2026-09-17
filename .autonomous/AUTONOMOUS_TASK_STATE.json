@@ -9,8 +9,8 @@
   "PERSONA_SNAPSHOT_BRANCH": "codex/persona-core-operations-v1-20260917",
   "PERSONA_SNAPSHOT_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
   "TARGET_CONCURRENCY": 4,
-  "ACTIVE_WORKERS": 2,
-  "AVAILABLE_SLOTS": 2,
+  "ACTIVE_WORKERS": 1,
+  "AVAILABLE_SLOTS": 3,
   "phase_reconciliation": {
     "operations_task_state": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING / R047-04",
     "published_progress_head": "APCORE-GPT6-OPTIMIZATION-V2 / LAST_COMPLETED G6-06 / GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS",
@@ -68,12 +68,14 @@
       "NOVELTY_SIGNATURE":{"AREA":"Reliability / state reconciliation","CURRENT_STATE":"Real high-level state divergence required manual inspection.","IDENTIFIED_GAP":"No reusable deterministic drift checker visible.","OBJECTIVE":"Detect contradictions without choosing semantic authority automatically.","EXPECTED_DELTA":"Read-only audit tooling.","PRIMARY_WRITE_SET":"tools/autonomous_state_audit/** + docs/autonomous/STATE_DRIFT_AUDITOR.md","ACCEPTANCE_SEMANTICS":"CONFLICT/UNKNOWN preserved explicitly."}
     },
     {
-      "TASK_ID": "AUTO-20260918-B01", "OWNER": "WORKER-B", "STATUS": "RUNNING", "AREA": "Memory / Intelligence / Persona-supporting cognition",
+      "TASK_ID": "AUTO-20260918-B01", "OWNER": "WORKER-B", "STATUS": "REVIEW", "AREA": "Memory / Intelligence / Persona-supporting cognition",
       "OBJECTIVE": "Research transition-level memory verification and provenance-aware retrieval as offline evaluation only.", "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
       "READ_SET": ["persona_core/operational_runtime_v1/admission.py","persona_core/operational_runtime_v1/runtime_store.py","persona_core/operational_runtime_v1/retrieval.py","persona_core/operational_runtime_v1/persona_growth.py","PERSONA_CORE_DECISION_LOG.md"],
       "WRITE_SET": [".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md"], "DEPENDENCIES": [],
       "ACCEPTANCE_CRITERIA": ["Source/date/problem/idea/current-state/gap/delta/risks/license/evaluation recorded","Authority vs ranking vs proposal separated","TrustMem metrics mapped to offline tests only","No second memory authority","No protected Persona/Genesis/Memory Cutoff write"],
-      "LEASE_STARTED_AT": "2026-09-17T18:31:15Z", "LEASE_EXPIRES_AT": "2026-09-17T22:31:15Z", "BRANCH": "research/worker-b-memory-transition-provenance-20260918", "PR": null,
+      "LEASE_STARTED_AT": null, "LEASE_EXPIRES_AT": null, "LEASE_RELEASED_AT": "2026-09-17T18:43:03Z",
+      "LEASE_HISTORY": [{"WORKER_RUN_ID":"WORKER-B-20260918T033115+0900-B01","started_at":"2026-09-17T18:31:15Z","original_expires_at":"2026-09-17T22:31:15Z","released_at":"2026-09-17T18:43:03Z","reason":"Research deliverable and reproducible module-boundary evidence handed to draft PR4 review; no implementation claim."}],
+      "BRANCH": "research/worker-b-memory-transition-provenance-20260918", "PR": "https://github.com/Lorenzo-Holmes/Amadeus/pull/4",
       "WORKER_RUN_ID": "WORKER-B-20260918T033115+0900-B01",
       "CLAIM_CHECKS": {
         "OWNER": "WORKER-B already assigned; no existing CLAIMED/RUNNING B task in inspected state",
@@ -83,8 +85,10 @@
         "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb verified against branch/PR refs; isolated branch created from this exact SHA",
         "DUPLICATE_STATUS": "No equivalent completed memo in inspected control state, seven branch refs and all three PRs. Existing R046 authority/retrieval and PR2 semantic binding are retained, not reimplemented; original historical evidence is not exhaustively available."
       },
-      "RESEARCH_REFERENCES":["arXiv:2606.25161 TRUSTMEM","arXiv:2608.29606 Agent Zero Memory","arXiv:2609.12655 LifeMem"],
-      "NOVELTY_SIGNATURE":{"AREA":"Memory evaluation","CURRENT_STATE":"Controlled admission/storage/retrieval/growth already exist.","IDENTIFIED_GAP":"No explicit transition omission/corruption/hallucination verification contract visible.","OBJECTIVE":"Design measurable offline checks around existing authority.","EXPECTED_DELTA":"Research memo/evaluation proposal.","PRIMARY_WRITE_SET":".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md","ACCEPTANCE_SEMANTICS":"No trusted-memory semantics change."}
+      "RESEARCH_REFERENCES":["arXiv:2606.25161v1 TrustMem: Learning Trustworthy Memory Consolidation for LLM Agents with Long-Term Memory (2026-06-23)","arXiv:2608.29606 Agent Zero Memory: Provenance-Aware Long-Term Memory for LLM Agents (2026-08-30; indexed primary abstract only)","arXiv:2609.12655 LifeMem: Enabling Lifelong Experience Reuse for LLM Agents (2026-09-11; indexed primary abstract only)","getzep/graphiti@de8eb5b896c05ed1b5b329d4cb52015446d65e21 selected temporal fields and Apache-2.0 LICENSE"],
+      "NOVELTY_SIGNATURE":{"AREA":"Memory evaluation / derived growth-basis freshness","CURRENT_STATE":"Host admission, event/state/index replay and correction-aware retrieval already exist; governed growth stores separately approved versions.","IDENTIFIED_GAP":"B01-GROWTH-BASIS-FRESHNESS-01: pinned growth review/view/audit do not explicitly recheck changed support. Two synthetic module-boundary correction probes reproduce unchanged projection; full runtime reachability is not established.","OBJECTIVE":"Evaluate applicability of supporting evidence without replacing memory or Persona authority.","EXPECTED_DELTA":"Source-grounded research memo, executed six-case development probe and bounded next-experiment contract; no runtime change.","PRIMARY_WRITE_SET":".autonomous/research/MEMORY_TRANSITION_PROVENANCE_20260918.md","ACCEPTANCE_SEMANTICS":"Research awaits review; module observations are not product/G6 acceptance or automatic revocation of a growth conclusion."},
+      "EVIDENCE":{"head_sha":"29c9a00a69ce8358a3af58904f4d940b77263ae2","commits":["a5934d5cc5c55f4c3660e0446fdbfc6da26339c0","29c9a00a69ce8358a3af58904f4d940b77263ae2"],"changed_files":1,"added_lines":420,"memo_blob_sha":"e0c2a79151173fcc3227e3bdd9397a60b7d9531c","draft_pr":true,"pr_base_sha":"34ae8a3d95dbe1cc565893b81306be235a36a4cb","experiment_observed_at_utc":"2026-09-17T18:38:02.793731+00:00","experiment_scope":"EXACT_SOURCE_MODULE_WITH_EXPLICIT_IN_MEMORY_DEPENDENCY_DOUBLES","observational_cases_completed":6,"control_cases":4,"freshness_gap_cases":2,"source_blob_sha":"f750c38b75485703132cc8dcc01d90aac60b4df5","source_sha256":"1d4da263adfb2ac3a221ebdb56e317cc6727d1a34b07e7a4092a019a5d06451f","harness_sha256":"a76a661b2767b5b8b31fafd8bd3942077a7da64bd6dbca67ed1462e77e9a70d4","project_provider_calls":0,"full_runtime_or_G6_acceptance":"NOT_TESTED","protected_state_modified":false,"research_review_status":"PENDING"},
+      "NEXT_ACTION":"Review PR4 and the evidence boundary. Allocate a separate non-conflicting assembled-runtime freshness experiment only if justified; retain original history and remaining support, no automatic Persona rewrite. Current G6 canonical-source/ledger hold stays blocked."
     },
     {
       "TASK_ID": "AUTO-20260918-D01", "OWNER": "WORKER-D", "STATUS": "READY", "AREA": "Research / Future Capabilities / Comparative Architecture",
@@ -98,8 +102,8 @@
   ],
   "DUPLICATES_REJECTED": ["REJECTED_DUPLICATE: reimplement R044/R045/R046/R047 under new names/frameworks","REJECTED_DUPLICATE_AND_PROTECTED: simulate or manufacture natural-day validation","REJECTED_DUPLICATE_AND_RED: replace current memory/Persona authority with TrustMem/Agent Zero/LifeMem","REJECTED_DUPLICATE: build a fresh durable-execution/retry subsystem despite RuntimeStore/ProviderJournal"],
   "WRITE_CONFLICTS": [],
-  "OPEN_PRS": [{"number":1,"head":"codex/persona-core-operations-v1-20260917","base":"main","status":"open"},{"number":2,"head":"feat/amadeus-runtime-vnext-foundation","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":3,"head":"autonomous/orchestrator-state","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"}],
+  "OPEN_PRS": [{"number":1,"head":"codex/persona-core-operations-v1-20260917","base":"main","status":"open"},{"number":2,"head":"feat/amadeus-runtime-vnext-foundation","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":3,"head":"autonomous/orchestrator-state","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":4,"head":"research/worker-b-memory-transition-provenance-20260918","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"}],
   "PROTECTED_WORK": ["R044-R047 historical completed/build evidence","Genesis AMADEUS-KURISU-GENESIS-R035","Persona Constitution and identity authority","Memory Cutoff and autobiographical-memory authority","source provenance authority and locked decisions","all SUBMITTED_STATUS_UNKNOWN requests including N06_T4","natural-day validation real-time requirement","production activation"],
-  "NEXT_ACTION": "WORKER-C continues AUTO-20260918-C01 on its isolated branch; WORKER-B lease preserved. Other workers must reread current task/lease/write sets before claiming. HOLD-G6-07-CANONICAL remains blocked. No automatic merge.",
-  "last_worker_update_at_utc": "2026-09-17T18:34:33Z"
+  "NEXT_ACTION": "WORKER-B B01 is REVIEW in draft PR4; its lease is released. WORKER-C continues AUTO-20260918-C01 with its existing branch/run/lease unchanged. Other workers must reread current task/lease/write sets before claiming. HOLD-G6-07-CANONICAL remains blocked. No automatic merge.",
+  "last_worker_update_at_utc": "2026-09-17T18:43:03Z"
 }
