@@ -9,8 +9,8 @@
   "PERSONA_SNAPSHOT_BRANCH": "codex/persona-core-operations-v1-20260917",
   "PERSONA_SNAPSHOT_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
   "TARGET_CONCURRENCY": 4,
-  "ACTIVE_WORKERS": 1,
-  "AVAILABLE_SLOTS": 3,
+  "ACTIVE_WORKERS": 0,
+  "AVAILABLE_SLOTS": 4,
   "phase_reconciliation": {
     "operations_task_state": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING / R047-04",
     "published_progress_head": "APCORE-GPT6-OPTIMIZATION-V2 / LAST_COMPLETED G6-06 / GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS",
@@ -56,16 +56,20 @@
       "NOVELTY_SIGNATURE":{"AREA":"G6 validation","CURRENT_STATE":"Published continuation exists but complete canonical implementation/evidence is not GitHub-accessible.","IDENTIFIED_GAP":"Verified execution truth missing.","OBJECTIVE":"Resume only from persisted truth.","EXPECTED_DELTA":"None while blocked.","PRIMARY_WRITE_SET":"protected G6 paths","ACCEPTANCE_SEMANTICS":"Missing evidence stays UNKNOWN/BLOCKED."}
     },
     {
-      "TASK_ID": "AUTO-20260918-C01", "OWNER": "WORKER-C", "STATUS": "RUNNING", "AREA": "Reliability / Evaluation / Observability / Recovery",
+      "TASK_ID": "AUTO-20260918-C01", "OWNER": "WORKER-C", "STATUS": "REVIEW", "AREA": "Reliability / Evaluation / Observability / Recovery",
       "OBJECTIVE": "Build a deterministic read-only state-drift auditor for task/progress/decision/branch-PR evidence.", "BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
       "READ_SET": ["AMADEUS_PERSONA_CORE_MASTER_GOAL.md","PERSONA_CORE_CONTINUATION_PROTOCOL.md","PERSONA_CORE_PROGRESS.md","PERSONA_CORE_DECISION_LOG.md","persona_core/operational_build_v1/TASK_STATE.json","persona_core/operational_build_v1/ACCEPTANCE_MATRIX.json",".autonomous/AUTONOMOUS_TASK_STATE.json"],
       "WRITE_SET": ["tools/autonomous_state_audit/**","docs/autonomous/STATE_DRIFT_AUDITOR.md"], "DEPENDENCIES": [],
       "ACCEPTANCE_CRITERIA": ["Read-only","Operations-vs-G6 divergence fixture flagged","Missing evidence reported UNKNOWN/BLOCKED","Protected-state invariants supported","Deterministic JSON output and focused tests"],
-      "LEASE_STARTED_AT": "2026-09-17T18:34:33Z", "LEASE_EXPIRES_AT": "2026-09-17T22:34:33Z", "BRANCH":"feat/worker-c-state-drift-auditor-20260918", "PR":null,
+      "LEASE_STARTED_AT": null, "LEASE_EXPIRES_AT": null, "LEASE_RELEASED_AT": "2026-09-17T18:46:56Z",
+      "LEASE_HISTORY": [{"WORKER_RUN_ID":"WORKER-C-20260918T033433+0900-C01","started_at":"2026-09-17T18:34:33Z","original_expires_at":"2026-09-17T22:34:33Z","released_at":"2026-09-17T18:46:56Z","reason":"Additive auditor and executed offline evidence handed to draft PR5 review; no product or current G6 acceptance claimed."}],
+      "BRANCH":"feat/worker-c-state-drift-auditor-20260918", "PR":"https://github.com/Lorenzo-Holmes/Amadeus/pull/5",
       "WORKER_RUN_ID":"WORKER-C-20260918T033433+0900-C01",
       "CLAIM_CHECKS":{"OWNER":"WORKER-C assigned; no other C CLAIMED/RUNNING task in inspected state","LEASE":"READY/null lease before CAS claim; initial stale-blob attempt rejected 409","WRITE_SET":"Disjoint from B RUNNING memo and A/D reserved paths; shared coordination metadata updated with blob CAS","DEPENDENCIES":"Empty; no direct G6 work","BASE_SHA":"Isolated branch ref reverified at 34ae8a3d95dbe1cc565893b81306be235a36a4cb","DUPLICATE_STATUS":"No equivalent task/PR in inspected state; existing audit_operations_resume.py reads a runtime database and writes backups, not cross-phase control reconciliation"},
       "RESEARCH_REFERENCES":["arXiv:2609.13463"],
-      "NOVELTY_SIGNATURE":{"AREA":"Reliability / state reconciliation","CURRENT_STATE":"Real high-level state divergence required manual inspection.","IDENTIFIED_GAP":"No reusable deterministic drift checker visible.","OBJECTIVE":"Detect contradictions without choosing semantic authority automatically.","EXPECTED_DELTA":"Read-only audit tooling.","PRIMARY_WRITE_SET":"tools/autonomous_state_audit/** + docs/autonomous/STATE_DRIFT_AUDITOR.md","ACCEPTANCE_SEMANTICS":"CONFLICT/UNKNOWN preserved explicitly."}
+      "NOVELTY_SIGNATURE":{"AREA":"Reliability / state reconciliation","CURRENT_STATE":"Real high-level state divergence required manual inspection.","IDENTIFIED_GAP":"No reusable deterministic drift checker visible.","OBJECTIVE":"Detect contradictions without choosing semantic authority automatically.","EXPECTED_DELTA":"Read-only audit tooling.","PRIMARY_WRITE_SET":"tools/autonomous_state_audit/** + docs/autonomous/STATE_DRIFT_AUDITOR.md","ACCEPTANCE_SEMANTICS":"CONFLICT/UNKNOWN preserved explicitly."},
+      "EVIDENCE":{"head_sha":"2e421263af0ecac0c51ac68a07066f3b8ec5c370","commits":6,"changed_files":5,"modified_existing_files":0,"deleted_files":0,"draft_pr":true,"tested_implementation_commit":"83c4418b9d1e11b9fcc5fe29fafac15f869053b2","test_finished_at_utc":"2026-09-17T18:45:07.161828+00:00","evidence_class":"SYNTHETIC_OFFLINE_AUDITOR_TESTS_NOT_PRODUCT_ACCEPTANCE","tests_run":38,"failures":0,"errors":0,"skipped":0,"python":"3.13.5","platform":"linux","audit_blob_sha":"34cfbed85115d480e50693d05903e455874a8fc6","tests_blob_sha":"14aefbabca50ceccbdc29d8e675bc7ab7b9ec3c7","validation_path":"tools/autonomous_state_audit/VALIDATION.json","output_path":"tools/autonomous_state_audit/TEST_OUTPUT.txt","design_path":"docs/autonomous/STATE_DRIFT_AUDITOR.md","new_failure_modes":["C01-F1 cross-phase completion inheritance","C01-F2 missing evidence interpreted as successful recovery","C01-F3 stale or inconsistent shared ownership observations","C01-F4 protected-invariant attestation without byte evidence"],"new_failure_mode_scope":"Metadata/evidence reconciliation; not newly reproduced production-runtime failures","historical_R044_R047_rerun":false,"full_repository_regression":"NOT_RUN","current_G6_canonical_or_journal_validation":"NOT_RUN_MISSING_SOURCE_EVIDENCE","project_provider_calls":0,"unknown_replays":0,"protected_state_modified":false,"semantic_acceptance":false,"product_acceptance":false,"review_status":"PENDING"},
+      "NEXT_ACTION":"Review draft PR5 and reproduce the focused suite from a full immutable checkout when available. Keep missing source, raw provider evidence, policy interpretation, snapshot authenticity and protected-manifest provenance explicit. Do not reopen R044-R047 or close HOLD-G6-07-CANONICAL; do not auto-merge."
     },
     {
       "TASK_ID": "AUTO-20260918-B01", "OWNER": "WORKER-B", "STATUS": "REVIEW", "AREA": "Memory / Intelligence / Persona-supporting cognition",
@@ -102,8 +106,8 @@
   ],
   "DUPLICATES_REJECTED": ["REJECTED_DUPLICATE: reimplement R044/R045/R046/R047 under new names/frameworks","REJECTED_DUPLICATE_AND_PROTECTED: simulate or manufacture natural-day validation","REJECTED_DUPLICATE_AND_RED: replace current memory/Persona authority with TrustMem/Agent Zero/LifeMem","REJECTED_DUPLICATE: build a fresh durable-execution/retry subsystem despite RuntimeStore/ProviderJournal"],
   "WRITE_CONFLICTS": [],
-  "OPEN_PRS": [{"number":1,"head":"codex/persona-core-operations-v1-20260917","base":"main","status":"open"},{"number":2,"head":"feat/amadeus-runtime-vnext-foundation","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":3,"head":"autonomous/orchestrator-state","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":4,"head":"research/worker-b-memory-transition-provenance-20260918","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"}],
+  "OPEN_PRS": [{"number":1,"head":"codex/persona-core-operations-v1-20260917","base":"main","status":"open"},{"number":2,"head":"feat/amadeus-runtime-vnext-foundation","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":3,"head":"autonomous/orchestrator-state","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":4,"head":"research/worker-b-memory-transition-provenance-20260918","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"},{"number":5,"head":"feat/worker-c-state-drift-auditor-20260918","base":"codex/persona-core-operations-v1-20260917","status":"open_draft"}],
   "PROTECTED_WORK": ["R044-R047 historical completed/build evidence","Genesis AMADEUS-KURISU-GENESIS-R035","Persona Constitution and identity authority","Memory Cutoff and autobiographical-memory authority","source provenance authority and locked decisions","all SUBMITTED_STATUS_UNKNOWN requests including N06_T4","natural-day validation real-time requirement","production activation"],
-  "NEXT_ACTION": "WORKER-B B01 is REVIEW in draft PR4; its lease is released. WORKER-C continues AUTO-20260918-C01 with its existing branch/run/lease unchanged. Other workers must reread current task/lease/write sets before claiming. HOLD-G6-07-CANONICAL remains blocked. No automatic merge.",
-  "last_worker_update_at_utc": "2026-09-17T18:43:03Z"
+  "NEXT_ACTION": "WORKER-C C01 is REVIEW in draft PR5 with 38 passing isolated offline tests; its lease is released. WORKER-B B01 remains REVIEW in draft PR4 with its evidence and lease history preserved. Other workers must reread task/lease/write sets before claiming. HOLD-G6-07-CANONICAL remains blocked; no historical R044-R047 replay or automatic merge.",
+  "last_worker_update_at_utc": "2026-09-17T18:46:56Z"
 }
