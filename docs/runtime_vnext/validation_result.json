@@ -1,0 +1,56 @@
+{
+  "record_kind": "OFFLINE_REFERENCE_TEST_RESULT_NOT_G6_ACCEPTANCE",
+  "recorded_on": "2026-09-18",
+  "source_baseline_sha": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+  "tested_code_commit_sha": "23a472b0a080d79099fe831c7049b035fd989028",
+  "execution_scope": "ONLY_TWO_NEW_AUTHORED_PYTHON_FILES_NOT_FULL_REPOSITORY",
+  "executor": "author_session_local_container",
+  "independently_certified": false,
+  "python": "3.13.5",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "command": "PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests/runtime_vnext -p 'test_*.py' -v",
+  "result": "PASS",
+  "test_methods_run": 40,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "final_run_seconds": 0.037,
+  "matrix_subcases_within_one_test_method": 120,
+  "matrix_subcases_are_natural_language_validation": false,
+  "files": [
+    {
+      "path": "tools/runtime_vnext/semantic_contract.py",
+      "bytes": 10089,
+      "sha256": "f5adebc15872c56608be745aa0ea876a91fd1abda5a0d171b9397cb57db2d2ff",
+      "git_blob_sha1": "425647116ee0f9966f4e6a2691b42e8bbd4621c9",
+      "github_blob_matched_local": true
+    },
+    {
+      "path": "tests/runtime_vnext/test_semantic_contract.py",
+      "bytes": 17765,
+      "sha256": "f1bca10c69237c8dd584199807a5c3e2bc855cc1e19014ea61ac68c9705c852f",
+      "git_blob_sha1": "f209eb06e80425bfcfaa9572c4e6671f1bccdd2f",
+      "github_blob_matched_local": true
+    }
+  ],
+  "output": {
+    "path": "docs/runtime_vnext/test_output.txt",
+    "bytes": 5565,
+    "sha256": "1a2c967e696823afb0f089407b494821405bbe9c0c543672895602df02bd9749",
+    "git_blob_sha1": "0a9353d0c88156f549da7f7626d326c94e1ab36e"
+  },
+  "project_provider_calls_in_this_work": 0,
+  "operational_runtime_imported_by_tests": false,
+  "full_repository_regression_executed": false,
+  "windows_staging_verified": false,
+  "python_3_12_validated": false,
+  "github_actions_executed_by_this_work": false,
+  "g6_canonical_verified": false,
+  "r8_original_failures_reproduced": false,
+  "production_semantic_integration_implemented": false,
+  "nlp_interpretation_correctness_measured": false,
+  "permission_expiry_evaluated": false,
+  "production_dependency_revocation_tested": false,
+  "existing_canonical_state_updated": false,
+  "new_canonical_state_created": false
+}
