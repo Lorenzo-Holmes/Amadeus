@@ -347,7 +347,7 @@ class AuditTests(unittest.TestCase):
     def test_cli_json_and_status_codes(self):
         base = [sys.executable, str(SOURCE), "--root", str(self.root), "--as-of", NOW,
                 "--github-snapshot", str(self.root / "snapshot.json"), "--protected-baseline", str(self.root / "protected.json")]
-        env = dict(os.environ, PYTHONDONTWRITECODE="1")
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
         for expected, mutation in ((0, lambda: None),
                                    (4, lambda: self.task.update(LEASE_EXPIRES_AT=NOW)),
                                    (3, lambda: (self.root / "evidence/journal.sqlite3").unlink()),
