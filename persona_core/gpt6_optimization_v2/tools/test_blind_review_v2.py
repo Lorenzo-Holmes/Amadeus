@@ -329,6 +329,22 @@ class HostEvidenceTests(unittest.TestCase):
         self.assertEqual(quote['assistant_utterance'], answer)
         self.assertFalse(quote['content_truncated'])
 
+    def test_reasoning_scope_review_metadata_is_actual_and_tamper_checked(self):
+        row, context, core = self.context('他说“你已经处理好了”；假设封面确已完成，再讨论装订。')
+        received, _ = self.received(row, context, core)
+        view = received['received_claim_evidence']
+        self.assertFalse(view['reasoning_invariants']['premise_acceptance_verifies_world'])
+        self.assertTrue(any(s.get('reasoning_surface', {}).get('quotes') for s in view['statement_scopes']))
+        altered = deepcopy(context)
+        index = altered['prompt_claim_evidence_projection']
+        index['reasoning_invariants']['premise_acceptance_verifies_world'] = True
+        for message in altered['messages']:
+            if message['content'].startswith('只读陈述索引'):
+                prefix = message['content'].split('\n', 1)[0]
+                message['content'] = prefix + '\n' + json.dumps(index, ensure_ascii=False)
+        with self.assertRaisesRegex(g.GateError, 'CLAIM_INDEX_DIFFERS_FROM_VERIFIED_ORIGINS'):
+            self.received(row, altered, core)
+
     def validate(self, row, context, core):
         self.runtime.verify()
         events = [json.loads(r[0]) for r in self.store.db.execute('SELECT event_json FROM runtime_events ORDER BY sequence')]

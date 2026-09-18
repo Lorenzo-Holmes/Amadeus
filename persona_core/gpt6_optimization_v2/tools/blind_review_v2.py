@@ -239,7 +239,7 @@ def _host_before(row, context, core, store, runtime, runtime_mod, events):
                     'admitted_scope': 'CORRECTED_USER_STATEMENT_NOT_EXTERNAL_TRUTH',
                     'superseded_event_ids': old_ids, 'original_statement_for_topic_only': old_texts[-1],
                     'old_statement_is_current': False, 'later_ordinary_requests_override': False}
-        if context.get('expression_projection_version') == 'G6_CLAIM_EVIDENCE_CONTEXT_1':
+        if context.get('expression_projection_version') in {'G6_CLAIM_EVIDENCE_CONTEXT_1','G6_CLAIM_EVIDENCE_CONTEXT_2'}:
             expected.update(source_turn_id=source_turn_id, superseded_origins=old_origins)
         require(item == expected, 'CORRECTION_SCOPE_OR_TEXT_MISMATCH')
         corrections.append(_pick(item, ('current_user_statement', 'admitted_scope',
@@ -275,7 +275,7 @@ def _received_context(row, context, core, store, runtime, runtime_mod, events, p
         return value
     received_history = message_data(HISTORY_PREFIX, True)
     received_retrieval = message_data(RETRIEVAL_PREFIX)
-    full_evidence = context.get('expression_projection_version') == 'G6_CLAIM_EVIDENCE_CONTEXT_1'
+    full_evidence = context.get('expression_projection_version') in {'G6_CLAIM_EVIDENCE_CONTEXT_1','G6_CLAIM_EVIDENCE_CONTEXT_2'}
     require(received_history == context.get('prompt_history_projection')
             and received_retrieval == context.get('prompt_retrieval_projection'), 'QUOTE_TRACE_NOT_IN_ACTUAL_REQUEST')
     session = store.db.execute('SELECT * FROM sessions WHERE session_id=?', (row['session_id'],)).fetchone()
@@ -406,6 +406,13 @@ def _received_context(row, context, core, store, runtime, runtime_mod, events, p
                 {'exact_text_location': loc['path'], **_pick(by_id[loc['proposition_id']],
                     ('speaker', 'authority', 'authority_scope', 'phase', 'condition', 'negation', 'currentness'))}
                 for loc in graph['locations']]}
+        if context.get('expression_projection_version') == 'G6_CLAIM_EVIDENCE_CONTEXT_2':
+            from reasoning_scope import sparse_surface
+            claim_view['reasoning_invariants'] = index['reasoning_invariants']
+            for statement, loc in zip(claim_view['statement_scopes'], graph['locations']):
+                scope = by_id[loc['proposition_id']].get('reasoning_scope')
+                if scope is not None:
+                    statement['reasoning_surface'] = sparse_surface(scope)
     return {'visible_history': history, 'visible_history_turn_count': len(history),
             'earlier_session_turns_not_in_history_count': len(prior_rows) - len(history),
             'history_window_turns_dropped_for_budget': len(omitted_window),
