@@ -371,7 +371,7 @@ class HostEvidenceTests(unittest.TestCase):
     def test_request_trace_and_source_cannot_be_replaced_behind_same_capture(self):
         row, context, core = self.context('来源记忆有哪些边界')
         genesis = g.load(g.ROOT/b.GENESIS)
-        scope = {'max_output_tokens': 10, 'thinking': {'type': 'enabled'}, 'reasoning_effort': 'max'}
+        scope = {'max_output_tokens': 10, 'thinking': {'type': 'enabled'}, 'reasoning_effort': 'max', 'stream': False}
         request = {'model': 'AUTHOR_PRIVATE_MODEL', 'messages': context['messages'], 'max_tokens': 10,
                    'stream': False, 'thinking': scope['thinking'], 'reasoning_effort': 'max'}
         answer = 'AUTHOR offline response'; raw = sr.json_bytes({'choices': [{'message': {'content': answer}}]})
@@ -392,6 +392,18 @@ class HostEvidenceTests(unittest.TestCase):
         changed = dict(row, context_json=json.dumps(forged, ensure_ascii=False))
         with self.assertRaisesRegex(g.GateError, 'HOST_TRACE_NOT_BOUND'):
             b._verify_call_context(changed, capture, receipt, genesis, scope)
+        scope['stream'] = True
+        request.update(stream=True, stream_options={'include_usage': True})
+        row['request_json'] = g.canonical(request).decode('utf-8')
+        row['request_sha256'] = sr.sha_text(row['request_json'])
+        capture['request_sha256'] = receipt['request_sha256'] = row['request_sha256']
+        b._verify_call_context(row, capture, receipt, genesis, scope)
+        request['stream_options']['include_usage'] = False
+        row['request_json'] = g.canonical(request).decode('utf-8')
+        row['request_sha256'] = sr.sha_text(row['request_json'])
+        capture['request_sha256'] = receipt['request_sha256'] = row['request_sha256']
+        with self.assertRaisesRegex(g.GateError, 'GENERATION_REQUEST_MISMATCH'):
+            b._verify_call_context(row, capture, receipt, genesis, scope)
 
     def test_current_correction_chain_preserves_original_and_replacement_scope(self):
         self.observed('标签为原始甲', 'AUTHOR observed')

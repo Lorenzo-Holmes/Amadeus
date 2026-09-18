@@ -21,6 +21,7 @@ from datetime import date
 from pathlib import Path
 from typing import Callable
 from transcript_store import TranscriptStore, SessionHandle, StoreGuard, ensure, utc_now, WORKSPACE
+import provider_transport as lifecycle_transport
 
 ENDPOINT = "https://api.deepseek.com/chat/completions"
 # CNY per million tokens: input miss, output (including reasoning), input hit.
@@ -182,7 +183,12 @@ unknown; ProviderJournal keeps its intent and stops the batch.
     return status, raw
 
 def official_transport(payload: bytes, credential: str, *, timeout_seconds: float = 55,
-                       hard_deadline: bool = False) -> tuple[int, bytes]:
+                       hard_deadline: bool = False, transport_policy: dict | None = None,
+                       on_lifecycle: Callable = lambda event: None) -> tuple[int, bytes]:
+    if transport_policy is not None:
+        ensure(hard_deadline, 'Lifecycle transport requires an owned worker')
+        return lifecycle_transport.worker_exchange(payload, credential, timeout_seconds,
+            transport_policy, _worker_command(), WORKSPACE, on_lifecycle)
     if hard_deadline:
         return bounded_worker_transport(payload, credential, timeout_seconds)
     request = urllib.request.Request(ENDPOINT, data=payload, method="POST", headers={
@@ -209,7 +215,12 @@ def scope_check(scope: dict) -> None:
             date.fromisoformat(scope['pricing_verified_date'])
         except (ValueError, TypeError, KeyError):
             raise StoreGuard('Explicit ISO pricing verification date required') from None
-        ensure(scope.get('stream') is False and scope.get('tools_allowed') is False, 'Only nonstream text requests without tools are allowed')
+        ensure(scope.get('tools_allowed') is False, 'Only text requests without tools are allowed')
+        if 'transport_policy' in scope:
+            lifecycle_transport.check_policy(scope['transport_policy'], scope['request_timeout_seconds'])
+            ensure(type(scope.get('stream')) is bool, 'Explicit streaming policy required')
+        else:
+            ensure(scope.get('stream') is False, 'Streaming requires a versioned lifecycle policy')
         ensure(scope.get('thinking') in ({'type': 'enabled'}, {'type': 'disabled'}), 'Explicit thinking mode required')
         if scope['thinking']['type'] == 'enabled':
             ensure(scope.get('reasoning_effort') in {'low', 'high', 'max'}, 'Unsupported reasoning effort')
@@ -265,6 +276,10 @@ class ProviderJournal:
         CREATE TABLE IF NOT EXISTS turn_lifecycle(
           seq INTEGER PRIMARY KEY AUTOINCREMENT, turn_id TEXT NOT NULL REFERENCES turns(turn_id),
           at_utc TEXT NOT NULL, state TEXT NOT NULL, detail_json TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS transport_wire_captures(
+          call_id TEXT PRIMARY KEY REFERENCES provider_calls(call_id),
+          wire_format TEXT NOT NULL, wire_bytes BLOB NOT NULL, wire_sha256 TEXT NOT NULL,
+          complete INTEGER NOT NULL, credential_redacted INTEGER NOT NULL);
         """)
 
     def register_batch(self, scope: dict) -> None:
@@ -280,6 +295,13 @@ class ProviderJournal:
 
     def _transition(self, turn_id: str, state: str, detail: dict) -> None:
         self.store.db.execute("INSERT INTO turn_lifecycle(turn_id,at_utc,state,detail_json) VALUES(?,?,?,?)", (turn_id, utc_now(), state, canonical(detail).decode("utf-8")))
+
+    def _capture_wire(self, call_id, wire, key, stream, complete):
+        secret = key.encode('utf-8')
+        redacted = secret in wire
+        saved = wire.replace(secret, b'[REDACTED_CONFIGURED_CREDENTIAL]') if redacted else wire
+        self.store.db.execute('INSERT INTO transport_wire_captures VALUES(?,?,?,?,?,?)',
+            (call_id, 'SSE' if stream else 'JSON', saved, hashlib.sha256(saved).hexdigest(), int(complete), int(redacted)))
 
     def call(self, handle: SessionHandle, turn_id: str, batch_id: str, slot_id: str, context: dict,
              *, transport: Callable = official_transport, credential_reader: Callable = existing_credential) -> dict:
@@ -319,6 +341,9 @@ class ProviderJournal:
             payload['thinking'] = scope['thinking']
             if scope['thinking']['type'] == 'enabled':
                 payload['reasoning_effort'] = scope['reasoning_effort']
+            payload['stream'] = scope['stream']
+            if scope['stream']:
+                payload['stream_options'] = {'include_usage': True}
         request_bytes = canonical(payload)
         reserve = (nbytes + scope["input_overhead_reserve_tokens"]) * RATES[model][0] + scope["max_output_tokens"] * RATES[model][1]
         call_id = "call_" + uuid.uuid4().hex
@@ -342,9 +367,32 @@ class ProviderJournal:
             self._transition(turn_id, "SUBMITTED_STATUS_UNKNOWN", {"call_id": call_id, "reserve_micro_cny": reserve, "automatic_retries": 0})
         try:
             if transport is official_transport and v2:
-                status, raw = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'], hard_deadline=True)
+                if 'transport_policy' in scope:
+                    def record_lifecycle(event):
+                        lifecycle_transport.check_event(event)
+                        with self.store.transaction():
+                            self._transition(turn_id, 'TRANSPORT_LIFECYCLE', {'call_id': call_id, **event})
+                    result = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'],
+                        hard_deadline=True, transport_policy=scope['transport_policy'], on_lifecycle=record_lifecycle)
+                    status, raw = result
+                    with self.store.transaction():
+                        self._capture_wire(call_id, result.wire, key, scope['stream'], True)
+                else:
+                    status, raw = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'], hard_deadline=True)
             else:
                 status, raw = transport(request_bytes, key)
+        except lifecycle_transport.TransportFault as exc:
+            with self.store.transaction():
+                self.store.db.execute('UPDATE provider_calls SET error_category=?,http_status=? WHERE call_id=?',
+                    (exc.reason, exc.status, call_id))
+                self.store.db.execute('UPDATE call_batches SET stopped=1 WHERE batch_id=?', (batch_id,))
+                self._capture_wire(call_id, exc.wire, key, scope.get('stream', False), False)
+                self._transition(turn_id, 'SUBMITTED_STATUS_UNKNOWN', {'call_id': call_id,
+                    'timeout_source': exc.reason if exc.reason in lifecycle_transport.TIMEOUTS else None,
+                    'error_category': exc.reason, 'batch_stopped': True, 'remote_outcome_known': False,
+                    'automatic_paid_retries': 0, 'partial_response_is_reply': False})
+            key = None
+            return self.get_call(handle, call_id)
         except WorkerNotSubmitted as exc:
             # Only a validated pre-HTTP receipt may avoid an UNKNOWN result.
             # It never unlocks the slot or authorizes a paid retry.
@@ -399,6 +447,12 @@ class ProviderJournal:
             ensure(isinstance(body, dict), 'INVALID_RESPONSE_OBJECT')
             usage = body.get("usage")
             provider_model = body.get("model")
+            observed_choices = body.get('choices')
+            if (isinstance(observed_choices, list) and len(observed_choices) == 1
+                    and isinstance(observed_choices[0], dict)):
+                observed_finish = observed_choices[0].get('finish_reason')
+                if observed_finish in lifecycle_transport.FINISHES:
+                    finish = observed_finish
             validate_provider_model(model, provider_model, strict_version=v2)
             ensure(isinstance(usage, dict) and all(type(usage.get(k)) is int and usage[k] >= 0 for k in ("prompt_tokens", "completion_tokens", "total_tokens")), "INVALID_USAGE")
             ensure(usage["total_tokens"] == usage["prompt_tokens"] + usage["completion_tokens"], "USAGE_TOTAL_MISMATCH")

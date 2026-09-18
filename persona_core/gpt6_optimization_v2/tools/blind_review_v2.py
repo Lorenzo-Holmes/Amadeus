@@ -74,9 +74,11 @@ def _verify_call_context(row, capture, receipt, genesis, scope):
             'CONTEXT_REQUEST_BINDING_MISMATCH')
     require(g.digest(messages) == receipt.get('preview_messages_sha256'), 'PREVIEW_RECEIPT_MISMATCH')
     require(messages[-1] == {'role': 'user', 'content': row['user_text']}, 'CURRENT_USER_CHANGED')
-    require(request == {'model': row['model'], 'messages': messages, 'max_tokens': scope['max_output_tokens'],
-                       'stream': False, 'thinking': scope['thinking'], 'reasoning_effort': scope['reasoning_effort']},
-            'GENERATION_REQUEST_MISMATCH')
+    expected = {'model': row['model'], 'messages': messages, 'max_tokens': scope['max_output_tokens'],
+                'stream': scope['stream'], 'thinking': scope['thinking'], 'reasoning_effort': scope['reasoning_effort']}
+    if scope['stream']:
+        expected['stream_options'] = {'include_usage': True}
+    require(request == expected, 'GENERATION_REQUEST_MISMATCH')
     hosts = [m['content'][len(PREFIX):] for m in messages if m.get('role') == 'system'
              and isinstance(m.get('content'), str) and m['content'].startswith(PREFIX)]
     require(len(hosts) == 1, 'UNIQUE_BOUND_HOST_DATA_REQUIRED')
