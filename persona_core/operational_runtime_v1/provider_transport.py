@@ -537,7 +537,11 @@ def child_result(frame,frame_hash):
         import sys
         sys.stderr.buffer.write(encode({'frame_sha256':frame_hash,'lifecycle':event})+b'\n');sys.stderr.buffer.flush()
     try:
-        if frame.get('operation')=='RESPONSES':
+        if 'adapter_contract' in frame:
+            from provider_fixture import validate_worker_contract, local_exchange
+            validate_worker_contract(frame['adapter_contract'])
+            result=local_exchange(frame['payload'].encode('utf-8'),policy,sink)
+        elif frame.get('operation')=='RESPONSES':
             result=responses_http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,**route_args)
         else:
             result=http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,catalogue=frame.get('operation')=='CATALOGUE',**route_args)
@@ -548,15 +552,20 @@ def child_result(frame,frame_hash):
         if exc.diagnostics is not None:value['diagnostics']=exc.diagnostics
     return RESULT_HEADER+encode({'frame_sha256':frame_hash,**value})
 
-def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False,responses=False,network_route_policy=None):
+def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False,responses=False,network_route_policy=None,adapter_contract=None):
     """Drain both pipes concurrently; main thread commits live telemetry to SQLite."""
     check_policy(policy,total)
     if network_route_policy is not None:check_route_policy(network_route_policy)
     ensure(not (catalogue and responses),'WORKER_OPERATION_CONFLICT')
+    if adapter_contract is not None:
+        from provider_fixture import validate_worker_contract
+        ensure(not catalogue and not responses and network_route_policy is None,'ADAPTER_WORKER_OPERATION_CONFLICT')
+        validate_worker_contract(adapter_contract)
     operation='CATALOGUE' if catalogue else 'RESPONSES' if responses else None
     frame=encode({'payload':payload.decode('utf-8'),'credential':credential,'timeout_seconds':total,
                   'transport_policy':policy,**({'operation':operation} if operation else {}),
-                  **({'network_route_policy':network_route_policy} if network_route_policy is not None else {})})
+                  **({'network_route_policy':network_route_policy} if network_route_policy is not None else {}),
+                  **({'adapter_contract':adapter_contract} if adapter_contract is not None else {})})
     frame_hash=hashlib.sha256(frame).hexdigest(); events=queue.Queue(maxsize=128)
     output=bytearray(); problems=[]; lifecycle=Lifecycle(sink)
     child=subprocess.Popen(command,cwd=cwd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)

@@ -56,6 +56,7 @@ def authored_test_input(text):
 
 
 def validate_pricing(path, pinned_sha, scope, provider, *, now=None):
+    gates.formal_provider_scope(scope)
     path = Path(path)
     gates.require(gates.sha(path) == pinned_sha, "PRICING_RECORD_CHANGED_DURING_SESSION")
     value = gates.load(path)

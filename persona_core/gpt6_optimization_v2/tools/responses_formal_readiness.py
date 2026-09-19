@@ -73,6 +73,9 @@ def run(root):
     runner.require(runner.read(freeze_path.parent/'FORMAL_READINESS_BINDING.json') == binding, 'READINESS_BINDING_CHANGED')
     runner.require(runner.read(freeze_path)['files'] == runner.source_bindings(), 'FROZEN_SOURCE_CHANGED')
     scope = runner.read(root/'SCOPE.json'); preparation = runner.read(root/'PREPARATION.json')
+    runner.runtime_modules()
+    from provider_contract import guard_legacy_identity
+    guard_legacy_identity(scope)
     runner.require(scope.get('network_route_policy') == runner.read(freeze_path).get('network_route_policy'),
                    'READINESS_NETWORK_ROUTE_CHANGED')
     runner.require(runner.value_sha(scope) == binding['scope_sha256']

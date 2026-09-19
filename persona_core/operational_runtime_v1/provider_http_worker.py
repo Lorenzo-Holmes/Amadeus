@@ -29,7 +29,8 @@ def main() -> int:
         base = {'payload', 'credential', 'timeout_seconds'}
         ensure(isinstance(request, dict) and set(request) in (base, base | {'transport_policy'},
                base | {'transport_policy', 'operation'}, base | {'transport_policy','network_route_policy'},
-               base | {'transport_policy','operation','network_route_policy'}), 'Invalid worker contract')
+               base | {'transport_policy','operation','network_route_policy'},
+               base | {'transport_policy','adapter_contract'}), 'Invalid worker contract')
         ensure(isinstance(request['payload'], str) and isinstance(request['credential'], str), 'Invalid worker data')
         ensure(type(request['timeout_seconds']) in {int, float} and math.isfinite(request['timeout_seconds'])
                and 0 < request['timeout_seconds'] <= MAX_WORKER_TIMEOUT_SECONDS, 'Invalid worker timeout')
@@ -39,6 +40,9 @@ def main() -> int:
             check_route_policy(request['network_route_policy'])
         if 'operation' in request:
             ensure(request['operation'] in {'CATALOGUE', 'RESPONSES'}, 'Invalid worker operation')
+        if 'adapter_contract' in request:
+            from provider_fixture import validate_worker_contract
+            validate_worker_contract(request['adapter_contract'])
     except Exception as exc:
         # This branch is strictly before the HTTP call. The receipt is bound to
         # the private input frame; no credential or payload is echoed.

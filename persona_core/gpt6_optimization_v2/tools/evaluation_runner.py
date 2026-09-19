@@ -489,7 +489,11 @@ def read_contract(root):
     for name, expected in manifest["artifacts"].items():
         path = (root / name).resolve()
         require(path.parent == root and path.is_file() and sha(path) == expected, "REVISION_ARTIFACT_CHANGED")
-    return manifest, read(root / "SCOPE.json"), read(root / "PREPARATION.json")
+    scope = read(root / "SCOPE.json")
+    runtime_modules()
+    from provider_contract import guard_legacy_identity
+    guard_legacy_identity(scope)
+    return manifest, scope, read(root / "PREPARATION.json")
 
 
 def verify_sources(root):

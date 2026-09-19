@@ -60,6 +60,7 @@ def _source_facts(genesis):
 
 
 def _verify_call_context(row, capture, receipt, genesis, scope):
+    g.formal_provider_scope(scope)
     if scope.get('schema_version') == 'apcore-provider-scope-5' or 'network_route_policy' in scope:
         g.generation_settings(scope)
     g.verify_raw(row)

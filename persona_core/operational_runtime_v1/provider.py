@@ -23,6 +23,8 @@ from typing import Callable
 from transcript_store import TranscriptStore, SessionHandle, StoreGuard, ensure, utc_now, WORKSPACE
 import provider_transport as lifecycle_transport
 from provider_network_route import check_route_policy
+import provider_contract as adapter_contract
+import provider_adapters
 
 CHAT_COMPLETIONS_ENDPOINT = "https://api.deepseek.com/chat/completions"
 RESPONSES_ENDPOINT = "https://api.deepseek.com/responses"
@@ -205,6 +207,10 @@ def official_transport(payload: bytes, credential: str, *, timeout_seconds: floa
 
 def scope_check(scope: dict) -> None:
     version = scope.get('schema_version')
+    if version == adapter_contract.SCOPE_VERSION:
+        adapter_contract.check_scope(scope, provider_adapters.select(scope))
+        return
+    adapter_contract.guard_legacy_identity(scope)
     ensure(scope.get("automatic_paid_retries") == 0, "Automatic provider retries are forbidden")
     ensure(version in {None, 'apcore-provider-scope-1', 'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}, 'Unsupported provider scope version')
     if version == 'apcore-provider-scope-5':
@@ -315,12 +321,12 @@ class ProviderJournal:
     def _transition(self, turn_id: str, state: str, detail: dict) -> None:
         self.store.db.execute("INSERT INTO turn_lifecycle(turn_id,at_utc,state,detail_json) VALUES(?,?,?,?)", (turn_id, utc_now(), state, canonical(detail).decode("utf-8")))
 
-    def _capture_wire(self, call_id, wire, key, stream, complete):
+    def _capture_wire(self, call_id, wire, key, stream, complete, wire_format=None):
         secret = key.encode('utf-8')
         redacted = secret in wire
         saved = wire.replace(secret, b'[REDACTED_CONFIGURED_CREDENTIAL]') if redacted else wire
         self.store.db.execute('INSERT INTO transport_wire_captures VALUES(?,?,?,?,?,?)',
-            (call_id, 'SSE' if stream else 'JSON', saved, hashlib.sha256(saved).hexdigest(), int(complete), int(redacted)))
+            (call_id, wire_format or ('SSE' if stream else 'JSON'), saved, hashlib.sha256(saved).hexdigest(), int(complete), int(redacted)))
 
     def call(self, handle: SessionHandle, turn_id: str, batch_id: str, slot_id: str, context: dict,
              *, transport: Callable = official_transport, credential_reader: Callable = existing_credential) -> dict:
@@ -335,6 +341,11 @@ class ProviderJournal:
         ensure(batch is not None and not batch["stopped"], "Batch missing or stopped; no automatic retry")
         scope = json.loads(batch["scope_json"])
         scope_check(scope)
+        generic = scope.get('schema_version') == adapter_contract.SCOPE_VERSION
+        adapter = provider_adapters.select(scope) if generic else None
+        actual_provider = transport is official_transport and (adapter is None or adapter.capabilities.network_access)
+        if generic:
+            ensure(handle.mode == 'CHARACTER_SIMULATION', 'INDEPENDENT_VALIDATION_REQUIRES_SIMULATION_MODE')
         ensure(digest(scope) == batch["scope_sha256"], "Batch binding corrupted")
         slots = {s["id"]: s for s in scope["slots"]}
         ensure(slot_id in slots, "Unapproved batch slot")
@@ -349,13 +360,16 @@ class ProviderJournal:
         ensure(messages[-1] == {"role": "user", "content": row["user_text"]}, "Latest input mismatch")
         nbytes = len(canonical(messages))
         ensure(nbytes <= scope["max_input_bytes"], "Prompt outside pinned byte budget")
-        key = credential_reader()
+        key = (adapter.credential() if generic and (not adapter.capabilities.network_access
+               or credential_reader is existing_credential) else credential_reader())
         ensure(isinstance(key, str) and key.strip(), "Configured credential missing; no request submitted")
         ensure(key not in canonical(context).decode("utf-8"), "Credential detected in context; request refused")
         model = slot["model"]
         v2 = scope.get('schema_version') in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}
         responses_api = scope.get('schema_version') in {'apcore-provider-scope-4', 'apcore-provider-scope-5'}
-        if responses_api:
+        if generic:
+            payload = adapter.serialize(scope, model, messages)
+        elif responses_api:
             payload = {"model": model, "input": messages, "max_output_tokens": scope["max_output_tokens"],
                        "stream": True, "reasoning": {"effort": scope['reasoning_effort']}}
         else:
@@ -369,7 +383,8 @@ class ProviderJournal:
                 if scope['stream']:
                     payload['stream_options'] = {'include_usage': True}
         request_bytes = canonical(payload)
-        reserve = (nbytes + scope["input_overhead_reserve_tokens"]) * RATES[model][0] + scope["max_output_tokens"] * RATES[model][1]
+        reserve = (adapter.reserve(scope, model, nbytes) if generic else
+            (nbytes + scope["input_overhead_reserve_tokens"]) * RATES[model][0] + scope["max_output_tokens"] * RATES[model][1])
         call_id = "call_" + uuid.uuid4().hex
         with self.store.transaction():
             # Re-check under the write lock to serialize two host processes.
@@ -377,20 +392,44 @@ class ProviderJournal:
             b = self.store.db.execute("SELECT stopped FROM call_batches WHERE batch_id=?", (batch_id,)).fetchone()
             ensure(b is not None and not b[0], "Batch was stopped concurrently")
             ensure(self.store.db.execute("SELECT call_id FROM provider_calls WHERE batch_id=? AND status='SUBMITTED_STATUS_UNKNOWN'", (batch_id,)).fetchone() is None, "Unresolved submitted request; reconcile before another batch slot")
-            if transport is official_transport:
+            if actual_provider:
                 ensure(self.store.db.execute("SELECT call_id FROM provider_calls WHERE status='SUBMITTED_STATUS_UNKNOWN' AND capture_origin='TARGET_PROVIDER_CAPTURE'").fetchone() is None,
                        'Unresolved real provider request in this runtime; no further chargeable submission')
             ensure(self.store.db.execute("SELECT call_id FROM provider_calls WHERE batch_id=? AND slot_id=?", (batch_id, slot_id)).fetchone() is None, "Slot already consumed")
             used = self.store.db.execute("SELECT COALESCE(SUM(reserve_micro_cny),0) FROM provider_calls WHERE batch_id=?", (batch_id,)).fetchone()[0]
-            ensure(used + reserve <= int(Decimal(str(scope["total_guard_cny"])) * 1_000_000), "Reserved total exceeds batch cap")
+            if reserve is not None:
+                ensure(used + reserve <= int(Decimal(str(scope["total_guard_cny"])) * 1_000_000), "Reserved total exceeds batch cap")
             self.store.db.execute("INSERT INTO provider_calls(call_id,turn_id,session_id,batch_id,slot_id,model,status,submitted_at_utc,capture_origin,request_json,request_sha256,context_json,reserve_micro_cny) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (call_id, turn_id, handle.session_id, batch_id, slot_id, model, "SUBMITTED_STATUS_UNKNOWN", utc_now(),
-                 "TARGET_PROVIDER_CAPTURE" if transport is official_transport else "AUTHORED_PROVIDER_TEST_FIXTURE",
-                 request_bytes.decode("utf-8"), hashlib.sha256(request_bytes).hexdigest(), canonical(context).decode("utf-8"), reserve))
+                 "TARGET_PROVIDER_CAPTURE" if actual_provider else "AUTHORED_PROVIDER_TEST_FIXTURE",
+                 request_bytes.decode("utf-8"), hashlib.sha256(request_bytes).hexdigest(), canonical(context).decode("utf-8"), reserve if reserve is not None else 0))
+            if generic:
+                # Legacy non-null money column is only a compatibility placeholder.
+                # The additive contract row carries the actual nullable reserve.
+                self.store.db.execute('CREATE TABLE IF NOT EXISTS provider_call_contracts('
+                    'call_id TEXT PRIMARY KEY REFERENCES provider_calls(call_id),contract_json TEXT NOT NULL)')
+                binding = {'provider_id': scope['provider_id'], 'model_id': model, 'api_protocol': scope['api_protocol'],
+                    'generation_identity': adapter_contract.generation_identity(scope, model, messages),
+                    'scope_sha256': batch['scope_sha256'], 'source_binding': scope['source_binding'],
+                    'reserve': {'micro_cny': reserve, 'input_tokens': nbytes + scope['input_overhead_reserve_tokens'],
+                                'output_tokens': scope['max_output_tokens']},
+                    'spend_policy': scope['spend_policy'], 'billing_certified': False, 'semantic_acceptance': False}
+                self.store.db.execute('INSERT INTO provider_call_contracts VALUES(?,?)', (call_id, canonical(binding).decode()))
             self.store.db.execute("UPDATE turns SET status='SUBMITTED_STATUS_UNKNOWN',request_id=? WHERE turn_id=?", (call_id, turn_id))
             self._transition(turn_id, "SUBMITTED_STATUS_UNKNOWN", {"call_id": call_id, "reserve_micro_cny": reserve, "automatic_retries": 0})
         try:
-            if transport is official_transport and v2:
+            if generic:
+                def record_adapter_lifecycle(event):
+                    lifecycle_transport.check_event(event)
+                    with self.store.transaction():
+                        self._transition(turn_id, 'TRANSPORT_LIFECYCLE', {'call_id': call_id, **event})
+                result = (adapter.exchange(scope, request_bytes, key, record_adapter_lifecycle, _worker_command())
+                          if transport is official_transport else transport(request_bytes, key))
+                provider_adapters.verified_result(adapter, scope, result)
+                status, raw = result
+                with self.store.transaction():
+                    self._capture_wire(call_id, result.wire, key, scope['stream'], True, getattr(adapter, 'wire_format', None))
+            elif transport is official_transport and v2:
                 if 'transport_policy' in scope:
                     def record_lifecycle(event):
                         lifecycle_transport.check_event(event)
@@ -418,7 +457,7 @@ class ProviderJournal:
                 self.store.db.execute('UPDATE provider_calls SET error_category=?,http_status=? WHERE call_id=?',
                     (exc.reason, exc.status, call_id))
                 self.store.db.execute('UPDATE call_batches SET stopped=1 WHERE batch_id=?', (batch_id,))
-                self._capture_wire(call_id, exc.wire, key, scope.get('stream', False), False)
+                self._capture_wire(call_id, exc.wire, key, scope.get('stream', False), False, getattr(adapter, 'wire_format', None))
                 self._transition(turn_id, 'SUBMITTED_STATUS_UNKNOWN', {'call_id': call_id,
                     'timeout_source': exc.reason if exc.reason in lifecycle_transport.TIMEOUTS else None,
                     'error_category': exc.reason, 'batch_stopped': True, 'remote_outcome_known': False,
@@ -476,12 +515,20 @@ class ProviderJournal:
         terminal_status = None
         terminal_rejection = None
         validated_terminal_rejection = False
+        native_terminal_event = None
+        generic_rejection = None
+        if generic:
+            terminal_status, native_terminal_event, generic_rejection = adapter.terminal(scope, json.loads(raw))
+            terminal_known = True  # Native wire was revalidated before this layer.
         try:
             ensure(len(raw) <= MAX_RESPONSE_BYTES, "RESPONSE_TOO_LARGE")
             ensure(not redacted, "SECRET_ECHO_QUARANTINED")
             ensure(status == 200, "HTTP_ERROR")
             body = json.loads(raw.decode("utf-8"))
             ensure(isinstance(body, dict), 'INVALID_RESPONSE_OBJECT')
+            if generic:
+                terminal_status, native_terminal_event, generic_rejection = adapter.terminal(scope, body)
+                terminal_known = True
             if responses_api:
                 terminal_status=body.get('responses_api_status')
                 terminal_known=terminal_status in ('completed','incomplete','failed')
@@ -503,59 +550,44 @@ class ProviderJournal:
                 observed_finish = observed_choices[0].get('finish_reason')
                 if observed_finish in lifecycle_transport.FINISHES:
                     finish = observed_finish
-            validate_provider_model(model, provider_model, strict_version=v2)
-            ensure(isinstance(usage, dict) and all(type(usage.get(k)) is int and usage[k] >= 0 for k in ("prompt_tokens", "completion_tokens", "total_tokens")), "INVALID_USAGE")
-            ensure(usage["total_tokens"] == usage["prompt_tokens"] + usage["completion_tokens"], "USAGE_TOTAL_MISMATCH")
-            details = usage.get('completion_tokens_details')
-            if details is not None:
-                ensure(isinstance(details, dict), 'INVALID_COMPLETION_DETAILS')
-                reasoning_tokens = details.get('reasoning_tokens')
-                if reasoning_tokens is not None:
-                    ensure(type(reasoning_tokens) is int and 0 <= reasoning_tokens <= usage['completion_tokens'],
-                           'INVALID_REASONING_TOKEN_ACCOUNTING')
-            hits = usage.get("prompt_cache_hit_tokens", 0)
-            misses = usage.get("prompt_cache_miss_tokens", usage["prompt_tokens"] - hits)
-            ensure(type(hits) is int and type(misses) is int and hits >= 0 and misses >= 0 and hits + misses == usage["prompt_tokens"], "CACHE_USAGE_MISMATCH")
+            if generic:
+                adapter.validate_model(model, provider_model)
+            else:
+                validate_provider_model(model, provider_model, strict_version=v2)
             # Valid usage remains chargeable even when final text is unusable.
             # Exact decimal arithmetic avoids rounding a binary float upward.
-            amount = (Decimal(misses) * Decimal(str(RATES[model][0])) +
-                      Decimal(hits) * Decimal(str(RATES[model][2])) +
-                      Decimal(usage['completion_tokens']) * Decimal(str(RATES[model][1])))
-            estimate = int(amount.to_integral_value(rounding=ROUND_CEILING))
+            estimate = adapter_contract.estimate_usage(usage, adapter.rates(scope, model) if generic else RATES[model])
             ensure(usage["prompt_tokens"] <= nbytes + scope["input_overhead_reserve_tokens"] and usage["completion_tokens"] <= scope["max_output_tokens"], "USAGE_EXCEEDS_RESERVED_BOUND")
             if terminal_rejection is not None:
                 raise StoreGuard(terminal_rejection['reason'])
-            choices = body.get('choices')
-            ensure(isinstance(choices, list) and len(choices) == 1 and isinstance(choices[0], dict), 'INVALID_RESPONSE_CHOICES')
-            choice = choices[0]
-            finish = choice.get('finish_reason')
-            message = choice.get('message')
-            ensure(isinstance(message, dict), 'INVALID_RESPONSE_MESSAGE')
-            ensure(finish == "stop", "TRUNCATED_OR_OTHER_FINISH")
-            if responses_api:
-                ensure(body.get('responses_api_status') == 'completed', 'RESPONSES_NOT_COMPLETED')
-            ensure(not message.get("tool_calls"), "UNEXPECTED_TOOL_CALL")
-            text = message.get("content")
-            ensure(isinstance(text, str) and text.strip(), "EMPTY_RESPONSE")
+            if generic_rejection is not None:
+                raise StoreGuard(generic_rejection)
+            if isinstance(observed_choices, list) and len(observed_choices) == 1 and isinstance(observed_choices[0], dict):
+                finish = observed_choices[0].get('finish_reason')
+            text, finish = adapter_contract.usable_reply(body, responses_api=responses_api)
+            if generic:
+                ensure(terminal_status == 'completed', 'PROVIDER_NOT_COMPLETED')
             outcome = "RESPONSE_CAPTURED"
         except (ValueError, KeyError, TypeError, IndexError, UnicodeError) as exc:
             category = str(exc) if isinstance(exc, StoreGuard) else type(exc).__name__
         if validated_terminal_rejection and category == 'INVALID_USAGE':
             category = terminal_rejection['reason']
+        if generic_rejection and category == 'INVALID_USAGE':
+            category = generic_rejection
         if outcome != 'RESPONSE_CAPTURED' and terminal_known:
             outcome = 'RESPONSE_REJECTED_TERMINAL_KNOWN'
         with self.store.transaction():
             self.store.db.execute("UPDATE provider_calls SET status=?,response_at_utc=?,http_status=?,raw_response=?,raw_sha256=?,raw_was_redacted=?,usage_json=?,finish_reason=?,provider_model=?,error_category=?,estimate_peak_micro_cny=? WHERE call_id=?",
                 (outcome, utc_now(), status, stored_raw, raw_hash, int(redacted), json.dumps(usage) if usage is not None else None, finish, provider_model, category, estimate, call_id))
             if outcome == "RESPONSE_CAPTURED":
-                self.store.db.execute("UPDATE turns SET status='RESPONSE_CAPTURED',assistant_text=?,response_at_utc=?,response_provenance=? WHERE turn_id=?", (text, utc_now(), "TARGET_PROVIDER_CAPTURE" if transport is official_transport else "AUTHORED_TEST_STUB", turn_id))
+                self.store.db.execute("UPDATE turns SET status='RESPONSE_CAPTURED',assistant_text=?,response_at_utc=?,response_provenance=? WHERE turn_id=?", (text, utc_now(), "TARGET_PROVIDER_CAPTURE" if actual_provider else "AUTHORED_TEST_STUB", turn_id))
             else:
                 self.store.db.execute("UPDATE turns SET status='RESPONSE_REJECTED' WHERE turn_id=?", (turn_id,))
                 self.store.db.execute("UPDATE call_batches SET stopped=1 WHERE batch_id=?", (batch_id,))
             detail={"call_id":call_id,"error_category":category,"semantic_verdict":None}
             if terminal_known:
                 detail.update(remote_outcome_known=True,response_usable=outcome=='RESPONSE_CAPTURED',
-                    terminal_event='response.'+terminal_status,terminal_status=terminal_status,
+                    terminal_event=native_terminal_event or 'response.'+terminal_status,terminal_status=terminal_status,
                     batch_stopped=outcome!='RESPONSE_CAPTURED',automatic_paid_retries=0,slot_consumed=True)
                 if validated_terminal_rejection:
                     detail['usage_validation_error']=terminal_rejection.get('usage_error')
@@ -568,11 +600,32 @@ class ProviderJournal:
         ensure(row is not None, "Call unavailable for this session")
         result = dict(row)
         result.pop("raw_response")
+        scope = json.loads(self.store.db.execute('SELECT scope_json FROM call_batches WHERE batch_id=?', (row['batch_id'],)).fetchone()[0])
+        if scope.get('schema_version') == adapter_contract.SCOPE_VERSION:
+            bound = self.store.db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?', (call_id,)).fetchone()
+            ensure(bound is not None, 'PROVIDER_CALL_CONTRACT_MISSING')
+            binding = json.loads(bound[0])
+            ensure(binding['scope_sha256'] == digest(scope)
+                   and binding['provider_id'] == scope['provider_id'] and binding['model_id'] == row['model']
+                   and binding['api_protocol'] == scope['api_protocol'] and binding['source_binding'] == scope['source_binding']
+                   and binding['generation_identity'] == adapter_contract.generation_identity(scope, row['model'], json.loads(row['context_json'])['messages']),
+                   'PROVIDER_CALL_CONTRACT_CHANGED')
+            result.update(provider_binding=binding, reserve_micro_cny=binding['reserve']['micro_cny'], billing_certified=False,
+                          usage_status='KNOWN' if adapter_contract.usage_known(row['usage_json']) else 'UNKNOWN',
+                          estimate_status='ESTIMATED' if row['estimate_peak_micro_cny'] is not None else 'UNESTIMATED')
         return result
 
     def summary(self, batch_id: str) -> dict:
         # Host-only administrative scope, never sent to the character model.
         rows = [dict(r) for r in self.store.db.execute("SELECT call_id,slot_id,model,status,reserve_micro_cny,estimate_peak_micro_cny,usage_json,error_category FROM provider_calls WHERE batch_id=? ORDER BY submitted_at_utc", (batch_id,))]
+        batch = self.store.db.execute('SELECT scope_json FROM call_batches WHERE batch_id=?', (batch_id,)).fetchone()
+        scope = json.loads(batch[0]) if batch else {}
+        generic = scope.get('schema_version') == adapter_contract.SCOPE_VERSION
+        if generic:
+            for row in rows:
+                binding = json.loads(self.store.db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?', (row['call_id'],)).fetchone()[0])
+                row.update(reserve_micro_cny=binding['reserve']['micro_cny'], reserve=binding['reserve'],
+                           provider_id=binding['provider_id'], generation_identity=binding['generation_identity'])
         complete = all(r['estimate_peak_micro_cny'] is not None for r in rows)
         subtotal = sum(r['estimate_peak_micro_cny'] or 0 for r in rows) / 1_000_000
         return {"batch_id": batch_id, "calls": rows, "calls_submitted": len(rows),
@@ -580,9 +633,14 @@ class ProviderJournal:
                 "local_pre_network_rejections": sum(r['status'] == 'LOCAL_REJECTED_BEFORE_NETWORK' for r in rows),
                 "remote_outcome_unknown_count": sum(r['status'] == 'SUBMITTED_STATUS_UNKNOWN' for r in rows),
                 "terminal_known_rejected_count": sum(r['status'] == 'RESPONSE_REJECTED_TERMINAL_KNOWN' for r in rows),
-                "reserved_cny": sum(r["reserve_micro_cny"] for r in rows) / 1_000_000,
+                "reserved_cny": (None if any(r['reserve_micro_cny'] is None for r in rows) else sum(r["reserve_micro_cny"] for r in rows) / 1_000_000),
                 "peak_usage_estimate_cny": subtotal if complete else None,
                 "known_peak_usage_subtotal_cny": subtotal,
                 "unestimated_call_count": sum(r['estimate_peak_micro_cny'] is None for r in rows),
                 "estimate_complete": complete,
-                "billing_verified": False, "automatic_paid_retries": 0}
+                "billing_verified": False, "automatic_paid_retries": 0,
+                **({'billing_certified': False, 'provider_id': scope['provider_id'],
+                    'accounting_status': 'ESTIMATED' if complete else 'UNESTIMATED',
+                    'known_usage_count': sum(adapter_contract.usage_known(r['usage_json']) for r in rows),
+                    'unknown_usage_count': sum(not adapter_contract.usage_known(r['usage_json']) for r in rows),
+                    'semantic_acceptance': False} if generic else {})}

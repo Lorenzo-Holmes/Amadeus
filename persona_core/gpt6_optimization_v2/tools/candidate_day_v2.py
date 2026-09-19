@@ -133,7 +133,16 @@ def verify_raw(row):
     require(hashlib.sha256(request.encode("utf-8")).hexdigest() == row["request_sha256"], "REQUEST_HASH_CHANGED")
 
 
+def formal_provider_scope(scope):
+    code = str(ROOT / 'persona_core/operational_runtime_v1')
+    if code not in sys.path: sys.path.insert(0, code)
+    from provider_contract import guard_legacy_identity
+    try: guard_legacy_identity(scope)
+    except ValueError: raise GateError('FORMAL_PROVIDER_SCOPE_MISMATCH') from None
+
+
 def generation_settings(scope):
+    formal_provider_scope(scope)
     require(all(k in scope for k in ("schema_version", "endpoint", "thinking", "max_input_bytes",
                 "max_output_tokens", "stream", "tools_allowed", "request_timeout_seconds")), "GENERATION_SETTINGS_MISSING")
     settings = {key: scope.get(key) for key in GENERATION_FIELDS}
@@ -164,6 +173,7 @@ def require_same_generation(settings):
 
 def verify_protocol_capture(db, row, scope):
     """Scope4 binds the exact request and normalized receipt to the raw SSE."""
+    formal_provider_scope(scope)
     if scope.get('api_protocol') != 'responses':
         return
     generation_settings(scope)
