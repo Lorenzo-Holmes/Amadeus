@@ -422,7 +422,8 @@ class ProviderJournal:
                 self._transition(turn_id, 'SUBMITTED_STATUS_UNKNOWN', {'call_id': call_id,
                     'timeout_source': exc.reason if exc.reason in lifecycle_transport.TIMEOUTS else None,
                     'error_category': exc.reason, 'batch_stopped': True, 'remote_outcome_known': False,
-                    'automatic_paid_retries': 0, 'partial_response_is_reply': False})
+                    'automatic_paid_retries': 0, 'partial_response_is_reply': False,
+                    **({'transport_diagnostics': exc.diagnostics} if exc.diagnostics is not None else {})})
             key = None
             return self.get_call(handle, call_id)
         except WorkerNotSubmitted as exc:

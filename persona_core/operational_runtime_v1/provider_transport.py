@@ -33,10 +33,49 @@ TIMEOUTS = {'CONNECT_TIMEOUT','READ_TIMEOUT','INACTIVITY_TIMEOUT','WORKER_DEADLI
 EVENTS = {'worker_started','dns_started','dns_complete','tcp_started','tcp_connected',
           'proxy_tunnel_started','proxy_tunnel_complete','tls_started','tls_connected',
           'request_write_started','request_write_complete','response_wait_started',
-          'first_response_header','headers_complete','first_response_byte','first_token',
+          'first_response_header','headers_complete','first_response_byte','first_token','first_reasoning_token',
           'last_response_byte','provider_finish','stream_done','http_terminal',
           'worker_terminal','worker_error','child_started','child_exit','parent_receipt',
           'parent_deadline','transport_unknown'}
+
+DIAGNOSTICS_VERSION = 'apcore-transport-diagnostics-1'
+ERROR_CLASSES = frozenset({'URLError','OSError','TimeoutError','SSLError','SSLCertVerificationError',
+    'SSLEOFError','SSLZeroReturnError','ConnectionError','ConnectionResetError','ConnectionRefusedError',
+    'ConnectionAbortedError','BrokenPipeError','gaierror','herror','RemoteDisconnected','HTTPException',
+    'IncompleteRead','BadStatusLine','LineTooLong','EOFError','StoreGuard','TransportFault',
+    'JSONDecodeError','UnicodeDecodeError','ValueError','TypeError','KeyError','AttributeError','OTHER'})
+PHASES = frozenset({'worker','connect','proxy_tunnel','write','header','stream','read'})
+OPERATIONS = frozenset({'INITIALIZE','DNS_LOOKUP','TCP_CONNECT','PROXY_TUNNEL','TLS_HANDSHAKE',
+    'REQUEST_WRITE','RESPONSE_HEADERS','HTTP_OPEN','READ_BUDGET','SOCKET_TIMEOUT','HTTP_READ1',
+    'WIRE_BOUND','SSE_FEED','RESPONSE_CLOSE','NORMALIZE','BODY_BOUND'})
+
+def validate_diagnostics(value):
+    """A closed schema: no exception messages, request data or arbitrary strings."""
+    ensure(isinstance(value,dict) and set(value)=={'version','exception_class','reason_class','errno',
+           'winerror','phase','operation','http_chunked'},'TRANSPORT_DIAGNOSTICS_SHAPE')
+    ensure(value['version']==DIAGNOSTICS_VERSION,'TRANSPORT_DIAGNOSTICS_VERSION')
+    for key in ('exception_class','reason_class'):
+        ensure(isinstance(value[key],str) and value[key] in ERROR_CLASSES,'TRANSPORT_DIAGNOSTICS_CLASS')
+    ensure(isinstance(value['phase'],str) and value['phase'] in PHASES,'TRANSPORT_DIAGNOSTICS_PHASE')
+    ensure(isinstance(value['operation'],str) and value['operation'] in OPERATIONS,'TRANSPORT_DIAGNOSTICS_OPERATION')
+    ensure(value['http_chunked'] is None or type(value['http_chunked']) is bool,'TRANSPORT_DIAGNOSTICS_CHUNKED')
+    for key in ('errno','winerror'):
+        ensure(value[key] is None or type(value[key]) is int and -(2**31)<=value[key]<2**31,
+               'TRANSPORT_DIAGNOSTICS_NUMBER')
+
+def error_diagnostics(exc,lifecycle):
+    cause=exc.reason if isinstance(exc,urllib.error.URLError) and isinstance(exc.reason,Exception) else exc
+    def name(value):
+        result=type(value).__name__
+        return result if result in ERROR_CLASSES else 'OTHER'
+    def number(key):
+        value=getattr(cause,key,None)
+        return value if type(value) is int and -(2**31)<=value<2**31 else None
+    value={'version':DIAGNOSTICS_VERSION,'exception_class':name(exc),'reason_class':name(cause),
+           'errno':number('errno'),'winerror':number('winerror'),'phase':lifecycle.phase,
+           'operation':lifecycle.operation,'http_chunked':lifecycle.http_chunked}
+    validate_diagnostics(value)
+    return value
 
 def encode(v):
     return json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8')
@@ -50,18 +89,22 @@ def check_policy(policy, total):
            policy['read_timeout_seconds']<=policy['worker_deadline_seconds']<total<=1200,'TRANSPORT_DEADLINE_ORDER')
 
 def check_event(e):
-    ensure(isinstance(e,dict) and set(e).issubset({'event','elapsed_ms','http_status','bytes','finish_reason','timeout_source','exit_code'}),'TELEMETRY_FIELDS')
+    ensure(isinstance(e,dict) and set(e).issubset({'event','elapsed_ms','http_status','bytes','finish_reason','timeout_source','exit_code','diagnostics'}),'TELEMETRY_FIELDS')
     ensure(e.get('event') in EVENTS and type(e.get('elapsed_ms')) is int and 0<=e['elapsed_ms']<=1_300_000,'TELEMETRY_EVENT')
     if 'http_status' in e: ensure(type(e['http_status']) is int and 100<=e['http_status']<=599,'TELEMETRY_HTTP_STATUS')
     if 'bytes' in e: ensure(type(e['bytes']) is int and 0<=e['bytes']<=MAX_PIPE,'TELEMETRY_BYTES')
     if 'finish_reason' in e: ensure(e['finish_reason'] in FINISHES,'TELEMETRY_FINISH')
     if 'timeout_source' in e: ensure(e['timeout_source'] in TIMEOUTS,'TELEMETRY_TIMEOUT')
     if 'exit_code' in e: ensure(type(e['exit_code']) is int and -(2**32)<=e['exit_code']<2**32,'TELEMETRY_EXIT')
+    if 'diagnostics' in e:
+        ensure(e['event']=='worker_error','TELEMETRY_DIAGNOSTICS_EVENT')
+        validate_diagnostics(e['diagnostics'])
 
 class Lifecycle:
     def __init__(self,sink=lambda e:None,policy=None):
         self.sink=sink; self.started=time.monotonic(); self.phase='worker'; self.policy=policy
         self.seen=set(); self.count=0
+        self.operation='INITIALIZE'; self.http_chunked=None
     def emit(self,event,**values):
         if event in self.seen:return
         e={'event':event,'elapsed_ms':round((time.monotonic()-self.started)*1000),**values}
@@ -73,9 +116,11 @@ class Lifecycle:
         return min(limit,remaining)
 
 class TransportFault(StoreGuard):
-    def __init__(self,reason,wire=b'',status=None):
+    def __init__(self,reason,wire=b'',status=None,diagnostics=None):
         super().__init__(reason)
         self.reason=reason; self.wire=wire; self.status=status
+        if diagnostics is not None:validate_diagnostics(diagnostics)
+        self.diagnostics=diagnostics
 
 class TransportResult:
     def __init__(self,status,body,wire):self.status=status; self.body=body; self.wire=wire
@@ -83,6 +128,7 @@ class TransportResult:
 
 def _connection(address,timeout,source_address,lifecycle):
     lifecycle.phase='connect'; lifecycle.emit('dns_started')
+    lifecycle.operation='DNS_LOOKUP'
     addresses=socket.getaddrinfo(*address,type=socket.SOCK_STREAM)
     lifecycle.emit('dns_complete')
     # Multiple resolved addresses may be connected before writing any request;
@@ -93,6 +139,7 @@ def _connection(address,timeout,source_address,lifecycle):
         try:
             sock.settimeout(lifecycle.remaining(timeout))
             if source_address:sock.bind(source_address)
+            lifecycle.operation='TCP_CONNECT'
             lifecycle.emit('tcp_started'); sock.connect(sockaddr)
             lifecycle.emit('tcp_connected'); return sock
         except OSError as exc:
@@ -103,6 +150,7 @@ def _connection(address,timeout,source_address,lifecycle):
 def _handlers(lifecycle):
     class Response(http.client.HTTPResponse):
         def _read_status(self):
+            lifecycle.operation='RESPONSE_HEADERS'
             value=super()._read_status()
             if lifecycle.phase!='proxy_tunnel':
                 lifecycle.emit('first_response_header',http_status=value[1])
@@ -114,10 +162,12 @@ def _handlers(lifecycle):
             self.response_class=Response
         def _tunnel(self):
             lifecycle.phase='proxy_tunnel'; lifecycle.emit('proxy_tunnel_started')
+            lifecycle.operation='PROXY_TUNNEL'
             super()._tunnel(); lifecycle.emit('proxy_tunnel_complete')
         def connect(self):
             http.client.HTTPConnection.connect(self)
             lifecycle.phase='connect'; lifecycle.emit('tls_started')
+            lifecycle.operation='TLS_HANDSHAKE'
             self.sock.settimeout(lifecycle.remaining(lifecycle.policy['connect_timeout_seconds']))
             self.sock=self._context.wrap_socket(self.sock,server_hostname=self._tunnel_host or self.host)
             lifecycle.emit('tls_connected')
@@ -125,9 +175,11 @@ def _handlers(lifecycle):
             # Establish the connection before marking the request write phase.
             if self.sock is None:self.connect()
             lifecycle.phase='write'; lifecycle.emit('request_write_started')
+            lifecycle.operation='REQUEST_WRITE'
             self.sock.settimeout(lifecycle.remaining(lifecycle.policy['read_timeout_seconds']))
             super()._send_request(*args,**kwargs)
             lifecycle.emit('request_write_complete'); lifecycle.phase='header'
+            lifecycle.operation='RESPONSE_HEADERS'
             lifecycle.emit('response_wait_started')
     class HTTPS(urllib.request.HTTPSHandler):
         def https_open(self,req):return self.do_open(Connection,req,context=self._context)
@@ -246,6 +298,8 @@ class ResponsesAssembly:
             delta=obj.get('delta');ensure(isinstance(delta,str),'RESPONSES_TEXT_DELTA')
             self.content.append(delta)
             if delta:self.lifecycle.emit('first_token')
+        if event_type=='response.reasoning_text.delta' and isinstance(obj.get('delta'),str) and obj['delta']:
+            self.lifecycle.emit('first_reasoning_token')
         if event_type in self.TERMINALS:
             ensure(obj['response'].get('status')==event_type.split('.',1)[1],'RESPONSES_TERMINAL_STATUS_MISMATCH')
             self.terminal=event_type;self.response=obj['response']
@@ -363,29 +417,40 @@ def responses_http_exchange(payload,credential,policy,sink=lambda e:None,opener_
         request=urllib.request.Request('https://api.deepseek.com/responses',data=payload,method='POST',headers={
             'Authorization':'Bearer '+credential,'Content-Type':'application/json','Accept':'text/event-stream',
             'User-Agent':'Amadeus-APCORE-RESPONSES-V1'})
+        lifecycle.operation='HTTP_OPEN'
         try:response=opener.open(request,timeout=lifecycle.remaining(policy['connect_timeout_seconds']))
         except urllib.error.HTTPError as exc:response=exc
         with response:
             status=response.status;lifecycle.emit('headers_complete',http_status=status)
+            chunked=getattr(response,'chunked',None)
+            lifecycle.http_chunked=chunked if type(chunked) is bool else None
             lifecycle.phase='stream' if status==200 else 'read'
             assembly=ResponsesAssembly(lifecycle) if status==200 else None
             while True:
+                lifecycle.operation='READ_BUDGET'
                 wait=lifecycle.remaining(policy['read_timeout_seconds'])
+                lifecycle.operation='SOCKET_TIMEOUT'
                 try:response.fp.raw._sock.settimeout(wait)
                 except AttributeError:pass
+                lifecycle.operation='HTTP_READ1'
                 block=response.read1(min(8192,MAX_WIRE+1-len(wire)))
                 if not block:break
                 wire.extend(block);lifecycle.emit('first_response_byte')
+                lifecycle.operation='WIRE_BOUND'
                 ensure(len(wire)<=MAX_WIRE,'WIRE_RESPONSE_TOO_LARGE')
                 if assembly:
+                    lifecycle.operation='SSE_FEED'
                     assembly.feed(block)
                     # Read to bounded EOF so a later event cannot hide behind
                     # a completed event at the end of an earlier socket read.
             lifecycle.emit('last_response_byte',bytes=len(wire))
+            lifecycle.operation='RESPONSE_CLOSE'
+        lifecycle.operation='NORMALIZE'
         if status!=200:
             lifecycle.emit('http_terminal',http_status=status);body=bytes(wire)
         else:
             body=assembly.body()
+        lifecycle.operation='BODY_BOUND'
         ensure(len(body)<=MAX_BODY,'ASSEMBLED_RESPONSE_TOO_LARGE')
         lifecycle.emit('worker_terminal');return TransportResult(status,body,bytes(wire))
     except Exception as exc:
@@ -395,8 +460,9 @@ def responses_http_exchange(payload,credential,policy,sink=lambda e:None,opener_
         elif isinstance(cause,TimeoutError):
             reason='CONNECT_TIMEOUT' if lifecycle.phase in ('connect','proxy_tunnel') else 'INACTIVITY_TIMEOUT' if lifecycle.phase=='stream' else 'READ_TIMEOUT'
         else:reason='TRANSPORT_PROTOCOL_OR_CONNECTION_ERROR'
-        lifecycle.emit('worker_error',**({'timeout_source':reason} if reason in TIMEOUTS else {}))
-        raise TransportFault(reason,bytes(wire),status) from None
+        diagnostics=error_diagnostics(exc,lifecycle)
+        lifecycle.emit('worker_error',diagnostics=diagnostics,**({'timeout_source':reason} if reason in TIMEOUTS else {}))
+        raise TransportFault(reason,bytes(wire),status,diagnostics) from None
 
 def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False,opener_factory=None,network_route_policy=None):
     lifecycle=Lifecycle(sink,policy); lifecycle.emit('worker_started')
@@ -407,24 +473,34 @@ def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False
         request=urllib.request.Request('https://api.deepseek.com/models' if catalogue else 'https://api.deepseek.com/chat/completions',
             data=None if catalogue else payload,method='GET' if catalogue else 'POST',headers={
             'Authorization':'Bearer '+credential,'Content-Type':'application/json','User-Agent':'Amadeus-APCORE-OPERATIONS-V1'})
+        lifecycle.operation='HTTP_OPEN'
         try:response=opener.open(request,timeout=lifecycle.remaining(policy['connect_timeout_seconds']))
         except urllib.error.HTTPError as exc:response=exc
         with response:
             status=response.status; lifecycle.emit('headers_complete',http_status=status)
+            chunked=getattr(response,'chunked',None)
+            lifecycle.http_chunked=chunked if type(chunked) is bool else None
             lifecycle.phase='stream' if streaming and status==200 else 'read'
             assembly=StreamAssembly(lifecycle) if streaming and status==200 else None
             while True:
+                lifecycle.operation='READ_BUDGET'
                 wait=lifecycle.remaining(policy['read_timeout_seconds'])
+                lifecycle.operation='SOCKET_TIMEOUT'
                 try:response.fp.raw._sock.settimeout(wait)
                 except AttributeError:pass  # Authored in-memory test responses only.
+                lifecycle.operation='HTTP_READ1'
                 block=response.read1(min(8192,MAX_WIRE+1-len(wire)))
                 if not block:break
                 wire.extend(block); lifecycle.emit('first_response_byte')
+                lifecycle.operation='WIRE_BOUND'
                 ensure(len(wire)<=MAX_WIRE,'WIRE_RESPONSE_TOO_LARGE')
                 if assembly:
+                    lifecycle.operation='SSE_FEED'
                     assembly.feed(block)
                     if assembly.done:break
             lifecycle.emit('last_response_byte',bytes=len(wire))
+            lifecycle.operation='RESPONSE_CLOSE'
+        lifecycle.operation='NORMALIZE'
         if status!=200:
             lifecycle.emit('http_terminal',http_status=status); body=bytes(wire)
         elif catalogue:
@@ -440,6 +516,7 @@ def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False
             lifecycle.emit('provider_finish',finish_reason=finish)
             # Nonstream token timing is unobservable until the completed JSON.
             body=bytes(wire)
+        lifecycle.operation='BODY_BOUND'
         ensure(len(body)<=MAX_BODY,'ASSEMBLED_RESPONSE_TOO_LARGE')
         lifecycle.emit('worker_terminal'); return TransportResult(status,body,bytes(wire))
     except Exception as exc:
@@ -449,8 +526,9 @@ def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False
         elif isinstance(cause,TimeoutError):
             reason='CONNECT_TIMEOUT' if lifecycle.phase in ('connect','proxy_tunnel') else 'INACTIVITY_TIMEOUT' if lifecycle.phase=='stream' else 'READ_TIMEOUT'
         else:reason='TRANSPORT_PROTOCOL_OR_CONNECTION_ERROR'
-        lifecycle.emit('worker_error',**({'timeout_source':reason} if reason in TIMEOUTS else {}))
-        raise TransportFault(reason,bytes(wire),status) from None
+        diagnostics=error_diagnostics(exc,lifecycle)
+        lifecycle.emit('worker_error',diagnostics=diagnostics,**({'timeout_source':reason} if reason in TIMEOUTS else {}))
+        raise TransportFault(reason,bytes(wire),status,diagnostics) from None
 
 def child_result(frame,frame_hash):
     policy=frame['transport_policy']
@@ -467,6 +545,7 @@ def child_result(frame,frame_hash):
                'wire':base64.b64encode(result.wire).decode('ascii')}
     except TransportFault as exc:
         value={'kind':'unknown','status':exc.status,'reason':exc.reason,'wire':base64.b64encode(exc.wire).decode('ascii')}
+        if exc.diagnostics is not None:value['diagnostics']=exc.diagnostics
     return RESULT_HEADER+encode({'frame_sha256':frame_hash,**value})
 
 def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False,responses=False,network_route_policy=None):
@@ -532,13 +611,16 @@ def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:No
         ensure(receipt.get('frame_sha256')==frame_hash,'WORKER_RECEIPT_BINDING')
         ensure(receipt.get('kind') in ('terminal','unknown'),'WORKER_RECEIPT_KIND')
         expected={'frame_sha256','kind','status','wire','body' if receipt['kind']=='terminal' else 'reason'}
-        ensure(set(receipt)==expected,'WORKER_RECEIPT_FIELDS')
+        allowed=(expected,expected|{'diagnostics'}) if receipt['kind']=='unknown' else (expected,)
+        ensure(set(receipt) in allowed,'WORKER_RECEIPT_FIELDS')
+        diagnostics=receipt.get('diagnostics')
+        if 'diagnostics' in receipt:validate_diagnostics(diagnostics)
         status=receipt['status']; ensure(status is None or type(status) is int and 100<=status<=599,'WORKER_HTTP_STATUS')
         wire=base64.b64decode(receipt['wire'],validate=True);ensure(len(wire)<=MAX_WIRE,'WORKER_WIRE_BOUND')
         lifecycle.emit('parent_receipt')
         if receipt['kind']=='unknown':
             reason=receipt['reason'];ensure(reason in TIMEOUTS|{'TRANSPORT_PROTOCOL_OR_CONNECTION_ERROR'},'WORKER_REASON')
-            raise TransportFault(reason,wire,status)
+            raise TransportFault(reason,wire,status,diagnostics)
         ensure(child.returncode==0 and status is not None,'WORKER_EXIT_WITHOUT_SUCCESS')
         body=base64.b64decode(receipt['body'],validate=True);ensure(len(body)<=MAX_BODY,'WORKER_BODY_BOUND')
         return TransportResult(status,body,wire)
