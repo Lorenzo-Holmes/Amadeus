@@ -133,8 +133,12 @@ def check_scope(scope, adapter):
     reasoning = scope['thinking']['type'] == 'enabled'
     ensure(not reasoning or adapter.capabilities.supports_reasoning, 'REASONING_UNSUPPORTED')
     ensure(scope.get('reasoning_effort') in ('low', 'high', 'max') if reasoning else scope.get('reasoning_effort') is None, 'REASONING_EFFORT')
-    ensure(scope.get('generation_config') == {'stream': True, 'max_output_tokens': scope['max_output_tokens'],
-        'reasoning': {'enabled': reasoning, 'effort': scope['reasoning_effort']}}, 'GENERATION_CONFIG_MISMATCH')
+    generation = {'stream': True, 'max_output_tokens': scope['max_output_tokens'],
+        'reasoning': {'enabled': reasoning, 'effort': scope['reasoning_effort']}}
+    native_options = getattr(adapter, 'generation_options', lambda: {})()
+    ensure(isinstance(native_options, dict) and not (set(native_options) & set(generation)), 'GENERATION_OPTIONS_CONFLICT')
+    generation.update(native_options)
+    ensure(scope.get('generation_config') == generation, 'GENERATION_CONFIG_MISMATCH')
     ensure(type(scope.get('request_timeout_seconds')) is int and 1 <= scope['request_timeout_seconds'] <= 1200, 'REQUEST_DEADLINE')
     pt.check_policy(scope.get('transport_policy'), scope['request_timeout_seconds'])
     adapter.validate_route(scope)

@@ -41,7 +41,7 @@ def main() -> int:
         if 'operation' in request:
             ensure(request['operation'] in {'CATALOGUE', 'RESPONSES'}, 'Invalid worker operation')
         if 'adapter_contract' in request:
-            from provider_fixture import validate_worker_contract
+            from provider_adapters import validate_worker_contract
             validate_worker_contract(request['adapter_contract'])
     except Exception as exc:
         # This branch is strictly before the HTTP call. The receipt is bound to

@@ -101,20 +101,41 @@ class ProviderRegistry:
 
 def registry():
     from provider_fixture import LocalFixtureAdapter
-    return ProviderRegistry((DeepSeekAdapter(), LocalFixtureAdapter()))
+    from provider_openrouter import OpenRouterAdapter
+    return ProviderRegistry((DeepSeekAdapter(), LocalFixtureAdapter(), OpenRouterAdapter()))
 
 
 def select(scope):
     return registry().select(scope.get('provider_id'))
 
 
+def validate_worker_contract(value):
+    ensure(isinstance(value, dict), 'ADAPTER_WORKER_CONTRACT')
+    adapter = select(value)
+    validator = getattr(adapter, 'validate_worker_contract', None)
+    ensure(callable(validator), 'ADAPTER_WORKER_UNSUPPORTED')
+    validator(value)
+
+
+def native_worker_exchange(frame, sink):
+    value = frame['adapter_contract']
+    validate_worker_contract(value)
+    return select(value).worker_exchange(frame, sink)
+
+
 def verified_result(adapter, scope, result):
     """Do not trust capabilities, worker success or a normalized body alone."""
     try:
-        ensure(isinstance(result, pt.TransportResult) and result.status == 200, 'ADAPTER_UNTRUSTED_HTTP_RESULT')
+        ensure(isinstance(result, pt.TransportResult), 'ADAPTER_UNTRUSTED_HTTP_RESULT')
         ensure(isinstance(result.wire, bytes) and isinstance(result.body, bytes), 'ADAPTER_CAPTURE_TYPE')
         ensure(len(result.wire) <= pt.MAX_WIRE and len(result.body) <= pt.MAX_BODY, 'ADAPTER_CAPTURE_BOUND')
-        ensure(adapter.decode(scope, result.wire) == result.body, 'ADAPTER_RECEIPT_WIRE_MISMATCH')
+        decoder = getattr(adapter, 'decode_http_result', None)
+        if callable(decoder):
+            expected = decoder(scope, result.wire, result.status)
+        else:
+            ensure(result.status == 200, 'ADAPTER_UNTRUSTED_HTTP_RESULT')
+            expected = adapter.decode(scope, result.wire)
+        ensure(expected == result.body, 'ADAPTER_RECEIPT_WIRE_MISMATCH')
         adapter.terminal(scope, json.loads(result.body))
     except (ValueError, TypeError, KeyError, IndexError, UnicodeError):
         wire = getattr(result, 'wire', b''); status = getattr(result, 'status', None)

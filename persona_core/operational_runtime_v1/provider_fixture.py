@@ -131,6 +131,12 @@ class LocalFixtureAdapter:
     capabilities = CAPABILITIES
     wire_format = 'FIXTURE_NDJSON'
 
+    def validate_worker_contract(self, value):
+        validate_worker_contract(value)
+
+    def worker_exchange(self, frame, sink):
+        return local_exchange(frame['payload'].encode('utf-8'), frame['transport_policy'], sink)
+
     def validate_route(self, scope):
         ensure(scope.get('endpoint') == ENDPOINT and scope.get('network_route_policy') == ROUTE, 'FIXTURE_LOCAL_ROUTE_REQUIRED')
 

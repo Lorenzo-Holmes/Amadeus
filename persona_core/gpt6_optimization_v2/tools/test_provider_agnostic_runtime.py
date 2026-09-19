@@ -44,9 +44,9 @@ class ContractTests(unittest.TestCase):
     def setUp(self):
         self.scope = f.make_scope('REGISTRY_TEST')
 
-    def test_registry_has_two_distinct_adapters(self):
+    def test_registry_preserves_two_baseline_adapters_and_adds_remote(self):
         registry = a.registry()
-        self.assertEqual(set(registry.adapters), {'deepseek', 'local_fixture'})
+        self.assertEqual(set(registry.adapters), {'deepseek', 'local_fixture', 'openrouter'})
         self.assertIsInstance(registry.select('deepseek'), a.DeepSeekAdapter)
         self.assertIsInstance(registry.select('local_fixture'), f.LocalFixtureAdapter)
 
