@@ -19,6 +19,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from transcript_store import StoreGuard, ensure
+from provider_network_route import check_route_policy, proxy_handler
 
 VERSION = 'apcore-transport-lifecycle-1'
 RESULT_HEADER = b'AMADEUS_WORKER_RESULT_V2\n'
@@ -134,6 +135,13 @@ def _handlers(lifecycle):
         def redirect_request(self,req,fp,code,msg,headers,newurl):
             raise urllib.error.HTTPError(req.full_url,code,'REFUSED',headers,fp)
     return HTTPS(),NoRedirect()
+
+
+def route_opener(lifecycle, network_route_policy=None):
+    handlers = _handlers(lifecycle)
+    if network_route_policy is not None:
+        handlers = (proxy_handler(network_route_policy), *handlers)
+    return urllib.request.build_opener(*handlers)
 
 class StreamAssembly:
     """SSE records are preserved exactly; text is rebuilt without another call."""
@@ -301,8 +309,10 @@ class ResponsesAssembly:
 
 def verify_responses_wire(db,row,scope):
     """Rebuild the normalized receipt from its separately hash-bound wire."""
-    ensure(scope.get('schema_version')=='apcore-provider-scope-4'
+    ensure(scope.get('schema_version') in {'apcore-provider-scope-4','apcore-provider-scope-5'}
            and scope.get('api_protocol')=='responses','RESPONSES_SCOPE_BINDING')
+    if scope.get('schema_version') == 'apcore-provider-scope-5':
+        check_route_policy(scope.get('network_route_policy'))
     wire=db.execute('SELECT * FROM transport_wire_captures WHERE call_id=?',(row['call_id'],)).fetchone()
     ensure(wire is not None and wire['wire_format']=='SSE' and wire['complete']==1
            and wire['credential_redacted']==0,'RESPONSES_WIRE_CAPTURE_REQUIRED')
@@ -313,12 +323,12 @@ def verify_responses_wire(db,row,scope):
     ensure(assembly.body()==raw and assembly.terminal=='response.completed','RESPONSES_NORMALIZATION_CHANGED')
     ensure(hashlib.sha256(raw).hexdigest()==row['raw_sha256'],'RESPONSES_NORMALIZED_HASH_CHANGED')
 
-def responses_http_exchange(payload,credential,policy,sink=lambda e:None,opener_factory=None):
+def responses_http_exchange(payload,credential,policy,sink=lambda e:None,opener_factory=None,*,network_route_policy=None):
     lifecycle=Lifecycle(sink,policy);lifecycle.emit('worker_started')
     wire=bytearray();status=None
     try:
         data=json.loads(payload);ensure(data.get('stream') is True,'RESPONSES_STREAM_REQUIRED')
-        opener=(opener_factory(lifecycle) if opener_factory else urllib.request.build_opener(*_handlers(lifecycle)))
+        opener=(opener_factory(lifecycle) if opener_factory else route_opener(lifecycle,network_route_policy))
         request=urllib.request.Request('https://api.deepseek.com/responses',data=payload,method='POST',headers={
             'Authorization':'Bearer '+credential,'Content-Type':'application/json','Accept':'text/event-stream',
             'User-Agent':'Amadeus-APCORE-RESPONSES-V1'})
@@ -357,12 +367,12 @@ def responses_http_exchange(payload,credential,policy,sink=lambda e:None,opener_
         lifecycle.emit('worker_error',**({'timeout_source':reason} if reason in TIMEOUTS else {}))
         raise TransportFault(reason,bytes(wire),status) from None
 
-def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False,opener_factory=None):
+def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False,opener_factory=None,network_route_policy=None):
     lifecycle=Lifecycle(sink,policy); lifecycle.emit('worker_started')
     wire=bytearray(); status=None
     try:
         data=json.loads(payload); streaming=data.get('stream') is True and not catalogue
-        opener=(opener_factory(lifecycle) if opener_factory else urllib.request.build_opener(*_handlers(lifecycle)))
+        opener=(opener_factory(lifecycle) if opener_factory else route_opener(lifecycle,network_route_policy))
         request=urllib.request.Request('https://api.deepseek.com/models' if catalogue else 'https://api.deepseek.com/chat/completions',
             data=None if catalogue else payload,method='GET' if catalogue else 'POST',headers={
             'Authorization':'Bearer '+credential,'Content-Type':'application/json','User-Agent':'Amadeus-APCORE-OPERATIONS-V1'})
@@ -413,27 +423,30 @@ def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False
 
 def child_result(frame,frame_hash):
     policy=frame['transport_policy']
+    route_args={'network_route_policy':frame['network_route_policy']} if 'network_route_policy' in frame else {}
     def sink(event):
         import sys
         sys.stderr.buffer.write(encode({'frame_sha256':frame_hash,'lifecycle':event})+b'\n');sys.stderr.buffer.flush()
     try:
         if frame.get('operation')=='RESPONSES':
-            result=responses_http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink)
+            result=responses_http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,**route_args)
         else:
-            result=http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,catalogue=frame.get('operation')=='CATALOGUE')
+            result=http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,catalogue=frame.get('operation')=='CATALOGUE',**route_args)
         value={'kind':'terminal','status':result.status,'body':base64.b64encode(result.body).decode('ascii'),
                'wire':base64.b64encode(result.wire).decode('ascii')}
     except TransportFault as exc:
         value={'kind':'unknown','status':exc.status,'reason':exc.reason,'wire':base64.b64encode(exc.wire).decode('ascii')}
     return RESULT_HEADER+encode({'frame_sha256':frame_hash,**value})
 
-def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False,responses=False):
+def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False,responses=False,network_route_policy=None):
     """Drain both pipes concurrently; main thread commits live telemetry to SQLite."""
     check_policy(policy,total)
+    if network_route_policy is not None:check_route_policy(network_route_policy)
     ensure(not (catalogue and responses),'WORKER_OPERATION_CONFLICT')
     operation='CATALOGUE' if catalogue else 'RESPONSES' if responses else None
     frame=encode({'payload':payload.decode('utf-8'),'credential':credential,'timeout_seconds':total,
-                  'transport_policy':policy,**({'operation':operation} if operation else {})})
+                  'transport_policy':policy,**({'operation':operation} if operation else {}),
+                  **({'network_route_policy':network_route_policy} if network_route_policy is not None else {})})
     frame_hash=hashlib.sha256(frame).hexdigest(); events=queue.Queue(maxsize=128)
     output=bytearray(); problems=[]; lifecycle=Lifecycle(sink)
     child=subprocess.Popen(command,cwd=cwd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)

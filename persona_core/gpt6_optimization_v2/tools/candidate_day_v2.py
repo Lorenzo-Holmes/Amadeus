@@ -141,8 +141,17 @@ def generation_settings(scope):
         require(isinstance(scope['transport_policy'], dict), 'TRANSPORT_POLICY_MISSING')
         settings['transport_policy'] = json.loads(canonical(scope['transport_policy']))
     require(not scope['stream'] or 'transport_policy' in settings, 'STREAM_TRANSPORT_POLICY_REQUIRED')
-    if scope.get('schema_version') == 'apcore-provider-scope-4' or scope.get('api_protocol') is not None:
-        require(scope.get('schema_version') == 'apcore-provider-scope-4' and scope.get('api_protocol') == 'responses'
+    if scope.get('schema_version') == 'apcore-provider-scope-5':
+        code = str(ROOT / 'persona_core/operational_runtime_v1')
+        if code not in sys.path: sys.path.insert(0, code)
+        from provider_network_route import check_route_policy
+        try: check_route_policy(scope.get('network_route_policy'))
+        except ValueError: raise GateError('NETWORK_ROUTE_POLICY_INVALID') from None
+        settings['network_route_policy'] = json.loads(canonical(scope['network_route_policy']))
+    else:
+        require('network_route_policy' not in scope, 'NETWORK_ROUTE_REQUIRES_SCOPE5')
+    if scope.get('schema_version') in {'apcore-provider-scope-4','apcore-provider-scope-5'} or scope.get('api_protocol') is not None:
+        require(scope.get('schema_version') in {'apcore-provider-scope-4','apcore-provider-scope-5'} and scope.get('api_protocol') == 'responses'
                 and scope.get('endpoint') == 'https://api.deepseek.com/responses' and scope['stream'] is True
                 and scope.get('thinking') == {'type': 'enabled'} and scope.get('reasoning_effort') == 'max',
                 'RESPONSES_GENERATION_SETTINGS_MISMATCH')

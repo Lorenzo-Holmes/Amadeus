@@ -40,7 +40,8 @@ def prepare(root, freeze_path, pricing_path):
     scope = runner.build_scope(root.name, {'slots': [{'id': 'FORMAL_RESPONSES_1',
         'model': 'deepseek-v4-pro', 'entity_label': 'SYNTHETIC_TRANSPORT_ONLY', 'user_text': USER}]},
         price, 'deepseek-v4-pro', 'deepseek-flash', max_output_tokens=32768, guard_cny=1.15,
-        timeout_seconds=600, transport_policy=POLICY, api_protocol='responses')
+        timeout_seconds=600, transport_policy=POLICY, api_protocol='responses',
+        network_route_policy=freeze.get('network_route_policy'))
     scope['purpose'] = 'Exactly one formal synthetic Responses transport readiness; no semantic evaluation.'
     provider, transcript, *_ = runner.runtime_modules()
     runtime = transcript.safe_root(runtime_root(root))
@@ -72,6 +73,8 @@ def run(root):
     runner.require(runner.read(freeze_path.parent/'FORMAL_READINESS_BINDING.json') == binding, 'READINESS_BINDING_CHANGED')
     runner.require(runner.read(freeze_path)['files'] == runner.source_bindings(), 'FROZEN_SOURCE_CHANGED')
     scope = runner.read(root/'SCOPE.json'); preparation = runner.read(root/'PREPARATION.json')
+    runner.require(scope.get('network_route_policy') == runner.read(freeze_path).get('network_route_policy'),
+                   'READINESS_NETWORK_ROUTE_CHANGED')
     runner.require(runner.value_sha(scope) == binding['scope_sha256']
                    and runner.sha(root/'SCOPE.json') == preparation['scope_sha256'], 'READINESS_SCOPE_CHANGED')
     runner.require(scope['pricing_verified_date'] == runner.pricing_date(), 'PRICING_NOT_CURRENT')
@@ -97,6 +100,12 @@ def run(root):
         names = {e['event'] for e in events}
         required = {'worker_started','request_write_complete','first_response_header','first_response_byte',
                     'first_token','provider_finish','worker_terminal','child_exit','parent_receipt'}
+        if 'network_route_policy' in scope:
+            required |= {'dns_started','dns_complete','tcp_started','tcp_connected','tls_started','tls_connected',
+                         'request_write_started','response_wait_started'}
+            runner.require(scope['network_route_policy']['mode'] != 'DIRECT_NO_PROXY'
+                           or not names.intersection({'proxy_tunnel_started','proxy_tunnel_complete'}),
+                           'DIRECT_READINESS_USED_PROXY_TUNNEL')
         if call['status'] == 'RESPONSE_CAPTURED':
             row = dict(store.db.execute('SELECT * FROM provider_calls WHERE call_id=?', (call['call_id'],)).fetchone())
             provider_transport.verify_responses_wire(store.db, row, scope)
@@ -108,6 +117,7 @@ def run(root):
             'call': call, 'elapsed_seconds': round(time.monotonic()-started, 3), 'lifecycle': events,
             'lifecycle_complete': required <= names, 'spend': journal.summary(scope['batch_id']),
             'generation_requests': 1, 'automatic_paid_retries': 0, 'source_manifest': binding,
+            'network_route_policy': scope.get('network_route_policy'),
             'synthetic_only': True, 'semantic_acceptance': False, 'production_activated': False,
             'new_unknown_count': int(call['status'] == 'SUBMITTED_STATUS_UNKNOWN')}
         runner.write_new(root/'READINESS_REPORT.json', report)

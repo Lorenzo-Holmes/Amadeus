@@ -14,6 +14,7 @@ from provider import (official_transport, MAX_RESPONSE_BYTES, MAX_WORKER_TIMEOUT
                       network_error_details)
 from transcript_store import ensure
 from provider_transport import check_policy, child_result
+from provider_network_route import check_route_policy
 
 def main() -> int:
     raw = b''
@@ -23,12 +24,15 @@ def main() -> int:
         request = json.loads(raw.decode('utf-8'))
         base = {'payload', 'credential', 'timeout_seconds'}
         ensure(isinstance(request, dict) and set(request) in (base, base | {'transport_policy'},
-               base | {'transport_policy', 'operation'}), 'Invalid worker contract')
+               base | {'transport_policy', 'operation'}, base | {'transport_policy','network_route_policy'},
+               base | {'transport_policy','operation','network_route_policy'}), 'Invalid worker contract')
         ensure(isinstance(request['payload'], str) and isinstance(request['credential'], str), 'Invalid worker data')
         ensure(type(request['timeout_seconds']) in {int, float} and math.isfinite(request['timeout_seconds'])
                and 0 < request['timeout_seconds'] <= MAX_WORKER_TIMEOUT_SECONDS, 'Invalid worker timeout')
         if 'transport_policy' in request:
             check_policy(request['transport_policy'], request['timeout_seconds'])
+        if 'network_route_policy' in request:
+            check_route_policy(request['network_route_policy'])
         if 'operation' in request:
             ensure(request['operation'] in {'CATALOGUE', 'RESPONSES'}, 'Invalid worker operation')
     except Exception as exc:

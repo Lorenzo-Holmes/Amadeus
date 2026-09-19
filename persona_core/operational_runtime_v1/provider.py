@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Callable
 from transcript_store import TranscriptStore, SessionHandle, StoreGuard, ensure, utc_now, WORKSPACE
 import provider_transport as lifecycle_transport
+from provider_network_route import check_route_policy
 
 CHAT_COMPLETIONS_ENDPOINT = "https://api.deepseek.com/chat/completions"
 RESPONSES_ENDPOINT = "https://api.deepseek.com/responses"
@@ -205,16 +206,20 @@ def official_transport(payload: bytes, credential: str, *, timeout_seconds: floa
 def scope_check(scope: dict) -> None:
     version = scope.get('schema_version')
     ensure(scope.get("automatic_paid_retries") == 0, "Automatic provider retries are forbidden")
-    ensure(version in {None, 'apcore-provider-scope-1', 'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4'}, 'Unsupported provider scope version')
-    responses_api = version == 'apcore-provider-scope-4'
+    ensure(version in {None, 'apcore-provider-scope-1', 'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}, 'Unsupported provider scope version')
+    if version == 'apcore-provider-scope-5':
+        check_route_policy(scope.get('network_route_policy'))
+    else:
+        ensure('network_route_policy' not in scope, 'Explicit network route requires scope5')
+    responses_api = version in {'apcore-provider-scope-4', 'apcore-provider-scope-5'}
     if responses_api:
         ensure(scope.get('endpoint') == RESPONSES_ENDPOINT and scope.get('api_protocol') == 'responses',
                'Responses scope endpoint/protocol mismatch')
     else:
         ensure(scope.get('endpoint') == ENDPOINT and 'api_protocol' not in scope,
                'Unsupported endpoint/protocol for legacy scope')
-    extended = version in {'apcore-provider-scope-3', 'apcore-provider-scope-4'}
-    v2 = version in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4'}
+    extended = version in {'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}
+    v2 = version in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}
     if extended:
         ensure(scope.get('capacity_policy_id') == 'EXTENDED_MAX_REASONING_20260911', 'Explicit capacity revision policy required')
         ensure(scope.get('output_budget_includes_reasoning') is True, 'Reasoning must count inside the completion budget')
@@ -348,8 +353,8 @@ class ProviderJournal:
         ensure(isinstance(key, str) and key.strip(), "Configured credential missing; no request submitted")
         ensure(key not in canonical(context).decode("utf-8"), "Credential detected in context; request refused")
         model = slot["model"]
-        v2 = scope.get('schema_version') in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4'}
-        responses_api = scope.get('schema_version') == 'apcore-provider-scope-4'
+        v2 = scope.get('schema_version') in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}
+        responses_api = scope.get('schema_version') in {'apcore-provider-scope-4', 'apcore-provider-scope-5'}
         if responses_api:
             payload = {"model": model, "input": messages, "max_output_tokens": scope["max_output_tokens"],
                        "stream": True, "reasoning": {"effort": scope['reasoning_effort']}}
@@ -392,8 +397,10 @@ class ProviderJournal:
                         with self.store.transaction():
                             self._transition(turn_id, 'TRANSPORT_LIFECYCLE', {'call_id': call_id, **event})
                     if responses_api:
+                        route_args = ({'network_route_policy': scope['network_route_policy']}
+                                      if 'network_route_policy' in scope else {})
                         result = lifecycle_transport.worker_exchange(request_bytes, key, scope['request_timeout_seconds'],
-                            scope['transport_policy'], _worker_command(), WORKSPACE, record_lifecycle, responses=True)
+                            scope['transport_policy'], _worker_command(), WORKSPACE, record_lifecycle, responses=True, **route_args)
                     else:
                         result = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'],
                             hard_deadline=True, transport_policy=scope['transport_policy'], on_lifecycle=record_lifecycle)

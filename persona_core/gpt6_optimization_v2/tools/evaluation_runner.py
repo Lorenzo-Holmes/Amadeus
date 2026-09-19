@@ -299,7 +299,7 @@ def checked_pricing(record, offline, models=None):
 
 def build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes=24576,
                 max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy=None,
-                api_protocol=None):
+                api_protocol=None, network_route_policy=None):
     provider = runtime_modules()[0]
     slots = suite_data["slots"]
     reserve = sum((max_input_bytes + 4096) * provider.RATES[s["model"]][0] +
@@ -327,6 +327,10 @@ def build_scope(revision, suite_data, pricing, primary, secondary, max_input_byt
              "authorization_basis": "USER_OBJECTIVE_FINAL_UNLIMITED_SPEND_WITH_PINNED_BATCH_NO_RETRIES"}
     if responses_api:
         scope['api_protocol'] = 'responses'
+    if network_route_policy is not None:
+        require(responses_api, 'EXPLICIT_ROUTE_REQUIRES_RESPONSES_SCOPE5')
+        scope.update(schema_version='apcore-provider-scope-5',
+                     network_route_policy=json.loads(provider.canonical(network_route_policy)))
     if transport_policy is not None:
         scope.update(stream=True, transport_policy=dict(transport_policy))
     provider.scope_check(scope)  # Existing 150 CNY ceiling is not bypassed or split.
@@ -417,7 +421,7 @@ def seed_fixtures(store, scope, suite_data):
 def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
             primary=None, secondary="deepseek-v4-pro", max_input_bytes=24576,
             max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy_file=None,
-            api_protocol=None):
+            api_protocol=None, network_route_policy_file=None):
     frozen_inputs()
     primary = primary or default_primary()
     suite_data = load_suite(suite, primary, secondary)  # Gate before any write.
@@ -425,8 +429,9 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     require(not root.exists(), "REVISION_ALREADY_EXISTS_USE_NEW_REVISION")
     pricing = checked_pricing(pricing_record, offline, (primary, secondary))
     transport_policy = read(transport_policy_file) if transport_policy_file is not None else None
+    network_route_policy = read(network_route_policy_file) if network_route_policy_file is not None else None
     scope = build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes,
-                        max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol)
+                        max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol, network_route_policy)
     bindings = source_bindings()
     root.mkdir(parents=False, exist_ok=False)
     write_new(root / "PREPARATION_INTENT.json", {"revision_id": revision, "at_utc": now(), "provider_calls": 0})
@@ -939,6 +944,7 @@ def main(argv=None):
     p.add_argument("--guard-cny", type=float)
     p.add_argument("--timeout-seconds", type=int, default=600)
     p.add_argument("--transport-policy-file", type=Path, help="Explicit opt-in streaming lifecycle policy; values freeze into scope")
+    p.add_argument("--network-route-policy-file", type=Path, help="Versioned DeepSeek network route bound into scope5")
     p.add_argument("--api-protocol", choices=("responses",), help="Explicit scope4 Responses protocol; older scopes remain unchanged")
     for name in ("run", "status", "reconcile", "_worker"):
         p = commands.add_parser(name)

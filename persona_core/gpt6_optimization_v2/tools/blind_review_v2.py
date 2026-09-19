@@ -60,6 +60,8 @@ def _source_facts(genesis):
 
 
 def _verify_call_context(row, capture, receipt, genesis, scope):
+    if scope.get('schema_version') == 'apcore-provider-scope-5' or 'network_route_policy' in scope:
+        g.generation_settings(scope)
     g.verify_raw(row)
     require(row.get('status') == 'RESPONSE_CAPTURED' and row.get('turn_status') == 'DISPLAYED'
             and row.get('capture_origin') == 'TARGET_PROVIDER_CAPTURE', 'SNAPSHOT_CALL_NOT_COMPLETE')
