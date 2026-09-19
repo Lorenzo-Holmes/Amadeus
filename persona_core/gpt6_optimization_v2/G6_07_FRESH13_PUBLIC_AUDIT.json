@@ -1,0 +1,106 @@
+{
+  "FAIL": 8,
+  "PASS": 79,
+  "UNCLEAR": 5,
+  "active_paid_processes": 0,
+  "actual_submitted_models": {
+    "deepseek-flash": 0,
+    "deepseek-v4-pro": 24
+  },
+  "api": "Responses",
+  "authorized_model_plan": {
+    "deepseek-flash": 2,
+    "deepseek-v4-pro": 42
+  },
+  "automatic_paid_retries": 0,
+  "blind": "LOCKED",
+  "candidate_closure": "FAIL",
+  "candidate_closure_source_freeze_id": "CANDIDATE_CLOSURE_20260919_01",
+  "candidate_v2": "LOCKED",
+  "captured": 23,
+  "expected_criteria": 176,
+  "expected_turns": 44,
+  "findings": [
+    {
+      "id": "R13-N02-01",
+      "mechanisms": [
+        "candidate_closure",
+        "proposed_exclusions",
+        "domain_coverage",
+        "reasoning_scope_projection"
+      ],
+      "severity": "MAJOR",
+      "status": "OPEN"
+    },
+    {
+      "id": "R13-N04-01",
+      "mechanisms": [
+        "unsupported_reaction_inference",
+        "expression_calibration"
+      ],
+      "severity": "MINOR",
+      "status": "OPEN"
+    },
+    {
+      "id": "R13-N06-01",
+      "mechanisms": [
+        "claim_evidence",
+        "planned_vs_completed",
+        "attribution_scope"
+      ],
+      "severity": "MAJOR",
+      "status": "OPEN"
+    },
+    {
+      "id": "R13-N06-02",
+      "mechanisms": [
+        "quoted_speaker_addressee_scope",
+        "reference_resolution"
+      ],
+      "severity": "MINOR",
+      "status": "OPEN"
+    }
+  ],
+  "fresh_offline_preflight_checks": 223,
+  "fresh_offline_preflight_modules": 10,
+  "g6_07": "STOPPED",
+  "g6_08": "LOCKED",
+  "g6_09": "LOCKED",
+  "historical_R12_N02_01_preserved": true,
+  "historical_pass_inherited": false,
+  "minor_findings_include_one_unresolved_quote_addressee_ambiguity": true,
+  "model": "deepseek-v4-pro",
+  "natural_days": 0,
+  "new_readiness_requests": 0,
+  "new_runtime_source_freeze_created": false,
+  "new_unknown": 0,
+  "new_validation_evidence_only": true,
+  "open_critical_findings": 0,
+  "open_major_findings": 2,
+  "open_minor_findings": 2,
+  "original_runtime_source_freeze_retained": true,
+  "private_captures_and_usage_ledgers_published": false,
+  "product_acceptance_complete": false,
+  "production_activated": false,
+  "provider": "DeepSeek Official",
+  "reasoning": "max",
+  "replacements": 0,
+  "review_independence": "INTERNAL_DEVELOPER_NONBLIND",
+  "reviewed": 92,
+  "revision": "external44_20260919_13_fresh",
+  "route": "DIRECT_NO_PROXY",
+  "safe_stop": true,
+  "semantic_gate": "FAIL",
+  "source_freeze_id": "PROVIDER2_REMOTE_RUNTIME_20260919_01",
+  "source_identity": "MATCH",
+  "status": "STOPPED_PARTIAL_REVIEW_COMPLETE",
+  "stream": true,
+  "submitted": 24,
+  "task": "G6-07-FRESH",
+  "terminal_known_rejected": 1,
+  "terminal_rejection": "response.completed without usable visible assistant output",
+  "terminal_rejection_counted_as_semantic_failure": false,
+  "unreviewed": 84,
+  "unsubmitted": 20,
+  "validation_freeze_id": "FRESH_EXTERNAL44_13_VALIDATION_20260919"
+}
