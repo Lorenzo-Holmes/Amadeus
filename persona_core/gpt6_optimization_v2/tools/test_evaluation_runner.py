@@ -87,6 +87,32 @@ class EvaluationRunnerTests(unittest.TestCase):
                 runner.prepare(name, offline=True)
         self.assertFalse(runner.revision_root(name).exists())
 
+    def test_scope4_preparation_freezes_protocol_and_all_current_tools(self):
+        name = self.name()
+        policy = runner.GOAL/'tools'/'test_evaluation_runner.py'  # read is patched; no file mutation.
+        original_read = runner.read
+        with patch.object(runner, 'read', side_effect=lambda p: {
+            'version': 'apcore-transport-lifecycle-1', 'connect_timeout_seconds': 15,
+            'read_timeout_seconds': 120, 'worker_deadline_seconds': 595
+        } if Path(p) == policy else original_read(p)):
+            result = runner.prepare(name, suite='external44', offline=True, primary='deepseek-v4-pro',
+                secondary='deepseek-flash', max_output_tokens=32768, transport_policy_file=policy, api_protocol='responses')
+        root = runner.revision_root(name); scope = runner.read(root/'SCOPE.json')
+        self.assertEqual(scope['schema_version'], 'apcore-provider-scope-4')
+        self.assertEqual(scope['api_protocol'], 'responses')
+        self.assertEqual(scope['endpoint'], 'https://api.deepseek.com/responses')
+        self.assertEqual(result['recorded_calls'], 0)
+        files = runner.read(root/'SOURCE_MANIFEST.json')['files']
+        for tool in ('responses_api_transport.py', 'test_responses_provider_integration.py', 'candidate_host_v2.py',
+                     'candidate_longitudinal_v2.py', 'blind_review_v2.py'):
+            self.assertIn('persona_core/gpt6_optimization_v2/tools/'+tool, files)
+        outcome = self.worker(name, max_turns=1)
+        self.assertEqual(outcome['status'], 'PAUSED_KNOWN_PREFIX')
+        self.assertEqual(runner.status(name)['recorded_calls'], 1)
+        with runner.readonly_db(root) as db:
+            request = json.loads(db.execute('SELECT request_json FROM provider_calls').fetchone()[0])
+        self.assertIn('input', request); self.assertNotIn('messages', request)
+
     def test_heldout_denominator_actions_and_conservative_whole_batch_scope(self):
         data = runner.load_suite("heldout", "deepseek-v4-flash", "deepseek-v4-pro")
         scope = runner.build_scope("contract", data, runner.checked_pricing(None, True),

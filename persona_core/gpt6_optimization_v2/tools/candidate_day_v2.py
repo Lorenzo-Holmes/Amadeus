@@ -29,7 +29,7 @@ DIMENSIONS = {"source_memory_and_occurrence_boundary", "privacy_capability_and_c
               "task_completion_and_reference_resolution", "continuity_and_event_evidence"}
 MINIMUMS = {"context_sensitivity": 4, "naturalness": 4, "character_specificity": 3}
 HOST_TOOL_NAMES = ("candidate_day_v2.py", "candidate_host_v2.py", "candidate_longitudinal_v2.py", "semantic_review.py")
-GENERATION_FIELDS = ("schema_version", "endpoint", "thinking", "reasoning_effort", "max_input_bytes",
+GENERATION_FIELDS = ("schema_version", "endpoint", "api_protocol", "thinking", "reasoning_effort", "max_input_bytes",
                      "max_output_tokens", "stream", "tools_allowed", "request_timeout_seconds",
                      "capacity_policy_id", "output_budget_includes_reasoning", "automatic_capacity_escalation")
 
@@ -141,6 +141,11 @@ def generation_settings(scope):
         require(isinstance(scope['transport_policy'], dict), 'TRANSPORT_POLICY_MISSING')
         settings['transport_policy'] = json.loads(canonical(scope['transport_policy']))
     require(not scope['stream'] or 'transport_policy' in settings, 'STREAM_TRANSPORT_POLICY_REQUIRED')
+    if scope.get('schema_version') == 'apcore-provider-scope-4' or scope.get('api_protocol') is not None:
+        require(scope.get('schema_version') == 'apcore-provider-scope-4' and scope.get('api_protocol') == 'responses'
+                and scope.get('endpoint') == 'https://api.deepseek.com/responses' and scope['stream'] is True
+                and scope.get('thinking') == {'type': 'enabled'} and scope.get('reasoning_effort') == 'max',
+                'RESPONSES_GENERATION_SETTINGS_MISMATCH')
     return settings
 
 
@@ -148,13 +153,33 @@ def require_same_generation(settings):
     require(settings and len({digest(value) for value in settings}) == 1, "GENERATION_SETTINGS_NOT_IDENTICAL")
 
 
-def _journal_rows(path):
+def verify_protocol_capture(db, row, scope):
+    """Scope4 binds the exact request and normalized receipt to the raw SSE."""
+    if scope.get('api_protocol') != 'responses':
+        return
+    generation_settings(scope)
+    request = json.loads(row['request_json'], object_pairs_hook=_pairs)
+    context = json.loads(row['context_json'], object_pairs_hook=_pairs)
+    messages = context.get('messages')
+    require(isinstance(messages, list) and bool(messages)
+            and messages[-1] == {'role': 'user', 'content': row['user_text']}, 'RESPONSES_CURRENT_USER_CHANGED')
+    require(request == {'model': row['model'], 'input': messages, 'max_output_tokens': scope['max_output_tokens'],
+                        'stream': True, 'reasoning': {'effort': scope['reasoning_effort']}}, 'RESPONSES_REQUEST_CHANGED')
+    code = str(ROOT / 'persona_core/operational_runtime_v1')
+    if code not in sys.path: sys.path.insert(0, code)
+    import provider_transport
+    provider_transport.verify_responses_wire(db, row, scope)
+
+
+def _journal_rows(path, scope=None):
     db = sqlite3.connect(Path(path).resolve().as_uri() + "?mode=ro", uri=True)
     db.row_factory = sqlite3.Row
     try:
         require(db.execute("PRAGMA integrity_check").fetchone()[0] == "ok", "JOURNAL_CORRUPT")
         rows = [dict(r) for r in db.execute("SELECT p.*,t.user_text,t.assistant_text,t.status AS turn_status "
                                           "FROM provider_calls p JOIN turns t USING(turn_id) ORDER BY p.submitted_at_utc")]
+        if scope is not None:
+            for row in rows: verify_protocol_capture(db, row, scope)
         return rows
     finally:
         db.close()
@@ -174,7 +199,8 @@ def validate_suite(name, refs, source_manifest, workspace):
     require(manifest.get("source_manifest_sha256") == sha(source_manifest), "SUITE_SOURCE_MISMATCH")
     scope_path = paths["manifest"].parent / "SCOPE.json"
     require(manifest.get("artifacts", {}).get("SCOPE.json") == sha(scope_path), "NATIVE_BOUND_SCOPE_REQUIRED")
-    settings = generation_settings(load(scope_path))
+    scope = load(scope_path)
+    settings = generation_settings(scope)
     require(paths["capture_seal"] == paths["captures"].parent / "CAPTURES_SEAL.json", "CAPTURE_SEAL_LOCATION_MISMATCH")
     try:
         bundle = sr.load_bundle(audit=paths["audit"], source_manifest=source_manifest,
@@ -197,7 +223,7 @@ def validate_suite(name, refs, source_manifest, workspace):
     # The journal is read live, never through a stale status report.
     journal = resolve(refs["journal_path"], workspace)
     require(journal.parent.parent == paths["manifest"].parent, "JOURNAL_OUTSIDE_REVISION")
-    rows = _journal_rows(journal)
+    rows = _journal_rows(journal, scope)
     by_slot = bundle.captures
     require(len(rows) == expected and {r["slot_id"] for r in rows} == set(by_slot), "JOURNAL_INCOMPLETE")
     for row in rows:
@@ -507,7 +533,8 @@ def sent_retrieval(row):
             "DAY_RETRIEVAL_REQUEST_HASH_CHANGED")
     request = json.loads(request_text, object_pairs_hook=_pairs)
     context = json.loads(row["context_json"], object_pairs_hook=_pairs)
-    messages = request.get("messages")
+    require(not ('input' in request and 'messages' in request), 'DAY_RETRIEVAL_AMBIGUOUS_PROTOCOL')
+    messages = request.get("input") if 'input' in request else request.get("messages")
     require(isinstance(messages, list) and messages == context.get("messages"),
             "DAY_RETRIEVAL_REQUEST_CONTEXT_MESSAGES_MISMATCH")
     projected = context.get("prompt_retrieval_projection")
@@ -614,6 +641,7 @@ def inspect_day(candidate_path, ingress_root, checkpoints_root, workspace=ROOT):
                     and row["input_provenance"] == "RAW_USER_UTTERANCE_NOT_EVENT_PROOF"
                     and row["display_at_utc"], "UNKNOWN_UNDISPLAYED_OR_TEST_CALL")
             verify_raw(row)
+            verify_protocol_capture(db, row, scope)
             receipt = load(ingress_root / (row["turn_id"] + ".json"))
             verified_receipt = verify_ingress(receipt, key, candidate, row)
             reference(verified_receipt["preflight_record"]["pricing_record"], workspace)

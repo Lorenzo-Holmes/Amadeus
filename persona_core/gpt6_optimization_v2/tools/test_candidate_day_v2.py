@@ -433,6 +433,18 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(g.GateError, "REQUEST_CONTEXT_MESSAGES"):
             g.later_commitment_retrieval([self.event()], [row])
 
+    def test_responses_input_preserves_actual_cross_day_retrieval_binding(self):
+        _, row = self.later_row()
+        request = json.loads(row['request_json']); request['input'] = request.pop('messages')
+        raw = json.dumps(request, ensure_ascii=False)
+        row.update(request_json=raw, request_sha256=hashlib.sha256(raw.encode()).hexdigest())
+        self.assertEqual(len(g.later_commitment_retrieval([self.event()], [row])), 1)
+        request['messages'] = request['input']
+        raw = json.dumps(request, ensure_ascii=False)
+        row.update(request_json=raw, request_sha256=hashlib.sha256(raw.encode()).hexdigest())
+        with self.assertRaisesRegex(g.GateError, 'AMBIGUOUS_PROTOCOL'):
+            g.later_commitment_retrieval([self.event()], [row])
+
     def test_projected_retrieval_trace_must_equal_actual_sent_message(self):
         _, row = self.later_row()
         context = json.loads(row["context_json"])

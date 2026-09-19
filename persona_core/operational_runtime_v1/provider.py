@@ -23,7 +23,9 @@ from typing import Callable
 from transcript_store import TranscriptStore, SessionHandle, StoreGuard, ensure, utc_now, WORKSPACE
 import provider_transport as lifecycle_transport
 
-ENDPOINT = "https://api.deepseek.com/chat/completions"
+CHAT_COMPLETIONS_ENDPOINT = "https://api.deepseek.com/chat/completions"
+RESPONSES_ENDPOINT = "https://api.deepseek.com/responses"
+ENDPOINT = CHAT_COMPLETIONS_ENDPOINT
 # CNY per million tokens: input miss, output (including reasoning), input hit.
 # Preserve old alias rates as historical conservative bounds, never as today's
 # tariff or proof that the retired V4-Flash model is still being served.
@@ -201,11 +203,18 @@ def official_transport(payload: bytes, credential: str, *, timeout_seconds: floa
         return exc.code, exc.read(MAX_RESPONSE_BYTES + 1)
 
 def scope_check(scope: dict) -> None:
-    ensure(scope.get("automatic_paid_retries") == 0 and scope.get("endpoint") == ENDPOINT, "Unsupported endpoint or retries")
     version = scope.get('schema_version')
-    ensure(version in {None, 'apcore-provider-scope-1', 'apcore-provider-scope-2', 'apcore-provider-scope-3'}, 'Unsupported provider scope version')
-    extended = version == 'apcore-provider-scope-3'
-    v2 = version in {'apcore-provider-scope-2', 'apcore-provider-scope-3'}
+    ensure(scope.get("automatic_paid_retries") == 0, "Automatic provider retries are forbidden")
+    ensure(version in {None, 'apcore-provider-scope-1', 'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4'}, 'Unsupported provider scope version')
+    responses_api = version == 'apcore-provider-scope-4'
+    if responses_api:
+        ensure(scope.get('endpoint') == RESPONSES_ENDPOINT and scope.get('api_protocol') == 'responses',
+               'Responses scope endpoint/protocol mismatch')
+    else:
+        ensure(scope.get('endpoint') == ENDPOINT and 'api_protocol' not in scope,
+               'Unsupported endpoint/protocol for legacy scope')
+    extended = version in {'apcore-provider-scope-3', 'apcore-provider-scope-4'}
+    v2 = version in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4'}
     if extended:
         ensure(scope.get('capacity_policy_id') == 'EXTENDED_MAX_REASONING_20260911', 'Explicit capacity revision policy required')
         ensure(scope.get('output_budget_includes_reasoning') is True, 'Reasoning must count inside the completion budget')
@@ -221,6 +230,11 @@ def scope_check(scope: dict) -> None:
             ensure(type(scope.get('stream')) is bool, 'Explicit streaming policy required')
         else:
             ensure(scope.get('stream') is False, 'Streaming requires a versioned lifecycle policy')
+        if responses_api:
+            ensure(scope.get('stream') is True and 'transport_policy' in scope,
+                   'Responses API validation requires lifecycle streaming')
+            ensure(scope.get('thinking') == {'type': 'enabled'} and scope.get('reasoning_effort') == 'max',
+                   'Responses scope requires enabled max reasoning')
         ensure(scope.get('thinking') in ({'type': 'enabled'}, {'type': 'disabled'}), 'Explicit thinking mode required')
         if scope['thinking']['type'] == 'enabled':
             ensure(scope.get('reasoning_effort') in {'low', 'high', 'max'}, 'Unsupported reasoning effort')
@@ -334,16 +348,21 @@ class ProviderJournal:
         ensure(isinstance(key, str) and key.strip(), "Configured credential missing; no request submitted")
         ensure(key not in canonical(context).decode("utf-8"), "Credential detected in context; request refused")
         model = slot["model"]
-        payload = {"model": model, "messages": messages, "max_tokens": scope["max_output_tokens"],
-                   "stream": False, "thinking": {"type": "disabled"}}
-        v2 = scope.get('schema_version') in {'apcore-provider-scope-2', 'apcore-provider-scope-3'}
-        if v2:
-            payload['thinking'] = scope['thinking']
-            if scope['thinking']['type'] == 'enabled':
-                payload['reasoning_effort'] = scope['reasoning_effort']
-            payload['stream'] = scope['stream']
-            if scope['stream']:
-                payload['stream_options'] = {'include_usage': True}
+        v2 = scope.get('schema_version') in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4'}
+        responses_api = scope.get('schema_version') == 'apcore-provider-scope-4'
+        if responses_api:
+            payload = {"model": model, "input": messages, "max_output_tokens": scope["max_output_tokens"],
+                       "stream": True, "reasoning": {"effort": scope['reasoning_effort']}}
+        else:
+            payload = {"model": model, "messages": messages, "max_tokens": scope["max_output_tokens"],
+                       "stream": False, "thinking": {"type": "disabled"}}
+            if v2:
+                payload['thinking'] = scope['thinking']
+                if scope['thinking']['type'] == 'enabled':
+                    payload['reasoning_effort'] = scope['reasoning_effort']
+                payload['stream'] = scope['stream']
+                if scope['stream']:
+                    payload['stream_options'] = {'include_usage': True}
         request_bytes = canonical(payload)
         reserve = (nbytes + scope["input_overhead_reserve_tokens"]) * RATES[model][0] + scope["max_output_tokens"] * RATES[model][1]
         call_id = "call_" + uuid.uuid4().hex
@@ -372,8 +391,12 @@ class ProviderJournal:
                         lifecycle_transport.check_event(event)
                         with self.store.transaction():
                             self._transition(turn_id, 'TRANSPORT_LIFECYCLE', {'call_id': call_id, **event})
-                    result = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'],
-                        hard_deadline=True, transport_policy=scope['transport_policy'], on_lifecycle=record_lifecycle)
+                    if responses_api:
+                        result = lifecycle_transport.worker_exchange(request_bytes, key, scope['request_timeout_seconds'],
+                            scope['transport_policy'], _worker_command(), WORKSPACE, record_lifecycle, responses=True)
+                    else:
+                        result = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'],
+                            hard_deadline=True, transport_policy=scope['transport_policy'], on_lifecycle=record_lifecycle)
                     status, raw = result
                     with self.store.transaction():
                         self._capture_wire(call_id, result.wire, key, scope['stream'], True)
@@ -480,6 +503,8 @@ class ProviderJournal:
             message = choice.get('message')
             ensure(isinstance(message, dict), 'INVALID_RESPONSE_MESSAGE')
             ensure(finish == "stop", "TRUNCATED_OR_OTHER_FINISH")
+            if responses_api:
+                ensure(body.get('responses_api_status') == 'completed', 'RESPONSES_NOT_COMPLETED')
             ensure(not message.get("tool_calls"), "UNEXPECTED_TOOL_CALL")
             text = message.get("content")
             ensure(isinstance(text, str) and text.strip(), "EMPTY_RESPONSE")

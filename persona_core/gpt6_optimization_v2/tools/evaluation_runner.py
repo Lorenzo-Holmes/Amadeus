@@ -251,7 +251,7 @@ def source_files():
     """
     files = set(CODE.glob("*.py"))
     files.update(OLD_TOOLS / name for name in ("prepare_execution_r047.py", "r047_execution_common.py"))
-    files.update(GOAL / "tools" / name for name in ("evaluation_runner.py", "test_evaluation_runner.py"))
+    files.update((GOAL / "tools").glob("*.py"))
     files.update(p for p in LEGACY.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
     files.update(GOAL / p for p in ("GPT6_BASELINE_AUDIT.json", "GPT6_BASELINE_AUDIT.md",
                                   "USER_OBJECTIVE.md", "HELDOUT_FREEZE.json",
@@ -298,16 +298,21 @@ def checked_pricing(record, offline, models=None):
 
 
 def build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes=24576,
-                max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy=None):
+                max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy=None,
+                api_protocol=None):
     provider = runtime_modules()[0]
     slots = suite_data["slots"]
     reserve = sum((max_input_bytes + 4096) * provider.RATES[s["model"]][0] +
                   max_output_tokens * provider.RATES[s["model"]][1] for s in slots)
     if guard_cny is None:
         guard_cny = math.ceil(reserve / 10000) / 100
-    scope = {"schema_version": "apcore-provider-scope-3", "batch_id": "APCORE-G6-V2-" + revision,
+    responses_api = api_protocol == 'responses'
+    require(api_protocol in {None, 'responses'}, 'UNSUPPORTED_API_PROTOCOL')
+    scope = {"schema_version": "apcore-provider-scope-4" if responses_api else "apcore-provider-scope-3",
+             "batch_id": "APCORE-G6-V2-" + revision,
              "purpose": "Frozen whole-suite V2 evaluation; semantic review remains separate.",
-             "principal_id": "APCORE_G6_V2_" + revision, "endpoint": provider.ENDPOINT,
+             "principal_id": "APCORE_G6_V2_" + revision,
+             "endpoint": provider.RESPONSES_ENDPOINT if responses_api else provider.ENDPOINT,
              "primary_model": primary, "switch_model": secondary, "slots": slots,
              "thinking": {"type": "enabled"}, "reasoning_effort": "max", "stream": False,
              "tools_allowed": False, "automatic_paid_retries": 0,
@@ -320,6 +325,8 @@ def build_scope(revision, suite_data, pricing, primary, secondary, max_input_byt
              "reserved_upper_micro_cny": reserve, "total_guard_cny": guard_cny,
              "target_call_counts": {"total": len(slots)}, "billing_verified": False,
              "authorization_basis": "USER_OBJECTIVE_FINAL_UNLIMITED_SPEND_WITH_PINNED_BATCH_NO_RETRIES"}
+    if responses_api:
+        scope['api_protocol'] = 'responses'
     if transport_policy is not None:
         scope.update(stream=True, transport_policy=dict(transport_policy))
     provider.scope_check(scope)  # Existing 150 CNY ceiling is not bypassed or split.
@@ -409,7 +416,8 @@ def seed_fixtures(store, scope, suite_data):
 
 def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
             primary=None, secondary="deepseek-v4-pro", max_input_bytes=24576,
-            max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy_file=None):
+            max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy_file=None,
+            api_protocol=None):
     frozen_inputs()
     primary = primary or default_primary()
     suite_data = load_suite(suite, primary, secondary)  # Gate before any write.
@@ -418,7 +426,7 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     pricing = checked_pricing(pricing_record, offline, (primary, secondary))
     transport_policy = read(transport_policy_file) if transport_policy_file is not None else None
     scope = build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes,
-                        max_output_tokens, guard_cny, timeout_seconds, transport_policy)
+                        max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol)
     bindings = source_bindings()
     root.mkdir(parents=False, exist_ok=False)
     write_new(root / "PREPARATION_INTENT.json", {"revision_id": revision, "at_utc": now(), "provider_calls": 0})
@@ -548,19 +556,29 @@ def validate_rows(db, root, manifest, scope, preparation):
                 "REQUEST_HASH_MISMATCH")
         payload = json.loads(request["request_json"])
         context = json.loads(request["context_json"])
-        expected = {"model": slot["model"], "messages": context["messages"],
-                    "max_tokens": scope["max_output_tokens"], "stream": scope['stream'],
-                    "thinking": scope["thinking"], "reasoning_effort": scope["reasoning_effort"]}
-        if scope['stream']:
-            expected['stream_options'] = {'include_usage': True}
-        require(payload == expected and payload["messages"][-1] == {"role": "user", "content": slot["user_text"]}
-                and len(canonical(payload["messages"])) <= scope["max_input_bytes"], "REQUEST_SCOPE_MISMATCH")
+        if scope.get('api_protocol') == 'responses':
+            expected = {"model": slot["model"], "input": context["messages"],
+                        "max_output_tokens": scope["max_output_tokens"], "stream": True,
+                        "reasoning": {"effort": scope["reasoning_effort"]}}
+            bound_messages = payload.get('input')
+        else:
+            expected = {"model": slot["model"], "messages": context["messages"],
+                        "max_tokens": scope["max_output_tokens"], "stream": scope['stream'],
+                        "thinking": scope["thinking"], "reasoning_effort": scope["reasoning_effort"]}
+            if scope['stream']:
+                expected['stream_options'] = {'include_usage': True}
+            bound_messages = payload.get('messages')
+        require(payload == expected and bound_messages[-1] == {"role": "user", "content": slot["user_text"]}
+                and len(canonical(bound_messages)) <= scope["max_input_bytes"], "REQUEST_SCOPE_MISMATCH")
         if request["raw_response"] is not None and not request["raw_was_redacted"]:
             require(hashlib.sha256(request["raw_response"]).hexdigest() == row["raw_sha256"], "RAW_RESPONSE_HASH_MISMATCH")
         if completed(row):
             require(not request["raw_was_redacted"] and request["raw_response"] is not None and
                     json.loads(request["raw_response"])["choices"][0]["message"]["content"] == row["assistant_text"],
                     "ASSISTANT_TEXT_DIFFERS_FROM_RAW_RESPONSE")
+            if scope.get('api_protocol') == 'responses' and origin == TARGET:
+                import provider_transport
+                provider_transport.verify_responses_wire(db, {**row, **dict(request)}, scope)
             display_path = root / "displays" / (slot["id"] + ".txt")
             require(display_path.is_file() and display_path.read_bytes() == (row["assistant_text"] + "\n").encode("utf-8"),
                     "DURABLE_DISPLAY_MISMATCH")
@@ -666,6 +684,7 @@ def authored_transport(payload, credential):
     """No network or credential adapter. Engineering evidence only."""
     request = json.loads(payload)
     return 200, canonical({"model": request["model"],
+                           **({'responses_api_status': 'completed'} if 'input' in request else {}),
                            "usage": {"prompt_tokens": 100, "completion_tokens": 5, "total_tokens": 105},
                            "choices": [{"finish_reason": "stop", "message": {"content": "收到。"}}]})
 
@@ -747,7 +766,8 @@ def worker(revision, segment_id, run_id, max_turns=None):
             calls_now += 1
             row = store.db.execute("SELECT * FROM provider_calls WHERE turn_id=?", (turn["turn_id"],)).fetchone()
             require(row is not None, "CALL_RECEIPT_MISSING")
-            require(value_sha(json.loads(row["request_json"])["messages"]) == intent["preview_messages_sha256"],
+            request_field = 'input' if scope.get('api_protocol') == 'responses' else 'messages'
+            require(value_sha(json.loads(row["request_json"])[request_field]) == intent["preview_messages_sha256"],
                     "SUBMITTED_CONTEXT_DIFFERS_FROM_PREVIEW")
             receipt = {**intent, "call_id": row["call_id"], "request_sha256": row["request_sha256"],
                        "raw_sha256": row["raw_sha256"], "status": result["status"],
@@ -919,6 +939,7 @@ def main(argv=None):
     p.add_argument("--guard-cny", type=float)
     p.add_argument("--timeout-seconds", type=int, default=600)
     p.add_argument("--transport-policy-file", type=Path, help="Explicit opt-in streaming lifecycle policy; values freeze into scope")
+    p.add_argument("--api-protocol", choices=("responses",), help="Explicit scope4 Responses protocol; older scopes remain unchanged")
     for name in ("run", "status", "reconcile", "_worker"):
         p = commands.add_parser(name)
         p.add_argument("--revision", required=True)

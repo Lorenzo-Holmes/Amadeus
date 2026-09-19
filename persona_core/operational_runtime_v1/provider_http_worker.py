@@ -30,7 +30,7 @@ def main() -> int:
         if 'transport_policy' in request:
             check_policy(request['transport_policy'], request['timeout_seconds'])
         if 'operation' in request:
-            ensure(request['operation'] == 'CATALOGUE', 'Invalid worker operation')
+            ensure(request['operation'] in {'CATALOGUE', 'RESPONSES'}, 'Invalid worker operation')
     except Exception as exc:
         # This branch is strictly before the HTTP call. The receipt is bound to
         # the private input frame; no credential or payload is echoed.

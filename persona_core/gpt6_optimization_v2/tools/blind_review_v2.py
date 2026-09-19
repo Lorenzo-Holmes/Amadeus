@@ -69,15 +69,19 @@ def _verify_call_context(row, capture, receipt, genesis, scope):
             and receipt.get('provider_status') == 'RESPONSE_CAPTURED', 'EXECUTION_RECEIPT_NOT_COMPLETE')
     context = sr.parse_json(row['context_json'].encode('utf-8'))
     request = sr.parse_json(row['request_json'].encode('utf-8'))
-    messages = request.get('messages')
+    messages = request.get('input') if scope.get('api_protocol') == 'responses' else request.get('messages')
     require(context.get('messages') == messages and context.get('turn_id') == row['turn_id'],
             'CONTEXT_REQUEST_BINDING_MISMATCH')
     require(g.digest(messages) == receipt.get('preview_messages_sha256'), 'PREVIEW_RECEIPT_MISMATCH')
     require(messages[-1] == {'role': 'user', 'content': row['user_text']}, 'CURRENT_USER_CHANGED')
-    expected = {'model': row['model'], 'messages': messages, 'max_tokens': scope['max_output_tokens'],
-                'stream': scope['stream'], 'thinking': scope['thinking'], 'reasoning_effort': scope['reasoning_effort']}
-    if scope['stream']:
-        expected['stream_options'] = {'include_usage': True}
+    if scope.get('api_protocol') == 'responses':
+        expected = {'model': row['model'], 'input': messages, 'max_output_tokens': scope['max_output_tokens'],
+                    'stream': True, 'reasoning': {'effort': scope['reasoning_effort']}}
+    else:
+        expected = {'model': row['model'], 'messages': messages, 'max_tokens': scope['max_output_tokens'],
+                    'stream': scope['stream'], 'thinking': scope['thinking'], 'reasoning_effort': scope['reasoning_effort']}
+        if scope['stream']:
+            expected['stream_options'] = {'include_usage': True}
     require(request == expected, 'GENERATION_REQUEST_MISMATCH')
     hosts = [m['content'][len(PREFIX):] for m in messages if m.get('role') == 'system'
              and isinstance(m.get('content'), str) and m['content'].startswith(PREFIX)]
@@ -484,6 +488,7 @@ def _load_candidate(candidate_path, workspace):
                 'journal_logical_sha256': db_hash, 'runtime_verification': verification, 'turns': {}}
             for slot, capture in bundle.captures.items():
                 row = rows[slot]
+                g.verify_protocol_capture(store.db, row, scope)
                 receipt_path = g.contained(revision / 'receipts' / (slot + '.json'), revision)
                 receipt = g.load(receipt_path)
                 require(receipt.get('source_manifest_sha256') == gates['source_manifest_sha256'], 'RECEIPT_SOURCE_CHANGED')

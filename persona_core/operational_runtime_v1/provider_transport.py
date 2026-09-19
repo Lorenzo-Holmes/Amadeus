@@ -27,7 +27,7 @@ MAX_BODY = 1_000_000
 # while allowing the transport framing overhead of a 32768-token completion.
 MAX_WIRE = 16_000_000
 MAX_PIPE = 24_000_000
-FINISHES = {'stop', 'length', 'content_filter', 'tool_calls', 'insufficient_system_resource'}
+FINISHES = {'stop', 'length', 'content_filter', 'tool_calls', 'insufficient_system_resource', 'aborted'}
 TIMEOUTS = {'CONNECT_TIMEOUT','READ_TIMEOUT','INACTIVITY_TIMEOUT','WORKER_DEADLINE','PARENT_DEADLINE','PROCESS_EXIT_UNKNOWN'}
 EVENTS = {'worker_started','dns_started','dns_complete','tcp_started','tcp_connected',
           'proxy_tunnel_started','proxy_tunnel_complete','tls_started','tls_connected',
@@ -185,6 +185,178 @@ class StreamAssembly:
             'message':{'role':'assistant','content':''.join(self.content),'reasoning_content':''.join(self.reasoning)},
             'finish_reason':self.finish}], 'usage':self.usage})
 
+class ResponsesAssembly:
+    """DeepSeek Responses API SSE assembly normalized to the existing provider contract."""
+    TERMINALS={'response.completed','response.incomplete','response.failed'}
+    def __init__(self,lifecycle):
+        self.lifecycle=lifecycle; self.buffer=b''; self.event_name=None; self.data=[]
+        self.last_sequence=-1; self.response_id=None; self.model=None
+        self.content=[]; self.terminal=None; self.response=None
+    def feed(self,block):
+        self.buffer+=block
+        while b'\n' in self.buffer:
+            line,self.buffer=self.buffer.split(b'\n',1); line=line.rstrip(b'\r')
+            if line.startswith(b'event:'):
+                ensure(self.terminal is None and self.event_name is None,'RESPONSES_EVENT_AFTER_TERMINAL_OR_DUPLICATE')
+                self.event_name=line[6:].strip().decode('utf-8')
+            elif line.startswith(b'data:'):
+                ensure(self.terminal is None,'RESPONSES_EVENT_AFTER_TERMINAL')
+                self.data.append(line[5:].lstrip(b' '))
+            elif not line:
+                if self.data:self.record(self.event_name,b'\n'.join(self.data))
+                else:ensure(self.event_name is None,'RESPONSES_EVENT_WITHOUT_DATA')
+                self.event_name=None;self.data=[]
+    def _bind_response(self,response):
+        ensure(isinstance(response,dict),'RESPONSES_RESPONSE_OBJECT')
+        rid=response.get('id');model=response.get('model')
+        ensure(isinstance(rid,str) and bool(rid) and isinstance(model,str) and bool(model),'RESPONSES_RESPONSE_IDENTITY')
+        ensure(self.response_id in (None,rid) and self.model in (None,model),'RESPONSES_IDENTITY_CHANGED')
+        self.response_id=rid;self.model=model
+    def record(self,event_name,data):
+        ensure(self.terminal is None,'RESPONSES_EVENT_AFTER_TERMINAL')
+        def pairs(items):
+            result={}
+            for key,value in items:
+                ensure(key not in result,'RESPONSES_DUPLICATE_JSON_KEY');result[key]=value
+            return result
+        def constant(_):raise StoreGuard('RESPONSES_NONFINITE_JSON')
+        obj=json.loads(data,object_pairs_hook=pairs,parse_constant=constant)
+        ensure(isinstance(obj,dict),'RESPONSES_EVENT_OBJECT')
+        event_type=obj.get('type')
+        ensure(isinstance(event_type,str) and event_type.startswith('response.')
+               and (event_name is None or event_type==event_name),'RESPONSES_EVENT_TYPE')
+        sequence=obj.get('sequence_number')
+        ensure(type(sequence) is int and sequence>self.last_sequence,'RESPONSES_SEQUENCE')
+        self.last_sequence=sequence
+        if event_type in {'response.created','response.in_progress'}|self.TERMINALS:
+            self._bind_response(obj.get('response'))
+        if 'response_id' in obj:
+            ensure(self.response_id is not None and obj['response_id']==self.response_id,'RESPONSES_IDENTITY_CHANGED')
+        if 'model' in obj:
+            ensure(self.model is not None and obj['model']==self.model,'RESPONSES_IDENTITY_CHANGED')
+        if event_type=='response.output_text.delta':
+            delta=obj.get('delta');ensure(isinstance(delta,str),'RESPONSES_TEXT_DELTA')
+            self.content.append(delta)
+            if delta:self.lifecycle.emit('first_token')
+        if event_type in self.TERMINALS:
+            ensure(obj['response'].get('status')==event_type.split('.',1)[1],'RESPONSES_TERMINAL_STATUS_MISMATCH')
+            self.terminal=event_type;self.response=obj['response']
+            finish='stop'
+            if event_type=='response.incomplete':
+                details=self.response.get('incomplete_details')
+                ensure(details is None or isinstance(details,dict),'RESPONSES_INCOMPLETE_DETAILS')
+                reason=(details or {}).get('reason')
+                finish='content_filter' if reason=='content_filter' else 'length'
+            elif event_type=='response.failed':finish='aborted'
+            self.lifecycle.emit('provider_finish',finish_reason=finish)
+    @property
+    def done(self):return self.terminal is not None
+    def body(self):
+        ensure(self.done and isinstance(self.response,dict),'RESPONSES_TERMINAL_MISSING')
+        ensure(not self.buffer.strip() and not self.data and self.event_name is None,'RESPONSES_UNFINISHED_SSE_RECORD')
+        response=self.response;status=response.get('status')
+        ensure(status==self.terminal.split('.',1)[1],'RESPONSES_TERMINAL_STATUS_MISMATCH')
+        finish='stop'
+        if self.terminal=='response.incomplete':
+            reason=(response.get('incomplete_details') or {}).get('reason')
+            finish='content_filter' if reason=='content_filter' else 'length'
+        elif self.terminal=='response.failed':finish='aborted'
+        final=[];output=response.get('output')
+        if status=='completed':ensure(isinstance(output,list),'RESPONSES_OUTPUT_REQUIRED')
+        ensure(output is None or isinstance(output,list),'RESPONSES_OUTPUT_SHAPE')
+        for item in output or []:
+            ensure(isinstance(item,dict),'RESPONSES_OUTPUT_ITEM')
+            if item.get('type')=='reasoning':continue
+            ensure(item.get('type')=='message' and item.get('role')=='assistant','RESPONSES_UNEXPECTED_OUTPUT')
+            ensure(isinstance(item.get('content'),list),'RESPONSES_CONTENT_SHAPE')
+            if status=='completed':ensure(item.get('status') in (None,'completed'),'RESPONSES_MESSAGE_NOT_COMPLETED')
+            for part in item['content']:
+                ensure(isinstance(part,dict) and part.get('type')=='output_text'
+                       and isinstance(part.get('text'),str),'RESPONSES_OUTPUT_TEXT_REQUIRED')
+                final.append(part['text'])
+        streamed=''.join(self.content);final_text=''.join(final)
+        if status=='completed' or output is not None:
+            ensure(streamed==final_text,'RESPONSES_STREAM_FINAL_MISMATCH')
+        if status=='completed':ensure(bool(streamed.strip()),'RESPONSES_STREAM_TEXT_REQUIRED')
+        text=streamed
+        usage=response.get('usage')
+        normalized_usage=None
+        if status=='completed':ensure(isinstance(usage,dict),'RESPONSES_USAGE_REQUIRED')
+        ensure(usage is None or isinstance(usage,dict),'RESPONSES_USAGE_SHAPE')
+        if isinstance(usage,dict):
+            inp=usage.get('input_tokens');out=usage.get('output_tokens');total=usage.get('total_tokens')
+            ensure(all(type(v) is int and v>=0 for v in (inp,out,total)) and inp+out==total,'RESPONSES_USAGE')
+            input_details=usage.get('input_tokens_details');output_details=usage.get('output_tokens_details')
+            ensure(input_details is None or isinstance(input_details,dict),'RESPONSES_USAGE_DETAILS')
+            ensure(output_details is None or isinstance(output_details,dict),'RESPONSES_USAGE_DETAILS')
+            cached=(input_details or {}).get('cached_tokens',0)
+            reasoning=(output_details or {}).get('reasoning_tokens',0)
+            ensure(type(cached) is int and 0<=cached<=inp and type(reasoning) is int and 0<=reasoning<=out,'RESPONSES_USAGE_DETAILS')
+            normalized_usage={'prompt_tokens':inp,'completion_tokens':out,'total_tokens':total,
+                'prompt_cache_hit_tokens':cached,'prompt_cache_miss_tokens':inp-cached,
+                'completion_tokens_details':{'reasoning_tokens':reasoning}}
+        return encode({'id':response.get('id'),'model':response.get('model'),
+            'choices':[{'index':0,'message':{'role':'assistant','content':text},'finish_reason':finish}],
+            'usage':normalized_usage,'responses_api_status':status})
+
+def verify_responses_wire(db,row,scope):
+    """Rebuild the normalized receipt from its separately hash-bound wire."""
+    ensure(scope.get('schema_version')=='apcore-provider-scope-4'
+           and scope.get('api_protocol')=='responses','RESPONSES_SCOPE_BINDING')
+    wire=db.execute('SELECT * FROM transport_wire_captures WHERE call_id=?',(row['call_id'],)).fetchone()
+    ensure(wire is not None and wire['wire_format']=='SSE' and wire['complete']==1
+           and wire['credential_redacted']==0,'RESPONSES_WIRE_CAPTURE_REQUIRED')
+    data=bytes(wire['wire_bytes'])
+    ensure(hashlib.sha256(data).hexdigest()==wire['wire_sha256'],'RESPONSES_WIRE_HASH_CHANGED')
+    assembly=ResponsesAssembly(Lifecycle());assembly.feed(data)
+    raw=row['raw_response'];raw=raw.encode('utf-8') if isinstance(raw,str) else raw
+    ensure(assembly.body()==raw and assembly.terminal=='response.completed','RESPONSES_NORMALIZATION_CHANGED')
+    ensure(hashlib.sha256(raw).hexdigest()==row['raw_sha256'],'RESPONSES_NORMALIZED_HASH_CHANGED')
+
+def responses_http_exchange(payload,credential,policy,sink=lambda e:None,opener_factory=None):
+    lifecycle=Lifecycle(sink,policy);lifecycle.emit('worker_started')
+    wire=bytearray();status=None
+    try:
+        data=json.loads(payload);ensure(data.get('stream') is True,'RESPONSES_STREAM_REQUIRED')
+        opener=(opener_factory(lifecycle) if opener_factory else urllib.request.build_opener(*_handlers(lifecycle)))
+        request=urllib.request.Request('https://api.deepseek.com/responses',data=payload,method='POST',headers={
+            'Authorization':'Bearer '+credential,'Content-Type':'application/json','Accept':'text/event-stream',
+            'User-Agent':'Amadeus-APCORE-RESPONSES-V1'})
+        try:response=opener.open(request,timeout=lifecycle.remaining(policy['connect_timeout_seconds']))
+        except urllib.error.HTTPError as exc:response=exc
+        with response:
+            status=response.status;lifecycle.emit('headers_complete',http_status=status)
+            lifecycle.phase='stream' if status==200 else 'read'
+            assembly=ResponsesAssembly(lifecycle) if status==200 else None
+            while True:
+                wait=lifecycle.remaining(policy['read_timeout_seconds'])
+                try:response.fp.raw._sock.settimeout(wait)
+                except AttributeError:pass
+                block=response.read1(min(8192,MAX_WIRE+1-len(wire)))
+                if not block:break
+                wire.extend(block);lifecycle.emit('first_response_byte')
+                ensure(len(wire)<=MAX_WIRE,'WIRE_RESPONSE_TOO_LARGE')
+                if assembly:
+                    assembly.feed(block)
+                    # Read to bounded EOF so a later event cannot hide behind
+                    # a completed event at the end of an earlier socket read.
+            lifecycle.emit('last_response_byte',bytes=len(wire))
+        if status!=200:
+            lifecycle.emit('http_terminal',http_status=status);body=bytes(wire)
+        else:
+            body=assembly.body()
+        ensure(len(body)<=MAX_BODY,'ASSEMBLED_RESPONSE_TOO_LARGE')
+        lifecycle.emit('worker_terminal');return TransportResult(status,body,bytes(wire))
+    except Exception as exc:
+        cause=exc.reason if isinstance(exc,urllib.error.URLError) and isinstance(exc.reason,Exception) else exc
+        if isinstance(exc,TransportFault):reason=exc.reason
+        elif time.monotonic()-lifecycle.started>=policy['worker_deadline_seconds']:reason='WORKER_DEADLINE'
+        elif isinstance(cause,TimeoutError):
+            reason='CONNECT_TIMEOUT' if lifecycle.phase in ('connect','proxy_tunnel') else 'INACTIVITY_TIMEOUT' if lifecycle.phase=='stream' else 'READ_TIMEOUT'
+        else:reason='TRANSPORT_PROTOCOL_OR_CONNECTION_ERROR'
+        lifecycle.emit('worker_error',**({'timeout_source':reason} if reason in TIMEOUTS else {}))
+        raise TransportFault(reason,bytes(wire),status) from None
+
 def http_exchange(payload,credential,policy,sink=lambda e:None,*,catalogue=False,opener_factory=None):
     lifecycle=Lifecycle(sink,policy); lifecycle.emit('worker_started')
     wire=bytearray(); status=None
@@ -245,18 +417,23 @@ def child_result(frame,frame_hash):
         import sys
         sys.stderr.buffer.write(encode({'frame_sha256':frame_hash,'lifecycle':event})+b'\n');sys.stderr.buffer.flush()
     try:
-        result=http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,catalogue=frame.get('operation')=='CATALOGUE')
+        if frame.get('operation')=='RESPONSES':
+            result=responses_http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink)
+        else:
+            result=http_exchange(frame['payload'].encode('utf-8'),frame['credential'],policy,sink,catalogue=frame.get('operation')=='CATALOGUE')
         value={'kind':'terminal','status':result.status,'body':base64.b64encode(result.body).decode('ascii'),
                'wire':base64.b64encode(result.wire).decode('ascii')}
     except TransportFault as exc:
         value={'kind':'unknown','status':exc.status,'reason':exc.reason,'wire':base64.b64encode(exc.wire).decode('ascii')}
     return RESULT_HEADER+encode({'frame_sha256':frame_hash,**value})
 
-def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False):
+def worker_exchange(payload,credential,total,policy,command,cwd,sink=lambda e:None,*,catalogue=False,responses=False):
     """Drain both pipes concurrently; main thread commits live telemetry to SQLite."""
     check_policy(policy,total)
+    ensure(not (catalogue and responses),'WORKER_OPERATION_CONFLICT')
+    operation='CATALOGUE' if catalogue else 'RESPONSES' if responses else None
     frame=encode({'payload':payload.decode('utf-8'),'credential':credential,'timeout_seconds':total,
-                  'transport_policy':policy,**({'operation':'CATALOGUE'} if catalogue else {})})
+                  'transport_policy':policy,**({'operation':operation} if operation else {})})
     frame_hash=hashlib.sha256(frame).hexdigest(); events=queue.Queue(maxsize=128)
     output=bytearray(); problems=[]; lifecycle=Lifecycle(sink)
     child=subprocess.Popen(command,cwd=cwd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)

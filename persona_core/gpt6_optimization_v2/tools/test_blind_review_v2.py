@@ -421,6 +421,20 @@ class HostEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(g.GateError, 'GENERATION_REQUEST_MISMATCH'):
             b._verify_call_context(row, capture, receipt, genesis, scope)
 
+        scope['api_protocol'] = 'responses'
+        request = {'model': row['model'], 'input': context['messages'], 'max_output_tokens': 10,
+                   'reasoning': {'effort': 'max'}, 'stream': True}
+        row['request_json'] = g.canonical(request).decode('utf-8')
+        row['request_sha256'] = sr.sha_text(row['request_json'])
+        capture['request_sha256'] = receipt['request_sha256'] = row['request_sha256']
+        b._verify_call_context(row, capture, receipt, genesis, scope)
+        request['max_tokens'] = request.pop('max_output_tokens')
+        row['request_json'] = g.canonical(request).decode('utf-8')
+        row['request_sha256'] = sr.sha_text(row['request_json'])
+        capture['request_sha256'] = receipt['request_sha256'] = row['request_sha256']
+        with self.assertRaisesRegex(g.GateError, 'GENERATION_REQUEST_MISMATCH'):
+            b._verify_call_context(row, capture, receipt, genesis, scope)
+
     def test_current_correction_chain_preserves_original_and_replacement_scope(self):
         self.observed('标签为原始甲', 'AUTHOR observed')
         self.observed('更正：标签为原始甲；改为：标签为现行乙', 'AUTHOR corrected')
