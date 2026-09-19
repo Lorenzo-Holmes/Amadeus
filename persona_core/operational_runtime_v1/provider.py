@@ -404,6 +404,8 @@ class ProviderJournal:
                     else:
                         result = official_transport(request_bytes, key, timeout_seconds=scope['request_timeout_seconds'],
                             hard_deadline=True, transport_policy=scope['transport_policy'], on_lifecycle=record_lifecycle)
+                    if responses_api:
+                        lifecycle_transport.verify_responses_result(result)
                     status, raw = result
                     with self.store.transaction():
                         self._capture_wire(call_id, result.wire, key, scope['stream'], True)
@@ -469,12 +471,29 @@ class ProviderJournal:
         stored_raw = raw.replace(key.encode("utf-8"), b"[REDACTED_CONFIGURED_CREDENTIAL]") if redacted else raw
         key = None
         outcome, category, text, finish, usage, provider_model, estimate = "RESPONSE_REJECTED", None, None, None, None, None, None
+        terminal_known = False
+        terminal_status = None
+        terminal_rejection = None
+        validated_terminal_rejection = False
         try:
             ensure(len(raw) <= MAX_RESPONSE_BYTES, "RESPONSE_TOO_LARGE")
             ensure(not redacted, "SECRET_ECHO_QUARANTINED")
             ensure(status == 200, "HTTP_ERROR")
             body = json.loads(raw.decode("utf-8"))
             ensure(isinstance(body, dict), 'INVALID_RESPONSE_OBJECT')
+            if responses_api:
+                terminal_status=body.get('responses_api_status')
+                terminal_known=terminal_status in ('completed','incomplete','failed')
+                terminal_rejection=body.get('responses_terminal_rejection')
+                if terminal_rejection is not None:
+                    ensure(isinstance(terminal_rejection,dict)
+                           and terminal_rejection.get('version')=='apcore-responses-terminal-1'
+                           and terminal_rejection.get('terminal_event')=='response.'+str(terminal_status)
+                           and terminal_rejection.get('response_id')==body.get('id')
+                           and isinstance(terminal_rejection.get('reason'),str)
+                           and terminal_rejection['reason'].startswith('RESPONSES_'),
+                           'INVALID_RESPONSES_TERMINAL_REJECTION')
+                    validated_terminal_rejection = True
             usage = body.get("usage")
             provider_model = body.get("model")
             observed_choices = body.get('choices')
@@ -503,6 +522,8 @@ class ProviderJournal:
                       Decimal(usage['completion_tokens']) * Decimal(str(RATES[model][1])))
             estimate = int(amount.to_integral_value(rounding=ROUND_CEILING))
             ensure(usage["prompt_tokens"] <= nbytes + scope["input_overhead_reserve_tokens"] and usage["completion_tokens"] <= scope["max_output_tokens"], "USAGE_EXCEEDS_RESERVED_BOUND")
+            if terminal_rejection is not None:
+                raise StoreGuard(terminal_rejection['reason'])
             choices = body.get('choices')
             ensure(isinstance(choices, list) and len(choices) == 1 and isinstance(choices[0], dict), 'INVALID_RESPONSE_CHOICES')
             choice = choices[0]
@@ -518,6 +539,10 @@ class ProviderJournal:
             outcome = "RESPONSE_CAPTURED"
         except (ValueError, KeyError, TypeError, IndexError, UnicodeError) as exc:
             category = str(exc) if isinstance(exc, StoreGuard) else type(exc).__name__
+        if validated_terminal_rejection and category == 'INVALID_USAGE':
+            category = terminal_rejection['reason']
+        if outcome != 'RESPONSE_CAPTURED' and terminal_known:
+            outcome = 'RESPONSE_REJECTED_TERMINAL_KNOWN'
         with self.store.transaction():
             self.store.db.execute("UPDATE provider_calls SET status=?,response_at_utc=?,http_status=?,raw_response=?,raw_sha256=?,raw_was_redacted=?,usage_json=?,finish_reason=?,provider_model=?,error_category=?,estimate_peak_micro_cny=? WHERE call_id=?",
                 (outcome, utc_now(), status, stored_raw, raw_hash, int(redacted), json.dumps(usage) if usage is not None else None, finish, provider_model, category, estimate, call_id))
@@ -526,7 +551,14 @@ class ProviderJournal:
             else:
                 self.store.db.execute("UPDATE turns SET status='RESPONSE_REJECTED' WHERE turn_id=?", (turn_id,))
                 self.store.db.execute("UPDATE call_batches SET stopped=1 WHERE batch_id=?", (batch_id,))
-            self._transition(turn_id, outcome, {"call_id": call_id, "error_category": category, "semantic_verdict": None})
+            detail={"call_id":call_id,"error_category":category,"semantic_verdict":None}
+            if terminal_known:
+                detail.update(remote_outcome_known=True,response_usable=outcome=='RESPONSE_CAPTURED',
+                    terminal_event='response.'+terminal_status,terminal_status=terminal_status,
+                    batch_stopped=outcome!='RESPONSE_CAPTURED',automatic_paid_retries=0,slot_consumed=True)
+                if validated_terminal_rejection:
+                    detail['usage_validation_error']=terminal_rejection.get('usage_error')
+            self._transition(turn_id, outcome, detail)
         return self.get_call(handle, call_id)
 
     def get_call(self, handle: SessionHandle, call_id: str) -> dict:
@@ -546,6 +578,7 @@ class ProviderJournal:
                 "calls_recorded": len(rows),
                 "local_pre_network_rejections": sum(r['status'] == 'LOCAL_REJECTED_BEFORE_NETWORK' for r in rows),
                 "remote_outcome_unknown_count": sum(r['status'] == 'SUBMITTED_STATUS_UNKNOWN' for r in rows),
+                "terminal_known_rejected_count": sum(r['status'] == 'RESPONSE_REJECTED_TERMINAL_KNOWN' for r in rows),
                 "reserved_cny": sum(r["reserve_micro_cny"] for r in rows) / 1_000_000,
                 "peak_usage_estimate_cny": subtotal if complete else None,
                 "known_peak_usage_subtotal_cny": subtotal,

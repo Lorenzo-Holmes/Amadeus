@@ -614,6 +614,7 @@ def status(revision):
             "authored_transport_captures": sum(completed(r) and r["capture_origin"] != TARGET for r in rows),
             "authored_setup_turns_excluded": preparation["authored_setup_turns"],
             "unknown_count": len(unknown), "not_submitted": len(scope["slots"]) - len(rows),
+            "terminal_known_rejected_count": sum(r["provider_status"] == "RESPONSE_REJECTED_TERMINAL_KNOWN" for r in rows),
             "reserved_micro_cny": sum(r["reserve_micro_cny"] for r in rows),
             "unknown_reserved_micro_cny": sum(r["reserve_micro_cny"] for r in unknown),
             "known_peak_usage_subtotal_micro_cny": sum(r["estimate_peak_micro_cny"] or 0 for r in rows),
@@ -905,9 +906,12 @@ def reconcile(revision):
         rows = call_rows(db, scope)
     unknown = [{k: row[k] for k in ("slot_id", "call_id", "turn_id", "session_id", "request_sha256", "raw_sha256", "reserve_micro_cny")}
                for row in rows if row["provider_status"] == "SUBMITTED_STATUS_UNKNOWN"]
+    known_rejected = [{k: row[k] for k in ("slot_id", "call_id", "request_sha256", "raw_sha256")}
+                      for row in rows if row["provider_status"] == "RESPONSE_REJECTED_TERMINAL_KNOWN"]
     report = {"schema_version": SCHEMA, "revision_id": revision, "at_utc": now(),
               "manifest_sha256": sha(root / "MANIFEST.json"), "status": "QUARANTINED_NEW_REVISION_REQUIRED",
-              "unknown_requests": unknown, "remote_outcomes_resolved": False,
+              "unknown_requests": unknown, "remote_outcomes_resolved": not unknown,
+              "terminal_known_rejected_requests": known_rejected,
               "unknown_reserved_micro_cny": sum(r["reserve_micro_cny"] for r in unknown),
               "automatic_paid_retries": 0, "resend_allowed": False, "old_batch_resume_allowed": False,
               "billing_verified": False, "semantic_acceptance": None,

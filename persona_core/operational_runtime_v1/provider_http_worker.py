@@ -3,6 +3,10 @@
 Receives credentials only through inherited stdin, never CLI arguments or files.
 Writes status plus bounded raw body to the private parent pipe, not user output.
 No retry, no tool execution and no runtime database access.
+
+A lifecycle terminal receipt can contain an unusable Responses result. Its
+frame binding establishes receipt provenance; ProviderJournal alone decides
+whether the answer is usable. Only a missing/untrusted terminal is UNKNOWN.
 """
 from __future__ import annotations
 import json

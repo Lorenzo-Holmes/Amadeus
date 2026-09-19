@@ -146,7 +146,10 @@ class ResponsesTransportTests(unittest.TestCase):
             elif change == 'empty_output': values[-1]['response']['output'] = []
             elif change == 'changed_output': values[-1]['response']['output'][0]['content'][0]['text'] = 'different'
             else: values[-1]['response']['output'].append({'type': 'function_call'})
-            with self.subTest(change=change), self.assertRaises(ValueError): normalized(wire_records(values))
+            with self.subTest(change=change):
+                body=json.loads(normalized(wire_records(values)))
+                self.assertIn('responses_terminal_rejection',body)
+                self.assertEqual(body['choices'][0]['message']['content'],'')
 
     def test_usage_structure_integer_bounds_and_totals(self):
         mutations = [('input_tokens', True), ('output_tokens', -1), ('total_tokens', 121),
@@ -156,9 +159,12 @@ class ResponsesTransportTests(unittest.TestCase):
                      ('output_tokens_details', {'reasoning_tokens': 21})]
         for key, value in mutations:
             values = records(); values[-1]['response']['usage'][key] = value
-            with self.subTest(key=key, value=value), self.assertRaises(ValueError): normalized(wire_records(values))
+            with self.subTest(key=key, value=value):
+                body=json.loads(normalized(wire_records(values)))
+                self.assertIn('responses_terminal_rejection',body)
+                self.assertIsNone(body['usage'])
         values = records(); del values[-1]['response']['usage']
-        with self.assertRaises(ValueError): normalized(wire_records(values))
+        self.assertIn('responses_terminal_rejection',json.loads(normalized(wire_records(values))))
 
     def test_identity_sequence_event_type_and_duplicate_json_fail_closed(self):
         for key, value in [('id', 'changed'), ('model', 'changed')]:
@@ -244,11 +250,7 @@ class ProviderJournalResponsesTests(unittest.TestCase):
 
     def test_provider_journal_builds_responses_payload_and_keeps_accounting(self):
         captured = {}
-        body = old.response(completion=20, reasoning=12)
-        body['responses_api_status'] = 'completed'
-        body["usage"].update(prompt_cache_hit_tokens=10, prompt_cache_miss_tokens=90)
-        body["usage"]["prompt_tokens"] = 100
-        body["usage"]["total_tokens"] = 120
+        body = json.loads(normalized())
 
         def fake_worker(payload, credential, total, policy, command, cwd, sink, *, catalogue=False, responses=False):
             captured["payload"] = json.loads(payload)
@@ -318,7 +320,7 @@ class ProviderJournalResponsesTests(unittest.TestCase):
         wire = wire_records(values)
         with patch.object(provider.lifecycle_transport, 'worker_exchange', return_value=pt.TransportResult(200, normalized(wire), wire)):
             row = self.journal.call(self.handle, self.turn['turn_id'], self.scope['batch_id'], 'one', self.context, credential_reader=lambda: 'DUMMY')
-        self.assertEqual(row['status'], 'RESPONSE_REJECTED')
+        self.assertEqual(row['status'], 'RESPONSE_REJECTED_TERMINAL_KNOWN')
         self.assertIsNone(self.store.get_turn(self.handle, self.turn['turn_id'])['assistant_text'])
         self.assertEqual(row['finish_reason'], 'length')
 

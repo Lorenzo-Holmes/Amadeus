@@ -252,24 +252,16 @@ class ResponsesAssembly:
             finish='stop'
             if event_type=='response.incomplete':
                 details=self.response.get('incomplete_details')
-                ensure(details is None or isinstance(details,dict),'RESPONSES_INCOMPLETE_DETAILS')
-                reason=(details or {}).get('reason')
+                reason=details.get('reason') if isinstance(details,dict) else None
                 finish='content_filter' if reason=='content_filter' else 'length'
             elif event_type=='response.failed':finish='aborted'
             self.lifecycle.emit('provider_finish',finish_reason=finish)
     @property
     def done(self):return self.terminal is not None
-    def body(self):
-        ensure(self.done and isinstance(self.response,dict),'RESPONSES_TERMINAL_MISSING')
-        ensure(not self.buffer.strip() and not self.data and self.event_name is None,'RESPONSES_UNFINISHED_SSE_RECORD')
-        response=self.response;status=response.get('status')
-        ensure(status==self.terminal.split('.',1)[1],'RESPONSES_TERMINAL_STATUS_MISMATCH')
-        finish='stop'
-        if self.terminal=='response.incomplete':
-            reason=(response.get('incomplete_details') or {}).get('reason')
-            finish='content_filter' if reason=='content_filter' else 'length'
-        elif self.terminal=='response.failed':finish='aborted'
-        final=[];output=response.get('output')
+    def _visible_text(self):
+        response=self.response;status=response['status'];final=[];output=response.get('output')
+        ensure(response.get('error') is None,'RESPONSES_COMPLETED_ERROR')
+        ensure(response.get('incomplete_details') is None,'RESPONSES_COMPLETED_INCOMPLETE_DETAILS')
         if status=='completed':ensure(isinstance(output,list),'RESPONSES_OUTPUT_REQUIRED')
         ensure(output is None or isinstance(output,list),'RESPONSES_OUTPUT_SHAPE')
         for item in output or []:
@@ -285,11 +277,11 @@ class ResponsesAssembly:
         streamed=''.join(self.content);final_text=''.join(final)
         if status=='completed' or output is not None:
             ensure(streamed==final_text,'RESPONSES_STREAM_FINAL_MISMATCH')
-        if status=='completed':ensure(bool(streamed.strip()),'RESPONSES_STREAM_TEXT_REQUIRED')
-        text=streamed
-        usage=response.get('usage')
-        normalized_usage=None
-        if status=='completed':ensure(isinstance(usage,dict),'RESPONSES_USAGE_REQUIRED')
+        ensure(bool(streamed.strip()),'RESPONSES_COMPLETED_NO_VISIBLE_OUTPUT')
+        return streamed
+    def _usage(self):
+        usage=self.response.get('usage')
+        if self.response['status']=='completed':ensure(isinstance(usage,dict),'RESPONSES_USAGE_REQUIRED')
         ensure(usage is None or isinstance(usage,dict),'RESPONSES_USAGE_SHAPE')
         if isinstance(usage,dict):
             inp=usage.get('input_tokens');out=usage.get('output_tokens');total=usage.get('total_tokens')
@@ -300,12 +292,51 @@ class ResponsesAssembly:
             cached=(input_details or {}).get('cached_tokens',0)
             reasoning=(output_details or {}).get('reasoning_tokens',0)
             ensure(type(cached) is int and 0<=cached<=inp and type(reasoning) is int and 0<=reasoning<=out,'RESPONSES_USAGE_DETAILS')
-            normalized_usage={'prompt_tokens':inp,'completion_tokens':out,'total_tokens':total,
+            return {'prompt_tokens':inp,'completion_tokens':out,'total_tokens':total,
                 'prompt_cache_hit_tokens':cached,'prompt_cache_miss_tokens':inp-cached,
                 'completion_tokens_details':{'reasoning_tokens':reasoning}}
+        return None
+    def body(self):
+        # Protocol certainty is decided before usability. A trusted terminal
+        # with unusable text/usage is not a transport failure or permission to retry.
+        ensure(self.done and isinstance(self.response,dict),'RESPONSES_TERMINAL_MISSING')
+        ensure(not self.buffer.strip() and not self.data and self.event_name is None,'RESPONSES_UNFINISHED_SSE_RECORD')
+        response=self.response;status=response.get('status')
+        ensure(status==self.terminal.split('.',1)[1],'RESPONSES_TERMINAL_STATUS_MISMATCH')
+        details=response.get('incomplete_details')
+        incomplete_reason=details.get('reason') if isinstance(details,dict) else None
+        finish='stop' if status=='completed' else 'aborted' if status=='failed' else (
+            'content_filter' if incomplete_reason=='content_filter' else 'length')
+        normalized_usage=None;usage_error=None;text='';output_error=None
+        try:normalized_usage=self._usage()
+        except StoreGuard as exc:usage_error=str(exc)
+        if status=='completed':
+            try:text=self._visible_text()
+            except StoreGuard as exc:output_error=str(exc)
+        rejection=('RESPONSES_INCOMPLETE' if status=='incomplete' else
+                   'RESPONSES_FAILED' if status=='failed' else output_error or usage_error)
+        extra={}
+        if rejection:
+            # No partial answer, reasoning, summary or provider error message is
+            # copied into an assistant message. Original evidence stays in wire.
+            text=''
+            extra['responses_terminal_rejection']={
+                'version':'apcore-responses-terminal-1','reason':rejection,
+                'terminal_event':self.terminal,'response_id':self.response_id,
+                'usage_error':usage_error,'incomplete_reason':incomplete_reason if incomplete_reason in ('max_output_tokens','content_filter') else None}
+        # Successful normalization is byte-compatible with historical captures.
         return encode({'id':response.get('id'),'model':response.get('model'),
             'choices':[{'index':0,'message':{'role':'assistant','content':text},'finish_reason':finish}],
-            'usage':normalized_usage,'responses_api_status':status})
+            'usage':normalized_usage,'responses_api_status':status,**extra})
+
+def verify_responses_result(result):
+    """Bind a parent receipt to its wire before journal acceptance or rejection."""
+    if result.status!=200:return
+    try:
+        assembly=ResponsesAssembly(Lifecycle());assembly.feed(result.wire)
+        ensure(assembly.body()==result.body,'RESPONSES_RECEIPT_WIRE_MISMATCH')
+    except (ValueError,KeyError,TypeError,UnicodeError):
+        raise TransportFault('TRANSPORT_PROTOCOL_OR_CONNECTION_ERROR',result.wire,result.status) from None
 
 def verify_responses_wire(db,row,scope):
     """Rebuild the normalized receipt from its separately hash-bound wire."""
