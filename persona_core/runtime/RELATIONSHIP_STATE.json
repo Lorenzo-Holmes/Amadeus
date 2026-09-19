@@ -1,0 +1,16 @@
+{
+  "schema_version": "pcore-relationship-state-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "product_entities": {},
+  "source_relationship_roots": {
+    "Maho": {
+      "kind": "SOURCE_RELATIONSHIP_ROOT",
+      "runtime_user_relationship": false
+    },
+    "Leskinen": {
+      "kind": "SOURCE_RELATIONSHIP_ROOT",
+      "runtime_user_relationship": false
+    }
+  },
+  "state_version": 0
+}

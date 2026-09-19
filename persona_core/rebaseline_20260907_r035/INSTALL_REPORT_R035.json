@@ -1,0 +1,13 @@
+{
+  "schema_version": "pcore-r035-install-report-1",
+  "status": "GENESIS_INSTALLED",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "genesis_sha256": "9f10697003d72c9f33ae88ff72618092fb24ea8d9a4b1e5e1021d4f0ade0f840",
+  "copied_frozen_components": 8,
+  "installed_autobiographical_memory_ids": [
+    "RC-R005-001"
+  ],
+  "product_relationships": 0,
+  "experience_ledger_events": 1,
+  "runtime_installed": true
+}

@@ -1,0 +1,20 @@
+"""Fresh author examples: lexical/data-flow checks, never heldout or model scores."""
+FIXTURES = [
+    ('observatory_clocks', '假设天文台的两台机器使用同一个时钟。这没有说明两份文件来自同一轮观测。', {'PREMISE_CUE'}),
+    ('archive_causes', '已知潮湿和虫害都不是藏品褪色的原因，照明是否就是唯一原因？', set()),
+    ('laboratory_write', '实验室日志写入顺序没有乱，取样顺序是否还需要单独确认？', {'RECORD_ORDER_CUE','SAMPLING_ORDER_CUE'}),
+    ('telemetry_values', '无人车的两个值来自同一个单调时钟，数值较小的那项会先被记录吗？', set()),
+    ('optical_implication', '如果标尺已经校准并且镜头位置固定，那么可以比较两次投影的长度。上述两个条件还未独立核验。', {'PREMISE_CUE','CONSEQUENCE_CUE'}),
+    ('letter_pronouns', '他说“你已经处理好了”。这封信没有写收信人的名字。', set()),
+    ('garden_candidates', '花苗变黄，目前想到浇水量和土质两个候选。', {'OPEN_CANDIDATE_CUE'}),
+    ('closed_game', '这个纸牌游戏的候选全集只有红、蓝、白三种。在这个规则内排除红和蓝。', {'CLOSED_CANDIDATE_CLAIM_CUE'}),
+    ('negated_assumption', '不要假设展柜已密封；我只报告湿度读数。', {'PREMISE_CUE'}),
+    ('quoted_condition', '审稿意见写着“如果样本匹配，那么差异可能可信”，这不是我的实测结论。', {'PREMISE_CUE','CONSEQUENCE_CUE'}),
+    ('explicit_letter', '阿宁对贝拉说：“你已经处理好了。”我只转述他们的信。', set()),
+    ('nested_letter', '阿宁说：“贝拉写道‘你已经处理好了’，但她没署名。”', set()),
+    ('field_relation', '观测报告写着：场强读数甲小于乙；没有给出两个样本的配对依据。', {'OBSERVATION_REPORT_CUE','PAIRING_CUE'}),
+    ('causal_order', '记录先后与因果顺序是两个待检查的关系。', {'RECORD_ORDER_CUE','CAUSAL_ORDER_CUE'}),
+    ('english_conditions', 'Assume both batches share a reference. If the labels match, then compare their masses.', {'PREMISE_CUE','CONSEQUENCE_CUE'}),
+    ('english_open_set', 'Possible causes include ventilation and packing. These are not all possibilities.', {'OPEN_CANDIDATE_CUE'}),
+    ('ordinary', '晚上好，今天想聊聊画册。', set()),
+]

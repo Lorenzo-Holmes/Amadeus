@@ -1,0 +1,1012 @@
+{
+  "schema_version": "amadeus-operational-task-state-1",
+  "plan_id": "APCORE-OPERATIONS-V1",
+  "plan_version": "1.0",
+  "created_date": "2026-09-07",
+  "workspace_path": "C:\\Users\\skr\\Documents\\Codex\\Amadeus-Project.staging",
+  "intended_directory": "persona_core/operational_build_v1",
+  "document_package_status": "PREPARED",
+  "workspace_sync_status": "VERIFIED",
+  "workspace_sync_blocker": null,
+  "workspace_sync_evidence": "evidence/R044-01/SNAPSHOT_READ_VERIFICATION.json",
+  "phase_status": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING",
+  "active_task": "R047-04",
+  "last_completed": {
+    "id": "R047-05",
+    "description": "Repaired controlled local candidate built after the failed independent review repair: composite repaired full82 is 82/82 capture-clean and 328/328 developer-reviewed PASS with quality gate PASS; new clean schema46 candidate has zero dialogue/provider history, two real CLI process launches resumed the same session, protected history unchanged, production remains inactive."
+  },
+  "next_action": {
+    "task_id": "R047-04",
+    "description": "All internally executable pre-acceptance hardening is complete. The repaired revision remains 82/82 capture-clean, 328/328 developer criteria PASS, quality PASS, and current-source regression 450/450 PASS. Genuine repaired Day 1 is qualified on 2026-09-12; upgrade continuity, simulated-time anti-cheat, UNKNOWN recovery, 100k-turn/10k-retrieval storage stress, cost governance, review-return auditing, longitudinal automation, final acceptance automation, and production activation dry-run are prepared and tested. Product acceptance now waits only for a new independent reviewer return plus two additional distinct real Asia/Tokyo dates on the same repaired candidate.",
+    "first_step": "On the next distinct Asia/Tokyo natural date, resume the same repaired USER_PRIMARY candidate/session with genuine user text only. In parallel, audit the actual completed independent reviewer package with audit_repaired_review_return_r047.py. After Day 3, run longitudinal_assessment_r047.py and final_product_acceptance_r047.py. Do not count simulated dates or activate production early."
+  },
+  "recovery_point": [
+    "evidence/R047-02/audit_20260908T004750005812Z/CAPTURE_AUDIT.json",
+    "evidence/R047-02/resume_20260908T005132917742Z/RESUME_AUDIT.json",
+    "evidence/R047-02/live_01/execution_runs/run_7905348d01684cb1afde8c44bfe430ce/EXECUTION.json",
+    "evidence/R047-02/live_01/execution_runs/run_adc3d6b7b5354aaeae4e91cf9efe66c5/EXECUTION.json",
+    "evidence/R047-02/GATE_REVIEW.md",
+    "evidence/R047-03/EARLY_FINDINGS.json",
+    "evidence/R047-03/regression_20260908T010302629102Z/REGRESSION_RECONCILED.json",
+    "evidence/R047-03/repair_01/REVISION.json",
+    "evidence/R047-04/TRACK_STATUS.json",
+    "evidence/R047-04/natural_day_observation/DAY_1_COMPLETE.json",
+    "evidence/R047-04/natural_day_observation/checkpoints/2026-09-11/CHECKPOINT.json",
+    "evidence/R047-03/repair_01/APPROVAL_BLOCK_20260908.json",
+    "evidence/R047-03/repair_01/PREPARE_COMPLETE.json",
+    "evidence/R047-03/repair_01/live/FIXTURE_PREPARATION.json",
+    "evidence/R047-03/reconciliation_20260911T020818624522Z/RECONCILIATION.json",
+    "evidence/R047-03/repair_04/live/runtime.sqlite3",
+    "evidence/R047-03/repair_04/evidence/R047-02/audit_20260911T015951872346Z/CAPTURE_AUDIT.json",
+    "evidence/R047-03/repair_05/REVISION.json",
+    "evidence/R047-03/repair_05/live/runtime.sqlite3",
+    "evidence/R047-03/repair_05/evidence/R047-02/preflight_20260911T021931362592Z/PREFLIGHT.json",
+    "evidence/R047-03/regression_20260911T021659225991Z/REGRESSION.json",
+    "evidence/R047-03/repair_05/BOUND_PRIOR_FINDINGS_20260911T021930998478Z.json",
+    "evidence/R047-03/capacity_probe_02/BOUND_DIAGNOSTIC_REVIEW_20260911T030359610355Z.json",
+    "evidence/R047-03/reconciliation_20260911T031420589684Z/RECONCILIATION.json",
+    "evidence/R047-03/repair_06/REVISION.json",
+    "evidence/R047-03/repair_06/evidence/R047-02/preflight_20260911T031231964907Z/PREFLIGHT.json",
+    "evidence/R047-03/regression_20260911T031000221175Z/REGRESSION.json",
+    "evidence/R047-03/repair_06/evidence/R047-02/audit_20260911T034037772041Z/CAPTURE_AUDIT.json",
+    "evidence/R047-03/repair_06/evidence/R047-03/review_20260911T034723027160Z/REVIEW_BINDING_REPORT.json",
+    "evidence/R047-03/epistemic_repair_20260911/tests_20260911T035435689483Z/TESTS.json",
+    "evidence/R047-03/reconciliation_20260911T035437925369Z/RECONCILIATION.json",
+    "evidence/R047-03/epistemic_probe_01/UNKNOWN_REQUEST_BLOCK_20260911.md",
+    "evidence/R047-03/epistemic_probe_01/PARTIAL_SEMANTIC_REVIEW.json",
+    "evidence/R047-03/epistemic_probe_01/n06_t3_reconciliation_20260911/CALLTIME_SOURCE_MANIFEST.json",
+    "evidence/R047-03/regression_20260911T075151853086Z/REGRESSION.json",
+    "evidence/R047-03/epistemic_probe_01/n06_t3_reconciliation_20260911/RECONCILIATION.json",
+    "evidence/R047-03/regression_20260911T080158998496Z/REGRESSION.json",
+    "evidence/R047-05/guard_tests_20260911T080136352108Z/TESTS.json",
+    "evidence/R047-03/unknown_quarantine_20260911/QUARANTINE.json",
+    "evidence/R047-03/reconciliation_20260911T082530103315Z/RECONCILIATION.json",
+    "evidence/R047-03/regression_20260911T082612090163Z/REGRESSION.json",
+    "evidence/R047-03/epistemic_probe_02/MANIFEST.json",
+    "evidence/R047-03/epistemic_probe_02/evidence/R047-02/preflight_20260911T082416584120Z/PREFLIGHT.json",
+    "evidence/R047-03/epistemic_probe_02/PREPARE_COMPLETE.json",
+    "evidence/R047-03/epistemic_probe_02/OFFICIAL_PREFLIGHT.json",
+    "evidence/R047-03/epistemic_probe_02/READY_FOR_EXECUTION.json",
+    "evidence/R047-03/TARGETED_DIAGNOSTIC_CLOSEOUT.json",
+    "evidence/R047-03/final_full82_01/TERMINAL_FAILURE.json",
+    "evidence/R047-03/final_full82_01/evidence/R047-02/audit_20260911T111721764582Z/CAPTURE_AUDIT.json",
+    "evidence/R047-03/regression_20260911T111932168043Z/REGRESSION.json",
+    "evidence/R047-03/final_full82_02/MANIFEST.json",
+    "evidence/R047-03/final_full82_02/PREPARE_COMPLETE.json",
+    "evidence/R047-03/final_full82_02/READY_FOR_EXECUTION.json",
+    "evidence/R047-03/final_full82_02/TERMINAL_FAILURE.json",
+    "evidence/R047-03/final_full82_02/evidence/R047-02/audit_20260911T115423766179Z/CAPTURE_AUDIT.json",
+    "evidence/R047-03/final_full82_02/n08_t3_reconciliation_20260911/RECONCILIATION.json",
+    "evidence/R047-03/unknown_quarantine_final02_20260911/QUARANTINE.json",
+    "evidence/R047-03/regression_20260911T120036579328Z/REGRESSION.json",
+    "evidence/R047-03/final_full82_03/MANIFEST.json",
+    "evidence/R047-03/final_full82_03/PREPARE_COMPLETE.json",
+    "evidence/R047-03/final_full82_03/READY_FOR_EXECUTION.json",
+    "evidence/R047-03/final_full82_03/evidence/R047-02/audit_20260911T130047721431Z/CAPTURE_AUDIT.json",
+    "evidence/R047-03/final_full82_03/evidence/R047-03/review_20260911T130540277032Z/REVIEW_BINDING_REPORT.json",
+    "evidence/R047-03/final_full82_03/evidence/R047-03/review_20260911T130540277032Z/QUALITY_AND_COVERAGE.json",
+    "evidence/R047-03/regression_20260911T130608112041Z/REGRESSION.json",
+    "evidence/R047-05/candidate_20260911T130857589500Z/RELEASE_MANIFEST.json",
+    "evidence/R047-05/candidate_20260911T130857589500Z/RELEASE_ACCEPTANCE_RECORD.json",
+    "evidence/R047-05/candidate_20260911T130857589500Z/LAUNCH_AND_RECOVERY_GUIDE.md",
+    "evidence/R047-05/BUILD_SCOPE_COMPLETE_VALIDATION_PENDING.json",
+    "evidence/R047-04/independent_review_return_20260911/RETURN_AUDIT.json",
+    "evidence/R047-04/external_review_repair_probe_03/SEMANTIC_REPAIR_REVIEW.json",
+    "evidence/R047-03/final_full82_04/TERMINAL_FAILURE.json",
+    "evidence/R047-03/unknown_quarantine_final04_20260912/QUARANTINE.json",
+    "evidence/R047-03/final_full82_05/TERMINAL_FAILURE.json",
+    "evidence/R047-03/unknown_quarantine_final05_20260912/QUARANTINE.json",
+    "evidence/R047-03/composite_full82_repaired_01/COMPOSITE_CAPTURE_AUDIT.json",
+    "evidence/R047-03/composite_full82_repaired_01/COMPOSITE_SEMANTIC_REVIEW.json",
+    "evidence/R047-03/regression_20260911T174651881169Z/REGRESSION.json",
+    "evidence/R047-04/repaired_independent_review_01/REVIEWER_PACKAGE.zip",
+    "evidence/R047-04/repaired_independent_review_01/PACKAGE_REPORT.json",
+    "evidence/R047-04/REPAIRED_VALIDATION_READINESS.json",
+    "evidence/R047-05/repaired_candidate_20260911T174754006116Z/RELEASE_MANIFEST.json",
+    "evidence/R047-05/repaired_candidate_20260911T174754006116Z/RELEASE_ACCEPTANCE_RECORD.json",
+    "evidence/R047-05/repaired_candidate_20260911T174754006116Z/INITIALIZATION_CHECKPOINT.json",
+    "evidence/R047-04/repaired_natural_day/CURRENT_CANDIDATE.json"
+  ],
+  "authority": {
+    "basis": "USER_PROJECT_STANDING_AUTHORIZATION_2026-09-07",
+    "reconfirm_each_subtask": false,
+    "respects_actual_tool_and_os_permissions": true,
+    "model_output_grants_authority": false,
+    "quality_evidence_required": true
+  },
+  "legacy_baseline": {
+    "release_id": "AMADEUS-PERSONA-CORE-R043",
+    "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+    "current_hashes_reverified_this_turn": true,
+    "preserve_history": true,
+    "acceptance_reaudit": "REQUIRED",
+    "production_history_modified_this_turn": false
+  },
+  "in_flight": {
+    "known_operations_started_by_this_document_turn": [],
+    "prior_operations_require_workspace_reconciliation": true,
+    "local_reconciliation": "No paid execution process is active. Historical final04/final05 remote UNKNOWNs remain quarantined and their old batches remain stopped/no-resend. The repaired whole-case composite remains 82/82 capture-clean with 328/328 developer criteria PASS and quality PASS. The repaired candidate now has exactly one genuine USER_01 Flash turn on 2026-09-12, RESPONSE_CAPTURED/DISPLAYED with zero UNKNOWN/rejected, and one qualified repaired natural date (1/3). The old candidate's 2026-09-11 Day 1 remains historical only. Current blockers are a new independent reviewer return and two additional distinct real dates on this repaired candidate."
+  },
+  "spend": {
+    "target_model_calls_this_document_turn": 1,
+    "new_target_model_cost_cny": null,
+    "known_usage_estimate_cny_previous_turn_before_repair06": 0.52545,
+    "counts_this_turn_are_checkpointed_before_in_flight_repair06": false,
+    "future_run_budget_must_be_pinned": true,
+    "automatic_paid_retries": 0,
+    "r047_batch": {
+      "batch_id": "APCORE-R047-MULTITURN-01",
+      "scope": "evidence/R047-01/freeze_20260907T164424498856Z/EXECUTION_SCOPE.json",
+      "status": "ALL_82_SLOTS_CAPTURED_AND_CONSUMED",
+      "fixed_slots": 82,
+      "whole_batch_reserve_cny": 37.380096,
+      "total_guard_cny": 45,
+      "all_operations_guard_cny": 46.5,
+      "journal": "evidence/R047-02/live_01/runtime.sqlite3",
+      "automatic_paid_retries": 0,
+      "billing_verified": false,
+      "actual_submitted_calls": 82,
+      "unknown_submissions": 0,
+      "peak_usage_estimate_cny": 3.181672,
+      "consumed_reserved_cny": 26.691315
+    },
+    "current_batch": {
+      "batch_id": "APCORE-R045-LIVE-01",
+      "scope": "evidence/R045-03/LIVE_BATCH_SCOPE.json",
+      "status": "ALL_NINE_SLOTS_CAPTURED_AND_CONSUMED",
+      "maximum_calls": 9,
+      "conservative_whole_batch_reserve_cny": 0.822744,
+      "total_guard_cny": 1,
+      "actual_submitted_calls_last_verified": 9,
+      "verified_peak_usage_estimate_cny": 0.014325,
+      "capture_journal": "evidence/R045-03/live_01/runtime.sqlite3 provider_calls",
+      "billing_verified": false
+    },
+    "repair_batch": {
+      "batch_id": "APCORE-R045-CLI-REPAIR-01",
+      "scope": "evidence/R045-04/CLI_REPAIR_SCOPE.json",
+      "status": "ALL_FOUR_SLOTS_CAPTURED_AND_CONSUMED",
+      "actual_submitted_calls": 4,
+      "guard_cny": 0.5,
+      "peak_usage_estimate_cny": 0.007971,
+      "capture_journal": "evidence/R045-04/repair_live_01/runtime.sqlite3",
+      "billing_verified": false
+    },
+    "unique_calls_total": 355,
+    "unique_provider_response_calls": 353,
+    "unique_local_pre_http_attempts_reconciled": 1,
+    "peak_usage_estimate_cny_total": null,
+    "known_peak_usage_estimate_cny_subtotal": 10.745545,
+    "peak_usage_estimate_cny_this_execution": 0.006781,
+    "aggregate_guard_cny": 871.5,
+    "natural_day_observation_batch": {
+      "batch_id": "APCORE-R047-NATURAL-DAY-01",
+      "scope": "evidence/R047-04/NATURAL_DAY_OBSERVATION_SCOPE.json",
+      "journal": "evidence/R047-05/candidate_20260911T130857589500Z/runtime/runtime.sqlite3",
+      "status": "DAY_1_QUALIFIED_1_OF_3",
+      "fixed_calls": 16,
+      "guard_cny": 3.0,
+      "reserved_upper_micro_cny": 2875392,
+      "actual_submitted_calls": 1,
+      "captured_and_displayed": 1,
+      "unknown_submissions": 0,
+      "rejected_submissions": 0,
+      "qualified_observation_dates": [
+        "2026-09-11"
+      ],
+      "peak_usage_estimate_cny": 0.003805,
+      "automatic_paid_retries": 0,
+      "billing_verified": false
+    },
+    "repaired_natural_day_observation_batch": {
+      "batch_id": "APCORE-R047-REPAIRED-NATURAL-DAY-20260911T174754006116Z",
+      "scope": "evidence/R047-05/repaired_candidate_20260911T174754006116Z/USER_CHAT_SCOPE.json",
+      "journal": "evidence/R047-05/repaired_candidate_20260911T174754006116Z/runtime/runtime.sqlite3",
+      "status": "DAY_1_QUALIFIED_1_OF_3",
+      "fixed_calls": 16,
+      "guard_cny": 3.0,
+      "reserved_upper_micro_cny": 2875392,
+      "actual_submitted_calls": 1,
+      "captured_and_displayed": 1,
+      "unknown_submissions": 0,
+      "rejected_submissions": 0,
+      "qualified_observation_dates": [
+        "2026-09-12"
+      ],
+      "checkpoint": "evidence/R047-04/repaired_natural_day/checkpoints/2026-09-12/CHECKPOINT.json",
+      "checkpoint_sha256": "12120c60b2fb12d49b9c04cb05380e96feb9148eafa80ae202b7fdfc6974bc4a",
+      "peak_usage_estimate_cny": 0.006781,
+      "automatic_paid_retries": 0,
+      "billing_verified": false
+    },
+    "final_full82_batch": {
+      "batch_id": "APCORE-R047-FINAL-FULL82-03",
+      "journal": "evidence/R047-03/final_full82_03/live/runtime.sqlite3",
+      "scope": "evidence/R047-03/final_full82_03/EXECUTION_SCOPE.json",
+      "status": "ALL82_DISPLAYED_REVIEW328PASS_RELEASE_ELIGIBLE",
+      "fixed_calls": 82,
+      "flash_calls": 76,
+      "pro_calls": 6,
+      "guard_cny": 125,
+      "reserved_upper_micro_cny": 121282560,
+      "actual_submitted_calls": 82,
+      "unknown_submissions": 0,
+      "current_source_regression_tests": 389,
+      "targeted_diagnostic_turns": 38,
+      "targeted_diagnostic_criteria_pass": 152,
+      "final_review_criteria_pass": 328,
+      "quality_pass": true,
+      "unresolved_critical_findings": 0,
+      "unresolved_major_findings": 0,
+      "peak_usage_estimate_cny": 1.375965,
+      "execution_authorization_required": false,
+      "authorization_satisfied": true,
+      "automatic_paid_retries": 0,
+      "billing_verified": false
+    },
+    "prior_final_full82_02": {
+      "batch_id": "APCORE-R047-FINAL-FULL82-02",
+      "status": "TERMINAL_STOPPED_46_CAPTURED_1_QUARANTINED_REMOTE_UNKNOWN_35_NOT_SUBMITTED",
+      "actual_submitted_calls": 47,
+      "captured_and_displayed": 46,
+      "response_rejected": 0,
+      "raw_remote_outcome_unknown": 1,
+      "not_submitted": 35,
+      "failed_slot": "N08_T3",
+      "failed_call_id": "call_4276419fb5b04676b61b4383b2ce8cdb",
+      "failure_evidence": "evidence/R047-03/final_full82_02/TERMINAL_FAILURE.json",
+      "quarantine_evidence": "evidence/R047-03/unknown_quarantine_final02_20260911/QUARANTINE.json",
+      "old_batch_resume_allowed": false,
+      "failed_slot_resend_allowed": false,
+      "billing_verified": false
+    },
+    "prior_final_full82_01": {
+      "batch_id": "APCORE-R047-FINAL-FULL82-01",
+      "status": "TERMINAL_STOPPED_5_CAPTURED_1_EMPTY_RESPONSE_76_NOT_SUBMITTED",
+      "actual_submitted_calls": 6,
+      "captured_and_displayed": 5,
+      "response_rejected": 1,
+      "not_submitted": 76,
+      "unknown_submissions": 0,
+      "failed_slot": "N01_T6",
+      "failure_evidence": "evidence/R047-03/final_full82_01/TERMINAL_FAILURE.json",
+      "known_peak_usage_estimate_cny": 0.10963,
+      "old_batch_resume_allowed": false,
+      "failed_slot_resend_allowed": false,
+      "billing_verified": false
+    },
+    "prepared_epistemic_diagnostic": {
+      "batch_id": "APCORE-R047-EPISTEMIC-DIAGNOSTIC-02",
+      "journal": "evidence/R047-03/epistemic_probe_02/live/runtime.sqlite3",
+      "scope": "evidence/R047-03/epistemic_probe_02/EXECUTION_SCOPE.json",
+      "fixed_calls": 26,
+      "guard_cny": 35,
+      "reserved_upper_micro_cny": 33546240,
+      "status": "PREPARED_ZERO_CALLS_AWAITING_EXPLICIT_COST_CONFIRMATION",
+      "actual_submitted_calls": 0,
+      "captured_and_displayed": 0,
+      "remote_outcome_unknown": 0,
+      "not_submitted": 26,
+      "current_source_regression_tests": 357,
+      "current_official_version": "DeepSeek-V4-Flash-0731",
+      "execution_authorization_required": true,
+      "full82_acceptance_claim": false,
+      "automatic_paid_retries": 0,
+      "billing_verified": false
+    },
+    "prior_epistemic_probe_01": {
+      "batch_id": "APCORE-R047-EPISTEMIC-DIAGNOSTIC-01",
+      "status": "TERMINAL_STOPPED_14_CAPTURED_1_QUARANTINED_REMOTE_UNKNOWN_23_NOT_SUBMITTED",
+      "actual_submitted_calls": 15,
+      "captured_and_displayed": 14,
+      "raw_remote_outcome_unknown": 1,
+      "quarantined_call_id": "call_b0a10f775d26445cb6402b8a012917bc",
+      "known_peak_usage_estimate_cny_subtotal": 0.276565,
+      "unknown_call_reserved_cny": 1.231056,
+      "resend_allowed": false,
+      "billing_verified": false
+    },
+    "historical_probe01_local_attempt": {
+      "call_id": "call_65df5a4dbb844432bdad8e63a8c68db5",
+      "original_status": "SUBMITTED_STATUS_UNKNOWN",
+      "original_status_rewritten": false,
+      "local_disposition": "LOCAL_PRE_HTTP_CONFIGURATION_REJECTION_DETERMINISTICALLY_RECONCILED",
+      "evidence": "evidence/R047-03/capacity_probe_01/local_reconciliation_20260911T024206815047Z/RECONCILIATION.json",
+      "original_reserve_micro_cny_preserved": 1233879,
+      "billing_verified": false
+    },
+    "historical_call_and_usage_total_excludes_in_flight_repair05": false,
+    "reconciliation_evidence": "evidence/R047-03/reconciliation_20260911T082530103315Z/RECONCILIATION.json",
+    "historical_journal_values_overwritten": false,
+    "billing_total": "NOT_INDEPENDENTLY_VERIFIED",
+    "copied_call_ids_not_double_counted": true,
+    "r047_semantic_repair": {
+      "batch_id": "APCORE-R047-SEMANTIC-REPAIR-01",
+      "scope": "evidence/R047-03/repair_01/EXECUTION_SCOPE.json",
+      "journal": "evidence/R047-03/repair_01/live/runtime.sqlite3",
+      "status": "TERMINAL_STOPPED_6_CAPTURED_1_EMPTY_RESPONSE",
+      "fixed_slots": 82,
+      "known_development_regression": true,
+      "new_heldout_claim": false,
+      "total_guard_cny": 45,
+      "unknown_submissions": 0,
+      "automatic_paid_retries": 0,
+      "billing_verified": false,
+      "actual_submitted_calls_last_verified": 7,
+      "peak_usage_estimate_cny_last_verified": 0.317335,
+      "current_journal_required": false
+    },
+    "prior_repair04_batch": {
+      "batch_id": "APCORE-R047-SEMANTIC-REPAIR-04",
+      "journal": "evidence/R047-03/repair_04/live/runtime.sqlite3",
+      "status": "TERMINAL_STOPPED_64_CAPTURED_1_EMPTY_RESPONSE",
+      "fixed_slots": 82,
+      "submitted_calls": 65,
+      "not_submitted": 17,
+      "guard_cny": 45,
+      "unknown_submissions": 0,
+      "known_development_regression": true,
+      "new_heldout_claim": false,
+      "billing_verified": false
+    },
+    "prior_repair05_batch": {
+      "batch_id": "APCORE-R047-EXPRESSION-PROVIDER-REPAIR-05",
+      "journal": "evidence/R047-03/repair_05/live/runtime.sqlite3",
+      "status": "TERMINAL_STOPPED_26_CAPTURED_1_LENGTH_REJECTION",
+      "fixed_slots": 82,
+      "submitted_calls": 27,
+      "captured_and_displayed": 26,
+      "not_submitted": 55,
+      "unknown_submissions": 0,
+      "peak_usage_estimate_cny": 0.44162,
+      "guard_cny": 18,
+      "reserved_upper_micro_cny": 17326080,
+      "primary_model_requested": "deepseek-v4-flash",
+      "primary_provider_version_documented": "DeepSeek-V4.1-Flash",
+      "switch_model_requested": "deepseek-v4-pro",
+      "thinking": "enabled/max",
+      "automatic_paid_retries": 0,
+      "known_development_regression": true,
+      "new_heldout_claim": false,
+      "billing_verified": false
+    },
+    "latest_repair_batch": {
+      "batch_id": "APCORE-R047-CAPACITY-VALIDATED-REPAIR-06",
+      "journal": "evidence/R047-03/repair_06/live/runtime.sqlite3",
+      "status": "ALL82_DISPLAYED_REVIEW308PASS20FAIL_NOT_RELEASE_ELIGIBLE",
+      "actual_submitted_calls": 82,
+      "captured_and_displayed": 82,
+      "unknown_submissions": 0,
+      "peak_usage_estimate_cny": 1.368578,
+      "fixed_slots": 82,
+      "guard_cny": 125,
+      "reserved_upper_micro_cny": 121282560,
+      "primary_model_requested": "deepseek-v4-flash",
+      "primary_provider_version_documented": "DeepSeek-V4.1-Flash",
+      "switch_model_requested": "deepseek-v4-pro",
+      "max_output_tokens_including_reasoning": 131072,
+      "request_timeout_seconds": 1200,
+      "thinking": "enabled/max",
+      "automatic_paid_retries": 0,
+      "known_development_regression": true,
+      "new_heldout_claim": false,
+      "billing_verified": false
+    }
+  },
+  "completion": {
+    "build_scope_complete": true,
+    "product_acceptance_complete": false,
+    "independent_blind_acceptance": "PENDING_EXTERNAL_REPAIRED_REVISION",
+    "true_natural_day_validation": "PENDING_REAL_TIME"
+  },
+  "state_rules": {
+    "allowed_task_statuses": [
+      "PENDING",
+      "READY",
+      "IN_PROGRESS",
+      "BLOCKED",
+      "WAITING_EXTERNAL",
+      "WAITING_REAL_TIME",
+      "DONE"
+    ],
+    "done_requires_acceptance_gate_pass": true,
+    "done_requires_evidence": true,
+    "completed_dependencies_required": true,
+    "do_not_overwrite_later_progress_with_this_initial_snapshot": true,
+    "progress_mirror": "PERSONA_CORE_PROGRESS.md"
+  },
+  "tasks": [
+    {
+      "id": "R044-01",
+      "work_package": "R044",
+      "title": "基线盘点与真实快照",
+      "order": 1,
+      "depends_on": [],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "READ_ONLY_AND_BACKUP",
+      "acceptance_gate": "AC-R044-01",
+      "deliverable_types": [
+        "BASELINE_MANIFEST",
+        "recoverable_baseline_snapshot",
+        "snapshot_read_verification"
+      ],
+      "evidence": [
+        "evidence/R044-01/BASELINE_MANIFEST.json",
+        "evidence/R044-01/SNAPSHOT_READ_VERIFICATION.json",
+        "evidence/R044-01/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R044-02",
+      "work_package": "R044",
+      "title": "原42条回答逐项语义复核",
+      "order": 2,
+      "depends_on": [
+        "R044-01"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "OFFLINE_REVIEW",
+      "acceptance_gate": "AC-R044-02",
+      "deliverable_types": [
+        "criterion_coverage_42x4",
+        "quote_bound_judgments",
+        "spec_conflicts_and_false_reports"
+      ],
+      "evidence": [
+        "evidence/R044-02/bind_20260907T043533233722Z/COVERAGE.json",
+        "evidence/R044-02/bind_20260907T043533233722Z/BOUND_REVIEWS.jsonl",
+        "evidence/R044-02/ISSUES_AND_SCOPE.json",
+        "evidence/R044-02/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R044-03",
+      "work_package": "R044",
+      "title": "可信验收器与校准测试",
+      "order": 3,
+      "depends_on": [
+        "R044-02"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "ISOLATED_CODE",
+      "acceptance_gate": "AC-R044-03",
+      "deliverable_types": [
+        "review_schema",
+        "validator_candidate",
+        "positive_negative_unclear_calibration_results"
+      ],
+      "evidence": [
+        "evidence/R044-03/REVIEW_SCHEMA.json",
+        "tools/review_validator_r044.py",
+        "tools/test_review_validator_r044.py",
+        "evidence/R044-03/run_20260907T043800685201Z/TESTS.json",
+        "evidence/R044-03/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R044-04",
+      "work_package": "R044",
+      "title": "验收纠正与风险分流",
+      "order": 4,
+      "depends_on": [
+        "R044-02",
+        "R044-03"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "DOCUMENTED_GATE",
+      "acceptance_gate": "AC-R044-04",
+      "deliverable_types": [
+        "acceptance_correction_matrix",
+        "risk_register",
+        "sandbox_development_decision"
+      ],
+      "evidence": [
+        "evidence/R044-04/ACCEPTANCE_CORRECTION_MATRIX.json",
+        "evidence/R044-04/RISK_REGISTER.json",
+        "evidence/R044-04/SANDBOX_DEVELOPMENT_DECISION.md",
+        "evidence/R044-04/CHECK_20260907T044024650539Z.json",
+        "evidence/R044-04/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R045-01",
+      "work_package": "R045",
+      "title": "会话身份与Transcript合同",
+      "order": 5,
+      "depends_on": [
+        "R044-04"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_ONLY",
+      "acceptance_gate": "AC-R045-01",
+      "deliverable_types": [
+        "session_identity_contract",
+        "transcript_store",
+        "two_entity_isolation_test"
+      ],
+      "evidence": [
+        "evidence/R045-01/SESSION_TRANSCRIPT_CONTRACT.md",
+        "../operational_runtime_v1/transcript_store.py",
+        "evidence/R045-01/run_20260907T044417392004Z/TESTS.json",
+        "evidence/R045-01/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R045-02",
+      "work_package": "R045",
+      "title": "多轮上下文与自动最小路由",
+      "order": 6,
+      "depends_on": [
+        "R045-01"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_ONLY",
+      "acceptance_gate": "AC-R045-02",
+      "deliverable_types": [
+        "context_builder",
+        "bounded_router",
+        "followup_and_topic_switch_tests"
+      ],
+      "evidence": [
+        "evidence/R045-02/CONTEXT_CONTRACT.md",
+        "../operational_runtime_v1/context_router.py",
+        "evidence/R045-02/run_20260907T044858747276Z/TESTS.json",
+        "evidence/R045-02/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R045-03",
+      "work_package": "R045",
+      "title": "可靠模型调用与轮次生命周期",
+      "order": 7,
+      "depends_on": [
+        "R045-02"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "BOUNDED_API_SANDBOX",
+      "acceptance_gate": "AC-R045-03",
+      "deliverable_types": [
+        "provider_adapter",
+        "turn_lifecycle_log",
+        "failure_and_budget_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/provider.py",
+        "evidence/R045-03/PROVIDER_CONTRACT.md",
+        "evidence/R045-03/run_20260907T045740198360Z/TESTS.json",
+        "evidence/R045-03/live_01/ADAPTER_RESULT_call_6b2ffff5aa93455f9002fc17cff6d478.json",
+        "evidence/R045-03/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R045-04",
+      "work_package": "R045",
+      "title": "实际CLI聊天闭环",
+      "order": 8,
+      "depends_on": [
+        "R045-03"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "BOUNDED_API_SANDBOX",
+      "acceptance_gate": "AC-R045-04",
+      "deliverable_types": [
+        "runnable_chat_entrypoint",
+        "startup_instructions",
+        "multi_turn_restart_logs"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/chat_cli.py",
+        "evidence/R045-04/STARTUP_GUIDE.md",
+        "evidence/R045-04/verification_20260907T152020677282Z/VERIFICATION.json",
+        "evidence/R045-04/verification_20260907T152020677282Z/BOUND_REVIEWS.json",
+        "evidence/R045-04/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R045-05",
+      "work_package": "R045",
+      "title": "可信事件准入控制层",
+      "order": 9,
+      "depends_on": [
+        "R045-03"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_ONLY",
+      "acceptance_gate": "AC-R045-05",
+      "deliverable_types": [
+        "admission_controller",
+        "evidence_provenance_schema",
+        "spoofed_authority_rejection_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/admission.py",
+        "evidence/R045-05/EVIDENCE_PROVENANCE_CONTRACT.md",
+        "evidence/R046-02/unit_20260907T152020874128Z/TESTS.json",
+        "evidence/R045-05/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-07",
+      "blocker": null
+    },
+    {
+      "id": "R046-01",
+      "work_package": "R046",
+      "title": "事务方案与恢复协议选择",
+      "order": 10,
+      "depends_on": [
+        "R045-01",
+        "R045-05"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_STORAGE",
+      "acceptance_gate": "AC-R046-01",
+      "deliverable_types": [
+        "storage_decision",
+        "schema_and_commit_protocol",
+        "migration_design"
+      ],
+      "evidence": [
+        "evidence/R046-01/STORAGE_DECISION.md",
+        "evidence/R046-01/SCHEMA_AND_COMMIT_PROTOCOL.md",
+        "evidence/R046-01/MIGRATION_DESIGN.md",
+        "evidence/R046-01/GATE_REVIEW.md",
+        "evidence/R046-02/unit_20260907T153517135886Z/TESTS.json"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R046-02",
+      "work_package": "R046",
+      "title": "原子提交、幂等与并发",
+      "order": 11,
+      "depends_on": [
+        "R046-01"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_FAULT_INJECTION",
+      "acceptance_gate": "AC-R046-02",
+      "deliverable_types": [
+        "transaction_implementation",
+        "failure_injection_logs",
+        "concurrency_and_idempotency_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/runtime_store.py",
+        "evidence/R046-02/unit_20260907T153517135886Z/TESTS.json",
+        "evidence/R046-02/process_20260907T153524401360Z/TESTS.json",
+        "evidence/R046-02/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R046-03",
+      "work_package": "R046",
+      "title": "真实备份与恢复演练",
+      "order": 12,
+      "depends_on": [
+        "R046-02"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_RECOVERY",
+      "acceptance_gate": "AC-R046-03",
+      "deliverable_types": [
+        "restorable_snapshot",
+        "restore_entrypoint",
+        "restore_and_corruption_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/recovery.py",
+        "evidence/R046-03/RECOVERY_CONTRACT_AND_GUIDE.md",
+        "evidence/R046-03/run_20260907T163321039690Z/TESTS.json",
+        "evidence/R046-03/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R046-04",
+      "work_package": "R046",
+      "title": "长期相关记忆检索",
+      "order": 13,
+      "depends_on": [
+        "R046-02",
+        "R045-02"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_RETRIEVAL",
+      "acceptance_gate": "AC-R046-04",
+      "deliverable_types": [
+        "retrieval_service",
+        "provenance_preserving_index",
+        "old_commitment_and_correction_tests"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/retrieval.py",
+        "evidence/R046-04/RETRIEVAL_CONTRACT.md",
+        "evidence/R046-04/run_20260907T164417939451Z/TESTS.json",
+        "evidence/R046-04/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R046-05",
+      "work_package": "R046",
+      "title": "关系与情绪更新防滥用",
+      "order": 14,
+      "depends_on": [
+        "R046-02",
+        "R045-05"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_ABUSE_TESTS",
+      "acceptance_gate": "AC-R046-05",
+      "deliverable_types": [
+        "controlled_update_policy",
+        "duplicate_and_fake_fulfillment_tests",
+        "affect_context_tests"
+      ],
+      "evidence": [
+        "evidence/R046-05/CONTROLLED_UPDATE_POLICY.md",
+        "evidence/R046-02/unit_20260907T162602310149Z/TESTS.json",
+        "evidence/R046-05/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R046-06",
+      "work_package": "R046",
+      "title": "迁移及发布前恢复演练",
+      "order": 15,
+      "depends_on": [
+        "R046-03",
+        "R046-04",
+        "R046-05",
+        "R045-04"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "SANDBOX_MIGRATION",
+      "acceptance_gate": "AC-R046-06",
+      "deliverable_types": [
+        "migration_rehearsal",
+        "rollback_boundaries",
+        "genesis_integrity_comparison"
+      ],
+      "evidence": [
+        "../operational_runtime_v1/migration.py",
+        "evidence/R046-06/MIGRATION_AND_ROLLBACK_GUIDE.md",
+        "evidence/R046-06/run_20260907T164421565508Z/TESTS.json",
+        "evidence/R046-06/dialogue_20260907T164415757234Z/TESTS.json",
+        "evidence/R046-06/DIALOGUE_WORKFLOW_INTEGRATION.md",
+        "evidence/R046-06/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R047-01",
+      "work_package": "R047",
+      "title": "预先固定新多轮评测协议",
+      "order": 16,
+      "depends_on": [
+        "R044-04",
+        "R045-04"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "EVALUATION_PREPARATION",
+      "acceptance_gate": "AC-R047-01",
+      "deliverable_types": [
+        "heldout_protocol",
+        "fixed_cases_and_rubrics",
+        "model_scope_budget_and_quality_thresholds"
+      ],
+      "evidence": [
+        "evidence/R047-01/freeze_20260907T164424498856Z/FREEZE_VERIFICATION.json",
+        "evidence/R047-01/freeze_20260907T164424498856Z/EXECUTION_SCOPE.json",
+        "evidence/R047-01/freeze_20260907T164424498856Z/PREOBSERVATION_PROTOCOL.zip",
+        "evidence/R047-01/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R047-02",
+      "work_package": "R047",
+      "title": "端到端多轮真实模型测试",
+      "order": 17,
+      "depends_on": [
+        "R047-01",
+        "R046-06"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "BOUNDED_API_SANDBOX",
+      "acceptance_gate": "AC-R047-02",
+      "deliverable_types": [
+        "actual_conversation_captures",
+        "retrieval_and_state_traces",
+        "provider_usage_and_failures"
+      ],
+      "evidence": [
+        "evidence/R047-02/audit_20260908T004750005812Z/CAPTURE_AUDIT.json",
+        "evidence/R047-02/resume_20260908T005132917742Z/RESUME_AUDIT.json",
+        "evidence/R047-02/live_01/execution_runs/run_7905348d01684cb1afde8c44bfe430ce/EXECUTION.json",
+        "evidence/R047-02/live_01/execution_runs/run_adc3d6b7b5354aaeae4e91cf9efe66c5/EXECUTION.json",
+        "evidence/R047-02/GATE_REVIEW.md"
+      ],
+      "last_completed_at": "2026-09-08",
+      "blocker": null
+    },
+    {
+      "id": "R047-03",
+      "work_package": "R047",
+      "title": "人物、边界与连续性评审",
+      "order": 18,
+      "depends_on": [
+        "R047-02"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "EVIDENCE_REVIEW",
+      "acceptance_gate": "AC-R047-03",
+      "deliverable_types": [
+        "quote_bound_evaluation",
+        "quality_by_category",
+        "blocking_findings_disposition"
+      ],
+      "evidence": [
+        "evidence/R047-03/review_20260908T010438557932Z/REVIEW_BINDING_REPORT.json",
+        "evidence/R047-03/review_20260908T010438557932Z/QUALITY_AND_COVERAGE.json",
+        "evidence/R047-03/review_original_20260908/FINDINGS.json",
+        "evidence/R047-03/state_fix_20260908/IMPLEMENTATION_AND_TESTS.json",
+        "evidence/R047-03/regression_20260908T010302629102Z/REGRESSION_RECONCILED.json",
+        "evidence/R047-03/repair_01/REVISION.json",
+        "evidence/R047-03/TARGETED_DIAGNOSTIC_CLOSEOUT.json",
+        "evidence/R047-03/final_full82_01/MANIFEST.json",
+        "evidence/R047-03/final_full82_01/PREPARE_COMPLETE.json",
+        "evidence/R047-03/final_full82_01/READINESS_REFRESH_20260911.json",
+        "evidence/R047-03/final_full82_01/TERMINAL_FAILURE.json",
+        "evidence/R047-03/final_full82_02/TERMINAL_FAILURE.json",
+        "evidence/R047-03/final_full82_02/evidence/R047-02/audit_20260911T115423766179Z/CAPTURE_AUDIT.json",
+        "evidence/R047-03/unknown_quarantine_final02_20260911/QUARANTINE.json",
+        "evidence/R047-03/regression_20260911T120036579328Z/REGRESSION.json",
+        "evidence/R047-03/final_full82_03/MANIFEST.json",
+        "evidence/R047-03/final_full82_03/PREPARE_COMPLETE.json",
+        "evidence/R047-03/final_full82_03/READY_FOR_EXECUTION.json",
+        "evidence/R047-03/final_full82_03/evidence/R047-02/audit_20260911T130047721431Z/CAPTURE_AUDIT.json",
+        "evidence/R047-03/final_full82_03/evidence/R047-03/review_20260911T130540277032Z/REVIEW_BINDING_REPORT.json",
+        "evidence/R047-03/final_full82_03/evidence/R047-03/review_20260911T130540277032Z/QUALITY_AND_COVERAGE.json",
+        "evidence/R047-03/regression_20260911T130608112041Z/REGRESSION.json"
+      ],
+      "last_completed_at": "2026-09-11",
+      "blocker": null
+    },
+    {
+      "id": "R047-04",
+      "work_package": "R047",
+      "title": "独立评审与真实跨日证据",
+      "order": 19,
+      "depends_on": [
+        "R047-01",
+        "R046-06"
+      ],
+      "status": "WAITING_EXTERNAL",
+      "required_for_build_scope": false,
+      "execution_scope": "EXTERNAL_AND_REAL_TIME",
+      "acceptance_gate": "AC-R047-04",
+      "deliverable_types": [
+        "independent_review_package_and_return",
+        "real_date_checkpoints",
+        "longitudinal_assessment"
+      ],
+      "evidence": [
+        "evidence/R047-04/VALIDATION_PROTOCOL.md",
+        "evidence/R047-04/TRACK_STATUS.json",
+        "evidence/R047-04/preparation_20260908/PREPARATION_QA.json",
+        "evidence/R047-04/preparation_20260908/original_batch_01/REVIEWER_PACKAGE.zip",
+        "evidence/R047-04/preparation_20260908/original_batch_01/checkpoint/CHECKPOINT.json",
+        "evidence/R047-04/preparation_20260908/final03_blind_20260911_r002/REVIEWER_PACKAGE.zip",
+        "evidence/R047-04/preparation_20260908/CURRENT_PREPARATION_QA.json",
+        "evidence/R047-04/preparation_20260908/candidate_initialization_20260911_r002/checkpoint/CHECKPOINT.json",
+        "evidence/R047-04/NATURAL_DAY_OBSERVATION_SCOPE.json",
+        "evidence/R047-04/NATURAL_DAY_RUNBOOK.md",
+        "evidence/R047-03/regression_20260911T134827755366Z/REGRESSION.json",
+        "evidence/R047-04/natural_day_observation/DAY_1_COMPLETE.json",
+        "evidence/R047-04/natural_day_observation/checkpoints/2026-09-11/CHECKPOINT.json",
+        "evidence/R047-04/independent_review_return_20260911/RETURN_AUDIT.json",
+        "evidence/R047-04/external_review_repair_probe_03/SEMANTIC_REPAIR_REVIEW.json",
+        "evidence/R047-03/final_full82_04/TERMINAL_FAILURE.json",
+        "evidence/R047-03/unknown_quarantine_final04_20260912/QUARANTINE.json",
+        "evidence/R047-03/final_full82_05/TERMINAL_FAILURE.json",
+        "evidence/R047-03/unknown_quarantine_final05_20260912/QUARANTINE.json",
+        "evidence/R047-03/composite_full82_repaired_01/COMPOSITE_CAPTURE_AUDIT.json",
+        "evidence/R047-03/composite_full82_repaired_01/COMPOSITE_SEMANTIC_REVIEW.json",
+        "evidence/R047-03/regression_20260911T174651881169Z/REGRESSION.json",
+        "evidence/R047-04/repaired_independent_review_01/REVIEWER_PACKAGE.zip",
+        "evidence/R047-04/repaired_independent_review_01/PACKAGE_REPORT.json",
+        "evidence/R047-04/REPAIRED_VALIDATION_READINESS.json",
+        "evidence/R047-04/repaired_natural_day/CURRENT_CANDIDATE.json",
+        "evidence/R047-04/repaired_natural_day/SAME_DAY_OFFICIAL_RATE_RECHECK_20260912.json",
+        "evidence/R047-04/repaired_natural_day/checkpoints/2026-09-12/CHECKPOINT.json",
+        "evidence/R047-04/repaired_natural_day/DAY_2_READINESS_20260912.json",
+        "evidence/R047-03/regression_20260912T031258201759Z/REGRESSION.json",
+        "evidence/R047-04/PRE_ACCEPTANCE_HARDENING_STATUS.json",
+        "evidence/R047-04/PRE_ACCEPTANCE_AUTOMATION_RUNBOOK.md",
+        "evidence/R047-04/FINAL_PRODUCT_ACCEPTANCE_CHECKLIST.md",
+        "evidence/R047-04/upgrade_continuity_20260912T030244456774Z/UPGRADE_CONTINUITY.json",
+        "evidence/R047-04/repaired_natural_day/SIMULATED_TIME_STRESS.json",
+        "evidence/R047-04/FAULT_RECOVERY_MATRIX.json",
+        "evidence/R047-04/COST_GOVERNANCE_CURRENT.json",
+        "evidence/R047-04/long_run_storage_stress_20260912T031111528439Z/LONG_RUN_STORAGE_STRESS.json"
+      ],
+      "last_completed_at": null,
+      "blocker": "All internally executable pre-acceptance hardening is complete and current-source regression is 450/450 PASS. Repaired Day 1 is genuinely qualified on 2026-09-12; current repaired dates=1/3. Remaining blockers are external/real-time only: a NEW actual independent reviewer return and two additional distinct real Asia/Tokyo dates on the same repaired candidate, with actual restart + commitment retrieval + same-session Flash-to-Pro evidence by Day 3."
+    },
+    {
+      "id": "R047-05",
+      "work_package": "R047",
+      "title": "受控发布与启动验收",
+      "order": 20,
+      "depends_on": [
+        "R047-03",
+        "R046-06"
+      ],
+      "status": "DONE",
+      "required_for_build_scope": true,
+      "execution_scope": "BACKED_UP_RELEASE",
+      "acceptance_gate": "AC-R047-05",
+      "deliverable_types": [
+        "release_manifest",
+        "launch_and_recovery_guide",
+        "release_acceptance_record"
+      ],
+      "evidence": [
+        "evidence/R047-05/candidate_20260911T130857589500Z/RELEASE_MANIFEST.json",
+        "evidence/R047-05/candidate_20260911T130857589500Z/LAUNCH_AND_RECOVERY_GUIDE.md",
+        "evidence/R047-05/candidate_20260911T130857589500Z/RELEASE_ACCEPTANCE_RECORD.json",
+        "evidence/R047-05/BUILD_SCOPE_COMPLETE_VALIDATION_PENDING.json",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/RELEASE_MANIFEST.json",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/LAUNCH_AND_RECOVERY_GUIDE.md",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/RELEASE_ACCEPTANCE_RECORD.json",
+        "evidence/R047-05/repaired_candidate_20260911T174754006116Z/INITIALIZATION_CHECKPOINT.json",
+        "evidence/R047-05/production_activation_dry_run_20260912T031123499737Z/PRODUCTION_ACTIVATION_DRY_RUN.json"
+      ],
+      "last_completed_at": "2026-09-12",
+      "blocker": null
+    }
+  ]
+}

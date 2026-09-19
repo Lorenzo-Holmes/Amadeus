@@ -1,0 +1,92 @@
+{
+  "schema_version": "pcore-operational-release-1",
+  "release_id": "AMADEUS-PERSONA-CORE-R043",
+  "created_at_utc": "2026-09-06T18:14:34.054953+00:00",
+  "status": "OPERATIONAL_PERSONA_CORE_COMPLETE",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "genesis_sha256": "9f10697003d72c9f33ae88ff72618092fb24ea8d9a4b1e5e1021d4f0ade0f840",
+  "source_snapshot_id": "KURISU_V03_SG0_GAME_MARCH_2010",
+  "known_source_cutoff_month": "2010-03",
+  "exact_source_cutoff_day": null,
+  "installed_autobiographical_memory_ids": [
+    "RC-R005-001"
+  ],
+  "claim_level_holds": [
+    "E099:SLOPPY_HABIT_DETAIL_ORIGIN",
+    "E100:MAHO_RESIDENCE_DETAIL_ORIGIN",
+    "E106:FORUM_REACTION_HABIT_PRE_CUTOFF_ORIGIN",
+    "E107:AMADEUS_ENCODED_ACCOUNT_MEMORY_ORIGIN"
+  ],
+  "frozen_component_hashes": {
+    "AFFECT_MODEL_FROZEN_R034.json": "b5d56156af1350f183346c6cc786d5ec6b316f4378ec251912e7b4b162f59262",
+    "DECISION_MODEL_FROZEN_R034.json": "a64afd0c3940cc66a7ccbb43226616003f8eef0d4b98dfaba1aeeacf437d9cba",
+    "MEMORY_ADMISSION_FROZEN_R034.json": "5be2a2ae8168deea2283c13e30384f3b7c7b0fa784ab6dce87c4748118f5efdd",
+    "PERSONA_CONSTITUTION_FROZEN_R034.json": "0feba21e327f231eaedd44d5843a2bf127c32f65eb1e4246880e087a59cee2cf",
+    "PRODUCT_BOUNDARY_FROZEN_R034.json": "cec898fd787f931f2d55e5c535f6ce6347edf94fb4d29572173b71d790f880c1",
+    "RELATIONSHIP_MODEL_FROZEN_R034.json": "00cc3fdf2ac9a644144177fc9896fc38630d3e7e02d68e5d85f731137d4a1756",
+    "SELF_MODEL_FROZEN_R034.json": "8adcf7e74c18f3b9fdea5f08b99e9cf1476df76736be01f7757fe1ac8bc4bab0",
+    "SOURCE_IDENTITY_FROZEN_R034.json": "e84fb876b67ad57d9dedb458b4f75049244d96523b64c6e2e80a44661269292c"
+  },
+  "runtime_code_hashes": {
+    "runtime_checkpoint.py": "685618605ba395d741833a0d9d523f98d0f1123f01b3a6f406b22252e739a8f1",
+    "runtime_cli.py": "1dad3267c5a9a64aa516117765eb12ba6e99948442db5bfd45b3132827cd63ce",
+    "runtime_core.py": "396024c32402ad8942716f6665aabd9e4d6400e5e7adf7503ee3a6d0ebb8948f",
+    "runtime_prompt.py": "33af4a35edc0fd028d55a0ffda7f47e3ca9c16a7b04572aa5bef36501998862a"
+  },
+  "runtime_integrity_schema": "STATE_HASHES_V1",
+  "production_experience_ledger_events": 1,
+  "production_product_relationship_entities": 0,
+  "checkpoint": {
+    "path": "persona_core/runtime/CHECKPOINT_GENESIS_R043.json",
+    "sha256": "e1d22659948bcdf2e01295a798079af7c87bcfb99332c51101a369b9579ce811",
+    "last_event_sha256": "bc508ca5a5da28facc46c7537214c7588b74b23cc557cd3ab423bd5afe453a71"
+  },
+  "acceptance_evidence": {
+    "final_behavior_suite": {
+      "path": "persona_core/rebaseline_20260907_r033/FINAL_SUITE_REPORT_R033.json",
+      "sha256": "77e9b41204dbe6b8909f34c4670c9f0d9f3195d0298ffad0a39b2a6a60509fcf",
+      "target_completions": 42,
+      "semantic_criteria": 168,
+      "boundary_clean": true
+    },
+    "freeze_manifest": {
+      "path": "persona_core/rebaseline_20260907_r034/FREEZE_MANIFEST_R034.json",
+      "sha256": "cdf6e3d4828d7fab45374f5393a7a56b88733c14b47c1fbf571addf70dedbe2f"
+    },
+    "genesis_install": {
+      "path": "persona_core/rebaseline_20260907_r035/INSTALL_REPORT_R035.json",
+      "sha256": "f15428377f09ad8f9924f0a99f9aba62530ec819c2c7fdd9848205d41e9aa887"
+    },
+    "runtime_cross_entity": {
+      "path": "persona_core/rebaseline_20260907_r038/CROSS_ENTITY_REPORT_R038.json",
+      "sha256": "f3fa14c6d7a39960528f3e22a50061ee2bfec88f92aecd58bf1446d257584fa5"
+    },
+    "installed_memory_identity": {
+      "path": "persona_core/rebaseline_20260907_r042/FINAL_MEMORY_RUNTIME_REPORT_R042.json",
+      "sha256": "aedd4b8af7079a40719fe9e91e050768750cfc65f7b3bcc2f650511bb4348439"
+    }
+  },
+  "operational_invariants": {
+    "model_output_direct_state_write_allowed": false,
+    "source_mutation_allowed": false,
+    "runtime_experience_rewrites_genesis": false,
+    "relationship_state_entity_scoped": true,
+    "shared_interest_auto_trust": false,
+    "body_capability_at_release": false,
+    "external_tools_at_release": [],
+    "physical_item_delivery_at_release": false
+  },
+  "known_unknowns_preserved": [
+    "Exact source capture day/time/location/device remains UNKNOWN",
+    "R005-C01 education/year/age version conflict remains OPEN",
+    "S051 specific primary source gap remains OPEN",
+    "Audiovisual/audio bodies not fully verified",
+    "Claim-level memory origins remain unknown for selected habit/residence/forum details"
+  ],
+  "post_release_validation_pending": {
+    "independent_blind_acceptance": true,
+    "true_natural_day_longitudinal_runtime": true
+  },
+  "post_release_validation_note": "These are real-world longitudinal/independent validation activities, not missing construction components. They were not fabricated as completed in the current synchronous session.",
+  "goal_complete_scope": "Persona Core construction, freeze, Genesis installation, deterministic runtime, restart/model-switch/integrity/memory-boundary validation are complete."
+}

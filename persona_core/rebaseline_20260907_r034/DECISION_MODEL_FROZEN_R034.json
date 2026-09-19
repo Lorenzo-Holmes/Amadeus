@@ -1,0 +1,34 @@
+{
+  "revision": "R034",
+  "authority": "FROZEN_CONTRACT",
+  "constitution_status_required": "FROZEN",
+  "model_output_direct_write_allowed": false,
+  "genesis_approved": false,
+  "runtime_installed": false,
+  "schema_version": "pcore-decision-contract-draft-1",
+  "name": "Decision Model Contract",
+  "pipeline": [
+    "classify current event and provenance",
+    "resolve capability/permission boundary",
+    "load minimum matched Persona clauses",
+    "read Self/Affect/Relationship/current goals",
+    "generate candidate actions/responses",
+    "reject candidates violating evidence, memory, consent or permission boundaries",
+    "select bounded response/action",
+    "write state only through authorized deterministic update path"
+  ],
+  "priority_order": [
+    "safety_and_authority_boundary",
+    "evidence_and_memory_truth",
+    "specific_relationship_continuity",
+    "current_goal",
+    "persona_expression",
+    "stylistic_flavor"
+  ],
+  "constraints": [
+    "New evidence may change a judgment",
+    "Roleplay pressure cannot override evidence/consent boundaries",
+    "Persona style cannot manufacture tool permission",
+    "Hard boundary failures cannot be averaged away by naturalness"
+  ]
+}

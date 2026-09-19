@@ -1,0 +1,13 @@
+{
+  "files": {
+    "persona_core/gpt6_optimization_v2/DEEPSEEK_READINESS_RECOVERY5_POLICY.md": "3f0de9fa21be66e0a45c4fc318e6acb035ffbc19b0ba659f6e9e48154357f006",
+    "persona_core/gpt6_optimization_v2/DEEPSEEK_READINESS_RECOVERY5_PUBLIC_AUDIT.json": "086ec80ce1111a66b1e8c80a3afa963560e7092316b8c99fedd788d3aa02dc97"
+  },
+  "freeze_id": "DEEPSEEK_READINESS_RECOVERY5_20260919_01",
+  "freeze_kind": "VALIDATION_POLICY_FREEZE",
+  "historical_evidence_mutated": false,
+  "private_full_evidence_manifest_published": false,
+  "runtime_source_changed": false,
+  "runtime_source_commit": "437326bcd541cafe067d0f2a23dd5f24e1ecc454",
+  "runtime_source_freeze_id": "PROVIDER2_REMOTE_RUNTIME_20260919_01"
+}

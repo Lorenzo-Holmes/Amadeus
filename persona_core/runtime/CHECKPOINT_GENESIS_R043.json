@@ -1,0 +1,16 @@
+{
+  "schema_version": "pcore-runtime-checkpoint-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "genesis_sha256": "9f10697003d72c9f33ae88ff72618092fb24ea8d9a4b1e5e1021d4f0ade0f840",
+  "ledger_event_count": 1,
+  "last_event_sha256": "bc508ca5a5da28facc46c7537214c7588b74b23cc557cd3ab423bd5afe453a71",
+  "next_sequence": 1,
+  "state_hashes": {
+    "self": "e4edd85e43499017338203c4ef5956a901a7522e4cad05d14a7b8778e65e09ff",
+    "affect": "a5bd63038cd7d6239cfeea4e76b7ef22029297868b2af66cf8477a2d244ffe60",
+    "relationship": "0446c22ecb65eb79aa9fdab644fd14f977a900dc66a26f22b4fd6209e15edb14",
+    "decision": "5b05d3108fd5e31b10941272cb9118054cdd930ff0c2a8c131759a1315a9d703"
+  },
+  "relationship_entity_count": 0,
+  "open_commitments": {}
+}
