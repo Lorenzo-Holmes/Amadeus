@@ -20,6 +20,10 @@ USER = ('Produce exactly 600 numbered items. Each item must be one grammatical s
         'English words about an invented neutral topic. Do not stop early and do not add a preface or conclusion.')
 
 
+def runtime_root(root):
+    return runner.EVIDENCE / ('G6_TRANSPORT_' + Path(root).name) / 'runtime'
+
+
 def prepare(root, freeze_path, pricing_path):
     root, freeze_path = Path(root).resolve(), Path(freeze_path).resolve()
     runner.require(root.parent == runner.GOAL and root.name.startswith('formal_responses_readiness_'), 'READINESS_PATH')
@@ -38,18 +42,21 @@ def prepare(root, freeze_path, pricing_path):
         price, 'deepseek-v4-pro', 'deepseek-flash', max_output_tokens=32768, guard_cny=1.15,
         timeout_seconds=600, transport_policy=POLICY, api_protocol='responses')
     scope['purpose'] = 'Exactly one formal synthetic Responses transport readiness; no semantic evaluation.'
+    provider, transcript, *_ = runner.runtime_modules()
+    runtime = transcript.safe_root(runtime_root(root))
+    runner.require(not runtime.exists(), 'READINESS_RUNTIME_ALREADY_EXISTS')
     root.mkdir(exist_ok=False)
     runner.write_new(binding, {'root': runner.relative(root), 'source_manifest': runner.relative(freeze_path),
                              'source_manifest_sha256': runner.sha(freeze_path), 'scope_sha256': runner.value_sha(scope)})
     runner.write_new(root/'SCOPE.json', scope)
     runner.write_new(root/'BINDING.json', runner.read(binding))
-    provider, transcript, *_ = runner.runtime_modules()
-    transcript.create_sandbox(root/'runtime')
-    store = transcript.TranscriptStore(root/'runtime')
+    transcript.create_sandbox(runtime)
+    store = transcript.TranscriptStore(runtime)
     try:
         provider.ProviderJournal(store).register_batch(scope)
         handle = store.open_session(scope['principal_id'], scope['slots'][0]['entity_label'], 'CHARACTER_SIMULATION')
         runner.write_new(root/'PREPARATION.json', {'session_id': handle.session_id, 'principal_id': handle.principal_id,
+            'runtime': runner.relative(runtime),
             'scope_sha256': runner.sha(root/'SCOPE.json'), 'source_manifest_sha256': runner.sha(freeze_path),
             'synthetic_only': True, 'evaluation_inputs_used': False, 'generation_requests': 0})
     finally: store.close()
@@ -70,7 +77,8 @@ def run(root):
     runner.require(scope['pricing_verified_date'] == runner.pricing_date(), 'PRICING_NOT_CURRENT')
     provider, transcript, *_ = runner.runtime_modules()
     import provider_transport
-    store = transcript.TranscriptStore(root/'runtime')
+    runner.require(runner.ROOT/preparation['runtime'] == runtime_root(root), 'READINESS_RUNTIME_BINDING_CHANGED')
+    store = transcript.TranscriptStore(runtime_root(root))
     journal = provider.ProviderJournal(store)
     try:
         runner.require(not (root/'SUBMISSION_INTENT.json').exists()

@@ -86,6 +86,39 @@ class Response:
 
 
 class ResponsesTransportTests(unittest.TestCase):
+    def test_formal_readiness_prepares_isolated_journal_and_refuses_second_scope(self):
+        import uuid
+        import shutil
+        import responses_formal_readiness as formal
+        runner = formal.runner
+        token = 'AUTHOR_OFFLINE_'+uuid.uuid4().hex
+        root = runner.GOAL / ('formal_responses_readiness_'+token)
+        second = runner.GOAL / (root.name+'_second')
+        freeze_root = runner.ROOT/'work'/token
+        freeze_root.mkdir()
+        freeze_path = freeze_root/'SOURCE_MANIFEST.json'
+        runner.write_new(freeze_path, {'core_status': 'FROZEN_FOR_VALIDATION', 'offline_integration_passed': True,
+                                       'files': runner.source_bindings()})
+        price = runner.checked_pricing(None, True)
+        try:
+            with patch.object(runner, 'checked_pricing', return_value=price):
+                result = formal.prepare(root, freeze_path, None)
+                self.assertEqual(result['provider_requests'], 0)
+                prep = runner.read(root/'PREPARATION.json')
+                self.assertEqual(runner.ROOT/prep['runtime'], formal.runtime_root(root))
+                import sqlite3
+                from contextlib import closing
+                with closing(sqlite3.connect(formal.runtime_root(root)/'runtime.sqlite3')) as db:
+                    self.assertEqual(db.execute('SELECT count(*) FROM provider_calls').fetchone()[0], 0)
+                with self.assertRaisesRegex(ValueError, 'ONE_FORMAL_READINESS_PER_FREEZE'):
+                    formal.prepare(second, freeze_path, None)
+                self.assertFalse(second.exists())
+        finally:
+            for path in (root, formal.runtime_root(root).parent, freeze_root):
+                self.assertTrue(path.resolve().is_relative_to(runner.ROOT.resolve()))
+                self.assertIn(token, path.name)
+                if path.exists(): shutil.rmtree(path)
+
     def test_actual_worker_ipc_dispatches_responses_operation_without_network(self):
         child = (
             "import sys;sys.path[:0]="+repr([str(CODE), str(Path(__file__).parent)])+";"

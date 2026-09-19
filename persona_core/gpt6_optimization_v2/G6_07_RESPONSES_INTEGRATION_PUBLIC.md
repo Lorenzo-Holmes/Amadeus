@@ -4,9 +4,11 @@ The official DeepSeek Responses protocol is integrated through a separately vers
 
 The runtime commits submission intent before network I/O, never retries a submitted logical turn, and keeps partial streams non-displayable. Successful normalization requires matching completed event/status, stable identities, increasing event sequence, no later event, identical streamed/final text, and valid usage accounting. Raw SSE and normalized receipts remain separately hash-bound. Evaluation, candidate, blind review and longitudinal consumers validate the new request shape and wire bindings.
 
-Freeze: `RESPONSES_TRANSPORT_20260919_01`. Final current components: 23 modules / 356 tests passed. Complete legacy denominator: 43 modules / 450 tests; 449 compatible passes, one preserved historical source-identity error, zero unexpected functional failures. The raw legacy report remains failed; old repair hashes and evidence were not edited. A real subprocess IPC fixture also verifies Responses dispatch without network traffic.
+Freeze: `RESPONSES_TRANSPORT_20260919_02`. Final current components: 23 modules / 357 tests passed. Complete legacy denominator: 43 modules / 450 tests; 449 compatible passes, one preserved historical source-identity error, zero unexpected functional failures. The raw legacy report remains failed; old repair hashes and evidence were not edited. A real subprocess IPC fixture also verifies Responses dispatch without network traffic.
 
 The four historical unknown submissions remain quarantined. Offline integration is not semantic acceptance and does not establish recovery of the old Chat Completions path. Exactly one freeze-bound synthetic formal readiness is required before fresh evaluation. Product acceptance and production activation remain false.
 
 Official interface: https://api-docs.deepseek.com/api/create-response/
 Official price evidence: https://api-docs.deepseek.com/zh-cn/quick_start/pricing/
+
+The first formal-readiness preparation was rejected by the local sandbox path guard before journal creation or network submission. That preparation and the earlier freeze are retained. The current freeze corrects the readiness storage location and includes an offline preparation/no-repeat test; actual formal generation requests remain zero at this freeze.
