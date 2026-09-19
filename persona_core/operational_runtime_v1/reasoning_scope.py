@@ -9,7 +9,7 @@ from __future__ import annotations
 from copy import deepcopy
 import re
 
-VERSION = 'REASONING_SCOPE_2'
+VERSION = 'REASONING_SCOPE_3'
 UNKNOWN = 'UNRESOLVED'
 RELATIONS = {
     'FIELD_COMPARISON': {'LESS_THAN','EQUAL','GREATER_THAN',UNKNOWN},
@@ -139,7 +139,11 @@ def candidate_closure_view(candidate_set, premises):
         'conditional_finite_remainder': remaining if closed else None,
         'inquiry_status': c['inquiry_status'], 'premises_verified': False,
         'exclusions_verified': False, 'semantic_entailment_verified': False,
-        'world_exhaustiveness_established': False, 'admission_eligible': False}
+        'world_exhaustiveness_established': False, 'admission_eligible': False,
+        'support_validation': 'LEGACY_HYPOTHETICAL_LIST_ARITHMETIC_ONLY',
+        'grounded_closure_eligible': False,
+        'closure_state': 'OPEN',
+        'grounded_closure_requires': 'semantic_grounding.candidate_closure'}
 
 def surface_view(text, speaker):
     """Only lexical offsets and delimiter scopes; no inferred facts or bindings.

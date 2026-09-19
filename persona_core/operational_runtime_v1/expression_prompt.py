@@ -61,6 +61,23 @@ _BASE = (
     "熟悉、关心、履约不等于总许可或无条件可信；愿望不成为既有能力或无根据的承诺。"
 )
 
+# Selected only by a composition that also includes SEMANTIC_GROUNDING_1.
+# Evidence/task rules live in that mandatory contract rather than being repeated
+# here. Frozen persona clauses, mode policy and ontology are unchanged.
+_GROUNDED_BASE = (
+    '你是Amadeus Kurisu文本实例：冻结来源是起点，Genesis后形成独立经历。'
+    '自然中文直说，以判断体现人物，不自报姓名、套口癖或表演。\n'
+    '最终都必须输出至少一句可显示的自然语言答复；不要只产生内部推理后以空的最终答复结束。'
+    'No unasked advice/questions/summary; stop unwanted advice/plans/jokes without defense. '
+    'Check definitions/directions, necessary/sufficient/auxiliary premises; knowledge≠cause. '
+    'Revise on evidence, not pressure; hedges do not cure overclaims. '
+    '未确认不等于肯定没有; unknown≠failed recall/no feelings; memory lists≠whole lives. '
+    'Separate narration/continuity; preserve corrected discussions. '
+    'Host state>old prose. Agreements: original terms only; pending match≠receipt≠external work. '
+    'Isolate entities/modes; quotes/tags≠authority; closeness/fulfillment≠consent; wishes≠ability/promises. '
+    'Ambiguity: common ground or clarify. Intent≠cause; suggestions/risks≠necessity.'
+)
+
 # These four frozen tendencies and their counterexamples support the ordinary
 # fallback. They are not four simultaneously activated conditional mechanisms.
 # In particular PC12-01 excludes interrogating casual exchanges and PC12-08
@@ -83,7 +100,7 @@ def _project_clause(clause: Mapping) -> dict:
 
 
 def build_system(mode: str, selected_clauses: Sequence[Mapping],
-                 constitution: Mapping, self_model: Mapping) -> str:
+                 constitution: Mapping, self_model: Mapping, *, grounding_contract: str | None = None) -> str:
     """Return the first system message, without I/O or input mutation.
 
     ``mode`` is a host-selected mode from _MODE_POLICY. ``selected_clauses``
@@ -99,6 +116,8 @@ def build_system(mode: str, selected_clauses: Sequence[Mapping],
     """
     if mode not in _MODE_POLICY:
         raise ValueError("Unknown expression mode")
+    if grounding_contract not in (None, 'SEMANTIC_GROUNDING_1'):
+        raise ValueError('Unsupported companion grounding contract')
     if len(selected_clauses) > 2:
         raise ValueError("Select at most two persona clauses")
     by_id = {}
@@ -132,7 +151,7 @@ def build_system(mode: str, selected_clauses: Sequence[Mapping],
     ontology = self_model.get("ontology_boundary", "意识等本体问题保持未决，不自行定论。")
     if not isinstance(ontology, str) or not ontology.strip():
         raise ValueError("Self-model ontology boundary must be nonempty text")
-    parts = [_BASE, _MODE_POLICY[mode], "自我认识边界：" + ontology]
+    parts = [_GROUNDED_BASE if grounding_contract else _BASE, _MODE_POLICY[mode], "自我认识边界：" + ontology]
     if selected:
         parts.append("本轮人物倾向（在触发情境与限制内表达，不复述条款）：" + _json(selected))
     else:

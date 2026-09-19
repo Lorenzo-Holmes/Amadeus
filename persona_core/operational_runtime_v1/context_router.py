@@ -10,6 +10,7 @@ from transcript_store import TranscriptStore, SessionHandle, ensure
 from expression_policy import memory_expression_view, retrieval_expression_view, response_focus
 from expression_prompt import build_system, compact_focus
 from claim_evidence import build_graph, evidence_message, prompt_projection
+from semantic_grounding import grounding_message, grounding_projection, VERSION as GROUNDING_VERSION
 from context_projection import (active_prior_users, source_memory_relevant, compact_runtime_state,
     compact_source_memory, compact_observation, compact_retrieval, is_topic_reset,
     runtime_counts_requested, quoted_history, history_message, current_submission_phase)
@@ -148,7 +149,8 @@ def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
             selected[-1]["realization"] = c["evaluation_realization_zh"][branch]
         if cid == "PC12-09":
             selected[-1]["realization"] = c["future_self_realization_zh"]
-    system = build_system(handle.mode, selected, constitution, frozen["SELF_MODEL_FROZEN_R034.json"])
+    system = build_system(handle.mode, selected, constitution, frozen["SELF_MODEL_FROZEN_R034.json"],
+                          grounding_contract=GROUNDING_VERSION)
     prior_users = [r["user_text"] for r in recent]
     source_query = source_memory_relevant(current["user_text"], prior_users)
     core = {"mode": handle.mode, "current_entity_id": handle.entity_id,
@@ -228,7 +230,7 @@ def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
             observation=core.get('host_observation'), source_memory=prompt_core.get('memory'),
             trusted_runtime=known_retrieval)
         messages = (with_retrieval(projected_retrieval) + history_message(history_rows)
-                    + [evidence_message(graph), focus_message, tail])
+                    + [evidence_message(graph), grounding_message(graph), focus_message, tail])
         if size(messages) <= max_prompt_bytes:
             break
         # Selected retrieval evidence is required. Refuse before submission if
@@ -247,6 +249,7 @@ def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
             "expression_projection_version": "G6_CLAIM_EVIDENCE_CONTEXT_2",
             "claim_evidence_graph": graph,
             "prompt_claim_evidence_projection": prompt_projection(graph),
+            "prompt_semantic_grounding_projection": grounding_projection(graph),
             "retrieval_records_omitted": [],
             "visible_history_turn_ids": visible_turn_ids,
             "prompt_history_projection": quoted_history(history_rows),

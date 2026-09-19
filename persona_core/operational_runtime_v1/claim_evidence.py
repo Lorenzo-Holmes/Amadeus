@@ -13,8 +13,9 @@ import hashlib
 import json
 from copy import deepcopy
 from reasoning_scope import surface_view, validate_reasoning, sparse_surface, INVARIANTS, unparsed_candidate_closure
+from semantic_grounding import candidate_closure, responsibility_attribution
 
-VERSION = 'CLAIM_EVIDENCE_3'
+VERSION = 'CLAIM_EVIDENCE_4'
 UNRESOLVED = 'UNRESOLVED'
 PHASES = {'PLANNED', 'ASSIGNED', 'STARTED', 'COMPLETED', 'UNRESOLVED'}
 MODALITIES = {'ASSERTED', 'CONDITIONAL', 'HYPOTHETICAL', 'POSSIBLE', 'OBSERVED', 'UNRESOLVED'}
@@ -73,7 +74,7 @@ def interpret(unit: EvidenceUnit, candidate: dict) -> dict:
     candidate ID. Even an interpretation of host text is not itself verified.
     """
     allowed = {'span', 'quote', 'actor', 'phase', 'modality', 'condition', 'negation',
-               'quoted_speech', 'reported_speaker', 'reported_addressee', 'report_type', 'proposed_relations', 'reasoning'}
+               'quoted_speech', 'reported_speaker', 'reported_addressee', 'report_type', 'proposed_relations', 'reasoning', 'grounding'}
     _require(type(candidate) is dict and set(candidate) <= allowed, 'Unsupported interpretation fields')
     span = candidate.get('span')
     _require(isinstance(span, list) and len(span) == 2 and all(type(x) is int for x in span), 'Invalid quote span')
@@ -96,15 +97,32 @@ def interpret(unit: EvidenceUnit, candidate: dict) -> dict:
         _require(isinstance(relation['target_proposition_id'], str) and
                  0 < len(relation['target_proposition_id']) <= 100, 'Invalid relation target')
     proposition_id = unit.proposition_id if span == [0, len(unit.raw_text)] else _id('p_', [unit.proposition_id, span])
+    grounded = describe_grounding({'units': [asdict(unit)]}, candidate.get('grounding', []))
     return {'candidate_id': _id('i_', [unit.proposition_id, unit.raw_sha256, candidate]),
         'proposition_id': proposition_id, 'parent_proposition_id': unit.proposition_id,
         'speaker': unit.speaker, 'enclosing_evidence': asdict(unit), 'span': list(span),
         'proposition': candidate['quote'], 'interpretation': values,
         'reasoning': validate_reasoning(candidate.get('reasoning', {})),
+        'grounded_descriptions': grounded['grounded_descriptions'],
         'proposed_relations': json.loads(_json(relations)),
         'relations_admitted': False, 'authority': 'NONE_INTERPRETATION_ONLY',
         'world_event_status': UNRESOLVED, 'admission_eligible': False,
         'validation': 'STRUCTURAL_QUOTE_BINDING_ONLY_NOT_SEMANTIC_ENTAILMENT'}
+
+
+def describe_grounding(graph, proposals):
+    """Read-only typed proposals; source binding never admits a semantic fact."""
+    _require(type(proposals) is list and len(proposals) <= 16, 'Invalid grounding proposals')
+    result = deepcopy(graph)
+    descriptions = []
+    for p in proposals:
+        _require(type(p) is dict and set(p) == {'kind', 'description'}, 'Invalid grounding proposal')
+        _require(p['kind'] in {'CANDIDATE_CLOSURE', 'RESPONSIBILITY'}, 'Invalid grounding kind')
+        validator = candidate_closure if p['kind'] == 'CANDIDATE_CLOSURE' else responsibility_attribution
+        descriptions.append({'kind': p['kind'], 'description': validator(p['description'], graph['units'])})
+    result['grounded_descriptions'] = descriptions
+    result['projection_grants_authority'] = False
+    return result
 
 
 def build_graph(*, entity_id, mode, current, history, retrieval,
@@ -252,7 +270,4 @@ def prompt_projection(graph):
 
 def evidence_message(graph):
     return {'role': 'user', 'content':
-        '只读陈述索引：text≠truth; scoped host_facts; lexical markers. '
-        'Read conditions/negation/quotes. null=unparsed≠absent. Exclusions need premises. '
-        'Closure: finite universe+scoped basis+required domains; else open remainder. '
-        'Conditional≠verified. New premises reopen; pause keeps unknown. Hide fields.\n' + _json(prompt_projection(graph))}
+        '只读陈述索引：text≠truth; lexical markers; scoped host_facts; no admission.\n' + _json(prompt_projection(graph))}
