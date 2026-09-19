@@ -1,0 +1,77 @@
+{
+  "baseline_sha": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+  "coverage": [
+    "phase-scoped declarations and ambiguous active markers",
+    "missing or malformed evidence never becomes zero failures",
+    "unresolved request identifiers preserved with missing journal",
+    "explicit time; lease expiry never releases ownership",
+    "control counters, duplicate tasks, dependencies and write-set overlap",
+    "branch/PR head consistency; missing/stale/future snapshots",
+    "protected hash comparison with explicit provenance limitations",
+    "symlink/path escape refusal; valid internal parent reference",
+    "read-only input bytes and modification times",
+    "determinism across absolute checkout roots",
+    "CLI status codes and no forbidden imports"
+  ],
+  "errors": 0,
+  "evidence_class": "SYNTHETIC_OFFLINE_AUDITOR_TESTS_NOT_PRODUCT_ACCEPTANCE",
+  "execution": "Same unittest discovery executed with TextTestRunner and an in-memory output stream to record machine-readable counts.",
+  "expected_failures": 0,
+  "failures": 0,
+  "files": {
+    "TEST_OUTPUT.txt": {
+      "bytes": 4983,
+      "git_blob_sha": "31fdfb420f8c80821b827099b23f4e8c0c201e80",
+      "sha256": "f8294986e20e70de0a17ff7052b01442d23054a02f461848df5b14a1758e1b57"
+    },
+    "audit.py": {
+      "bytes": 23044,
+      "git_blob_sha": "34cfbed85115d480e50693d05903e455874a8fc6",
+      "sha256": "d2339c1f4f73d39e8a66353f9bc6344daeb85f7719ce7dd4f20ea96f9c45b59a"
+    },
+    "test_audit.py": {
+      "bytes": 19407,
+      "git_blob_sha": "14aefbabca50ceccbdc29d8e675bc7ab7b9ec3c7",
+      "sha256": "da13c73a4137dad37e32557e5b0b034636497848e606cc94b836b489b364a1b2"
+    }
+  },
+  "finished_at_utc": "2026-09-17T18:45:07.161828+00:00",
+  "g6_canonical_hold_resolved": false,
+  "github_code_blob_match_verified": true,
+  "limitations": [
+    "Only isolated auditor code and synthetic fixtures were executed; not a full repository checkout or historical evidence run.",
+    "Direct git clone was unavailable in this run; source inspection used the GitHub connector.",
+    "No GitHub Actions, Windows, production provider, real G6 journal or canonical evidence evaluation was run.",
+    "Policies and decision prose require manual interpretation; the auditor parses only the narrow marked-progress format.",
+    "File availability is not evidence validity; baseline provenance, complete protected-tree coverage, process liveness and snapshot authenticity are not established.",
+    "A quiescent immutable checkout is required; adversarial live-filesystem TOCTOU and multi-file atomic-snapshot guarantees are out of scope."
+  ],
+  "passed": true,
+  "platform": "linux",
+  "product_acceptance": false,
+  "production_activated": false,
+  "publication_repair": {
+    "commit": "83c4418b9d1e11b9fcc5fe29fafac15f869053b2",
+    "description": "Readback detected one mistyped test subprocess environment variable in ef7f631; restored exact locally tested bytes. No failure was relabeled as PASS."
+  },
+  "python": "3.13.5",
+  "replay_authorized": false,
+  "reproduction_command": "PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tools/autonomous_state_audit -p 'test_*.py' -v",
+  "review_disposition": "READY_FOR_REVIEW_NOT_AUTO_MERGE",
+  "safety": {
+    "amadeus_provider_calls": 0,
+    "historical_R044_R047_tests_rerun": false,
+    "production_state_writes": false,
+    "runtime_or_persona_imports": false,
+    "unknown_replays": 0
+  },
+  "schema_version": "amadeus-c01-offline-validation-1",
+  "semantic_acceptance": false,
+  "skipped": 0,
+  "started_at_utc": "2026-09-17T18:45:04.799150+00:00",
+  "task_id": "AUTO-20260918-C01",
+  "tested_implementation_commit": "83c4418b9d1e11b9fcc5fe29fafac15f869053b2",
+  "tests_run": 38,
+  "unexpected_successes": 0,
+  "worker": "WORKER-C"
+}
