@@ -12,9 +12,9 @@ from dataclasses import asdict, dataclass
 import hashlib
 import json
 from copy import deepcopy
-from reasoning_scope import surface_view, validate_reasoning, sparse_surface, INVARIANTS
+from reasoning_scope import surface_view, validate_reasoning, sparse_surface, INVARIANTS, unparsed_candidate_closure
 
-VERSION = 'CLAIM_EVIDENCE_2'
+VERSION = 'CLAIM_EVIDENCE_3'
 UNRESOLVED = 'UNRESOLVED'
 PHASES = {'PLANNED', 'ASSIGNED', 'STARTED', 'COMPLETED', 'UNRESOLVED'}
 MODALITIES = {'ASSERTED', 'CONDITIONAL', 'HYPOTHETICAL', 'POSSIBLE', 'OBSERVED', 'UNRESOLVED'}
@@ -242,6 +242,9 @@ def prompt_projection(graph):
     if graph['replacements']:
         result['replacements'] = graph['replacements']
     result['reasoning_invariants'] = deepcopy(INVARIANTS)
+    # Present even without lexical cues. These are explicit unresolved data,
+    # not a parser's invented candidate inventory or a host closure receipt.
+    result['candidate_closure'] = unparsed_candidate_closure()
     result['reasoning_scopes'] = [[u['proposition_id'], view] for u in graph['units']
         if 'reasoning_scope' in u and (view := sparse_surface(u['reasoning_scope']))]
     return result
@@ -249,7 +252,7 @@ def prompt_projection(graph):
 
 def evidence_message(graph):
     return {'role': 'user', 'content':
-        '只读陈述索引：current新消息，history/retrieval历史原文；编号绑定位置。'
-        '原话非外部事实证明，host_facts限所列范围。markers为字符区间，不判语义，须读原文条件、否定及引语；'
-        '引语说话人/受话人未决。按reasoning_invariants区分关系；推论保留所需前提，候选穷尽需全集依据。'
-        '正常回应不复述字段。\n' + _json(prompt_projection(graph))}
+        '只读陈述索引：text≠truth; scoped host_facts; lexical markers. '
+        'Read conditions/negation/quotes. null=unparsed≠absent. Exclusions need premises. '
+        'Closure: finite universe+scoped basis+required domains; else open remainder. '
+        'Conditional≠verified. New premises reopen; pause keeps unknown. Hide fields.\n' + _json(prompt_projection(graph))}
