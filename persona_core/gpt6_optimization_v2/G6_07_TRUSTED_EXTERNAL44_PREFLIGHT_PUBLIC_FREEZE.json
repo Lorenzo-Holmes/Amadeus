@@ -1,0 +1,18 @@
+{
+  "formal_revision_created": false,
+  "freeze_id": "TRUSTED_ACCEPTANCE_EXTERNAL44_PREFLIGHT_20260920_01",
+  "kind": "PREFLIGHT_AUDIT_EVIDENCE_ONLY",
+  "private_evidence_included": false,
+  "public_member_hashes": {
+    "persona_core/gpt6_optimization_v2/G6_07_TRUSTED_EXTERNAL44_PREFLIGHT_PUBLIC_AUDIT.json": "40e1cca7529363ea1efb70082e0f16a64ea33702ed69a0c8606f862b9455e87f",
+    "persona_core/gpt6_optimization_v2/G6_07_TRUSTED_EXTERNAL44_PREFLIGHT_PUBLIC_SUMMARY.md": "20678251d441ff7284684e9101b043c208ac49980f73e2a18e1f5c002bb0eedd"
+  },
+  "remote_generation": 0,
+  "retained_source_freeze": "TRUSTED_SEMANTIC_ACCEPTANCE_R14_20260920_01",
+  "self_hash_excluded_to_avoid_circular_binding": true,
+  "source_identity": "MATCH",
+  "source_manifest_sha256": "2d910498397a293587ebfbabfc0f1cd69f660de56694a306d113cfa560285310",
+  "source_member_count": 157,
+  "source_modified": false,
+  "status": "TRUSTED_ACCEPTANCE_EXTERNAL44_BINDING_NOT_READY"
+}
