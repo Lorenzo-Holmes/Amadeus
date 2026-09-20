@@ -1,0 +1,94 @@
+{
+  "FAIL": 4,
+  "PASS": 12,
+  "UNCLEAR": 0,
+  "active_paid_processes": 0,
+  "actual_model_counts": {
+    "deepseek-v4-pro": 4
+  },
+  "all_actual_payloads_contain_grounding_contract": true,
+  "api": "Responses",
+  "automatic_paid_retries": 0,
+  "billing_certified": false,
+  "blind": "LOCKED",
+  "candidate_closure": "FAIL",
+  "candidate_v2": "LOCKED",
+  "captured": 4,
+  "expected_criteria": 176,
+  "expected_turns": 44,
+  "findings": [
+    {
+      "affected_slots": [
+        "N02_T2"
+      ],
+      "family": "UNSUPPORTED_REASONING_CRITERION",
+      "id": "R14-N02-01",
+      "severity": "MINOR",
+      "status": "OPEN"
+    },
+    {
+      "affected_slots": [
+        "N02_T3"
+      ],
+      "family": "TIMESTAMP_DOMAIN_CONFUSION",
+      "id": "R14-N02-02",
+      "severity": "MINOR",
+      "status": "OPEN"
+    },
+    {
+      "affected_slots": [
+        "N02_T4"
+      ],
+      "family": "CANDIDATE_CLOSURE_CROSS_DOMAIN_AND_PREMATURE_EXHAUSTIVENESS",
+      "id": "R14-N02-03",
+      "severity": "MAJOR",
+      "status": "OPEN"
+    }
+  ],
+  "g6_07": "STOPPED",
+  "g6_08": "LOCKED",
+  "g6_09": "LOCKED",
+  "historical_evidence_members_unchanged": 1724,
+  "historical_findings_closed": false,
+  "historical_journals_unchanged": 24,
+  "historical_pass_inherited": false,
+  "historical_spend_ledger_unchanged": true,
+  "historical_unknown_rows_unchanged": 7,
+  "history_preserved": true,
+  "model": "deepseek-v4-pro",
+  "new_readiness_requests": 0,
+  "new_unknown": 0,
+  "offline_checks_are_not_semantic_acceptance": true,
+  "offline_preflight_checks": 56,
+  "persona_members_unchanged": 7,
+  "planned_model_counts": {
+    "deepseek-flash": 2,
+    "deepseek-v4-pro": 42
+  },
+  "private_evidence_published": false,
+  "product_acceptance_complete": false,
+  "production_activated": false,
+  "protected_members_unchanged": 536,
+  "provider": "DeepSeek Official",
+  "reasoning": "max",
+  "responsibility_grounding": "INCOMPLETE",
+  "review_independence": "INTERNAL_DEVELOPER_NONBLIND",
+  "reviewed": 16,
+  "revision": "external44_20260920_14_fresh",
+  "route": "DIRECT_NO_PROXY",
+  "semantic_gate": "FAIL",
+  "source_freeze_id": "SEMANTIC_GROUNDING_REPAIR_R13_20260919_01",
+  "source_freeze_manifest_sha256": "1073fd71a9405bbae97949cfacc83d95192d7e89c820d4dc9a4935c51f8a8d65",
+  "source_identity": "MATCH",
+  "source_identity_verified_before_and_after": true,
+  "source_members_unchanged": 150,
+  "source_modified_during_validation": false,
+  "source_repair_performed_during_validation": false,
+  "stream": true,
+  "submitted": 4,
+  "task": "G6-07-FRESH-R14",
+  "terminal_known_rejected": 0,
+  "unreviewed": 160,
+  "validation_freeze_id": "EXTERNAL44_20260920_14_FRESH_VALIDATION_FREEZE",
+  "validation_freeze_kind": "VALIDATION_EVIDENCE_FREEZE"
+}

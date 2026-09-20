@@ -1,0 +1,17 @@
+{
+  "files": {
+    "persona_core/gpt6_optimization_v2/G6_07_FRESH14_PUBLIC_AUDIT.json": "d553ef2066fa9e4f73c127835d7b269167507861fa4bca96a0c6037b3c91d74f",
+    "persona_core/gpt6_optimization_v2/G6_07_FRESH14_PUBLIC_SUMMARY.md": "454f00b2c3c2ce3b68e63626fdbec43cfb180da0be08a8ba1bf3ee30961062db"
+  },
+  "freeze_id": "EXTERNAL44_20260920_14_FRESH_VALIDATION_FREEZE",
+  "freeze_kind": "VALIDATION_EVIDENCE_FREEZE",
+  "g6_07": "STOPPED",
+  "g6_08": "LOCKED",
+  "prior_public_commit": "cd5b3e164c4593887656471136449f9457ca29f3",
+  "private_evidence_published": false,
+  "revision": "external44_20260920_14_fresh",
+  "semantic_acceptance": false,
+  "source_freeze_id": "SEMANTIC_GROUNDING_REPAIR_R13_20260919_01",
+  "source_identity": "MATCH",
+  "source_manifest_sha256": "1073fd71a9405bbae97949cfacc83d95192d7e89c820d4dc9a4935c51f8a8d65"
+}
