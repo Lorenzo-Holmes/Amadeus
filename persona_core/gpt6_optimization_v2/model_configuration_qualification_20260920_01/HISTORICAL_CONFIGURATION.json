@@ -1,0 +1,163 @@
+{
+  "configuration_status": "CURRENT_CONFIGURATION_FAILED_MODEL_QUALITY_GATE",
+  "provider": "DeepSeek Official",
+  "primary_model": "deepseek-v4-pro",
+  "secondary_model": "deepseek-flash",
+  "planned_role_counts": {
+    "PRIMARY": 42,
+    "SECONDARY": 2
+  },
+  "actual_role_counts": {
+    "PRIMARY": 3,
+    "SECONDARY": 0
+  },
+  "historical_returned_model": "deepseek-v4-pro",
+  "historical_backend_build": "UNKNOWN",
+  "official_public_version_mapping_at_review": {
+    "deepseek-v4-pro": "DeepSeek-V4-Pro-0813",
+    "deepseek-flash": "DeepSeek-V4.1-Flash"
+  },
+  "public_version_mapping_is_historical_wire_attestation": false,
+  "api": "responses",
+  "endpoint": "https://api.deepseek.com/responses",
+  "route": {
+    "host": "api.deepseek.com",
+    "mode": "DIRECT_NO_PROXY",
+    "version": "apcore-network-route-1"
+  },
+  "stream": true,
+  "actual_payload_keys": [
+    "model",
+    "input",
+    "max_output_tokens",
+    "stream",
+    "reasoning"
+  ],
+  "sent_controls": {
+    "max_output_tokens": 32768,
+    "model": "deepseek-v4-pro",
+    "reasoning": {
+      "effort": "max"
+    },
+    "stream": true
+  },
+  "host_only_thinking_declaration": {
+    "type": "enabled"
+  },
+  "thinking_wire_field": "NOT_SENT",
+  "sampling": {
+    "temperature": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "top_p": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "seed": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "frequency_penalty": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "presence_penalty": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "top_k": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "min_p": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "stop": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "n": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "best_of": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "logit_bias": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "logprobs": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    },
+    "top_logprobs": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN"
+    }
+  },
+  "other_wire_fields": {
+    "tools": "NOT_SENT",
+    "tool_choice": "NOT_SENT",
+    "parallel_tool_calls": "NOT_SENT",
+    "text": "NOT_SENT",
+    "response_format": "NOT_SENT",
+    "service_tier": "NOT_SENT",
+    "store": "NOT_SENT",
+    "background": "NOT_SENT",
+    "truncation": "NOT_SENT",
+    "previous_response_id": "NOT_SENT",
+    "conversation": "NOT_SENT",
+    "prompt": "NOT_SENT",
+    "prompt_cache_options": "NOT_SENT",
+    "prompt_cache_key": "NOT_SENT",
+    "include": "NOT_SENT",
+    "reasoning.summary": "NOT_SENT",
+    "reasoning.mode": "NOT_SENT"
+  },
+  "max_input_bytes": 24576,
+  "input_overhead_reserve_tokens": 4096,
+  "reserved_input_token_bound": 28672,
+  "max_output_tokens": 32768,
+  "output_includes_reasoning": true,
+  "request_timeout_seconds": 600,
+  "transport_policy": {
+    "connect_timeout_seconds": 15,
+    "read_timeout_seconds": 120,
+    "version": "apcore-transport-lifecycle-1",
+    "worker_deadline_seconds": 595
+  },
+  "tools_allowed": false,
+  "role_mapping": "system/user/assistant kept as produced by the frozen request-context composer; no role rewrite",
+  "policies": {
+    "display": "BOUNDED_CONVERSATION_1",
+    "state": "admission-46.2",
+    "strict": "TRUSTED_SEMANTIC_ACCEPTANCE_1"
+  },
+  "schema": {
+    "provider_scope": "apcore-provider-scope-5",
+    "evaluation": "apcore-gpt6-evaluation-2",
+    "record": "RAW_DISPLAY_ACCEPTED_IDENTITY_2",
+    "formal_binding": "FORMAL_BOUNDED_BINDING_1"
+  },
+  "consumer": {
+    "evaluator": "DUAL_GATE_DISPLAY_STATE_1",
+    "authority_matrix": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONSUMER_AUTHORITY_MATRIX.json",
+      "sha256": "175d2bd8cf8391d93c3bca019c0851575d852cceabdca5db9e0a4bc997077b76"
+    }
+  },
+  "model_quality_policy_after_r16": "APCORE_MODEL_QUALITY_ACCEPTANCE_1",
+  "model_quality_policy_scope": "Prospective configuration qualification; R16 was not rescored.",
+  "automatic_paid_retries": 0,
+  "historical_guard_cny": "48.64",
+  "historical_guard_transferred": false,
+  "additional_acceptance_revisions": 0,
+  "parameters_not_in_actual_payload": "NOT_SENT; no inferred server defaults",
+  "r16": "FAIL / PERMANENTLY_QUARANTINED",
+  "r16_finding": "R16-N02-01 / MAJOR / OPEN_BLOCKING",
+  "recovery_method": "Read immutable journal request controls and scope; excluded message text, raw answer and hidden reasoning from reconstruction output."
+}

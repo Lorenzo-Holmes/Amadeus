@@ -1,0 +1,78 @@
+{
+  "task": "G6-07-MODEL-CONFIGURATION-QUALIFICATION-PLAN-V1",
+  "selection_uses_private_expected_answers": false,
+  "sources": [
+    {
+      "id": "openai_astra",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+      "retrieved_at_utc": "2026-09-20T15:58:05.493913+00:00",
+      "snapshot_sha256": "f45ae813c3f69708e2576328056de14cdf71fec174c875f4b81d236105545625",
+      "supports": "Canonical model ID, default snapshot, reasoning levels, context/output capacity, Responses and streaming support."
+    },
+    {
+      "id": "openai_sol",
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+      "retrieved_at_utc": "2026-09-20T15:58:05.119050+00:00",
+      "snapshot_sha256": "23f4ff2c236486d42145e21693f450bfcac272c37ee839a5ee6f9455cd1d8b7b",
+      "supports": "Canonical switch-model ID and snapshot, maximum reasoning, Responses/streaming and capacity."
+    },
+    {
+      "id": "openai_pricing",
+      "url": "https://developers.openai.com/api/docs/pricing",
+      "retrieved_at_utc": "2026-09-20T15:58:05.115874+00:00",
+      "snapshot_sha256": "714cbb324e68df34baa206f6d2052977a79de4ee54f655437d4faa09ca4a87d3",
+      "supports": "Standard text rates and separate non-additive cache-write category; refreshed at closeout."
+    },
+    {
+      "id": "openai_latest",
+      "url": "https://developers.openai.com/api/docs/guides/latest-model",
+      "retrieved_at_utc": "2026-09-20T15:58:05.043553+00:00",
+      "snapshot_sha256": "aac7e7e1b0bf90b346f5fc4ffd523902279841c60c3adf572452a529bd5b1e5e",
+      "supports": "Complex reasoning and instruction/context behavior; unsupported Astra sampling controls; style limitations."
+    },
+    {
+      "id": "openai_caching",
+      "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "retrieved_at_utc": "2026-09-20T15:58:05.660724+00:00",
+      "snapshot_sha256": "ecced3016c57dcef3115dbda6f73ba6f153f99856f1dadac46d165c12611ab44",
+      "supports": "Cache writes are 1.25x uncached input and are not additive; implicit cache/30m controls."
+    },
+    {
+      "id": "openai_reasoning",
+      "url": "https://developers.openai.com/api/docs/guides/reasoning",
+      "retrieved_at_utc": "2026-09-20T15:58:05.703686+00:00",
+      "snapshot_sha256": "91604df954335250d16e33f3b07ebbfa3e6e2b7f821f0722ad7a69b9d586719a",
+      "supports": "Reasoning-token accounting and reasoning settings."
+    },
+    {
+      "id": "openai_responses",
+      "url": "https://developers.openai.com/api/reference/resources/responses/methods/create",
+      "retrieved_at_utc": "2026-09-20T15:58:06.111247+00:00",
+      "snapshot_sha256": "96bb4559f04f15f285f83c9a48472f247548c11ce8e722632676988ec421e630",
+      "supports": "Request schema, output budget includes reasoning, standard service tier, no truncation, no tools."
+    },
+    {
+      "id": "deepseek_pricing",
+      "url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+      "retrieved_at_utc": "2026-09-20T15:58:06.277053+00:00",
+      "snapshot_sha256": "2e02c7203e9b250fa27f54ea3bed0792fb1749508c14fd5b10f9eb1bdacc691a",
+      "supports": "Current official main-model version mapping and CNY rates; aliases do not establish a different model."
+    },
+    {
+      "id": "deepseek_thinking",
+      "url": "https://api-docs.deepseek.com/guides/thinking_mode/",
+      "retrieved_at_utc": "2026-09-20T15:58:06.506662+00:00",
+      "snapshot_sha256": "8f7d45a2a97d7a18d480130d24f26a4a4f6f4c8de2b4cc39be86438e9d6da5b3",
+      "supports": "Current max effort remains the highest documented effort for the failed main model."
+    }
+  ],
+  "price_refresh": {
+    "url": "https://developers.openai.com/api/docs/pricing.md",
+    "retrieved_at_utc": "2026-09-20T16:00:49.641107+00:00",
+    "observation_date_shanghai": "2026-09-21",
+    "observation_date_tokyo": "2026-09-21",
+    "sha256": "714cbb324e68df34baa206f6d2052977a79de4ee54f655437d4faa09ca4a87d3",
+    "same_as_initial_snapshot": true
+  },
+  "source_scope": "Bounded official-document and local-driver review, not an exhaustive ranking of every model or a live capability test."
+}

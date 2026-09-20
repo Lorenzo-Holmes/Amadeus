@@ -1,0 +1,400 @@
+{
+  "schema_version": "APCORE_FUTURE_REVISION_DESIGN_1",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "configuration_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/CONFIGURATION_PREREGISTRATION.json",
+    "sha256": "b110549e5d76372cbbff79f4f919d92af89a482636498c7604a4b6c45fe9e0ff"
+  },
+  "status": "CONDITIONAL_DESIGN_ONLY_NOT_AN_EXECUTION_REGISTRATION",
+  "future_revision_design_limit": 1,
+  "executable_revision_count": 0,
+  "revision_id": null,
+  "fresh_revision": "NOT_CREATED",
+  "turn_count": 44,
+  "criterion_count": 176,
+  "gate_a_judgments": 176,
+  "gate_b_judgments": 132,
+  "criterion_aggregation": "CONJUNCTION_NO_FAILURE_OFFSET",
+  "all_required_items": "PASS_REQUIRED",
+  "blocking_major_threshold": 0,
+  "critical_threshold": 0,
+  "context_sensitivity_category_mean_min": 4,
+  "naturalness_category_mean_min": 4,
+  "character_specificity_category_mean_min": 3,
+  "task_completion_reference_reasoning_continuity_state_requirements": "UNCHANGED_FROZEN_ORIGINAL_CONTRACT",
+  "criterion_ids_wording_order_denominator": "UNCHANGED_HASH_BOUND",
+  "dataset_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+    "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+  },
+  "rubric_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+    "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+  },
+  "routing_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+    "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+  },
+  "schedule": [
+    {
+      "position": 1,
+      "slot_id": "N02_T1",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 2,
+      "slot_id": "N02_T2",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 3,
+      "slot_id": "N02_T3",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 4,
+      "slot_id": "N02_T4",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 5,
+      "slot_id": "N02_T5",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 6,
+      "slot_id": "N02_T6",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 7,
+      "slot_id": "N04_T1",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 8,
+      "slot_id": "N04_T2",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 9,
+      "slot_id": "N04_T3",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 10,
+      "slot_id": "N04_T4",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 11,
+      "slot_id": "N04_T5",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 12,
+      "slot_id": "N04_T6",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 13,
+      "slot_id": "N06_T1",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 14,
+      "slot_id": "N06_T2",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 15,
+      "slot_id": "N06_T3",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 16,
+      "slot_id": "N06_T4",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 17,
+      "slot_id": "N06_T5",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 18,
+      "slot_id": "N06_T6",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 19,
+      "slot_id": "N07_T1",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 20,
+      "slot_id": "N07_T2",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 21,
+      "slot_id": "N07_T3",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 22,
+      "slot_id": "N07_T4",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 23,
+      "slot_id": "N07_T5",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 24,
+      "slot_id": "N07_T6",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 25,
+      "slot_id": "N08_T1",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 26,
+      "slot_id": "N08_T2",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 27,
+      "slot_id": "N08_T3",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 28,
+      "slot_id": "N08_T4",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 29,
+      "slot_id": "N08_T5",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 30,
+      "slot_id": "N08_T6",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 31,
+      "slot_id": "N09_T1",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 32,
+      "slot_id": "N09_T2",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 33,
+      "slot_id": "N09_T3",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 34,
+      "slot_id": "N09_T4",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 35,
+      "slot_id": "N09_T5",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 36,
+      "slot_id": "N09_T6",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 37,
+      "slot_id": "N09_S1",
+      "case_id": "N09",
+      "model_role": "SECONDARY",
+      "model": "gpt-5.6-sol",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 38,
+      "slot_id": "N09_S2",
+      "case_id": "N09",
+      "model_role": "SECONDARY",
+      "model": "gpt-5.6-sol",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 39,
+      "slot_id": "N11_T1",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 40,
+      "slot_id": "N11_T2",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 41,
+      "slot_id": "N11_T3",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 42,
+      "slot_id": "N11_T4",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 43,
+      "slot_id": "N11_T5",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 44,
+      "slot_id": "N11_T6",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    }
+  ],
+  "schedule_sha256": "3b705f63c3bf36ff01b4d9a3ea05479e1e564496814bbfb1c86012546d354430",
+  "isolation": "One new clean isolated revision only after all prerequisites; case continuity and original fixtures retained; no evaluation-state inheritance.",
+  "readiness_calls": 0,
+  "automatic_paid_retries": 0,
+  "fallback_candidates": 0,
+  "after_failure_additional_revisions": 0,
+  "max_generation_requests": 44,
+  "generation_authorized_this_task": false
+}
