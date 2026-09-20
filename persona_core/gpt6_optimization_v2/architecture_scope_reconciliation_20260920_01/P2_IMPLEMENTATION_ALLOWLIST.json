@@ -1,0 +1,108 @@
+{
+  "contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+  "source_file_count": 14,
+  "wildcards_allowed": false,
+  "p1_implementation_allowed": false,
+  "files": [
+    {
+      "path": "persona_core/operational_runtime_v1/chat.py",
+      "class": "runtime",
+      "limit": "display selection and lifecycle only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "688875d6d00076a16ee00c1e39208b052129a121a0836cb20f382b67186fb4f0"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/accepted_output.py",
+      "class": "runtime",
+      "limit": "immutable lineage and consumer projection only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "cc596475a2003d5a8158b0faf9223ea53fe1e4928daef304e69defe92460bbb7"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/trusted_admission_adapter.py",
+      "class": "runtime",
+      "limit": "host-selected strict request scope only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "035c29521edd3ad3296174b5822095df9906a84b14cad852e5292fdebc95acdf"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/semantic_binding.py",
+      "class": "runtime",
+      "limit": "new explicit policy/schema and purpose identity only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "2d5af4d059921c3f5b96e87968b7bc197c41ef9512efc5d4561dd46677889ff1"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/operations.py",
+      "class": "runtime",
+      "limit": "constructor policy dispatch only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "4ec4c3fd55f6c3dd51401668b7ac085d800dd3dae61cf2903606f2c695bd4ac1"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/transcript_store.py",
+      "class": "runtime_conditional",
+      "limit": "displayed projection integration only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "da56e2409e0a3dcc73cdb38580b589e74165022a831b11a6747287c594eb02eb"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/admission.py",
+      "class": "runtime",
+      "limit": "displayed observation provenance only; admission permissions unchanged",
+      "exists_at_p1": true,
+      "sha256_at_p1": "27be4d19286ac75514384f2de3c7f0f21993f8604f3a8de8ed61b93b4d29c4b8"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/capture_export.py",
+      "class": "runtime_conditional",
+      "limit": "versioned display lineage export only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "bf76659e7e1929546e85bff22a58061c4898db8f7befc1ad5f167d557d17c6fe"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+      "class": "direct_consumer",
+      "limit": "display/acceptance identity and capture projection only; no provider change",
+      "exists_at_p1": true,
+      "sha256_at_p1": "5fa2d575df3721dd9f0db3fc9e4e585420d084b0e7738387ad04ec9400a334b7"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/semantic_review.py",
+      "class": "direct_consumer",
+      "limit": "dual gate quote/state bindings and frozen route ingestion only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "ee84e900bd7534d59f102dfb2d27be0f00d573cebb6480bd68d826abcedea4ac"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/blind_review_v2.py",
+      "class": "direct_consumer_conditional",
+      "limit": "approved displayed projection only; real package creation remains locked",
+      "exists_at_p1": true,
+      "sha256_at_p1": "1ad7a77b7975dea735e771c8940746524ccfb1f17f7eb4e97dfb174421282cba"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+      "class": "direct_consumer",
+      "limit": "policy-specific offline binding assertions only",
+      "exists_at_p1": true,
+      "sha256_at_p1": "154aab53bafd92eee8a5f68f97d85688e81dcc455282441464efe18de8f3ee9e"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/test_bounded_display_state_contract.py",
+      "class": "new_test",
+      "limit": "frozen paired contract cases on isolated stores",
+      "exists_at_p1": false,
+      "sha256_at_p1": null
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/test_bounded_consumer_binding.py",
+      "class": "new_test",
+      "limit": "consumer, restart, integrity and rollback cases on isolated stores",
+      "exists_at_p1": false,
+      "sha256_at_p1": null
+    }
+  ],
+  "unlisted_source_change": "STOP_RETURN_TO_ARCHITECTURE_CHANGE_CONTROL",
+  "provider_requests_allowed": 0
+}

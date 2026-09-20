@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "protected_unique_files": 2764,
+  "group_counts": {
+    "historical_evidence_sha256": 2215,
+    "persona_sha256": 7,
+    "protected_sha256": 536,
+    "source_sha256": 163,
+    "runtime_files": 39,
+    "R12_R15_artifacts": 233,
+    "dataset": 4,
+    "journals": 26,
+    "financial": 1
+  },
+  "changed_files": [],
+  "runtime_inventory_unchanged": true,
+  "source_manifest_members_match": 163,
+  "comparison_basis": "Actual start/end byte hashes; group counts overlap and must not be summed"
+}

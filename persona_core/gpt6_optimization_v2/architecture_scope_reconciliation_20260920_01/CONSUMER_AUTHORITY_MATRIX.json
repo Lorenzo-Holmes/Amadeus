@@ -1,0 +1,197 @@
+{
+  "contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+  "count": 14,
+  "inputs": [
+    "raw_provider_text",
+    "displayed_text",
+    "accepted_text",
+    "typed_plan",
+    "admission_decision",
+    "runtime_commit",
+    "event_candidate"
+  ],
+  "consumers": [
+    {
+      "consumer": "Display",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTENT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "DENY",
+        "admission_decision": "DENY",
+        "runtime_commit": "DENY",
+        "event_candidate": "DENY"
+      },
+      "rule": "Emit exact checked displayed candidate only after host selection; use acknowledgment to establish actual displayed lineage."
+    },
+    {
+      "consumer": "Conversation History",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTENT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "DENY",
+        "admission_decision": "DENY",
+        "runtime_commit": "DENY",
+        "event_candidate": "DENY"
+      },
+      "rule": "Persist/replay acknowledged visible words, role, source, mode and corrections. Never substitute hidden raw drafts."
+    },
+    {
+      "consumer": "Next-turn Context",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTENT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "DENY",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Conversation uses actual displayed history; separately labeled verified state or pending proposals do not rewrite that history."
+    },
+    {
+      "consumer": "Working Context",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTEXT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "PROPOSAL",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Temporary reasoning may use labeled assumptions/proposals; it cannot write authoritative facts or silently launder source strength."
+    },
+    {
+      "consumer": "Memory Observation",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "OBSERVATION",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "DENY",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Record speech occurrence only from real transcript/delivery, then existing host admission/commit; content_is_event_proof=false."
+    },
+    {
+      "consumer": "Durable Memory",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTEXT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "EVIDENCE_REF",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Write only through authentic approved event/commit. Displayed text is payload/context, never fact authority."
+    },
+    {
+      "consumer": "Persona State",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "DENY",
+        "accepted_text": "DENY",
+        "typed_plan": "DENY",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Only inspect explicitly governed proposal or lawful event lineage. Direct Persona/Genesis changes are not authorized in P2."
+    },
+    {
+      "consumer": "Relationship State",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "DENY",
+        "accepted_text": "DENY",
+        "typed_plan": "DENY",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Existing permitted committed events drive reducers. Direct text, familiarity or repetition cannot write relationship or permission."
+    },
+    {
+      "consumer": "Responsibility State",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTEXT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "EVIDENCE_REF",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Bind actor/task/scope/source. Proposal, suggestion and inferred attribution cannot become assigned state; no new writer in P2."
+    },
+    {
+      "consumer": "Task / Execution State",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTEXT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "EVIDENCE_REF",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "Permission, actual operation receipt, admission and commit are separate. Planned text cannot establish completion."
+    },
+    {
+      "consumer": "Candidate Creation",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "CONTEXT",
+        "accepted_text": "LINEAGE",
+        "typed_plan": "PROPOSAL",
+        "admission_decision": "SCOPED",
+        "runtime_commit": "SCOPED",
+        "event_candidate": "PROPOSAL"
+      },
+      "rule": "May propose from attributed visible context or explicit finite proposal; never auto-ADMIT, issue evidence or create authority from raw."
+    },
+    {
+      "consumer": "Evaluation",
+      "reads": {
+        "raw_provider_text": "AUDIT",
+        "displayed_text": "REVIEW",
+        "accepted_text": "REVIEW",
+        "typed_plan": "AUDIT",
+        "admission_decision": "AUDIT",
+        "runtime_commit": "AUDIT",
+        "event_candidate": "AUDIT"
+      },
+      "rule": "Gate A scores displayed content; Gate B scores state lineage/deltas. Raw supports diagnosis only, not replacement of the product answer."
+    },
+    {
+      "consumer": "Blind Package",
+      "reads": {
+        "raw_provider_text": "DENY",
+        "displayed_text": "BLIND_CONTENT",
+        "accepted_text": "DENY",
+        "typed_plan": "DENY",
+        "admission_decision": "DENY",
+        "runtime_commit": "DENY",
+        "event_candidate": "DENY"
+      },
+      "rule": "Viewer payload includes approved deidentified actual dialogue only. Restricted curator holds lineage mapping separately; no scores, model labels, expected answers or implementation notes."
+    },
+    {
+      "consumer": "Audit / Review",
+      "reads": {
+        "raw_provider_text": "AUDIT",
+        "displayed_text": "AUDIT",
+        "accepted_text": "AUDIT",
+        "typed_plan": "AUDIT",
+        "admission_decision": "AUDIT",
+        "runtime_commit": "AUDIT",
+        "event_candidate": "AUDIT"
+      },
+      "rule": "Authorized local audit may compare all evidence with provenance. Public export and independent blind payload remain narrower."
+    }
+  ]
+}

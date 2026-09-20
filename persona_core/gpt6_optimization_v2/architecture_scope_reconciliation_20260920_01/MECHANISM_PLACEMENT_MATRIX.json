@@ -1,0 +1,141 @@
+{
+  "contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+  "count": 14,
+  "columns": [
+    "mechanism",
+    "conversation",
+    "high_authority_claim",
+    "state_admission",
+    "execution_permission",
+    "audit",
+    "reason"
+  ],
+  "rows": [
+    {
+      "mechanism": "Claim / Evidence",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Conversation keeps grounds, attribution and uncertainty; not every sentence needs a certificate. An effect needs its own evidence class, never text fluency."
+    },
+    {
+      "mechanism": "Reasoning Scope",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Premise/domain/condition strength cannot be silently broadened. Formal checking is required only for the selected bounded proof or effect path."
+    },
+    {
+      "mechanism": "Candidate Closure",
+      "conversation": "CONDITIONAL",
+      "high_authority_claim": "CONDITIONAL",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "CONDITIONAL",
+      "audit": "MANDATORY",
+      "reason": "Triggered by exclusion/exhaustiveness or an effect relying on a closed set. Ordinary open discussion is allowed; claiming closure requires a defined universe, remainder and evidence."
+    },
+    {
+      "mechanism": "Responsibility Grounding",
+      "conversation": "CONDITIONAL",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Conversation triggers it for actor/task/ownership/execution assertions. All high-authority attribution needs grounding; unrelated events do not need a responsibility proof. Suggestions are not assignments."
+    },
+    {
+      "mechanism": "Provenance",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Preserve source, entity, speaker, mode, policy and transformation across every consumer, summary, retrieval and restart."
+    },
+    {
+      "mechanism": "UNKNOWN",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Never strengthen uncertainty by repetition. Separate semantic unknown, source unknown, request outcome unknown and delivery unknown; only the appropriate recovery rule applies."
+    },
+    {
+      "mechanism": "Typed Semantic Plan",
+      "conversation": "NOT_REQUIRED",
+      "high_authority_claim": "CONDITIONAL",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "CONDITIONAL",
+      "audit": "MANDATORY",
+      "reason": "Required only when a selected finite claim/effect uses typed proof. Transcript observations and existing independently evidenced event admission do not require a universal natural-language plan."
+    },
+    {
+      "mechanism": "Trusted Admission",
+      "conversation": "NOT_REQUIRED",
+      "high_authority_claim": "CONDITIONAL",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "CONDITIONAL",
+      "audit": "MANDATORY",
+      "reason": "This row means R6 TrustedAdmission for a finite typed inventory. AdmissionController remains mandatory for every state commit, including an ordinary utterance observation."
+    },
+    {
+      "mechanism": "Claim Certificate",
+      "conversation": "NOT_REQUIRED",
+      "high_authority_claim": "CONDITIONAL",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "CONDITIONAL",
+      "audit": "MANDATORY",
+      "reason": "Mandatory if the selected bounded policy claims certified support. Other host evidence classes retain their own contracts. A certificate never grants permission or proves execution."
+    },
+    {
+      "mechanism": "Exclusion Certificate",
+      "conversation": "NOT_REQUIRED",
+      "high_authority_claim": "CONDITIONAL",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "CONDITIONAL",
+      "audit": "MANDATORY",
+      "reason": "Mandatory for certified finite-domain exclusion or an effect relying on it. An explicitly tentative hypothesis is not an exclusion conclusion."
+    },
+    {
+      "mechanism": "Closure Certificate",
+      "conversation": "NOT_REQUIRED",
+      "high_authority_claim": "CONDITIONAL",
+      "state_admission": "CONDITIONAL",
+      "execution_permission": "CONDITIONAL",
+      "audit": "MANDATORY",
+      "reason": "Mandatory for certified finite-universe exhaustive closure. No universal closure certificate is required to discuss an open world."
+    },
+    {
+      "mechanism": "Raw / Accepted Separation",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Keep immutable raw, actual displayed lineage and policy-scoped accepted output separate. None can be substituted silently for another."
+    },
+    {
+      "mechanism": "Fail-closed",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Conversation fails closed for applicable identity/privacy/known false action boundaries, not pure UNPARSED. State effects, permissions, commits and binding integrity remain strict."
+    },
+    {
+      "mechanism": "Consumer Binding",
+      "conversation": "MANDATORY",
+      "high_authority_claim": "MANDATORY",
+      "state_admission": "MANDATORY",
+      "execution_permission": "MANDATORY",
+      "audit": "MANDATORY",
+      "reason": "Every consumer selects a declared purpose and authority. History follows display; state consumers require target-specific admission and commit, not accepted-text inheritance."
+    }
+  ]
+}
