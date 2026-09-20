@@ -11,5 +11,13 @@ def open_chat(store: TranscriptStore, handle: SessionHandle, scope: dict) -> Cha
     controller = DialogueAdmissionController(store)
     runtime = RuntimeStore(store, controller)
     growth = PersonaGrowthController(runtime)
+    acceptance={}
+    if scope.get('formal_validation') or 'semantic_acceptance_binding' in scope:
+        from semantic_binding import validate_binding
+        from trusted_admission_adapter import TrustedAdmissionAdapter
+        from accepted_output import SemanticAcceptance
+        binding=validate_binding(scope.get('semantic_acceptance_binding'),scope)
+        acceptance={'semantic_acceptance_mode':'TRUSTED','semantic_acceptance_binding':binding,
+                    'semantic_acceptance':SemanticAcceptance(TrustedAdmissionAdapter(binding),binding=binding)}
     return ChatService(store, handle, scope, memory_provider=RetrievalService(runtime, growth),
-                       admission_controller=controller, growth_controller=growth)
+                       admission_controller=controller, growth_controller=growth,**acceptance)

@@ -250,6 +250,7 @@ def source_files():
     Directory membership is checked as well as bytes, detecting added modules.
     """
     files = set(CODE.glob("*.py"))
+    files.add(CODE / 'trusted_semantic_catalog.json')
     files.update(OLD_TOOLS / name for name in ("prepare_execution_r047.py", "r047_execution_common.py"))
     files.update((GOAL / "tools").glob("*.py"))
     files.update(p for p in LEGACY.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
@@ -395,6 +396,9 @@ def seed_fixtures(store, scope, suite_data):
     sessions = {}
     for case in suite_data.get("setup_cases", suite_data["cases"]):
         handle = store.open_session(principal, case["entity_label"], case.get("mode", "PRODUCT_RUNTIME"))
+        if scope.get('formal_validation'):
+            from operations import open_chat
+            open_chat(store,handle,scope)  # Installs the explicit policy before any target turn.
         require(not store.recent(handle, 1), "AUTHORED_TARGET_HISTORY_FORBIDDEN")
         sessions[case["id"]] = {"session_id": handle.session_id, "entity_id": handle.entity_id,
                                 "entity_label": case["entity_label"], "mode": handle.mode}
@@ -412,7 +416,8 @@ def seed_fixtures(store, scope, suite_data):
                                      (sessions[cid]["entity_id"], "AUTHORED_SETUP:" + key)).fetchone()[0]
             require(count == 120, "ORIGINAL_DISTRACTOR_COUNT_CHANGED")
     require(store.db.execute("SELECT count(*) FROM provider_calls").fetchone()[0] == 0, "PREPARATION_SUBMITTED_CALL")
-    return {"sessions": sessions, "fixture_records": rows, "authored_origin": "AUTHORED_TEST_STUB",
+    return {**({'semantic_acceptance_binding':scope['semantic_acceptance_binding']} if scope.get('formal_validation') else {}),
+            "sessions": sessions, "fixture_records": rows, "authored_origin": "AUTHORED_TEST_STUB",
             "authored_setup_turns": store.db.execute("SELECT count(*) FROM turns").fetchone()[0],
             "target_session_turns_at_prepare": 0, "target_calls_at_prepare": 0,
             "runtime_verification": runtime.verify()}
@@ -421,10 +426,15 @@ def seed_fixtures(store, scope, suite_data):
 def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
             primary=None, secondary="deepseek-v4-pro", max_input_bytes=24576,
             max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy_file=None,
-            api_protocol=None, network_route_policy_file=None):
+            api_protocol=None, network_route_policy_file=None,
+            formal_validation=False,acceptance_config_file=None):
     frozen_inputs()
     primary = primary or default_primary()
     suite_data = load_suite(suite, primary, secondary)  # Gate before any write.
+    formal_validation=bool(formal_validation or acceptance_config_file is not None or (suite=='external44' and not offline))
+    if formal_validation:
+        from semantic_binding import require as binding_require
+        binding_require(acceptance_config_file is not None,'ADMISSION','FORMAL_ACCEPTANCE_CONFIG_REQUIRED')
     root = revision_root(revision)
     require(not root.exists(), "REVISION_ALREADY_EXISTS_USE_NEW_REVISION")
     pricing = checked_pricing(pricing_record, offline, (primary, secondary))
@@ -433,6 +443,12 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     scope = build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes,
                         max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol, network_route_policy)
     bindings = source_bindings()
+    if formal_validation:
+        from formal_acceptance import build_binding
+        scope['formal_validation']=True
+        rubric=(GOAL/'external_failure_v1/PRIVATE_RUBRIC.json' if suite=='external44' else
+                GOAL/'heldout_v1/REVIEW_PROTOCOL.md' if suite=='heldout' else PROTOCOL/'PRIVATE_RUBRIC.json')
+        scope['semantic_acceptance_binding']=build_binding(scope,suite_data,acceptance_config_file,rubric_path=rubric,offline=offline)
     root.mkdir(parents=False, exist_ok=False)
     write_new(root / "PREPARATION_INTENT.json", {"revision_id": revision, "at_utc": now(), "provider_calls": 0})
     provider, transcript, *_ = runtime_modules()
@@ -474,6 +490,13 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
                     "exact_historical_model_equivalence_asserted": False,
                     "comparison_limit": "Provider model drift prevents attributing differences solely to Core changes; frozen inputs and model roles are preserved, model identity is separately pinned."},
                 "runtime_genesis_sha256": sha(root / "runtime/legacy_runtime/genesis/GENESIS_SNAPSHOT_R035.json")}
+    if formal_validation:
+        binding=scope['semantic_acceptance_binding']
+        manifest.update(formal_validation=True,semantic_acceptance_binding=binding,
+                        revision_acceptance_schema_version=binding['schema_version'])
+        for key in ('semantic_acceptance_mode','acceptance_policy_version','acceptance_source_freeze',
+                    'trusted_semantic_runtime_version','provider_config_identity','dataset_identity','rubric_identity'):
+            manifest[key]=binding[key]
     write_new(root / "MANIFEST.json", manifest)
     write_new(root / "MANIFEST_SEAL.json", {"sha256": sha(root / "MANIFEST.json")})
     cursor(root, "PREPARED", in_flight_external_effect=None, safe_to_resume=True)
@@ -493,12 +516,17 @@ def read_contract(root):
     runtime_modules()
     from provider_contract import guard_legacy_identity
     guard_legacy_identity(scope)
+    if manifest.get('formal_validation') or scope.get('formal_validation'):
+        from formal_acceptance import verify_metadata
+        verify_metadata(manifest,scope,read(root/'PREPARATION.json'))
     return manifest, scope, read(root / "PREPARATION.json")
 
 
 def verify_sources(root):
     manifest, scope, preparation = read_contract(root)
     frozen_inputs()
+    if manifest.get('suite')=='external44' and manifest['capture_mode']==TARGET:
+        require(manifest.get('formal_validation') is True,'FORMAL_TRUSTED_REVISION_REQUIRED')
     bound = read(root / "SOURCE_MANIFEST.json")
     require(source_bindings() == bound["files"], "CURRENT_SOURCE_BINDING_CHANGED_NEW_REVISION_REQUIRED")
     require(Path(sys.executable).resolve() == PYTHON.resolve() and sha(PYTHON) == bound["python_sha256"],
@@ -540,6 +568,12 @@ def completed(row):
 
 
 def validate_rows(db, root, manifest, scope, preparation):
+    binding=None
+    if manifest.get('formal_validation') or scope.get('formal_validation'):
+        from formal_acceptance import verify_metadata,require_session
+        binding=verify_metadata(manifest,scope,preparation)
+        for session in preparation['sessions'].values():
+            require_session(db,session['session_id'],binding)
     batch = db.execute("SELECT * FROM call_batches WHERE batch_id=?", (scope["batch_id"],)).fetchone()
     require(batch is not None and batch["scope_sha256"] == value_sha(scope) and
             json.loads(batch["scope_json"]) == scope, "JOURNAL_SCOPE_MISMATCH")
@@ -591,6 +625,9 @@ def validate_rows(db, root, manifest, scope, preparation):
             from accepted_output import project_turn
             selected = project_turn(db, row, 'evaluation')
             row.update(selected)
+            if binding is not None:
+                from formal_acceptance import evaluator_provenance
+                row['evaluation_provenance']=evaluator_provenance(row,binding)
             display_path = root / "displays" / (slot["id"] + ".txt")
             require(display_path.is_file() and display_path.read_bytes() == (row["assistant_text"] + "\n").encode("utf-8"),
                     "DURABLE_DISPLAY_MISMATCH")
@@ -649,12 +686,17 @@ def capture_snapshot(root, *, final=False):
         if row.get('output_provenance') == 'HOST_ACCEPTED_OUTPUT':
             turns[-1].update({k: row[k] for k in ('raw_assistant_text','accepted_assistant_text',
                               'output_provenance','accepted_output')})
+        if 'evaluation_provenance' in row:
+            turns[-1]['evaluation_provenance']=row['evaluation_provenance']
     value = {"schema_version": SCHEMA, "revision_id": manifest["revision_id"],
              "source_manifest_sha256": manifest["source_manifest_sha256"], "cases_sha256": manifest["cases_sha256"],
              "manifest_sha256": sha(root / "MANIFEST.json"), "capture_mode": manifest["capture_mode"],
              "eligible_for_target_evaluation": manifest["capture_mode"] == TARGET,
              "expected_turn_count": len(scope["slots"]), "expected_criteria_count": manifest["expected_criteria_count"],
              "semantic_acceptance": None, "authored_setup_excluded": True, "turns": turns}
+    if manifest.get('formal_validation'):
+        value.update(semantic_acceptance_binding=manifest['semantic_acceptance_binding'],
+                     product_semantic_target='accepted_assistant_text')
     if final:
         path = root / "CAPTURES.json"
         if path.exists():
@@ -720,6 +762,7 @@ def worker(revision, segment_id, run_id, max_turns=None):
               "at_utc": now(), "manifest_sha256": sha(root / "MANIFEST.json"), "steps": [], "status": "STARTED"}
     write_new(out / "START.json", report)
     calls_now = 0
+    failure_layer='PERSISTENCE'
     try:
         rows, batch = validate_rows(store.db, root, manifest, scope, preparation)
         require(not batch["stopped"] and all(completed(r) for r in rows), "INCOMPLETE_OR_STOPPED_BATCH")
@@ -736,6 +779,7 @@ def worker(revision, segment_id, run_id, max_turns=None):
                 continue
             verify_sources(root)  # Full input and membership binding before EACH slot.
             handle = store.resume(scope["principal_id"], preparation["sessions"][slot["case_id"]]["session_id"])
+            failure_layer='ADMISSION'
             chat = operations.open_chat(store, handle, scope)
             previous_rows = call_rows(store.db, scope)
             consumed = next((r for r in previous_rows if r["slot_id"] == slot["id"]), None)
@@ -755,8 +799,7 @@ def worker(revision, segment_id, run_id, max_turns=None):
                    in_flight_external_effect={"stage": "BEFORE_TURN", "model": slot["model"],
                                               "session_id": handle.session_id, "slot_id": slot["id"]})
             turn = store.begin_turn(handle, slot["user_text"], key)
-            preview = context_router.build_context(store, handle, turn["turn_id"],
-                max_prompt_bytes=scope["max_input_bytes"], memory_provider=chat.memory_provider)
+            preview = chat.build_request_context(turn['turn_id'])
             encoded = canonical(preview["messages"])
             require(len(encoded) <= scope["max_input_bytes"], "PROMPT_EXCEEDS_PINNED_BYTES")
             require(not any(token.encode("utf-8") in encoded for token in PRIVATE_MARKERS), "FOREIGN_PRIVATE_CONTEXT_LEAK")
@@ -778,6 +821,7 @@ def worker(revision, segment_id, run_id, max_turns=None):
             if manifest["capture_mode"] == OFFLINE:
                 kwargs = {"transport": authored_transport,
                           "credential_reader": lambda: "OFFLINE_AUTHORED_TRANSPORT_NOT_A_CREDENTIAL"}
+            failure_layer='PROVIDER'
             result = chat.send_text(slot["user_text"], key, slot_id=slot["id"], display=display, **kwargs)
             calls_now += 1
             row = store.db.execute("SELECT * FROM provider_calls WHERE turn_id=?", (turn["turn_id"],)).fetchone()
@@ -791,8 +835,11 @@ def worker(revision, segment_id, run_id, max_turns=None):
                        "finished_at_utc": now()}
             write_new(root / "receipts" / (slot["id"] + ".json"), receipt)
             report["steps"].append(receipt)
+            failure_layer='EVALUATION'
             capture_snapshot(root)
             if result["status"] != "DISPLAYED":
+                report['failure_layer']=('TRANSPORT' if result['status']=='SUBMITTED_STATUS_UNKNOWN' else
+                    'EVALUATION' if result['status']=='RESPONSE_WITHHELD' else 'PROVIDER')
                 report["status"] = "STOPPED_RECONCILE_REQUIRED"
                 cursor(root, report["status"], run_id=run_id, safe_to_resume=False,
                        in_flight_external_effect=receipt)
@@ -806,13 +853,14 @@ def worker(revision, segment_id, run_id, max_turns=None):
     except BaseException as exc:
         report["status"] = "STOPPED_RECONCILE_REQUIRED"
         report["error_category"] = type(exc).__name__
+        report['failure_layer']=getattr(exc,'failure_layer',failure_layer)
         if isinstance(exc, RunnerError):
             report["error_code"] = str(exc)
         with store.transaction():
             store.db.execute("UPDATE call_batches SET stopped=1 WHERE batch_id=?", (scope["batch_id"],))
         cursor(root, report["status"], run_id=run_id, safe_to_resume=False,
                in_flight_external_effect=read(root / "CURSOR.json").get("in_flight_external_effect"),
-               error_category=type(exc).__name__)
+               error_category=type(exc).__name__,failure_layer=report['failure_layer'])
     finally:
         report.update(finished_at_utc=now(), calls_now=calls_now)
         write_new(out / "RESULT.json", report)
@@ -950,6 +998,8 @@ def main(argv=None):
     p.add_argument("--revision", required=True)
     p.add_argument("--suite", choices=("heldout", "original82", "external44"), default="heldout")
     p.add_argument("--offline", action="store_true", help="Permanently authored, never target evidence")
+    p.add_argument('--formal-validation',action='store_true',help='Require the complete TRUSTED identity even with a local provider')
+    p.add_argument('--acceptance-config-file',type=Path,help='Explicit frozen policy/source identity; mandatory for formal external44')
     p.add_argument("--pricing-record", type=Path)
     p.add_argument("--primary", help="Defaults to deepseek-flash when supported, otherwise legacy alias; always pinned and drift disclosed")
     p.add_argument("--secondary", default="deepseek-v4-pro")
@@ -986,6 +1036,8 @@ def main(argv=None):
         error = {"status": "REFUSED", "error_category": type(exc).__name__, "automatic_paid_retries": 0}
         if isinstance(exc, RunnerError):
             error["error_code"] = str(exc)
+        if hasattr(exc,'failure_layer'):
+            error.update(failure_layer=exc.failure_layer,error_code=exc.code)
         print(json.dumps(error))
         return 2
 

@@ -15,13 +15,27 @@ from transcript_store import TranscriptStore, SessionHandle, ensure, utc_now
 class ChatService:
     def __init__(self, store: TranscriptStore, handle: SessionHandle, scope: dict,
                  *, memory_provider=None, admission_controller=None, growth_controller=None,
-                 semantic_acceptance_mode=None, semantic_acceptance=None):
+                 semantic_acceptance_mode=None, semantic_acceptance=None,semantic_acceptance_binding=None):
         store._authenticate(handle)
         self.store, self.handle, self.scope = store, handle, scope
         self.memory_provider = memory_provider
         self.admission = admission_controller
         self.growth = growth_controller
         from accepted_output import bind_mode, session_mode, SemanticAcceptance
+        from semantic_binding import require as binding_require, install_binding, session_binding
+        self.acceptance_binding=semantic_acceptance_binding
+        formal=scope.get('formal_validation') or 'semantic_acceptance_binding' in scope or session_binding(store.db,handle.session_id) is not None
+        if formal:
+            from trusted_admission_adapter import TrustedAdmissionAdapter
+            binding_require(semantic_acceptance_mode=='TRUSTED' and semantic_acceptance_binding is not None
+                and semantic_acceptance_binding==scope.get('semantic_acceptance_binding'),
+                'ADMISSION','EXPLICIT_FORMAL_ACCEPTANCE_REQUIRED')
+            binding_require(type(semantic_acceptance) is SemanticAcceptance
+                and type(semantic_acceptance.admit) is TrustedAdmissionAdapter
+                and semantic_acceptance.binding==semantic_acceptance_binding
+                and semantic_acceptance.admit.binding==semantic_acceptance_binding,
+                'ADMISSION','TRUSTED_ADMISSION_ADAPTER_REQUIRED')
+            install_binding(store,handle,semantic_acceptance_binding,scope)
         self.acceptance_mode = semantic_acceptance_mode or session_mode(store.db, handle.session_id)
         bind_mode(store, handle, self.acceptance_mode)
         self.acceptance = semantic_acceptance or SemanticAcceptance()
@@ -63,9 +77,40 @@ class ChatService:
                'Input does not match the next pinned evaluation turn')
         return slot
 
+    def build_request_context(self, tid):
+        """One construction path for formal preview and the submitted request."""
+        if self.acceptance_binding is None:
+            return build_context(self.store,self.handle,tid,max_prompt_bytes=self.scope['max_input_bytes'],
+                                 memory_provider=self.memory_provider)
+        from semantic_binding import validate_binding,require_session,require as binding_require,layer
+        from trusted_admission_adapter import request_contract,TrustedAdmissionAdapter
+        validate_binding(self.acceptance_binding,self.scope)
+        require_session(self.store.db,self.handle.session_id,self.acceptance_binding)
+        binding_require(self.acceptance_mode=='TRUSTED' and type(self.acceptance.admit) is TrustedAdmissionAdapter,
+                        'ADMISSION','FORMAL_ADAPTER_MISSING')
+        turn=self.store.get_turn(self.handle,tid)
+        state=self.acceptance.admit(self.handle,turn,{})
+        contract=request_contract(state,self.acceptance_binding)
+        message={'role':'system','content':'Host semantic proposal contract:\n'+canonical(contract).decode('utf-8')}
+        reserve=len(canonical([message]))+2
+        with layer('ADMISSION'):
+            context=build_context(self.store,self.handle,tid,max_prompt_bytes=self.scope['max_input_bytes']-reserve,
+                                  memory_provider=self.memory_provider)
+        context['messages'].insert(-1,message)
+        context['semantic_plan_request']=contract
+        context['prompt_bytes']=len(canonical(context['messages']))
+        binding_require(context['prompt_bytes']<=self.scope['max_input_bytes'],'ADMISSION','CONTRACT_EXCEEDS_REQUEST_BUDGET')
+        return context
+
     def send_text(self, text: str, idempotency_key: str, *, slot_id: str,
                   display: Callable[[str], None] | None = None,
                   transport=None, credential_reader=None) -> dict[str, Any]:
+        if self.acceptance_binding is not None:
+            from semantic_binding import require_session,require as binding_require
+            from trusted_admission_adapter import TrustedAdmissionAdapter
+            require_session(self.store.db,self.handle.session_id,self.acceptance_binding)
+            binding_require(self.acceptance_mode=='TRUSTED' and type(self.acceptance.admit) is TrustedAdmissionAdapter,
+                            'ADMISSION','FORMAL_ADAPTER_MISSING')
         turn = self.store.begin_turn(self.handle, text, idempotency_key)
         tid = turn['turn_id']
         if turn['status'] == 'DISPLAYED':
@@ -91,8 +136,7 @@ class ChatService:
                    'Idempotency key belongs to another batch or slot')
             context = json.loads(call_row['context_json'])
         else:
-            context = build_context(self.store, self.handle, tid,
-                max_prompt_bytes=self.scope['max_input_bytes'], memory_provider=self.memory_provider)
+            context = self.build_request_context(tid)
             with self.store.transaction():
                 self.journal._transition(tid, 'CONTEXT_BUILT', {'route': context['route'], 'prompt_bytes': context['prompt_bytes']})
         kwargs = {}
@@ -109,9 +153,18 @@ class ChatService:
             from accepted_output import load_record, persist
             if load_record(self.store.db, tid) is None:
                 raw = self.store.db.execute('SELECT raw_response FROM provider_calls WHERE turn_id=?', (tid,)).fetchone()[0]
-                accepted = self.acceptance.accept(handle=self.handle, turn=turn, context=context,
-                                                  raw_provider_response=bytes(raw))
-                persist(self.store, self.handle, tid, bytes(raw), accepted)
+                if self.acceptance_binding is not None:
+                    from semantic_binding import layer, require_session
+                    require_session(self.store.db,self.handle.session_id,self.acceptance_binding)
+                    with layer('VALIDATOR'):
+                        accepted = self.acceptance.accept(handle=self.handle, turn=turn, context=context,
+                                                          raw_provider_response=bytes(raw))
+                    with layer('PERSISTENCE'):
+                        persist(self.store, self.handle, tid, bytes(raw), accepted)
+                else:
+                    accepted = self.acceptance.accept(handle=self.handle, turn=turn, context=context,
+                                                      raw_provider_response=bytes(raw))
+                    persist(self.store, self.handle, tid, bytes(raw), accepted)
         turn = self.store.conversation_turn(self.handle, tid, purpose='display')
         check = check_response(turn['assistant_text'], context)
         with self.store.transaction():

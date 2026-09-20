@@ -1,0 +1,50 @@
+{
+  "acceptance_policy_version": "TRUSTED_SEMANTIC_ACCEPTANCE_1",
+  "automatic_paid_retries": 0,
+  "binding_preflight": "READY",
+  "complete_local_source_member_count": 163,
+  "consumer_coverage": {
+    "audit": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "blind": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "candidate": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "display": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "evaluation": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "history": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "memory": "PASS_IN_FORMAL_MOCK_DRIVER",
+    "next_turn": "PASS_IN_FORMAL_MOCK_DRIVER"
+  },
+  "feature_gate": {
+    "default": "OFF",
+    "explicit_formal_validation": "TRUSTED",
+    "missing_formal_binding": "REFUSE",
+    "production_activated": false,
+    "unparsed": "LOW_AUTHORITY"
+  },
+  "formal_driver_identity": {
+    "path": "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+    "sha256": "5fa2d575df3721dd9f0db3fc9e4e585420d084b0e7738387ad04ec9400a334b7"
+  },
+  "freeze_id": "TRUSTED_ACCEPTANCE_EXTERNAL44_INTEGRATION_20260920_01",
+  "paid_revision_created": false,
+  "private_evidence_included": false,
+  "public_member_hashes": {
+    "persona_core/gpt6_optimization_v2/FORMAL_BINDING_ROOT_CAUSE.md": "b9ac255ed153182b1eb47e560b24e3b372c7bb9032fc839192991874f849f340",
+    "persona_core/gpt6_optimization_v2/G6_07R7_PUBLIC_AUDIT.json": "549c7f227a01d921a3ecb976e3ab17cd524542504447fa1d6c21033c54f5d2c0",
+    "persona_core/gpt6_optimization_v2/G6_07R7_PUBLIC_SUMMARY.md": "f75acdf15fb762b756fa7d1151bc7f074769e86b0bb547def8c1d53bdc53fcb0",
+    "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py": "5fa2d575df3721dd9f0db3fc9e4e585420d084b0e7738387ad04ec9400a334b7",
+    "persona_core/gpt6_optimization_v2/tools/formal_acceptance.py": "74c7c4cbbb23d1c6be84b52d263e31dc5961ea617010d7f75441eae67dd6bf98",
+    "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py": "154aab53bafd92eee8a5f68f97d85688e81dcc455282441464efe18de8f3ee9e",
+    "persona_core/gpt6_optimization_v2/tools/test_formal_acceptance_integration.py": "3aba8f0b19335b4fb9d07f408897e384189f3ab2957850cc618c7917ec9b87e7",
+    "persona_core/operational_runtime_v1/accepted_output.py": "cc596475a2003d5a8158b0faf9223ea53fe1e4928daef304e69defe92460bbb7",
+    "persona_core/operational_runtime_v1/chat.py": "688875d6d00076a16ee00c1e39208b052129a121a0836cb20f382b67186fb4f0",
+    "persona_core/operational_runtime_v1/operations.py": "4ec4c3fd55f6c3dd51401668b7ac085d800dd3dae61cf2903606f2c695bd4ac1",
+    "persona_core/operational_runtime_v1/semantic_binding.py": "2d5af4d059921c3f5b96e87968b7bc197c41ef9512efc5d4561dd46677889ff1",
+    "persona_core/operational_runtime_v1/trusted_admission_adapter.py": "035c29521edd3ad3296174b5822095df9906a84b14cad852e5292fdebc95acdf",
+    "persona_core/operational_runtime_v1/trusted_semantic_catalog.json": "0a15d942ceb0a65136d29ec29a66f3610c93854ba11b606e1850d486f5ee0e96"
+  },
+  "remote_generation": 0,
+  "revision_acceptance_schema_version": "FORMAL_SEMANTIC_BINDING_1",
+  "self_hash_excluded_to_avoid_circular_binding": true,
+  "semantic_validation_pass": false,
+  "status": "FROZEN_FOR_FRESH_VALIDATION"
+}

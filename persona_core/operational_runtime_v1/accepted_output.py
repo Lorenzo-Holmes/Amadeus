@@ -20,7 +20,8 @@ _ACCEPTED=object()
 def runtime_identity():
     root=Path(__file__).parent
     names=('semantic_types.py','semantic_admission.py','semantic_validator.py',
-           'semantic_renderer.py','accepted_output.py','chat.py','transcript_store.py')
+           'semantic_renderer.py','accepted_output.py','chat.py','transcript_store.py',
+           'semantic_binding.py','trusted_admission_adapter.py','operations.py')
     return {n:hashlib.sha256((root/n).read_bytes()).hexdigest() for n in names}
 
 def install(db):
@@ -79,8 +80,9 @@ class SemanticAcceptance:
     Optional proposed_plan is a host test seam for offline parser simulations.
     Otherwise the captured visible provider string must be a strict proposal.
     """
-    def __init__(self,admit=None):
+    def __init__(self,admit=None,*,binding=None):
         self.admit=admit
+        self.binding=binding
 
     def accept(self,*,handle,turn,context,raw_provider_response,proposed_plan=None):
         raw_text=turn['assistant_text']
@@ -93,11 +95,27 @@ class SemanticAcceptance:
         require(type(state) is TrustedState and state.identity==identity,'ADMISSION_CONTEXT_BINDING')
         state.check()
         parse_error=None
+        raw_visible=raw_text
         original=proposed_plan if proposed_plan is not None else raw_text
         try:
-            plan=parse_plan(original) if isinstance(original,str) else parse_plan(serialize_plan(original))
+            if self.binding is not None:
+                from trusted_admission_adapter import parse_response
+                require(proposed_plan is None,'FORMAL_PROVIDER_PROPOSAL_REQUIRED')
+                plan,raw_visible=parse_response(raw_text)
+                require(context.get('semantic_plan_request',{}).get('context_digest')==state.context_digest,
+                        'FORMAL_REQUEST_ADMISSION_CHANGED')
+                require(plan is not None,'UNPARSED_OR_UNSUPPORTED_INPUT')
+            else:
+                plan=parse_plan(original) if isinstance(original,str) else parse_plan(serialize_plan(original))
             result=validate_with_fallback(plan,state)
-            rendered=render(result,state)
+            if self.binding is not None:
+                from semantic_binding import layer
+                with layer('CERTIFICATE'):
+                    result.check(state)
+                with layer('RENDERER'):
+                    rendered=render(result,state)
+            else:
+                rendered=render(result,state)
             validation=result.record()
             accepted_plan=[asdict(c.claim) for c in result.certificates]
             certificates=[{'certificate_id':d.certificate.certificate_id,**asdict(d.certificate),
@@ -110,7 +128,7 @@ class SemanticAcceptance:
             accepted_plan=[]; certificates=[]; proposed=original if isinstance(original,str) else None
             rendered=None
         text=rendered.text if rendered else '这段信息还不能支持可靠判断，请补充明确的条件或来源。'
-        transformed=raw_text!=text
+        transformed=raw_visible!=text
         from transcript_store import utc_now
         record={'version':VERSION,'turn_id':turn['turn_id'],'session_id':handle.session_id,'entity_id':handle.entity_id,
           'raw_provider_sha256':hashlib.sha256(raw_provider_response).hexdigest(),
@@ -130,12 +148,38 @@ class SemanticAcceptance:
                   if c['claim_id'].startswith('_host_fallback_')]},
           'coverage':'TYPED_VALIDATED' if accepted_plan else 'UNPARSED_OR_UNSUPPORTED_FALLBACK',
           'raw_is_accepted':False,'feature_gate':'TRUSTED'}
+        if self.binding is not None:
+            from semantic_binding import validate_binding
+            validate_binding(self.binding)
+            decisions=validation.get('decisions',[])
+            actions=[d['action'] for d in decisions]
+            action=('BLOCK' if not accepted_plan else 'DOWNGRADE' if 'BLOCK' in actions or 'DOWNGRADE' in actions
+                    or transformed else 'QUALIFY' if 'QUALIFY' in actions else 'ALLOW')
+            violation=bool(parse_error or transformed or any(a!='ALLOW' for a in actions))
+            record.update(acceptance_identity=self.binding,raw_visible_text=raw_visible,
+                acceptance_disposition=action,
+                acceptance_audit={
+                    'raw_response_present':bool(raw_provider_response),'raw_visible_text_present':bool(raw_visible),
+                    'semantic_admission_status':'ADMITTED_WITH_UNPARSED_REMAINDER' if state.evidence and state.unparsed_sha256
+                        else 'ADMITTED' if state.evidence else 'UNPARSED',
+                    'proposed_plan_present':isinstance(proposed,dict),'validator_result':validation,
+                    'certificate_status':'HOST_CERTIFIED' if certificates else 'NO_AUTHORIZED_CLAIMS',
+                    'acceptance_action':action,'accepted_text_present':bool(text),
+                    'consumer_binding_status':'REQUIRED_ACCEPTED_ONLY',
+                    'raw_provider_violation':violation,'guard_containment':violation,'guard_escape':False,
+                    'violation_basis':parse_error or ('VISIBLE_REALIZATION_MISMATCH' if transformed else
+                        'PLAN_TRANSFORMED' if violation else None)})
         return AcceptedOutput(canonical(record),_ACCEPTED)
 
 def persist(store,handle,turn_id,raw_provider_response,accepted):
     store._authenticate(handle)
     require(type(accepted) is AcceptedOutput and accepted._seal is _ACCEPTED,'HOST_ACCEPTED_OUTPUT_REQUIRED')
     record=json.loads(accepted.payload); turn=store.get_turn(handle,turn_id)
+    from semantic_binding import session_binding, require_session
+    binding=session_binding(store.db,handle.session_id)
+    if binding is not None:
+        require_session(store.db,handle.session_id,binding)
+        require(record.get('acceptance_identity')==binding,'ACCEPTED_POLICY_SOURCE_BINDING')
     require(session_mode(store.db,handle.session_id)=='TRUSTED','ACCEPTANCE_GATE_REQUIRED')
     require(record['turn_id']==turn_id and record['session_id']==handle.session_id and record['entity_id']==handle.entity_id,'ACCEPTED_IDENTITY_MISMATCH')
     raw_sha=hashlib.sha256(raw_provider_response).hexdigest()
@@ -171,6 +215,14 @@ def load_record(db,turn_id):
     call=db.execute('SELECT raw_response,context_json FROM provider_calls WHERE turn_id=?',(turn_id,)).fetchone()
     require(call is not None and bytes(call[0])==bytes(raw['raw_provider_response'])
        and digest(json.loads(call[1]))==record['source_runtime_identity']['submitted_context_digest'],'ACCEPTED_RECEIPT_CHANGED')
+    from semantic_binding import session_binding, require_session, consumer_text
+    binding=session_binding(db,record['session_id'])
+    if binding is not None:
+        require_session(db,record['session_id'],binding)
+        require(record.get('acceptance_identity')==binding,'ACCEPTED_POLICY_SOURCE_CHANGED')
+        clauses=record['rendered_clauses']
+        expected=''.join(c['text'] for c in clauses) if clauses else '这段信息还不能支持可靠判断，请补充明确的条件或来源。'
+        consumer_text(record,expected)
     return record
 
 def project_turn(db,row,purpose):
@@ -184,6 +236,8 @@ def project_turn(db,row,purpose):
     tid=result['turn_id']
     sid=result.get('session_id')
     if sid is None: sid=db.execute('SELECT session_id FROM turns WHERE turn_id=?',(tid,)).fetchone()[0]
+    from semantic_binding import session_binding
+    session_binding(db,sid)  # A formal binding can never silently become OFF.
     if session_mode(db,sid)=='OFF':
         return result
     record=load_record(db,tid)
