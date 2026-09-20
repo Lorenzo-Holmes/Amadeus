@@ -1,0 +1,15 @@
+# 输入上界与提交前预留
+
+24576是现有host canonical(messages) UTF-8字节上限；4096是原预算的附加输入token预留，合计28672是**待证明的预留设计**，不是官方tokenizer定理。API技术输入最大922000、输出最大128000均不作为本批预算cap。本批要求input内容/历史不缩减、max_output_tokens=32768、reasoning=max。
+
+未来正式adapter的唯一默认模式为VERIFIED_LOCAL_BOUND_REQUIRED。提交前先构造最终只读payload，验证无多模态、tools为空、无server conversation、无隐藏reasoning replay；对整个messages精确编码并检查24576字节上限。加载绑定确切model的tokenizer artifact与encoding/version/hash；计算正文token数，并提供官方或可验证的消息边界/角色/响应格式序列化上界证明。proof必须覆盖所有准许role序列、消息数量、unicode和框架开销，不能只凭样本最大偏差或经验4096。若证明使用byte bound，须证明每个允许输入的UTF-8字节token关系和结构开销，不能把JSON字节与模型framing当相同。
+
+InputBoundReceipt字段：version=APCORE_INPUT_BOUND_RECEIPT_1、request_sha256、messages_sha256、model_id、tokenizer/version/artifact_sha256、count_method、content_token_count、framing_upper_tokens、input_upper_tokens、proof_reference_sha256、host_bytes、message_count、source/scope identities。满足I_bound≤28672且未删context后才可预留；证据缺失/不对应最终payload/超界→INPUT_BOUND_NOT_PROVEN或INPUT_BOUND_EXCEEDED，0提交。提交临界区重查payload hash；payload任何变化使receipt失效。
+
+当前官方文档只确认本地纯文本tokenizer不包含所有格式开销；官方POST /v1/responses/input_tokens可给出包括结构的精确输入数。**本轮和下个零调用实施/preflight阶段均禁止调用该接口**，它是Provider API请求，不能称作零调用或暗中加入44-slot预算。若无法离线建立充分证明，preflight必须NOT_READY。后续只能另行请求具名的计数接口范围/费用决策，或获得可审计的本地序列化证明；不改模型、不偷用credentials、不把未证明预留写成已保证。
+
+若将来单独授权远端计数，需独立登记每次count请求、返回模型/input count、payload投影身份、收费语义与有限次数；count和generation之间不得改变input。动态多轮历史意味着不能在生成前假装知道44个实际完整prompt；任何全批更紧上界必须覆盖所有可能合法前序展示和host composition，不只是第一轮或历史样本。
+
+本合同不强制新增tokenizer代码或包：相关包装仅能落在七路径内，外部artifact的来源/hash需冻结。找不到足够证明时如实阻塞，不扩大源码清单。
+
+可提出的更紧预算：最终冻结各槽所有合法上下文的I_bound_j，证明上界覆盖后按sum(I_bound_j×write_rate_j +32768×output_rate_j)计算。未获得该证明前不用它降低金额。输出cap是实际protocol requested ceiling；仅socket截断、可见字数上限或历史均值无法约束已经生成/收费的reasoning。降低32768或提前终止都不属本合同。当前无可证明的更紧全44-slot上界。

@@ -1,0 +1,27 @@
+{
+  "freeze_id": "APCORE_SUCCESSOR_FORMAL_BINDING_CONTRACT_1",
+  "kind": "GOVERNANCE_CONTRACT_NOT_IMPLEMENTATION_SOURCE_FREEZE",
+  "status": "FROZEN",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "files": {
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/BINDING_ARCHITECTURE.md": "1b9a71abd0e2e41ff34c244535349bd028350c4eddf9c51cb8ff6b1a2bc2accd",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/IMPLEMENTATION_ALLOWLIST.md": "71c6c4e36401e634e20691712b73d076c59966c3694d4d0eec7cdeb8da7b29a8",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/IMPLEMENTATION_ALLOWLIST.json": "0fb3f943bd5f90e17e79e7f62700c26b6027a6789ef19dba194196b4de24647a",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/PROVIDER_SCOPE_CONTRACT.json": "8a8fa9e625477aa7950e0415dacf2d46d6bdd43b56b38accd47d1ce47480e94d",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/REQUEST_SERIALIZATION_CONTRACT.json": "8b54800208816ae977018c1ec7cf168539fd1d238aaecd851a4b82ad972b1f1b",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/USAGE_ACCOUNTING_CONTRACT.md": "cb7d5c2e846235e47297781784cc111aeb62de0c5488eec92362c6ea617be82a",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/INPUT_BOUND_CONTRACT.md": "606cb2f2f246d2442703f2be37eba03d764493535406dbaa31b626460d023c94",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/TERMINAL_UNKNOWN_CONTRACT.md": "c96be3ba6be20f07daed3bed34c28d9d265524d2a4a461c67f7e9b0aabf65166",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/SOURCE_FREEZE_PLAN.md": "be07bbb2c134ac2964d26215d2c7a62b89f3d5ed6b609df6f095b0ab900e294f",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/OFFLINE_TEST_PLAN.md": "06b200b82b08f121c1b2e376308f922a92b5c390bf5914b836ad7d84636f2376",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/OFFLINE_TEST_PLAN.json": "f924c7979f7e7a6341682984cdfde0e17f8dd51340b9e142a98474581a38a456",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/OFFICIAL_PRICING_EVIDENCE.json": "e2e273877218a764cbfecf898fd170816deff9ff0e761df92a6e2239399c79b4",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/BUDGET_ANALYSIS.json": "31a84c5e64de1b1f3c3402e69c5fd90d2bc91516382679e6e6b891d44bac4f84",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/BUDGET_DECISION.md": "10ee52b33942ac911aca0a40ee36a73d5abbd417b341d3ebb9fb6920f0c4de1d",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/NEXT_EXECUTION_PROMPT.md": "32962c400243dc01e2e5445cb141164ea5e351644e77aa411b4cf1482c72979a",
+    "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/SCOPE_ALIGNMENT.json": "9df2e8a26a718f98c0f9e91502d11989dce7809c9d8dbd925f719f26036042a1"
+  },
+  "at_utc": "2026-09-20T16:53:04.352178+00:00",
+  "implementation_authorized_this_task": false,
+  "executable": false
+}

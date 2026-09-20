@@ -1,0 +1,17 @@
+# 新实现源码冻结方案（尚未创建）
+
+未来freeze命名：OPENAI_FORMAL_SUCCESSOR_BINDING_<YYYYMMDD>_<NN>；目录persona_core/gpt6_optimization_v2/openai_formal_binding_<YYYYMMDD>_<NN>/。日期取实际完成日、NN取未占用递增序号；不能复用旧名称或创建当前假实现manifest。当前new_source_freeze=PLANNED，implementation_manifest_exists=false。
+
+parent为BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01及其SOURCE_MANIFEST SHA-256 d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b。旧manifest、旧归档和原182字节身份永久保留；五个既有文件变更只进入新manifest。实现前保存完整parent archive；旧source的current-tree MATCH在实现后不再冒称成立，改为parent archive MATCH与新source MATCH分别报告。
+
+新source manifest membership：原182成员全部保留（其中允许至多五个新哈希）+两新增精确源码/测试路径，共184个基础成员。当前runner.source_files()实际覆盖165成员，原manifest另含16个P1合同成员及其CONTRACT_FREEZE_MANIFEST，共17个治理成员。因此未来必须精确等于 **新runner扫描167成员 ∪ 原17个P1治理成员**，而不是误要求184全部来自runner扫描。两集合及其hash均须核对，任何意外新增/删除源码立即停止。若既有182之外有先前未发现的新成员，不自动吸收。semantic_binding消费的每个catalog/dataset/rubric/route文件必须在要求的对应manifest内；model quality policy通过独立binding manifest绑定。不得把新acceptance config或最终报告反向纳入其自身引用的source manifest造成自指。
+
+单独建立IMPLEMENTATION_BINDING_MANIFEST.json，绑定新source manifest、其parent、新runtime_source_identity、APCORE_SUCCESSOR_FORMAL_BINDING_CONTRACT_1的CONTRACT_FREEZE_MANIFEST、P1、model-quality-policy、scope-7合同、adapter版本和source hash、request合同、usage合同、pricing snapshot/rate identity、tokenizer与input proof、精确预算receipt（未批准时不可造）、测试模块hash和原始测试回执hash。old/new差异表列path、old/new hash、allowlist条目、测试依据。
+
+生成新的FORMAL_ACCEPTANCE_CONFIG.json：从原config精确复制，仅更新acceptance_source_freeze和acceptance_source_manifest；display/state/strict、consumer、record、evaluation、criterion routing等语义字段及原内容不变。scope的provider_config_identity由新source/scope/完整控制生成；不给历史accepted记录换hash。任何新session只用新隔离store。
+
+顺序：七路径离线实现→在work的临时snapshot执行最小离线与受影响回归→通过后写一次真实source freeze及binding manifest→用新freeze运行ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT→单独seal preflight报告。不将preflight报告放入它所校验的source manifest。若preflight失败保留失败freeze和证据，不伪改成PASS；修复后新序号、仅重跑受影响检查。
+
+测试身份必须包括source hash、test module/fixture hash、实际runner版本、case IDs、结果、时间、0 network/calls/credential断言。历史P3 GREEN保留为parent证据，不算新scope测试；历史449 compatible+1 expected identity sentinel不得改写450全PASS。
+
+所有freeze只证明身份与所述测试范围，不证明模型质量。下一付费revision仍NOT_CREATED，G6-07 FAIL，G6-08/09 LOCKED。公开只发去私有内容的manifest摘要；来源/私题/凭据文件只hash，不复制到公开包。
