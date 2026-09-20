@@ -1,0 +1,17 @@
+{
+  "freeze_id": "APCORE_MODEL_QUALITY_ACCEPTANCE_1",
+  "kind": "GOVERNANCE_POLICY_NOT_SOURCE_FREEZE",
+  "at_utc": "2026-09-20T15:28:00.788759+00:00",
+  "files": {
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/MODEL_QUALITY_ACCEPTANCE_POLICY.md": "166c067ce7103a7420a4605547e1e978205fd8c843e01c98109b0d93cb7ed100",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/MODEL_CONFIGURATION_QUALIFICATION.md": "b72b0071cc1632c837f8586d584c0cc30eb9ac666d7ae10955c77a62c6f99292",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/REVISION_SAMPLING_POLICY.md": "e3253238987ab1838fd91ee79a74ca5f818383b717b6a1b5ecccca88ac2df356",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/HARD_STOP_POLICY.md": "f81ed4f282578ea8f4b32c6f1b2a4afde49dfa3bab55bc8f75a0f558f339c500",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/AGGREGATION_RULES.md": "264c482b685c79b46090c0f862933bd4a926a09d227887a17078875cd424a144",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/R16_DISPOSITION.md": "893e2b8690cc1b6c7217645a57e9015e88013685ef1fca596b0f1eed77796160",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/NEXT_VALIDATION_PLAN.md": "c912c1607f8b4afd4f9e87dda72073309d958acd92c95fe0192920b1239db220",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/NEXT_EXECUTION_PROMPT.md": "11f3641488c3bbd0ac2bc087150451322937487570d078aeec15a30194e52121",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/STATISTICAL_DESIGN_CALCULATIONS.json": "71259a143415b2eadb57dbc32a244a9dfe2224f2f124e14be5998a56d2f5b9d7"
+  },
+  "threshold_changes_require_new_version": true
+}

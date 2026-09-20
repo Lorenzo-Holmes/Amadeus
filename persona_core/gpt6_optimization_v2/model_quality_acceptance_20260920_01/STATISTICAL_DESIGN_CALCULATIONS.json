@@ -1,0 +1,48 @@
+{
+  "kind": "ILLUSTRATIVE_NOT_ADOPTED_RELIABILITY_TARGET",
+  "alpha": 0.05,
+  "zero_failure_bounds": [
+    {
+      "K": 1,
+      "success_lower": 0.05,
+      "failure_upper": 0.95,
+      "turns": 44,
+      "criteria": 176,
+      "historical_guard_linear_cny": 48.64
+    },
+    {
+      "K": 3,
+      "success_lower": 0.3684031498640387,
+      "failure_upper": 0.6315968501359612,
+      "turns": 132,
+      "criteria": 528,
+      "historical_guard_linear_cny": 145.92
+    },
+    {
+      "K": 5,
+      "success_lower": 0.5492802716530588,
+      "failure_upper": 0.4507197283469412,
+      "turns": 220,
+      "criteria": 880,
+      "historical_guard_linear_cny": 243.2
+    },
+    {
+      "K": 10,
+      "success_lower": 0.7411344491069477,
+      "failure_upper": 0.2588655508930523,
+      "turns": 440,
+      "criteria": 1760,
+      "historical_guard_linear_cny": 486.4
+    },
+    {
+      "K": 59,
+      "success_lower": 0.950492390111773,
+      "failure_upper": 0.049507609888227,
+      "turns": 2596,
+      "criteria": 10384,
+      "historical_guard_linear_cny": 2869.76
+    }
+  ],
+  "K_for_95_success_at_one_sided_95_confidence": 59,
+  "iid_not_established": true
+}

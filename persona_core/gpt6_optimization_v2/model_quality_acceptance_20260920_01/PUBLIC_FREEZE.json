@@ -1,0 +1,19 @@
+{
+  "kind": "PUBLIC_ONLY_ALLOWLIST",
+  "files": {
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/MODEL_QUALITY_ACCEPTANCE_POLICY.md": "166c067ce7103a7420a4605547e1e978205fd8c843e01c98109b0d93cb7ed100",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/MODEL_CONFIGURATION_QUALIFICATION.md": "b72b0071cc1632c837f8586d584c0cc30eb9ac666d7ae10955c77a62c6f99292",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/REVISION_SAMPLING_POLICY.md": "e3253238987ab1838fd91ee79a74ca5f818383b717b6a1b5ecccca88ac2df356",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/HARD_STOP_POLICY.md": "f81ed4f282578ea8f4b32c6f1b2a4afde49dfa3bab55bc8f75a0f558f339c500",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/AGGREGATION_RULES.md": "264c482b685c79b46090c0f862933bd4a926a09d227887a17078875cd424a144",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/R16_DISPOSITION.md": "893e2b8690cc1b6c7217645a57e9015e88013685ef1fca596b0f1eed77796160",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/NEXT_VALIDATION_PLAN.md": "c912c1607f8b4afd4f9e87dda72073309d958acd92c95fe0192920b1239db220",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/NEXT_EXECUTION_PROMPT.md": "11f3641488c3bbd0ac2bc087150451322937487570d078aeec15a30194e52121",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/STATISTICAL_DESIGN_CALCULATIONS.json": "71259a143415b2eadb57dbc32a244a9dfe2224f2f124e14be5998a56d2f5b9d7",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/CANONICAL_ADOPTION_RECORD.md": "433542e61b54ad9b65fa74125109c6053b359599ad73f4e5133f296e1fa7db12",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/PUBLIC_AUDIT.json": "d052f8bc299972846cfe0d611d289e544043303ebb666a432897e6e29e742237",
+    "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/PUBLIC_STATE.json": "545024c9a775127333f26e145c9d0544ec968e5771fdab4d422e6da79a0063b4"
+  },
+  "private_evidence_included": false
+}
