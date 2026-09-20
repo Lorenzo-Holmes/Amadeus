@@ -1,0 +1,158 @@
+{
+  "version": "APCORE_OPENAI_IMPLEMENTATION_BINDING_1",
+  "source_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "1daf9e58b0331570507dbd08ab2f22b72abf9bcb208f33e1e23fb8c334c533cb"
+  },
+  "parent_source": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+    "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  },
+  "runtime_source_binding": {
+    "version": "apcore-runtime-source-1",
+    "sha256": "0f2b381dfad227bf96ab79bd3f6c55582b44361790c47cf3b3a83c667942f273"
+  },
+  "binding_contract": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/CONTRACT_FREEZE_MANIFEST.json",
+    "sha256": "8b6d2ee98492b6ee6b3e157606b59de173cd315ecea2b85c9602c610fc6484ce"
+  },
+  "scope_version": "apcore-provider-scope-7",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "adapter_version": "APCORE_OPENAI_FORMAL_ADAPTER_1",
+  "adapter_source": {
+    "path": "persona_core/operational_runtime_v1/provider_openai.py",
+    "sha256": "35991b4d3a7f4c260728eb4b033b08399e01d36c932998b83e4459dc204f446b"
+  },
+  "request_serialization_contract": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/REQUEST_SERIALIZATION_CONTRACT.json",
+    "sha256": "8b54800208816ae977018c1ec7cf168539fd1d238aaecd851a4b82ad972b1f1b"
+  },
+  "accounting_contract": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/USAGE_ACCOUNTING_CONTRACT.md",
+    "sha256": "cb7d5c2e846235e47297781784cc111aeb62de0c5488eec92362c6ea617be82a"
+  },
+  "quality_policy": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+    "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+  },
+  "p1_contract": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+    "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+  },
+  "acceptance_config": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/FORMAL_ACCEPTANCE_CONFIG.json",
+    "sha256": "47af2482f0e1e00f07e322b729996b944b46a5f81d12f6f203cafe771cd2924e"
+  },
+  "provider_identity": "d8be0c3e04c791b3c5202a3c9433a10fcdee6f6e56b5b64c9df3dbe2d6a0d414",
+  "schedule_identity": "3b705f63c3bf36ff01b4d9a3ea05479e1e564496814bbfb1c86012546d354430",
+  "evaluation_schema": "apcore-gpt6-evaluation-2",
+  "identity_references": {
+    "configuration": {
+      "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/CONFIGURATION_PREREGISTRATION.json",
+      "sha256": "b110549e5d76372cbbff79f4f919d92af89a482636498c7604a4b6c45fe9e0ff"
+    },
+    "contract": {
+      "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/CONTRACT_FREEZE_MANIFEST.json",
+      "sha256": "8b6d2ee98492b6ee6b3e157606b59de173cd315ecea2b85c9602c610fc6484ce"
+    },
+    "quality_policy": {
+      "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+      "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+    },
+    "dataset": {
+      "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+      "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+    },
+    "rubric": {
+      "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+      "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+    },
+    "criterion_routing": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+      "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+    },
+    "source_manifest": {
+      "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/SOURCE_MANIFEST.json",
+      "sha256": "1daf9e58b0331570507dbd08ab2f22b72abf9bcb208f33e1e23fb8c334c533cb"
+    },
+    "acceptance_config": {
+      "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/FORMAL_ACCEPTANCE_CONFIG.json",
+      "sha256": "47af2482f0e1e00f07e322b729996b944b46a5f81d12f6f203cafe771cd2924e"
+    }
+  },
+  "authorization": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/EXECUTION_AUTHORIZATION.json",
+    "sha256": "b7d833c6cef29e83a651b9a9d631a89e70fd39c4fb0b0274f9d331a55e5a628b"
+  },
+  "pricing": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/OFFICIAL_PRICING_EVIDENCE.json",
+    "sha256": "7ef0c4011cccd3b4a42014906d7970bfd0921670c64880b31d473b7843ef166d"
+  },
+  "input_bound_proof": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/INPUT_BOUND_PROOF_AUDIT.json",
+    "sha256": "5fb576b7a13bae09bb02897a0fb012e4777e1369bba52226324a9a5ed752b78b"
+  },
+  "input_bound_status": "NOT_READY",
+  "offline_tests": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/OFFLINE_TEST_RECEIPT.json",
+    "sha256": "bc9e304393dc23e12f7938e8cb039ad2dd9bc08d1f2df9d2fc109e92b618621a"
+  },
+  "implementation_changes": [
+    {
+      "path": "persona_core/operational_runtime_v1/provider_openai.py",
+      "operation": "ADD",
+      "old_sha256": null,
+      "new_sha256": "35991b4d3a7f4c260728eb4b033b08399e01d36c932998b83e4459dc204f446b"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_adapters.py",
+      "operation": "MODIFY",
+      "old_sha256": "9d4822ca758ec1c3b2e64446825e614fde5a5ceeb510cc094e3a6434a848d3de",
+      "new_sha256": "d720d5fc23b33e6b7e4135ec78f5563ebb5fad550e9e3df656da2e22f6c4caab"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_contract.py",
+      "operation": "MODIFY",
+      "old_sha256": "b0b63106600cc0a4fd8fa3a7961f8b8bffe083f7d3595a1a0e1412072642c168",
+      "new_sha256": "0db401bcbf50fea6943619730ef5b03c4238299a852270f33374455d7ed82d38"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider.py",
+      "operation": "MODIFY",
+      "old_sha256": "adb0d0fb6890c47e12bf87ef52f26247841f7c20e6b01411ed7e286e49f37e77",
+      "new_sha256": "fa611ef9551c014435c8706fa17d0108b8b3cb30b76d26b6e50a91f078becd0f"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+      "operation": "MODIFY",
+      "old_sha256": "18b36d81cc7b18f7efede9d5a9ad0c27b25048dda8d96cd6e3f01d7847513a73",
+      "new_sha256": "957facd4fdbb2def452ecff71ac24e80563a1f98c49e8907fb16e034caceb65f"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+      "operation": "MODIFY",
+      "old_sha256": "5435c6e43a8afd34a37f7e441b8498336d479347ebf8653af8dcc931153d0986",
+      "new_sha256": "e23382e08c19382c94b05779c0ebbbddbc748e3efedefbbfb05fb325d33bde60"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+      "operation": "ADD",
+      "old_sha256": null,
+      "new_sha256": "90eda5066a80683819e0d8420e41fc847ef2f20de62961bd5c027cc23f8431e3"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/transcript_store.py",
+      "operation": "MODIFY",
+      "old_sha256": "da56e2409e0a3dcc73cdb38580b589e74165022a831b11a6747287c594eb02eb",
+      "new_sha256": "021cce0dbd60a27d11a4ff9242cb4590fbfa3c759aa0d7f1767a3bc27e4cb793"
+    }
+  ],
+  "allowlist_extension": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/LIMITED_ALLOWLIST_EXTENSION.json",
+    "sha256": "6d344c9e84a0f38058980e86014a40a5982212cbc0b8ef9e2fcd49ea52716abf"
+  },
+  "formal_preflight": "NOT_READY_NOT_EXECUTED",
+  "provider_requests": 0,
+  "quality_pass_inherited": false,
+  "at_utc": "2026-09-20T18:19:12.241523+00:00"
+}

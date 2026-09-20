@@ -207,6 +207,9 @@ def official_transport(payload: bytes, credential: str, *, timeout_seconds: floa
 
 def scope_check(scope: dict) -> None:
     version = scope.get('schema_version')
+    if version == adapter_contract.FORMAL_SCOPE_VERSION:
+        adapter_contract.check_formal_scope(scope, provider_adapters.select(scope))
+        return
     if version == adapter_contract.SCOPE_VERSION:
         adapter_contract.check_scope(scope, provider_adapters.select(scope))
         return
@@ -341,10 +344,11 @@ class ProviderJournal:
         ensure(batch is not None and not batch["stopped"], "Batch missing or stopped; no automatic retry")
         scope = json.loads(batch["scope_json"])
         scope_check(scope)
-        generic = scope.get('schema_version') == adapter_contract.SCOPE_VERSION
+        formal = scope.get('schema_version') == adapter_contract.FORMAL_SCOPE_VERSION
+        generic = formal or scope.get('schema_version') == adapter_contract.SCOPE_VERSION
         adapter = provider_adapters.select(scope) if generic else None
         actual_provider = transport is official_transport and (adapter is None or adapter.capabilities.network_access)
-        if generic:
+        if generic and not formal:
             ensure(handle.mode == 'CHARACTER_SIMULATION', 'INDEPENDENT_VALIDATION_REQUIRES_SIMULATION_MODE')
         ensure(digest(scope) == batch["scope_sha256"], "Batch binding corrupted")
         slots = {s["id"]: s for s in scope["slots"]}
@@ -360,10 +364,6 @@ class ProviderJournal:
         ensure(messages[-1] == {"role": "user", "content": row["user_text"]}, "Latest input mismatch")
         nbytes = len(canonical(messages))
         ensure(nbytes <= scope["max_input_bytes"], "Prompt outside pinned byte budget")
-        key = (adapter.credential() if generic and (not adapter.capabilities.network_access
-               or credential_reader is existing_credential) else credential_reader())
-        ensure(isinstance(key, str) and key.strip(), "Configured credential missing; no request submitted")
-        ensure(key not in canonical(context).decode("utf-8"), "Credential detected in context; request refused")
         model = slot["model"]
         v2 = scope.get('schema_version') in {'apcore-provider-scope-2', 'apcore-provider-scope-3', 'apcore-provider-scope-4', 'apcore-provider-scope-5'}
         responses_api = scope.get('schema_version') in {'apcore-provider-scope-4', 'apcore-provider-scope-5'}
@@ -383,10 +383,22 @@ class ProviderJournal:
                 if scope['stream']:
                     payload['stream_options'] = {'include_usage': True}
         request_bytes = canonical(payload)
+        input_receipt = None
+        if formal:
+            from provider_openai import local_input_bound, verify_input_receipt
+            input_receipt = local_input_bound(scope, request_bytes)
+        # All formal identity, serialization and local proof checks precede any
+        # credential access, journal allocation or network action.
+        key = (adapter.credential() if generic and (not adapter.capabilities.network_access
+               or credential_reader is existing_credential) else credential_reader())
+        ensure(isinstance(key, str) and key.strip(), "Configured credential missing; no request submitted")
+        ensure(key not in canonical(context).decode("utf-8"), "Credential detected in context; request refused")
         reserve = (adapter.reserve(scope, model, nbytes) if generic else
             (nbytes + scope["input_overhead_reserve_tokens"]) * RATES[model][0] + scope["max_output_tokens"] * RATES[model][1])
         call_id = "call_" + uuid.uuid4().hex
         with self.store.transaction():
+            if formal:
+                verify_input_receipt(scope, request_bytes, input_receipt)
             # Re-check under the write lock to serialize two host processes.
             ensure(self.store.get_turn(handle, turn_id)["status"] == "RECEIVED", "Turn is not new")
             b = self.store.db.execute("SELECT stopped FROM call_batches WHERE batch_id=?", (batch_id,)).fetchone()
@@ -414,6 +426,10 @@ class ProviderJournal:
                     'reserve': {'micro_cny': reserve, 'input_tokens': nbytes + scope['input_overhead_reserve_tokens'],
                                 'output_tokens': scope['max_output_tokens']},
                     'spend_policy': scope['spend_policy'], 'billing_certified': False, 'semantic_acceptance': False}
+                if formal:
+                    binding.update(input_bound_receipt=input_receipt, request_sha256=hashlib.sha256(request_bytes).hexdigest(),
+                        native_receipt_version='APCORE_OPENAI_NATIVE_RECEIPT_1')
+                    binding['reserve']['input_tokens']=28672
                 self.store.db.execute('INSERT INTO provider_call_contracts VALUES(?,?)', (call_id, canonical(binding).decode()))
             self.store.db.execute("UPDATE turns SET status='SUBMITTED_STATUS_UNKNOWN',request_id=? WHERE turn_id=?", (call_id, turn_id))
             self._transition(turn_id, "SUBMITTED_STATUS_UNKNOWN", {"call_id": call_id, "reserve_micro_cny": reserve, "automatic_retries": 0})
@@ -517,6 +533,7 @@ class ProviderJournal:
         validated_terminal_rejection = False
         native_terminal_event = None
         generic_rejection = None
+        formal_usage = None
         if generic:
             terminal_status, native_terminal_event, generic_rejection = adapter.terminal(scope, json.loads(raw))
             terminal_known = True  # Native wire was revalidated before this layer.
@@ -550,21 +567,28 @@ class ProviderJournal:
                 observed_finish = observed_choices[0].get('finish_reason')
                 if observed_finish in lifecycle_transport.FINISHES:
                     finish = observed_finish
+            if formal:
+                formal_usage = adapter_contract.formal_accounting(body.get('native_usage'),scope,model,
+                    input_receipt['input_upper_tokens'],body['choices'][0]['message']['content'])
+                estimate = formal_usage['estimate_micro_cny']
+                adapter.verify_effective_identity(scope,body,model)
+                ensure(formal_usage['rejection'] is None, formal_usage['rejection'] or 'OPENAI_USAGE_REJECTED')
             if generic:
                 adapter.validate_model(model, provider_model)
             else:
                 validate_provider_model(model, provider_model, strict_version=v2)
             # Valid usage remains chargeable even when final text is unusable.
             # Exact decimal arithmetic avoids rounding a binary float upward.
-            estimate = adapter_contract.estimate_usage(usage, adapter.rates(scope, model) if generic else RATES[model])
-            ensure(usage["prompt_tokens"] <= nbytes + scope["input_overhead_reserve_tokens"] and usage["completion_tokens"] <= scope["max_output_tokens"], "USAGE_EXCEEDS_RESERVED_BOUND")
+            if not formal:
+                estimate = adapter_contract.estimate_usage(usage, adapter.rates(scope, model) if generic else RATES[model])
+                ensure(usage["prompt_tokens"] <= nbytes + scope["input_overhead_reserve_tokens"] and usage["completion_tokens"] <= scope["max_output_tokens"], "USAGE_EXCEEDS_RESERVED_BOUND")
             if terminal_rejection is not None:
                 raise StoreGuard(terminal_rejection['reason'])
             if generic_rejection is not None:
                 raise StoreGuard(generic_rejection)
             if isinstance(observed_choices, list) and len(observed_choices) == 1 and isinstance(observed_choices[0], dict):
                 finish = observed_choices[0].get('finish_reason')
-            text, finish = adapter_contract.usable_reply(body, responses_api=responses_api)
+            text, finish = adapter_contract.usable_reply(body, responses_api=responses_api or formal)
             if generic:
                 ensure(terminal_status == 'completed', 'PROVIDER_NOT_COMPLETED')
             outcome = "RESPONSE_CAPTURED"
@@ -577,6 +601,14 @@ class ProviderJournal:
         if outcome != 'RESPONSE_CAPTURED' and terminal_known:
             outcome = 'RESPONSE_REJECTED_TERMINAL_KNOWN'
         with self.store.transaction():
+            if formal:
+                bound = json.loads(self.store.db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?',(call_id,)).fetchone()[0])
+                safe_body = json.loads(stored_raw)
+                bound.update(native_response_sha256=digest(safe_body.get('native_response')),accounting=formal_usage,
+                    native_usage=safe_body.get('native_usage'),raw_sha256=raw_hash,
+                    remote_outcome='KNOWN_TERMINAL',response_usable=outcome=='RESPONSE_CAPTURED',
+                    wire_sha256=self.store.db.execute('SELECT wire_sha256 FROM transport_wire_captures WHERE call_id=?',(call_id,)).fetchone()[0])
+                self.store.db.execute('UPDATE provider_call_contracts SET contract_json=? WHERE call_id=?',(canonical(bound).decode(),call_id))
             self.store.db.execute("UPDATE provider_calls SET status=?,response_at_utc=?,http_status=?,raw_response=?,raw_sha256=?,raw_was_redacted=?,usage_json=?,finish_reason=?,provider_model=?,error_category=?,estimate_peak_micro_cny=? WHERE call_id=?",
                 (outcome, utc_now(), status, stored_raw, raw_hash, int(redacted), json.dumps(usage) if usage is not None else None, finish, provider_model, category, estimate, call_id))
             if outcome == "RESPONSE_CAPTURED":
@@ -601,7 +633,7 @@ class ProviderJournal:
         result = dict(row)
         result.pop("raw_response")
         scope = json.loads(self.store.db.execute('SELECT scope_json FROM call_batches WHERE batch_id=?', (row['batch_id'],)).fetchone()[0])
-        if scope.get('schema_version') == adapter_contract.SCOPE_VERSION:
+        if scope.get('schema_version') in (adapter_contract.SCOPE_VERSION, adapter_contract.FORMAL_SCOPE_VERSION):
             bound = self.store.db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?', (call_id,)).fetchone()
             ensure(bound is not None, 'PROVIDER_CALL_CONTRACT_MISSING')
             binding = json.loads(bound[0])
@@ -613,6 +645,12 @@ class ProviderJournal:
             result.update(provider_binding=binding, reserve_micro_cny=binding['reserve']['micro_cny'], billing_certified=False,
                           usage_status='KNOWN' if adapter_contract.usage_known(row['usage_json']) else 'UNKNOWN',
                           estimate_status='ESTIMATED' if row['estimate_peak_micro_cny'] is not None else 'UNESTIMATED')
+            if scope.get('schema_version') == adapter_contract.FORMAL_SCOPE_VERSION:
+                ensure(binding['request_sha256']==row['request_sha256'], 'OPENAI_CALL_REQUEST_CHANGED')
+                accounting=binding.get('accounting') or {}
+                result.update(native_usage=binding.get('native_usage'),
+                    usage_status=accounting.get('accounting_status','UNKNOWN'),
+                    estimate_status=accounting.get('accounting_status','UNESTIMATED'))
         return result
 
     def summary(self, batch_id: str) -> dict:
@@ -620,13 +658,18 @@ class ProviderJournal:
         rows = [dict(r) for r in self.store.db.execute("SELECT call_id,slot_id,model,status,reserve_micro_cny,estimate_peak_micro_cny,usage_json,error_category FROM provider_calls WHERE batch_id=? ORDER BY submitted_at_utc", (batch_id,))]
         batch = self.store.db.execute('SELECT scope_json FROM call_batches WHERE batch_id=?', (batch_id,)).fetchone()
         scope = json.loads(batch[0]) if batch else {}
-        generic = scope.get('schema_version') == adapter_contract.SCOPE_VERSION
+        formal = scope.get('schema_version') == adapter_contract.FORMAL_SCOPE_VERSION
+        generic = formal or scope.get('schema_version') == adapter_contract.SCOPE_VERSION
         if generic:
             for row in rows:
                 binding = json.loads(self.store.db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?', (row['call_id'],)).fetchone()[0])
                 row.update(reserve_micro_cny=binding['reserve']['micro_cny'], reserve=binding['reserve'],
                            provider_id=binding['provider_id'], generation_identity=binding['generation_identity'])
+                if formal:
+                    row['native_accounting_status']=(binding.get('accounting') or {}).get('accounting_status','UNKNOWN')
         complete = all(r['estimate_peak_micro_cny'] is not None for r in rows)
+        if formal:
+            complete = all(r['native_accounting_status']=='ESTIMATED_FROM_COMPLETE_USAGE' for r in rows)
         subtotal = sum(r['estimate_peak_micro_cny'] or 0 for r in rows) / 1_000_000
         return {"batch_id": batch_id, "calls": rows, "calls_submitted": len(rows),
                 "calls_recorded": len(rows),
@@ -641,6 +684,6 @@ class ProviderJournal:
                 "billing_verified": False, "automatic_paid_retries": 0,
                 **({'billing_certified': False, 'provider_id': scope['provider_id'],
                     'accounting_status': 'ESTIMATED' if complete else 'UNESTIMATED',
-                    'known_usage_count': sum(adapter_contract.usage_known(r['usage_json']) for r in rows),
-                    'unknown_usage_count': sum(not adapter_contract.usage_known(r['usage_json']) for r in rows),
+                    'known_usage_count': sum(r['native_accounting_status']=='ESTIMATED_FROM_COMPLETE_USAGE' if formal else adapter_contract.usage_known(r['usage_json']) for r in rows),
+                    'unknown_usage_count': sum(r['native_accounting_status']!='ESTIMATED_FROM_COMPLETE_USAGE' if formal else not adapter_contract.usage_known(r['usage_json']) for r in rows),
                     'semantic_acceptance': False} if generic else {})}

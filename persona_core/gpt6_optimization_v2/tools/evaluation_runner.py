@@ -188,7 +188,8 @@ def frozen_inputs():
 def load_suite(suite, primary, secondary):
     heldout = frozen_inputs()
     provider = runtime_modules()[0]
-    require(primary in provider.RATES and secondary in provider.RATES and primary != secondary,
+    successor = (primary,secondary)==('gpt-6-astra','gpt-5.6-sol')
+    require((successor and suite=='external44') or (primary in provider.RATES and secondary in provider.RATES and primary != secondary),
             "DISTINCT_SUPPORTED_MODELS_REQUIRED")
     if suite == "heldout":
         cases = heldout["cases"]
@@ -272,6 +273,15 @@ def source_bindings():
 
 def checked_pricing(record, offline, models=None):
     provider = runtime_modules()[0]
+    if tuple(models or ()) == ('gpt-6-astra','gpt-5.6-sol'):
+        require(record is not None,'OPENAI_PRICING_REQUIRED')
+        value=read(record)
+        require(value.get('currency')=='USD' and value.get('official_pricing_refreshed') is True
+            and set(value.get('rates',{}))==set(models),'OPENAI_PRICING_MISMATCH')
+        if not offline:
+            today=datetime.now(timezone(timedelta(hours=8))).date().isoformat()
+            require(value.get('observation_date_shanghai')==today,'PRICING_RECORD_NOT_CURRENT')
+        return value
     rates = {model: {"input_miss": v[0], "output": v[1], "input_hit": v[2]}
              for model, v in provider.RATES.items()}
     if offline:
@@ -300,7 +310,12 @@ def checked_pricing(record, offline, models=None):
 
 def build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes=24576,
                 max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy=None,
-                api_protocol=None, network_route_policy=None):
+                api_protocol=None, network_route_policy=None, successor=None):
+    if successor is not None:
+        require((primary,secondary)==('gpt-6-astra','gpt-5.6-sol') and max_input_bytes==24576
+            and max_output_tokens==32768 and timeout_seconds==600 and api_protocol=='responses'
+            and guard_cny is None,'OPENAI_FROZEN_PREPARE_CONTROLS')
+        return build_successor_scope(revision,suite_data,pricing,transport_policy,network_route_policy,**successor)
     provider = runtime_modules()[0]
     slots = suite_data["slots"]
     reserve = sum((max_input_bytes + 4096) * provider.RATES[s["model"]][0] +
@@ -336,6 +351,50 @@ def build_scope(revision, suite_data, pricing, primary, secondary, max_input_byt
         scope.update(stream=True, transport_policy=dict(transport_policy))
     provider.scope_check(scope)  # Existing 150 CNY ceiling is not bypassed or split.
     return scope
+
+
+def build_successor_scope(revision,suite_data,pricing,transport_policy,network_route_policy,*,
+                          authorization_file,pricing_file,acceptance_config_file,input_proof_file=None):
+    runtime_modules()
+    import provider_contract as pc
+    import provider_openai as oa
+    from decimal import Decimal
+    config=read(acceptance_config_file)
+    design=oa.frozen_contract()['PROVIDER_SCOPE_CONTRACT.json']['schedule']
+    refs={'configuration':{'path':oa.CONFIG_PATH,'sha256':oa.CONFIG_SHA},
+        'contract':{'path':oa.CONTRACT_DIR+'CONTRACT_FREEZE_MANIFEST.json','sha256':oa.CONTRACT_SHA},
+        'quality_policy':{'path':oa.POLICY_PATH,'sha256':oa.POLICY_SHA},
+        'dataset':oa.reference(suite_data['cases_path']),'rubric':oa.reference(GOAL/'external_failure_v1/PRIVATE_RUBRIC.json'),
+        'criterion_routing':config['criterion_routing'],'source_manifest':config['acceptance_source_manifest'],
+        'acceptance_config':oa.reference(acceptance_config_file)}
+    scope={'schema_version':pc.FORMAL_SCOPE_VERSION,'provider_id':'openai','candidate_id':oa.CANDIDATE,
+        'batch_design_id':'APCORE_SUCCESSOR_EXTERNAL44_ASTRA_SOL_MAX_SINGLE_BATCH_1',
+        'validation_purpose':'FORMAL_EXTERNAL44_CONFIGURATION_QUALIFICATION','formal_validation':True,
+        'batch_id':'APCORE-G6-V2-'+revision,'principal_id':'APCORE_G6_V2_'+revision,
+        'endpoint':oa.ENDPOINT,'api_protocol':'responses','primary_model':oa.MODELS[0],'switch_model':oa.MODELS[1],
+        'slots':suite_data['slots'],'stream':True,'thinking':{'type':'enabled'},'reasoning_effort':'max',
+        'tools_allowed':False,'automatic_paid_retries':0,'generation_config':oa.generation_options(),
+        'max_input_bytes':24576,'input_overhead_reserve_tokens':4096,'max_output_tokens':32768,
+        'request_timeout_seconds':600,'transport_policy':transport_policy,'network_route_policy':network_route_policy,
+        'transport_contract_version':pc.TRANSPORT_VERSION,'capabilities':oa.CAPABILITIES.declaration(),
+        'source_binding':pc.runtime_source_binding(),'schedule_identity':value_sha(design),'identity_references':refs,
+        'evaluation_schema':SCHEMA,'criteria_count':176,'gate_denominators':{'A':176,'B':132},
+        'stop_rules':{'quality_major':'QUALITY_FAILURE_STOP','state_major':'INTEGRITY_HARD_STOP',
+            'critical':'SAFETY_HARD_STOP','unknown':'STOP_AND_QUARANTINE'},
+        'input_bound_mode':'VERIFIED_LOCAL_BOUND_REQUIRED','input_bound_proof':read(input_proof_file) if input_proof_file else None,
+        'spend_policy':{'mode':'REVIEWED_RATES_PROJECT_AUTHORIZATION','currency':'USD',
+            'rates_usd_per_million':pricing['rates'],'price_identity':oa.reference(pricing_file),
+            'fx_cny_per_usd':'8','fee_fraction':'0.10','authorization_identity':oa.reference(authorization_file)},
+        'output_budget_includes_reasoning':True,'automatic_capacity_escalation':False,'billing_verified':False}
+    reserve=sum(pc.formal_reserve(scope,s['model'],28672) for s in scope['slots'])
+    scope.update(reserved_upper_micro_cny=reserve,total_guard_cny=str(Decimal(reserve)/1_000_000))
+    return scope
+
+
+def offline_destination(path):
+    value=Path(path).resolve(); base=(ROOT/'work').resolve()
+    require(value.is_relative_to(base) and value!=base,'OFFLINE_ROOT_OUTSIDE_WORK')
+    return value
 
 
 def segments(slots):
@@ -479,7 +538,8 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
             primary=None, secondary="deepseek-v4-pro", max_input_bytes=24576,
             max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy_file=None,
             api_protocol=None, network_route_policy_file=None,
-            formal_validation=False,acceptance_config_file=None):
+            formal_validation=False,acceptance_config_file=None,successor_authorization_file=None,
+            input_proof_file=None,preflight_file=None,offline_root=None):
     frozen_inputs()
     primary = primary or default_primary()
     suite_data = load_suite(suite, primary, secondary)  # Gate before any write.
@@ -487,19 +547,42 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     if formal_validation:
         from semantic_binding import require as binding_require
         binding_require(acceptance_config_file is not None,'ADMISSION','FORMAL_ACCEPTANCE_CONFIG_REQUIRED')
-    root = revision_root(revision)
+    require(offline_root is None or offline,'OFFLINE_DESTINATION_REQUIRES_OFFLINE')
+    root = offline_destination(offline_root) if offline_root is not None else revision_root(revision)
     require(not root.exists(), "REVISION_ALREADY_EXISTS_USE_NEW_REVISION")
     pricing = checked_pricing(pricing_record, offline, (primary, secondary))
     transport_policy = read(transport_policy_file) if transport_policy_file is not None else None
     network_route_policy = read(network_route_policy_file) if network_route_policy_file is not None else None
+    successor = None
+    if successor_authorization_file is not None:
+        require(suite=='external44' and formal_validation,'OPENAI_FORMAL_EXTERNAL44_ONLY')
+        require(not offline or offline_root is not None,'OPENAI_OFFLINE_WORK_ROOT_REQUIRED')
+        successor=dict(authorization_file=successor_authorization_file,pricing_file=pricing_record,
+            acceptance_config_file=acceptance_config_file,input_proof_file=input_proof_file)
     scope = build_scope(revision, suite_data, pricing, primary, secondary, max_input_bytes,
-                        max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol, network_route_policy)
+                        max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol, network_route_policy,successor)
     bindings = source_bindings()
     if formal_validation:
         scope['formal_validation']=True
         rubric=(GOAL/'external_failure_v1/PRIVATE_RUBRIC.json' if suite=='external44' else
                 GOAL/'heldout_v1/REVIEW_PROTOCOL.md' if suite=='heldout' else PROTOCOL/'PRIVATE_RUBRIC.json')
         scope['semantic_acceptance_binding']=build_acceptance_binding(scope,suite_data,acceptance_config_file,rubric_path=rubric,offline=offline)
+    if successor is not None:
+        runtime_modules()[0].scope_check(scope)
+        if not offline:
+            import provider_openai as oa
+            require(oa.input_proof_ready(scope),'INPUT_BOUND_PROOF_NOT_READY')
+            require(preflight_file is not None,'OPENAI_FORMAL_PREFLIGHT_REQUIRED')
+            ready=read(preflight_file)
+            require(ready.get('status')=='READY' and ready.get('provider_call_invocations')==0
+                and ready.get('provider_identity')==scope['semantic_acceptance_binding']['provider_config_identity'],
+                'OPENAI_FORMAL_PREFLIGHT_NOT_READY')
+            # Exclusive allocation survives an interrupted preparation; never
+            # opens a replacement revision under the same authorization.
+            require(not any(process_alive(read(p).get('pid')) for p in EVIDENCE.glob('G6_V2_*/ACTIVE_RUN.json')),
+                'ACTIVE_PAID_DRIVER_PRESENT')
+            allocation=EVIDENCE/('SUCCESSOR_ALLOCATION_'+oa.CANDIDATE+'.json')
+            write_new(allocation,{'revision':revision,'scope_sha256':value_sha(scope),'preflight':oa.reference(preflight_file)})
     root.mkdir(parents=False, exist_ok=False)
     write_new(root / "PREPARATION_INTENT.json", {"revision_id": revision, "at_utc": now(), "provider_calls": 0})
     provider, transcript, *_ = runtime_modules()
@@ -548,10 +631,12 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
         for key in ('semantic_acceptance_mode','acceptance_policy_version','acceptance_source_freeze',
                     'trusted_semantic_runtime_version','provider_config_identity','dataset_identity','rubric_identity'):
             manifest[key]=binding[key]
+    if offline_root is not None:
+        manifest['offline_construction_root']=relative(root)
     write_new(root / "MANIFEST.json", manifest)
     write_new(root / "MANIFEST_SEAL.json", {"sha256": sha(root / "MANIFEST.json")})
     cursor(root, "PREPARED", in_flight_external_effect=None, safe_to_resume=True)
-    return status(revision)
+    return status(revision,offline_root=root if offline_root is not None else None)
 
 
 def read_contract(root):
@@ -559,14 +644,20 @@ def read_contract(root):
             "PREPARATION_INCOMPLETE_USE_NEW_REVISION")
     require(sha(root / "MANIFEST.json") == read(root / "MANIFEST_SEAL.json")["sha256"], "MANIFEST_SEAL_MISMATCH")
     manifest = read(root / "MANIFEST.json")
-    require(root == revision_root(manifest["revision_id"]), "REVISION_ID_PATH_MISMATCH")
+    expected_root=revision_root(manifest['revision_id'])
+    if 'offline_construction_root' in manifest:
+        require(manifest['capture_mode']==OFFLINE,'OFFLINE_PATH_TARGET_FORBIDDEN')
+        expected_root=offline_destination(ROOT/manifest['offline_construction_root'])
+    require(root == expected_root, "REVISION_ID_PATH_MISMATCH")
     for name, expected in manifest["artifacts"].items():
         path = (root / name).resolve()
         require(path.parent == root and path.is_file() and sha(path) == expected, "REVISION_ARTIFACT_CHANGED")
     scope = read(root / "SCOPE.json")
     runtime_modules()
-    from provider_contract import guard_legacy_identity
-    guard_legacy_identity(scope)
+    from provider_contract import guard_legacy_identity, FORMAL_SCOPE_VERSION
+    if scope.get('schema_version')==FORMAL_SCOPE_VERSION:
+        runtime_modules()[0].scope_check(scope)
+    else: guard_legacy_identity(scope)
     if manifest.get('formal_validation') or scope.get('formal_validation'):
         from formal_acceptance import verify_metadata
         verify_metadata(manifest,scope,read(root/'PREPARATION.json'))
@@ -650,7 +741,16 @@ def validate_rows(db, root, manifest, scope, preparation):
                 "REQUEST_HASH_MISMATCH")
         payload = json.loads(request["request_json"])
         context = json.loads(request["context_json"])
-        if scope.get('api_protocol') == 'responses':
+        if scope.get('schema_version')=='apcore-provider-scope-7':
+            import provider_openai as oa
+            expected=oa.OpenAIAdapter().serialize(scope,slot['model'],context['messages'])
+            bound_messages=payload.get('input')
+            bound=db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?',(row['call_id'],)).fetchone()
+            require(bound is not None,'OPENAI_CALL_CONTRACT_MISSING')
+            receipt=json.loads(bound[0])
+            oa.verify_input_receipt(scope,request['request_json'].encode('utf-8'),receipt['input_bound_receipt'])
+            require(receipt['scope_sha256']==value_sha(scope) and receipt['request_sha256']==row['request_sha256'], 'OPENAI_CALL_IDENTITY_CHANGED')
+        elif scope.get('api_protocol') == 'responses':
             expected = {"model": slot["model"], "input": context["messages"],
                         "max_output_tokens": scope["max_output_tokens"], "stream": True,
                         "reasoning": {"effort": scope["reasoning_effort"]}}
@@ -670,7 +770,16 @@ def validate_rows(db, root, manifest, scope, preparation):
             require(not request["raw_was_redacted"] and request["raw_response"] is not None and
                     json.loads(request["raw_response"])["choices"][0]["message"]["content"] == row["assistant_text"],
                     "ASSISTANT_TEXT_DIFFERS_FROM_RAW_RESPONSE")
-            if scope.get('api_protocol') == 'responses' and origin == TARGET:
+            if scope.get('schema_version')=='apcore-provider-scope-7':
+                import provider_adapters,provider_transport,provider_contract
+                wire=db.execute('SELECT * FROM transport_wire_captures WHERE call_id=?',(row['call_id'],)).fetchone()
+                require(wire is not None and hashlib.sha256(wire['wire_bytes']).hexdigest()==wire['wire_sha256'],'OPENAI_WIRE_CHANGED')
+                adapter=oa.OpenAIAdapter()
+                provider_adapters.verified_result(adapter,scope,provider_transport.TransportResult(row['http_status'],request['raw_response'],wire['wire_bytes']))
+                body=json.loads(request['raw_response']); adapter.verify_effective_identity(scope,body,slot['model'])
+                accounting=provider_contract.formal_accounting(body['native_usage'],scope,slot['model'],receipt['input_bound_receipt']['input_upper_tokens'],row['assistant_text'])
+                require(receipt.get('accounting')==accounting and accounting['rejection'] is None,'OPENAI_ACCOUNTING_CHANGED')
+            elif scope.get('api_protocol') == 'responses' and origin == TARGET:
                 import provider_transport
                 provider_transport.verify_responses_wire(db, {**row, **dict(request)}, scope)
             from accepted_output import project_turn
@@ -686,8 +795,8 @@ def validate_rows(db, root, manifest, scope, preparation):
     return rows, batch
 
 
-def status(revision):
-    root = revision_root(revision)
+def status(revision, *, offline_root=None):
+    root = offline_destination(offline_root) if offline_root is not None else revision_root(revision)
     manifest, scope, preparation = read_contract(root)
     with readonly_db(root) as db:
         rows, batch = validate_rows(db, root, manifest, scope, preparation)
@@ -803,6 +912,9 @@ def authored_transport(payload, credential):
 def worker(revision, segment_id, run_id, max_turns=None):
     root = revision_root(revision)
     manifest, scope, preparation = verify_sources(root)
+    if scope.get('schema_version')=='apcore-provider-scope-7':
+        require(max_turns==1,'OPENAI_ONE_TURN_THEN_REVIEW_REQUIRED')
+        require_successor_review_prefix(root,manifest,scope,preparation)
     lease = read(root / "ACTIVE_RUN.json")
     require(lease["run_id"] == run_id and lease["pid"] == os.getppid(), "WORKER_REQUIRES_OWNING_PARENT")
     segment = next((s for s in manifest["segments"] if s["id"] == segment_id), None)
@@ -921,9 +1033,32 @@ def worker(revision, segment_id, run_id, max_turns=None):
     return report
 
 
+def require_successor_review_prefix(root,manifest,scope,preparation):
+    """Each captured turn must be adjudicated before another paid submission."""
+    with readonly_db(root) as db: rows,batch=validate_rows(db,root,manifest,scope,preparation)
+    require(not batch['stopped'] and all(completed(r) for r in rows),'OPENAI_STOPPED_OR_UNKNOWN')
+    routes=read(ROOT/scope['identity_references']['criterion_routing']['path'])['criteria']
+    for row in rows:
+        p=root/'reviews'/(row['slot_id']+'.json')
+        require(p.is_file(),'OPENAI_REVIEW_REQUIRED_BEFORE_NEXT_TURN')
+        verdict=read(p); applicable=[r for r in routes if r['turn_id']==row['slot_id']]
+        expected=[r['criterion_id'] for r in applicable]
+        require(verdict.get('slot_id')==row['slot_id'] and verdict.get('raw_sha256')==row['raw_sha256']
+            and verdict.get('displayed_sha256')==hashlib.sha256(row['assistant_text'].encode('utf-8')).hexdigest()
+            and verdict.get('source_manifest_sha256')==manifest['source_manifest_sha256'], 'OPENAI_REVIEW_EVIDENCE_CHANGED')
+        checks=verdict.get('criteria',[])
+        require([v.get('criterion_id') for v in checks]==expected and len(checks)==4
+            and all(v.get('gate_a')=='PASS' and v.get('gate_b')==('PASS' if r['route']=='BOTH' else 'NOT_APPLICABLE_BY_FROZEN_ROUTE')
+                and isinstance(v.get('evidence'),str) and v['evidence'].strip() for v,r in zip(checks,applicable))
+            and verdict.get('blocking_major')==0 and verdict.get('critical')==0,'OPENAI_QUALITY_OR_INTEGRITY_STOP')
+
+
 def run(revision, *, execute=False, max_turns=None):
     root = revision_root(revision)
     manifest, scope, preparation = verify_sources(root)
+    if scope.get('schema_version')=='apcore-provider-scope-7':
+        require(max_turns==1,'OPENAI_ONE_TURN_THEN_REVIEW_REQUIRED')
+        require_successor_review_prefix(root,manifest,scope,preparation)
     require(manifest["capture_mode"] == OFFLINE or execute, "TARGET_RUN_REQUIRES_EXPLICIT_EXECUTE")
     require(max_turns is None or type(max_turns) is int and max_turns > 0, "INVALID_PAUSE_LIMIT")
     before = status(revision)
@@ -1053,6 +1188,10 @@ def main(argv=None):
     p.add_argument("--offline", action="store_true", help="Permanently authored, never target evidence")
     p.add_argument('--formal-validation',action='store_true',help='Require the complete TRUSTED identity even with a local provider')
     p.add_argument('--acceptance-config-file',type=Path,help='Explicit frozen policy/source identity; mandatory for formal external44')
+    p.add_argument('--successor-authorization-file',type=Path)
+    p.add_argument('--input-proof-file',type=Path)
+    p.add_argument('--preflight-file',type=Path)
+    p.add_argument('--offline-root',type=Path)
     p.add_argument("--pricing-record", type=Path)
     p.add_argument("--primary", help="Defaults to deepseek-flash when supported, otherwise legacy alias; always pinned and drift disclosed")
     p.add_argument("--secondary", default="deepseek-v4-pro")

@@ -99,14 +99,22 @@ class ProviderRegistry:
         return self.adapters[provider_id]
 
 
-def registry():
+def registry(*, include_formal=False):
     from provider_fixture import LocalFixtureAdapter
     from provider_openrouter import OpenRouterAdapter
-    return ProviderRegistry((DeepSeekAdapter(), LocalFixtureAdapter(), OpenRouterAdapter()))
+    adapters = (DeepSeekAdapter(), LocalFixtureAdapter(), OpenRouterAdapter())
+    if include_formal:
+        from provider_openai import OpenAIAdapter
+        adapters += (OpenAIAdapter(),)
+    return ProviderRegistry(adapters)
 
 
 def select(scope):
-    return registry().select(scope.get('provider_id'))
+    # Preserve the scope-6 synthetic registry. Worker contracts omit schema_version
+    # and are separately checked against the adapter's closed worker field set.
+    formal = scope.get('schema_version') == contract.FORMAL_SCOPE_VERSION or (
+        'schema_version' not in scope and scope.get('provider_id') == 'openai')
+    return registry(include_formal=formal).select(scope.get('provider_id'))
 
 
 def validate_worker_contract(value):

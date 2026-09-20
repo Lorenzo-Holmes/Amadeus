@@ -10,6 +10,73 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import evaluation_runner as runner
 
+
+def successor_preflight(acceptance_config_file,transport_policy_file,network_route_policy_file,*,
+                        authorization_file,pricing_file,input_proof_file=None,output=None,diagnostics_only=False):
+    """Construct the formal path under work, with no call/key/network access.
+
+    Diagnostics exercise construction with no input proof, but are explicitly
+    NOT_READY. They are not the formal preflight required to authorize allocation.
+    """
+    provider,transcript,operations,*_=runner.runtime_modules()
+    import provider_openai as oa
+    from semantic_binding import require_session
+    proof=runner.read(input_proof_file) if input_proof_file else None
+    if not diagnostics_only and not oa.input_proof_ready({'input_bound_proof':proof}):
+        result={'status':'NOT_READY','blocker':'INPUT_BOUND_PROOF_NOT_READY',
+            'formal_preflight_executed':False,'provider_call_invocations':0,'provider_call_rows':0,
+            'paid_revision_created':False,'kind':'ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT_PREREQUISITE_GATE'}
+        if output is not None: runner.write_new(output,result)
+        return result
+    name='openai_preflight_'+uuid.uuid4().hex
+    base=runner.ROOT/'work/openai_formal_binding/preflight'; base.mkdir(parents=True,exist_ok=True)
+    root=base/name
+    with patch.object(socket.socket,'connect',side_effect=AssertionError('PREFLIGHT_NETWORK_FORBIDDEN')), \
+         patch.object(socket.socket,'connect_ex',side_effect=AssertionError('PREFLIGHT_NETWORK_FORBIDDEN')), \
+         patch.object(oa.OpenAIAdapter,'credential',side_effect=AssertionError('PREFLIGHT_CREDENTIAL_FORBIDDEN')), \
+         patch.object(provider.ProviderJournal,'call',side_effect=AssertionError('PREFLIGHT_CALL_FORBIDDEN')) as calls:
+        runner.prepare(name,suite='external44',offline=True,formal_validation=True,offline_root=root,
+            acceptance_config_file=acceptance_config_file,primary=oa.MODELS[0],secondary=oa.MODELS[1],
+            max_output_tokens=32768,api_protocol='responses',transport_policy_file=transport_policy_file,
+            network_route_policy_file=network_route_policy_file,successor_authorization_file=authorization_file,
+            pricing_record=pricing_file,input_proof_file=input_proof_file)
+        manifest,scope,preparation=runner.verify_sources(root)
+        binding=scope['semantic_acceptance_binding']; requests=[]; metadata=[]; seen=set()
+        store=transcript.TranscriptStore(root/'runtime')
+        try:
+            for slot in scope['slots']:
+                entry=preparation['sessions'][slot['case_id']]
+                h=store.resume(scope['principal_id'],entry['session_id']); chat=operations.open_chat(store,h,scope)
+                require_session(store.db,h.session_id,binding)
+                metadata.append({'slot_id':slot['id'],'model':slot['model'],'model_role':slot['model_role'],
+                    'host_action_before':slot['host_action_before'],'binding':'MATCH'})
+                if slot['case_id'] in seen: continue
+                seen.add(slot['case_id'])
+                turn=store.begin_turn(h,slot['user_text'],'OFFLINE_BINDING_PREVIEW')
+                context=chat.build_request_context(turn['turn_id'])
+                assert context['messages'][-1]=={'role':'user','content':slot['user_text']}
+                assert 'semantic_plan_request' not in context and context['display_policy_binding']['consumer_purpose']=='DISPLAY'
+                payload=runner.canonical(oa.OpenAIAdapter().serialize(scope,slot['model'],context['messages']))
+                receipt=None if diagnostics_only else oa.local_input_bound(scope,payload)
+                requests.append({'case_id':slot['case_id'],'request_sha256':runner.hashlib.sha256(payload).hexdigest(),
+                    'messages_sha256':runner.value_sha(context['messages']),'prompt_bytes':context['prompt_bytes'],
+                    'input_receipt':receipt,'display_and_state_binding':'MATCH'})
+            rows,_=runner.validate_rows(store.db,root,manifest,scope,preparation)
+            assert not rows and store.db.execute('SELECT count(*) FROM provider_calls').fetchone()[0]==0
+            calls.assert_not_called()
+            result={'status':'NOT_READY' if diagnostics_only else 'READY',
+                'blocker':'INPUT_BOUND_PROOF_NOT_READY' if diagnostics_only else None,
+                'kind':'OFFLINE_BINDING_DIAGNOSTICS' if diagnostics_only else 'ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT',
+                'formal_preflight_executed':not diagnostics_only,'at_utc':runner.now(),
+                'provider_identity':binding['provider_config_identity'],'source_freeze':binding['acceptance_source_freeze'],
+                'offline_work_path':runner.relative(root),'provider_call_invocations':0,'provider_call_rows':0,
+                'paid_revision_created':False,'slot_checks':metadata,'initial_context_checks':requests,
+                'denominators':{'turns':44,'criteria':176,'gate_a':176,'gate_b':132},
+                'consumer_display_state_strict_schema':'MATCH','automatic_paid_retries':0}
+        finally: store.close()
+    if output is not None: runner.write_new(output,result)
+    return result
+
 def preflight(acceptance_config_file,transport_policy_file,network_route_policy_file,*,output=None):
     provider,transcript,operations,*_=runner.runtime_modules()
     from accepted_output import session_mode

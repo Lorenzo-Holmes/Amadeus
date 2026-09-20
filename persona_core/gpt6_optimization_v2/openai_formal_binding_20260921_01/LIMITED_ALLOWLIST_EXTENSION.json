@@ -1,0 +1,17 @@
+{
+  "status": "LIMITED_ALLOWLIST_EXTENSION",
+  "authority": "Current user instruction section 8 permits documented bounded formal-binding extension before editing",
+  "exact_path": "persona_core/operational_runtime_v1/transcript_store.py",
+  "operation": "MODIFY",
+  "before_sha256": "da56e2409e0a3dcc73cdb38580b589e74165022a831b11a6747287c594eb02eb",
+  "necessity": "Actual OB-11..30 execution refused work-root sandboxes. Real preflight must use work and may not allocate formal evidence. Seven existing paths cannot satisfy safe_root without unsafe runtime monkeypatching.",
+  "contract_basis": "IMPLEMENTATION_ALLOWLIST preflight work-root requirement; OFFLINE_TEST_PLAN OB-21/22/29/30; SOURCE_FREEZE_PLAN real construction",
+  "bounded_change": "Add only WORKSPACE/work/openai_formal_binding as a permitted isolated sandbox parent. Retain resolve containment, no parent root, no legacy runtime, sandbox marker, Genesis and schema checks.",
+  "risk": "Additional local sandbox destination; no remote calls or broader production writes.",
+  "rollback": "Restore exact archived transcript_store.py bytes; quarantine any new scope-7 stores; do not delete evidence.",
+  "why_not_scope_drift": "Formal binding test construction path only; no Persona, Genesis, data schema, admission, parser, display or consumer semantics change.",
+  "new_allowlist_count": 8,
+  "source_member_count_effect": 0,
+  "planned_changes": "6 existing + 2 new; expected184 membership unchanged",
+  "at_utc": "2026-09-20T17:51:44.455961+00:00"
+}

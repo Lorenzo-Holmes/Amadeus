@@ -1,0 +1,5 @@
+{
+  "version": "apcore-openai-route-1",
+  "mode": "DIRECT_NO_PROXY",
+  "host": "api.openai.com"
+}
