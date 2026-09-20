@@ -21,6 +21,10 @@ def export_calls(store: TranscriptStore, destination: Path) -> dict:
         }
         if raw is not None:
             values["RAW_RESPONSE.json" if not record["raw_was_redacted"] else "REDACTED_RESPONSE.bin"] = raw
+        from accepted_output import load_record
+        accepted = load_record(store.db, record['turn_id'])
+        if accepted is not None:
+            values['ACCEPTED_OUTPUT.json'] = (json.dumps(accepted,ensure_ascii=False,indent=2)+'\n').encode('utf-8')
         # A completion manifest is emitted only once a terminal raw capture is
         # known. Unknown intents retain evolving DB status and immutable input.
         if record["status"] != "SUBMITTED_STATUS_UNKNOWN":

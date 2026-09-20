@@ -131,7 +131,11 @@ def _expression_contract_view(observation):
 def build_context(store: TranscriptStore, handle: SessionHandle, turn_id: str,
                   *, max_prompt_bytes: int = 24576, memory_provider=None) -> dict[str, Any]:
     current = store.get_turn(handle, turn_id)
-    recent = [r for r in store.recent(handle, 9) if r["turn_id"] != turn_id and r["seq"] < current["seq"]]
+    # Nonpersistent host-authored projection fixtures have no acceptance policy.
+    # Every actual TranscriptStore must use the bound consumer projection.
+    rows = (store.conversation_recent(handle, 9, purpose='next_turn_context')
+            if isinstance(store, TranscriptStore) else store.recent(handle, 9))
+    recent = [r for r in rows if r["turn_id"] != turn_id and r["seq"] < current["seq"]]
     # Only actually displayed prior model text enters conversation history.
     route = classify(current["user_text"], [r["user_text"] for r in recent])
     genesis, frozen = _load_frozen(store)

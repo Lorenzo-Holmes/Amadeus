@@ -49,6 +49,7 @@ def read_evidence(path):
         scopes = {r['batch_id']: json.loads(r['scope_json']) for r in db.execute('SELECT batch_id,scope_json FROM call_batches')}
         for row in rows:
             if row['status'] == 'RESPONSE_CAPTURED': g.verify_protocol_capture(db, row, scopes[row['batch_id']])
+            row.update(g.accepted_projection(db, row, 'evaluation'))
             if isinstance(row["raw_response"], bytes):
                 row["raw_response"] = row["raw_response"].decode("utf-8")
         return {"rows": rows, "events": [dict(r) for r in db.execute("SELECT * FROM runtime_events ORDER BY sequence")],

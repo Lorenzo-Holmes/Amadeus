@@ -124,11 +124,14 @@ def verify_sources(source_manifest, workspace):
 
 
 def verify_raw(row):
+    code = str(ROOT / 'persona_core/operational_runtime_v1')
+    if code not in sys.path: sys.path.insert(0, code)
+    from accepted_output import raw_text_for_audit
     raw = row["raw_response"]
     raw = raw if isinstance(raw, bytes) else raw.encode("utf-8")
     require(hashlib.sha256(raw).hexdigest() == row["raw_sha256"], "RAW_HASH_CHANGED")
     content = json.loads(raw)["choices"][0]["message"]["content"]
-    require(isinstance(content, str) and content and content == row["assistant_text"], "RAW_DISPLAY_MISMATCH")
+    require(isinstance(content, str) and content and content == raw_text_for_audit(row), "RAW_DISPLAY_MISMATCH")
     request = row["request_json"]
     require(hashlib.sha256(request.encode("utf-8")).hexdigest() == row["request_sha256"], "REQUEST_HASH_CHANGED")
 
@@ -187,7 +190,15 @@ def verify_protocol_capture(db, row, scope):
     code = str(ROOT / 'persona_core/operational_runtime_v1')
     if code not in sys.path: sys.path.insert(0, code)
     import provider_transport
-    provider_transport.verify_responses_wire(db, row, scope)
+    wire_row = {**row, 'assistant_text':row['raw_assistant_text']} if 'raw_assistant_text' in row else row
+    provider_transport.verify_responses_wire(db, wire_row, scope)
+
+
+def accepted_projection(db, row, purpose='candidate'):
+    code = str(ROOT / 'persona_core/operational_runtime_v1')
+    if code not in sys.path: sys.path.insert(0, code)
+    from accepted_output import project_turn
+    return project_turn(db, row, purpose)
 
 
 def _journal_rows(path, scope=None):
@@ -199,7 +210,7 @@ def _journal_rows(path, scope=None):
                                           "FROM provider_calls p JOIN turns t USING(turn_id) ORDER BY p.submitted_at_utc")]
         if scope is not None:
             for row in rows: verify_protocol_capture(db, row, scope)
-        return rows
+        return [accepted_projection(db, row) for row in rows]
     finally:
         db.close()
 
@@ -661,6 +672,7 @@ def inspect_day(candidate_path, ingress_root, checkpoints_root, workspace=ROOT):
                     and row["display_at_utc"], "UNKNOWN_UNDISPLAYED_OR_TEST_CALL")
             verify_raw(row)
             verify_protocol_capture(db, row, scope)
+            row.update(accepted_projection(db, row))
             receipt = load(ingress_root / (row["turn_id"] + ".json"))
             verified_receipt = verify_ingress(receipt, key, candidate, row)
             reference(verified_receipt["preflight_record"]["pricing_record"], workspace)

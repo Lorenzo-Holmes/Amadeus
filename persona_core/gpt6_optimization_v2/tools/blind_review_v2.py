@@ -298,6 +298,7 @@ def _received_context(row, context, core, store, runtime, runtime_mod, events, p
     require(len(visible) <= len(available) and (not visible or visible == [r['turn_id'] for r in available[-len(visible):]]),
             'HISTORY_ORIGINS_NOT_CHRONOLOGICAL_SUFFIX')
     def literal(turn):
+        turn = g.accepted_projection(store.db, turn, 'history')
         require(g.utc(turn['created_at_utc']) < cutoff, 'HISTORY_CREATED_AFTER_SUBMISSION')
         value = {'user': turn['user_text']}
         if turn['display_at_utc'] is not None and g.utc(turn['display_at_utc']) < cutoff:
@@ -492,6 +493,7 @@ def _load_candidate(candidate_path, workspace):
             for slot, capture in bundle.captures.items():
                 row = rows[slot]
                 g.verify_protocol_capture(store.db, row, scope)
+                row.update(g.accepted_projection(store.db, row, 'blind'))
                 receipt_path = g.contained(revision / 'receipts' / (slot + '.json'), revision)
                 receipt = g.load(receipt_path)
                 require(receipt.get('source_manifest_sha256') == gates['source_manifest_sha256'], 'RECEIPT_SOURCE_CHANGED')

@@ -588,6 +588,9 @@ def validate_rows(db, root, manifest, scope, preparation):
             if scope.get('api_protocol') == 'responses' and origin == TARGET:
                 import provider_transport
                 provider_transport.verify_responses_wire(db, {**row, **dict(request)}, scope)
+            from accepted_output import project_turn
+            selected = project_turn(db, row, 'evaluation')
+            row.update(selected)
             display_path = root / "displays" / (slot["id"] + ".txt")
             require(display_path.is_file() and display_path.read_bytes() == (row["assistant_text"] + "\n").encode("utf-8"),
                     "DURABLE_DISPLAY_MISMATCH")
@@ -643,6 +646,9 @@ def capture_snapshot(root, *, final=False):
         keys = ("user_text", "assistant_text", "status", "provider_status", "model", "call_id",
                 "turn_id", "session_id", "raw_sha256", "request_sha256", "capture_origin")
         turns.append({"case_id": slot["case_id"], "slot_id": slot["id"], **{k: row[k] for k in keys}})
+        if row.get('output_provenance') == 'HOST_ACCEPTED_OUTPUT':
+            turns[-1].update({k: row[k] for k in ('raw_assistant_text','accepted_assistant_text',
+                              'output_provenance','accepted_output')})
     value = {"schema_version": SCHEMA, "revision_id": manifest["revision_id"],
              "source_manifest_sha256": manifest["source_manifest_sha256"], "cases_sha256": manifest["cases_sha256"],
              "manifest_sha256": sha(root / "MANIFEST.json"), "capture_mode": manifest["capture_mode"],

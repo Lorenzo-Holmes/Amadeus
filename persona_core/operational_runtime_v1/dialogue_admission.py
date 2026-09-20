@@ -51,6 +51,8 @@ class DialogueAdmissionController(AdmissionController):
                     WHERE s.entity_id=? AND s.principal_id=? AND s.mode='PRODUCT_RUNTIME'
                     AND t.seq<? AND t.status='DISPLAYED' ORDER BY t.seq''',
                     (handle.entity_id, handle.principal_id, turn['seq'])):
+                    from accepted_output import project_turn
+                    row = project_turn(self.store.db, row, 'memory')
                     match = PROPOSAL.fullmatch(row['user_text'].strip())
                     if match and match.group(1).strip() == name and row['assistant_text'].strip() == '同意约定：' + name:
                         proposals.append((row['turn_id'], match.group(2).strip()))

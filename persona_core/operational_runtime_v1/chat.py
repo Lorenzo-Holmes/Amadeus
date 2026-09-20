@@ -14,12 +14,18 @@ from transcript_store import TranscriptStore, SessionHandle, ensure, utc_now
 
 class ChatService:
     def __init__(self, store: TranscriptStore, handle: SessionHandle, scope: dict,
-                 *, memory_provider=None, admission_controller=None, growth_controller=None):
+                 *, memory_provider=None, admission_controller=None, growth_controller=None,
+                 semantic_acceptance_mode=None, semantic_acceptance=None):
         store._authenticate(handle)
         self.store, self.handle, self.scope = store, handle, scope
         self.memory_provider = memory_provider
         self.admission = admission_controller
         self.growth = growth_controller
+        from accepted_output import bind_mode, session_mode, SemanticAcceptance
+        self.acceptance_mode = semantic_acceptance_mode or session_mode(store.db, handle.session_id)
+        bind_mode(store, handle, self.acceptance_mode)
+        self.acceptance = semantic_acceptance or SemanticAcceptance()
+        ensure(type(self.acceptance) is SemanticAcceptance, 'Host semantic acceptance adapter required')
         self.journal = ProviderJournal(store)
         self.journal.register_batch(scope)
         store.db.executescript('''
@@ -71,7 +77,8 @@ class ChatService:
             checked = self.store.db.execute('SELECT check_json FROM response_checks WHERE turn_id=?', (tid,)).fetchone()
             if checked is not None:
                 self._record_events(tid, saved['call_id'], json.loads(saved['context_json']), json.loads(checked[0]))
-            return {'turn_id': tid, 'status': 'ALREADY_DISPLAYED', 'text': turn['assistant_text'],
+            visible = self.store.conversation_turn(self.handle, tid, purpose='display')
+            return {'turn_id': tid, 'status': 'ALREADY_DISPLAYED', 'text': visible['assistant_text'],
                     'provider_resubmitted': False, 'displayed_now': False}
         delivery = self.store.db.execute('SELECT status FROM display_journal WHERE turn_id=?', (tid,)).fetchone()
         if delivery and delivery[0] == 'DISPLAY_INTENT':
@@ -98,6 +105,14 @@ class ChatService:
             return {'turn_id': tid, 'status': call['status'], 'call_id': call['call_id'],
                     'text': None, 'displayed_now': False, 'error_category': call.get('error_category')}
         turn = self.store.get_turn(self.handle, tid)
+        if self.acceptance_mode == 'TRUSTED':
+            from accepted_output import load_record, persist
+            if load_record(self.store.db, tid) is None:
+                raw = self.store.db.execute('SELECT raw_response FROM provider_calls WHERE turn_id=?', (tid,)).fetchone()[0]
+                accepted = self.acceptance.accept(handle=self.handle, turn=turn, context=context,
+                                                  raw_provider_response=bytes(raw))
+                persist(self.store, self.handle, tid, bytes(raw), accepted)
+        turn = self.store.conversation_turn(self.handle, tid, purpose='display')
         check = check_response(turn['assistant_text'], context)
         with self.store.transaction():
             old = self.store.db.execute('SELECT check_json FROM response_checks WHERE turn_id=?', (tid,)).fetchone()
@@ -150,5 +165,5 @@ class ChatService:
 
     def inspect_last(self) -> dict[str, Any] | None:
         """Explicit local inspection; never resends or marks a delivery as proven."""
-        rows = self.store.recent(self.handle, 1)
+        rows = self.store.conversation_recent(self.handle, 1, purpose='audit')
         return rows[0] if rows else None

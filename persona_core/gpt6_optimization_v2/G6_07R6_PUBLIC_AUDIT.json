@@ -1,0 +1,199 @@
+{
+  "R15": 0,
+  "architecture_version": "TRUSTED_SEMANTIC_ACCEPTANCE_1",
+  "automatic_paid_retries": 0,
+  "blind": "LOCKED",
+  "blocker": "FRESH_SEMANTIC_VALIDATION_REQUIRED",
+  "candidate_v2": "LOCKED",
+  "component": {
+    "modules": 31,
+    "passed": 732,
+    "prior_modules_unchanged": 30,
+    "prior_tests_retained_and_passed": 597,
+    "tests": 732
+  },
+  "consumers": {
+    "audit_review": "PASS_IN_TRUSTED_SESSIONS",
+    "blind_package": "PASS_IN_TRUSTED_SESSIONS",
+    "candidate_creation": "PASS_IN_TRUSTED_SESSIONS",
+    "display": "PASS_IN_TRUSTED_SESSIONS",
+    "evaluation": "PASS_IN_TRUSTED_SESSIONS",
+    "history": "PASS_IN_TRUSTED_SESSIONS",
+    "memory": "PASS_IN_TRUSTED_SESSIONS",
+    "next_turn_context": "PASS_IN_TRUSTED_SESSIONS"
+  },
+  "deepseek_requests": 0,
+  "enforcement": {
+    "claim_strength": "PASS",
+    "closure": "PASS",
+    "directed_domain_bridges": "PASS",
+    "forged_semantic_labels": "PASS",
+    "raw_accepted_persistence": "PASS",
+    "responsibility": "PASS",
+    "visible_output_consistency": "PASS"
+  },
+  "external44": 0,
+  "feature_gate": {
+    "default": "OFF",
+    "free_text_without_admission": "UNPARSED_LOW_AUTHORITY",
+    "offline_vertical_slice": "TRUSTED",
+    "production_activated": false,
+    "session_policy_immutable": true
+  },
+  "fixtures": {
+    "additional_adversarial": 12,
+    "automatic_prose_parsing_claimed": false,
+    "invalid_strengthening_prevented": 26,
+    "negative": 8,
+    "new": 36,
+    "positive": 16,
+    "unchanged_prior_diagnostic_pairs": 26,
+    "valid_allowed": 26
+  },
+  "focused": {
+    "groups": {
+      "bridge validation": {
+        "passed": 7,
+        "tests": 7
+      },
+      "claim certificates": {
+        "passed": 10,
+        "tests": 10
+      },
+      "claim strength lattice": {
+        "passed": 5,
+        "tests": 5
+      },
+      "closure certificates": {
+        "passed": 11,
+        "tests": 11
+      },
+      "end-to-end vertical slice": {
+        "passed": 13,
+        "tests": 13
+      },
+      "evaluation, candidate, blind and audit consumers": {
+        "passed": 7,
+        "tests": 7
+      },
+      "forged-envelope adversarial": {
+        "passed": 10,
+        "tests": 10
+      },
+      "history and next-turn context": {
+        "passed": 3,
+        "tests": 3
+      },
+      "memory consumer": {
+        "passed": 2,
+        "tests": 2
+      },
+      "naturalness fixtures": {
+        "passed": 16,
+        "tests": 16
+      },
+      "over-conservatism": {
+        "passed": 16,
+        "tests": 16
+      },
+      "raw/accepted persistence": {
+        "passed": 8,
+        "tests": 8
+      },
+      "relation domains": {
+        "passed": 4,
+        "tests": 4
+      },
+      "renderer": {
+        "passed": 5,
+        "tests": 5
+      },
+      "responsibility": {
+        "passed": 7,
+        "tests": 7
+      },
+      "semantic admission": {
+        "passed": 8,
+        "tests": 8
+      },
+      "visible-plan consistency": {
+        "passed": 3,
+        "tests": 3
+      }
+    },
+    "passed": 135,
+    "tests": 135
+  },
+  "g6_07": "VALIDATION_PENDING",
+  "g6_08": "LOCKED",
+  "g6_09": "LOCKED",
+  "hidden_reasoning_read": false,
+  "implementation": "IMPLEMENTED",
+  "implemented": [
+    "trusted_semantic_admission",
+    "typed_semantic_plan",
+    "host_validator",
+    "claim_certificate",
+    "exclusion_certificate",
+    "closure_certificate",
+    "controlled_renderer",
+    "accepted_output_record"
+  ],
+  "legacy": {
+    "compatible_pass": 449,
+    "expected_historical_source_identity_sentinel": 1,
+    "historical_evidence_rewritten": false,
+    "modules": 43,
+    "raw_suite_passed": false,
+    "tests": 450,
+    "unexpected_functional_failures": 0
+  },
+  "naturalness": {
+    "author_review_examples": 42,
+    "automated_fixtures": 16,
+    "independent_user_study": false,
+    "scope": "BOUNDED_CONTROLLED_CHINESE",
+    "status": "PASS",
+    "unrestricted_persona_fluency_established": false
+  },
+  "new_semantic_validation_pass": false,
+  "new_source_freeze": "TRUSTED_SEMANTIC_ACCEPTANCE_R14_20260920_01",
+  "next_fresh_revision": {
+    "captured": 0,
+    "created": false,
+    "expected_captures": 44,
+    "expected_judgments": 176,
+    "historical_pass_inherited": false,
+    "judgments": 0,
+    "status": "READY_FOR_NEW_REVISION"
+  },
+  "offline_validation": "OFFLINE_VALIDATED",
+  "openrouter_requests": 0,
+  "over_conservatism": {
+    "positive_scenarios_allowed": 16,
+    "scope": "BOUNDED_TYPED_INPUT",
+    "status": "PASS"
+  },
+  "preservation": {
+    "historical_evidence_members_unchanged": 1987,
+    "historical_findings_closed": false,
+    "historical_journals_unchanged": 25,
+    "historical_unknown_rows_unchanged": 7,
+    "protected_files_unchanged": 536,
+    "spend_ledger_unchanged": true
+  },
+  "previous_public_commit": "8d6e45a837a2bb75a86e915677891939e8c25c63",
+  "private_evidence_included": false,
+  "readiness": 0,
+  "remote_generation": 0,
+  "scope": "BOUNDED_TRUSTED_TYPED_VERTICAL_SLICE",
+  "source": {
+    "changed_code_and_test_files": 18,
+    "complete_local_frozen_source_members": 157,
+    "frozen_persona_and_genesis_changed": false,
+    "persona_semantic_runtime_changed": true,
+    "provider_transport_changed": false
+  },
+  "status": "FROZEN_FOR_FRESH_VALIDATION",
+  "task": "G6-07R6"
+}

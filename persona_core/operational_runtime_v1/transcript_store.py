@@ -200,6 +200,8 @@ class TranscriptStore:
     def mark_displayed(self, handle: SessionHandle, turn_id: str) -> dict[str, Any]:
         with self.transaction():
             row = self.get_turn(handle, turn_id)
+            from accepted_output import project_turn
+            project_turn(self.db, row, 'display')
             ensure(row["status"] in {"RESPONSE_CAPTURED", "DISPLAYED"}, "No displayable captured response")
             if row["status"] != "DISPLAYED":
                 self.db.execute("UPDATE turns SET status='DISPLAYED',display_at_utc=? WHERE turn_id=?", (utc_now(), turn_id))
@@ -210,3 +212,11 @@ class TranscriptStore:
         ensure(type(limit) is int and 1 <= limit <= 100, "Invalid recent-window limit")
         rows = self.db.execute("SELECT * FROM turns WHERE session_id=? ORDER BY seq DESC LIMIT ?", (handle.session_id, limit)).fetchall()
         return [dict(r) for r in reversed(rows)]
+
+    def conversation_turn(self, handle: SessionHandle, turn_id: str, *, purpose: str) -> dict[str, Any]:
+        from accepted_output import project_turn
+        return project_turn(self.db, self.get_turn(handle, turn_id), purpose)
+
+    def conversation_recent(self, handle: SessionHandle, limit: int = 8, *, purpose: str) -> list[dict[str, Any]]:
+        from accepted_output import project_turn
+        return [project_turn(self.db, r, purpose) for r in self.recent(handle, limit)]

@@ -73,7 +73,8 @@ class AdmissionController:
           WHERE t.turn_id=? AND s.entity_id=? AND s.principal_id=? AND s.mode=?''',
           (turn_id,handle.entity_id,handle.principal_id,handle.mode)).fetchone()
         ensure(row is not None,'Evidence unavailable for this entity')
-        return dict(row)
+        from accepted_output import project_turn
+        return project_turn(self.store.db, row, 'memory')
 
     def _issue(self, handle: SessionHandle, kind: str, payload: dict, turns: list[str],
                *, physical_fingerprint: str | None = None) -> EvidenceToken:
@@ -218,6 +219,9 @@ class AdmissionController:
         payload = {'turn_id':turn_id,'user_text':turn['user_text'],'assistant_text':turn['assistant_text'],
                    'input_provenance':turn['input_provenance'],'response_provenance':turn['response_provenance'],
                    'described_events_proven':False}
+        if turn.get('output_provenance') == 'HOST_ACCEPTED_OUTPUT':
+            payload['output_provenance'] = turn['output_provenance']
+            payload['accepted_output_sha256'] = digest(turn['accepted_output'])
         decision = self._observed_decision(handle,'UTTERANCE_OBSERVED',payload,[turn_id])
         result = self.runtime.commit(handle,decision) if self.runtime is not None else None
         return {'decision_id':decision.decision_id,'verdict':decision.verdict,'evidence_class':'HOST_TRANSCRIPT_OBSERVATION',
