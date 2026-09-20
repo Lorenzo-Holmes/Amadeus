@@ -27,16 +27,19 @@ class ChatService:
         formal=scope.get('formal_validation') or 'semantic_acceptance_binding' in scope or session_binding(store.db,handle.session_id) is not None
         if formal:
             from trusted_admission_adapter import TrustedAdmissionAdapter
-            binding_require(semantic_acceptance_mode=='TRUSTED' and semantic_acceptance_binding is not None
+            binding_require(semantic_acceptance_mode in {'TRUSTED','BOUNDED'} and semantic_acceptance_binding is not None
                 and semantic_acceptance_binding==scope.get('semantic_acceptance_binding'),
                 'ADMISSION','EXPLICIT_FORMAL_ACCEPTANCE_REQUIRED')
+            from semantic_binding import strict_selected
             binding_require(type(semantic_acceptance) is SemanticAcceptance
-                and type(semantic_acceptance.admit) is TrustedAdmissionAdapter
                 and semantic_acceptance.binding==semantic_acceptance_binding
-                and semantic_acceptance.admit.binding==semantic_acceptance_binding,
+                and (not strict_selected(semantic_acceptance_binding) or
+                     (type(semantic_acceptance.admit) is TrustedAdmissionAdapter
+                      and semantic_acceptance.admit.binding==semantic_acceptance_binding)),
                 'ADMISSION','TRUSTED_ADMISSION_ADAPTER_REQUIRED')
             install_binding(store,handle,semantic_acceptance_binding,scope)
         self.acceptance_mode = semantic_acceptance_mode or session_mode(store.db, handle.session_id)
+        ensure(self.acceptance_mode!='BOUNDED' or self.acceptance_binding is not None,'Explicit bounded policy binding required')
         bind_mode(store, handle, self.acceptance_mode)
         self.acceptance = semantic_acceptance or SemanticAcceptance()
         ensure(type(self.acceptance) is SemanticAcceptance, 'Host semantic acceptance adapter required')
@@ -82,11 +85,18 @@ class ChatService:
         if self.acceptance_binding is None:
             return build_context(self.store,self.handle,tid,max_prompt_bytes=self.scope['max_input_bytes'],
                                  memory_provider=self.memory_provider)
-        from semantic_binding import validate_binding,require_session,require as binding_require,layer
+        from semantic_binding import validate_binding,require_session,require as binding_require,layer,strict_selected
         from trusted_admission_adapter import request_contract,TrustedAdmissionAdapter
         validate_binding(self.acceptance_binding,self.scope)
         require_session(self.store.db,self.handle.session_id,self.acceptance_binding)
-        binding_require(self.acceptance_mode=='TRUSTED' and type(self.acceptance.admit) is TrustedAdmissionAdapter,
+        if not strict_selected(self.acceptance_binding):
+            context=build_context(self.store,self.handle,tid,max_prompt_bytes=self.scope['max_input_bytes'],
+                                  memory_provider=self.memory_provider)
+            context['display_policy_binding']={'policy':self.acceptance_binding['display_policy_version'],
+                'consumer_purpose':'DISPLAY','authority':'CONVERSATIONAL',
+                'state_admission_policy':self.acceptance_binding['state_admission_policy_version']}
+            return context
+        binding_require(self.acceptance_mode in {'TRUSTED','BOUNDED'} and type(self.acceptance.admit) is TrustedAdmissionAdapter,
                         'ADMISSION','FORMAL_ADAPTER_MISSING')
         turn=self.store.get_turn(self.handle,tid)
         state=self.acceptance.admit(self.handle,turn,{})
@@ -106,10 +116,12 @@ class ChatService:
                   display: Callable[[str], None] | None = None,
                   transport=None, credential_reader=None) -> dict[str, Any]:
         if self.acceptance_binding is not None:
-            from semantic_binding import require_session,require as binding_require
+            from semantic_binding import require_session,require as binding_require,strict_selected,validate_binding
             from trusted_admission_adapter import TrustedAdmissionAdapter
             require_session(self.store.db,self.handle.session_id,self.acceptance_binding)
-            binding_require(self.acceptance_mode=='TRUSTED' and type(self.acceptance.admit) is TrustedAdmissionAdapter,
+            validate_binding(self.acceptance_binding,self.scope)
+            binding_require(self.acceptance_mode==self.acceptance_binding['semantic_acceptance_mode'] and
+                            (not strict_selected(self.acceptance_binding) or type(self.acceptance.admit) is TrustedAdmissionAdapter),
                             'ADMISSION','FORMAL_ADAPTER_MISSING')
         turn = self.store.begin_turn(self.handle, text, idempotency_key)
         tid = turn['turn_id']
@@ -149,6 +161,14 @@ class ChatService:
             return {'turn_id': tid, 'status': call['status'], 'call_id': call['call_id'],
                     'text': None, 'displayed_now': False, 'error_category': call.get('error_category')}
         turn = self.store.get_turn(self.handle, tid)
+        if self.acceptance_mode == 'BOUNDED':
+            from accepted_output import load_record,persist
+            record=load_record(self.store.db,tid)
+            if record is None:
+                raw=self.store.db.execute('SELECT raw_response FROM provider_calls WHERE turn_id=?',(tid,)).fetchone()[0]
+                selected=self.acceptance.accept_display(handle=self.handle,turn=turn,context=context,raw_provider_response=bytes(raw))
+                record=persist(self.store,self.handle,tid,bytes(raw),selected)
+            turn=dict(turn,assistant_text=record['candidate_visible_text'])
         if self.acceptance_mode == 'TRUSTED':
             from accepted_output import load_record, persist
             if load_record(self.store.db, tid) is None:
@@ -165,7 +185,8 @@ class ChatService:
                     accepted = self.acceptance.accept(handle=self.handle, turn=turn, context=context,
                                                       raw_provider_response=bytes(raw))
                     persist(self.store, self.handle, tid, bytes(raw), accepted)
-        turn = self.store.conversation_turn(self.handle, tid, purpose='display')
+        if self.acceptance_mode != 'BOUNDED':
+            turn = self.store.conversation_turn(self.handle, tid, purpose='display')
         check = check_response(turn['assistant_text'], context)
         with self.store.transaction():
             old = self.store.db.execute('SELECT check_json FROM response_checks WHERE turn_id=?', (tid,)).fetchone()
@@ -195,6 +216,9 @@ class ChatService:
             now = utc_now()
             self.store.db.execute("UPDATE turns SET status='DISPLAYED',display_at_utc=? WHERE turn_id=?", (now, tid))
             self.store.db.execute("UPDATE display_journal SET status='DISPLAY_ACK',ack_at_utc=? WHERE turn_id=?", (now, tid))
+            if self.acceptance_mode=='BOUNDED':
+                from accepted_output import acknowledge_display
+                acknowledge_display(self.store,self.handle,tid,turn['assistant_text'],now)
             self.journal._transition(tid, 'DISPLAYED', {'sink_acknowledged': True, 'human_read_receipt': False})
         event_result = self._record_events(tid, call['call_id'], context, check)
         return {'turn_id': tid, 'status': 'DISPLAYED', 'text': turn['assistant_text'],

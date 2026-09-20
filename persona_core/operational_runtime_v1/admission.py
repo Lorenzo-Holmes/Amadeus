@@ -222,6 +222,12 @@ class AdmissionController:
         if turn.get('output_provenance') == 'HOST_ACCEPTED_OUTPUT':
             payload['output_provenance'] = turn['output_provenance']
             payload['accepted_output_sha256'] = digest(turn['accepted_output'])
+        elif turn.get('output_provenance') == 'HOST_ACKNOWLEDGED_DISPLAY':
+            payload.update(output_provenance=turn['output_provenance'],
+                displayed_output_sha256=digest(turn['display_record']),
+                accepted_output_sha256=turn['accepted_output_sha256'],
+                display_policy_version=turn['display_record']['policy_version'],
+                content_is_event_proof=False)
         decision = self._observed_decision(handle,'UTTERANCE_OBSERVED',payload,[turn_id])
         result = self.runtime.commit(handle,decision) if self.runtime is not None else None
         return {'decision_id':decision.decision_id,'verdict':decision.verdict,'evidence_class':'HOST_TRANSCRIPT_OBSERVATION',

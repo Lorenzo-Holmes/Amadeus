@@ -13,7 +13,7 @@ import evaluation_runner as runner
 def preflight(acceptance_config_file,transport_policy_file,network_route_policy_file,*,output=None):
     provider,transcript,operations,*_=runner.runtime_modules()
     from accepted_output import session_mode
-    from semantic_binding import require_session
+    from semantic_binding import require_session,strict_selected
     name='binding_preflight_'+uuid.uuid4().hex
     with patch.object(socket.socket,'connect',side_effect=AssertionError('PREFLIGHT_NETWORK_FORBIDDEN')), \
          patch.object(socket.socket,'connect_ex',side_effect=AssertionError('PREFLIGHT_NETWORK_FORBIDDEN')), \
@@ -32,9 +32,10 @@ def preflight(acceptance_config_file,transport_policy_file,network_route_policy_
                 h=store.resume(scope['principal_id'],entry['session_id'])
                 chat=operations.open_chat(store,h,scope)
                 require_session(store.db,h.session_id,binding)
-                assert chat.acceptance_mode==session_mode(store.db,h.session_id)=='TRUSTED'
-                session_checks.append({'session_id':h.session_id,'mode':'TRUSTED',
-                    'adapter_version':chat.acceptance.admit.version,'policy_and_source_persisted':True})
+                assert chat.acceptance_mode==session_mode(store.db,h.session_id)==binding['semantic_acceptance_mode']
+                session_checks.append({'session_id':h.session_id,'mode':chat.acceptance_mode,
+                    'adapter_version':chat.acceptance.admit.version if chat.acceptance.admit else None,
+                    'consumer_purpose':binding.get('consumer_purpose','BOUNDED_CLAIM'),'policy_and_source_persisted':True})
             # Build the actual context in each selected target session, without
             # invoking a provider or consuming a journal slot.
             requests=[]; seen=set()
@@ -45,22 +46,31 @@ def preflight(acceptance_config_file,transport_policy_file,network_route_policy_
                 chat=operations.open_chat(store,h,scope)
                 turn=store.begin_turn(h,slot['user_text'],'OFFLINE_BINDING_PREVIEW')
                 context=chat.build_request_context(turn['turn_id'])
-                assert context['semantic_plan_request']['authority']=='PROPOSAL_ONLY'
                 assert context['messages'][-1]=={'role':'user','content':slot['user_text']}
-                requests.append({'session_id':h.session_id,'request_contract':context['semantic_plan_request']['version'],
+                if strict_selected(binding):
+                    assert context['semantic_plan_request']['authority']=='PROPOSAL_ONLY'
+                else:
+                    assert 'semantic_plan_request' not in context
+                    assert context['display_policy_binding']['consumer_purpose']=='DISPLAY'
+                    assert not any(m['content'].startswith('Host semantic proposal contract:') for m in context['messages'])
+                contract=context.get('semantic_plan_request',{})
+                inventory=contract.get('trusted_inventory',{})
+                requests.append({'session_id':h.session_id,'request_contract':contract.get('version'),
                     'prompt_bytes':context['prompt_bytes'],'messages_sha256':runner.value_sha(context['messages']),
-                    'admitted_facts':len(context['semantic_plan_request']['trusted_inventory']['evidence']),
-                    'unparsed_inputs':len(context['semantic_plan_request']['trusted_inventory']['unparsed_sha256'])})
+                    'admitted_facts':len(inventory.get('evidence',[])),
+                    'unparsed_inputs':len(inventory.get('unparsed_sha256',[]))})
             rows,_=runner.validate_rows(store.db,root,manifest,scope,preparation)
             assert not rows and store.db.execute('SELECT count(*) FROM provider_calls').fetchone()[0]==0
             calls.assert_not_called()
-            result={'status':'TRUSTED_ACCEPTANCE_EXTERNAL44_BINDING_READY','at_utc':runner.now(),
+            result={'status':'BOUNDED_CONVERSATION_STATE_BINDING_READY' if binding['semantic_acceptance_mode']=='BOUNDED'
+                    else 'TRUSTED_ACCEPTANCE_EXTERNAL44_BINDING_READY','at_utc':runner.now(),
                 'kind':'ZERO_PROVIDER_CALL_FORMAL_PATH_PREFLIGHT','mock_revision':name,
                 'mock_revision_path':runner.relative(root),'capture_mode':manifest['capture_mode'],
                 'paid_revision_created':False,'source_freeze':binding['acceptance_source_freeze'],
                 'acceptance_binding':binding,'session_checks':session_checks,'request_checks':requests,
                 'revision_metadata':'PASS','source_identity':'MATCH','persistence_schema':'PASS',
-                'consumer_binding':'REQUIRED_ACCEPTED_ONLY','evaluator_contract':binding['evaluator_contract_version'],
+                'consumer_binding':'ACKNOWLEDGED_DISPLAY_WITH_SEPARATE_STATE' if binding['semantic_acceptance_mode']=='BOUNDED'
+                    else 'REQUIRED_ACCEPTED_ONLY','evaluator_contract':binding['evaluator_contract_version'],
                 'provider_call_invocations':calls.call_count,'provider_call_rows':0,'remote_generation':0,
                 'deepseek_requests':0,'openrouter_requests':0,'readiness':0,'automatic_paid_retries':0,
                 'semantic_validation_performed':False,'captured':0,'reviewed':0}

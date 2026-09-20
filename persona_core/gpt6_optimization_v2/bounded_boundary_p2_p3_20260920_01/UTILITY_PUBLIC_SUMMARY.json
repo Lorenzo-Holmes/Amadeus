@@ -1,0 +1,45 @@
+{
+  "kind": "OFFLINE_SYNTHETIC_CONTENT_RETENTION",
+  "turns": 4,
+  "dimensions": {
+    "Task Completion": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "The requested two concrete checks survive display with their conditions."
+    },
+    "Relevance": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "The answer addresses the supplied measurement comparison."
+    },
+    "Reference Resolution": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "The follow-up retains the exact prior answer and resolves the named second step."
+    },
+    "Context Continuity": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "The clarified referent is used; all prior acknowledged answers remain in the actual request context."
+    },
+    "Naturalness": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "Readable contextual wording survives without a generic refusal or mandatory typed envelope."
+    },
+    "Persona Specificity": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "Existing evidence-first and serious-context expression routes remain selected; a compatible distinctive response is preserved. This is style retention, not target-model persona scoring."
+    },
+    "Useful Reasoning": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "A reasoned limitation survives along with an actionable check."
+    },
+    "Appropriate Clarification": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "The question identifies a material ambiguity and explains why it matters."
+    },
+    "No unnecessary internal jargon": {
+      "status": "PASS_OFFLINE_CONTENT_RETENTION",
+      "rationale": "All four displayed answers were checked for host policy/schema/authority jargon; none was injected."
+    }
+  },
+  "target_model_quality_scored": false,
+  "numeric_quality_means": "NOT_SCORED",
+  "provider_requests": 0
+}

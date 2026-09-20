@@ -423,6 +423,58 @@ def seed_fixtures(store, scope, suite_data):
             "runtime_verification": runtime.verify()}
 
 
+def build_acceptance_binding(scope,suite_data,config_path,*,rubric_path,offline=False):
+    """Version-aware policy adapter; allocation and transport stay unchanged."""
+    from formal_acceptance import build_binding
+    from semantic_binding import (BOUNDED_FIELDS,BOUNDED_BINDING_VERSION,BOUNDED_PERSISTENCE_VERSION,
+        DUAL_GATE_VERSION,ADAPTER_VERSION,REQUEST_VERSION,provider_identity,validate_binding,reference,
+        require as bound_require)
+    from accepted_output import runtime_identity,CONSUMERS
+    config=read(config_path)
+    if config.get('semantic_acceptance_mode')!='BOUNDED':
+        return build_binding(scope,suite_data,config_path,rubric_path=rubric_path,offline=offline)
+    keys={'semantic_acceptance_mode','acceptance_policy_version','acceptance_source_freeze',
+          'acceptance_source_manifest','trusted_semantic_runtime_version','semantic_source'} | BOUNDED_FIELDS
+    bound_require(set(config)==keys,'ADMISSION','BOUNDED_CONFIG_FIELDS')
+    def ref(path): return {'path':relative(path),'sha256':sha(path)}
+    binding=dict(config,schema_version=BOUNDED_BINDING_VERSION,runtime_source_hashes=runtime_identity(),
+        admission_adapter_version=ADAPTER_VERSION,provider_config_identity=provider_identity(scope),
+        dataset_identity=ref(suite_data['cases_path']),rubric_identity=ref(rubric_path),consumers=sorted(CONSUMERS),
+        request_contract_version=REQUEST_VERSION,persistence_version=BOUNDED_PERSISTENCE_VERSION,
+        evaluator_contract_version=DUAL_GATE_VERSION)
+    validate_binding(binding,scope)
+    freeze=read(reference(binding['acceptance_source_manifest']))
+    bound_require(freeze.get('status')=='FROZEN_FOR_FRESH_VALIDATION' or
+                  (offline and freeze.get('status')=='OFFLINE_TEST_ONLY'),'ADMISSION','FORMAL_FROZEN_SOURCE_REQUIRED')
+    bound_require(all(freeze['files'].get(p)==h for p,h in source_bindings().items()),
+                  'ADMISSION','FORMAL_SOURCE_MEMBERSHIP_CHANGED')
+    return binding
+
+
+def display_state_provenance(row,binding):
+    from formal_acceptance import evaluator_provenance
+    if binding['semantic_acceptance_mode']!='BOUNDED': return evaluator_provenance(row,binding)
+    from accepted_output import raw_text_for_audit
+    from semantic_binding import DUAL_GATE_VERSION
+    raw=raw_text_for_audit(row)
+    record=row['accepted_output']
+    require(record['acceptance_identity']==binding,'EVALUATOR_ACCEPTANCE_IDENTITY_CHANGED')
+    strict=record['strict_accepted_output']
+    separate=row.get('bounded_claim_output')
+    if separate is not None:
+        require(separate['acceptance_identity']==binding,'EVALUATOR_CLAIM_IDENTITY_CHANGED')
+        strict=separate['strict_accepted_output']
+    return {'contract_version':DUAL_GATE_VERSION,'product_semantic_target':'displayed_text',
+        'raw_text':raw,'displayed_text':row['displayed_text'],'policy_accepted_text':record['accepted_assistant_text'],
+        'strict_accepted_text':strict['accepted_assistant_text'] if strict else None,
+        'strict_accepted_output':strict,'state_lineage':row.get('state_lineage'),
+        'bounded_claim_output':separate,
+        'display_record':row['display_record'],'authority':'CONVERSATIONAL','semantic_verdict':None,
+        'conversation_utility':'UNREVIEWED','state_integrity':'UNREVIEWED',
+        'consumer_binding_status':'ACKNOWLEDGED_DISPLAY_WITH_SEPARATE_STATE',
+        'criterion_routing':binding['criterion_routing']}
+
+
 def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
             primary=None, secondary="deepseek-v4-pro", max_input_bytes=24576,
             max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy_file=None,
@@ -444,11 +496,10 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
                         max_output_tokens, guard_cny, timeout_seconds, transport_policy, api_protocol, network_route_policy)
     bindings = source_bindings()
     if formal_validation:
-        from formal_acceptance import build_binding
         scope['formal_validation']=True
         rubric=(GOAL/'external_failure_v1/PRIVATE_RUBRIC.json' if suite=='external44' else
                 GOAL/'heldout_v1/REVIEW_PROTOCOL.md' if suite=='heldout' else PROTOCOL/'PRIVATE_RUBRIC.json')
-        scope['semantic_acceptance_binding']=build_binding(scope,suite_data,acceptance_config_file,rubric_path=rubric,offline=offline)
+        scope['semantic_acceptance_binding']=build_acceptance_binding(scope,suite_data,acceptance_config_file,rubric_path=rubric,offline=offline)
     root.mkdir(parents=False, exist_ok=False)
     write_new(root / "PREPARATION_INTENT.json", {"revision_id": revision, "at_utc": now(), "provider_calls": 0})
     provider, transcript, *_ = runtime_modules()
@@ -626,8 +677,7 @@ def validate_rows(db, root, manifest, scope, preparation):
             selected = project_turn(db, row, 'evaluation')
             row.update(selected)
             if binding is not None:
-                from formal_acceptance import evaluator_provenance
-                row['evaluation_provenance']=evaluator_provenance(row,binding)
+                row['evaluation_provenance']=display_state_provenance(row,binding)
             display_path = root / "displays" / (slot["id"] + ".txt")
             require(display_path.is_file() and display_path.read_bytes() == (row["assistant_text"] + "\n").encode("utf-8"),
                     "DURABLE_DISPLAY_MISMATCH")
@@ -686,6 +736,9 @@ def capture_snapshot(root, *, final=False):
         if row.get('output_provenance') == 'HOST_ACCEPTED_OUTPUT':
             turns[-1].update({k: row[k] for k in ('raw_assistant_text','accepted_assistant_text',
                               'output_provenance','accepted_output')})
+        elif row.get('output_provenance')=='HOST_ACKNOWLEDGED_DISPLAY':
+            turns[-1].update({k:row[k] for k in ('raw_assistant_text','accepted_assistant_text','displayed_text',
+                'output_provenance','accepted_output','display_record','state_lineage','bounded_claim_output')})
         if 'evaluation_provenance' in row:
             turns[-1]['evaluation_provenance']=row['evaluation_provenance']
     value = {"schema_version": SCHEMA, "revision_id": manifest["revision_id"],
@@ -696,7 +749,7 @@ def capture_snapshot(root, *, final=False):
              "semantic_acceptance": None, "authored_setup_excluded": True, "turns": turns}
     if manifest.get('formal_validation'):
         value.update(semantic_acceptance_binding=manifest['semantic_acceptance_binding'],
-                     product_semantic_target='accepted_assistant_text')
+                     product_semantic_target='displayed_text' if manifest['semantic_acceptance_mode']=='BOUNDED' else 'accepted_assistant_text')
     if final:
         path = root / "CAPTURES.json"
         if path.exists():

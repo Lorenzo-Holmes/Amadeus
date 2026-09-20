@@ -449,6 +449,19 @@ def _memory_capability(context, core, store, runtime, handle):
     return public
 
 
+def approved_display_projection(db,row):
+    """Return viewer dialogue separately from restricted curator provenance."""
+    from accepted_output import project_turn,load_record
+    from semantic_types import digest
+    projected=project_turn(db,row,'blind')
+    visible={'user_text':projected['user_text'],'assistant_text':projected['assistant_text']}
+    record=load_record(db,projected['turn_id'])
+    restricted={'turn_id':projected['turn_id'],'session_id':projected['session_id'],
+        'accepted_output_sha256':digest(record) if record else None,
+        'display_record':projected.get('display_record'),'output_provenance':projected.get('output_provenance','LEGACY_OFF')}
+    return visible,restricted
+
+
 def _load_candidate(candidate_path, workspace):
     workspace = Path(workspace).resolve()
     candidate_path = g.contained(candidate_path, workspace)
@@ -493,7 +506,12 @@ def _load_candidate(candidate_path, workspace):
             for slot, capture in bundle.captures.items():
                 row = rows[slot]
                 g.verify_protocol_capture(store.db, row, scope)
-                row.update(g.accepted_projection(store.db, row, 'blind'))
+                if scope.get('semantic_acceptance_binding',{}).get('semantic_acceptance_mode')=='BOUNDED':
+                    visible,display_binding=approved_display_projection(store.db,row)
+                    row.update(visible)
+                else:
+                    row.update(g.accepted_projection(store.db, row, 'blind'))
+                    display_binding=None
                 receipt_path = g.contained(revision / 'receipts' / (slot + '.json'), revision)
                 receipt = g.load(receipt_path)
                 require(receipt.get('source_manifest_sha256') == gates['source_manifest_sha256'], 'RECEIPT_SOURCE_CHANGED')
@@ -527,6 +545,8 @@ def _load_candidate(candidate_path, workspace):
                     'request_sha256': row['request_sha256'], 'context_sha256': sr.sha_text(row['context_json']),
                     'receipt': g.ref(receipt_path, workspace), 'actual_host': actual_binding,
                     'received_quotation_origins': received_binding}
+                if display_binding is not None:
+                    evidence_bindings[name]['turns'][slot]['display_binding']=display_binding
     binding = {'candidate_manifest': g.ref(candidate_path, workspace), 'candidate_id': candidate['candidate_id'],
                'gate_inputs': candidate['gate_inputs'], 'source_manifest': candidate['source_manifest'],
                'generation_settings': candidate['generation_settings'], 'suite_bindings': {k: b.binding for k, b in bundles.items()},

@@ -68,6 +68,8 @@ class TrustedAdmissionAdapter:
 
 def request_contract(state,binding):
     """The host vocabulary is descriptive. Only validator certificates authorize."""
+    from semantic_binding import strict_selected
+    require(strict_selected(binding),'STRICT_BOUNDED_PATH_NOT_SELECTED')
     return {'version':REQUEST_VERSION,'authority':'PROPOSAL_ONLY',
         'response_kind':'PROPOSED_SEMANTIC_PLAN','host_only_authority':'AUTHORIZED_CLAIMS',
         'response_fields':['kind','plan','visible_text'],

@@ -11,6 +11,15 @@ ADAPTER_VERSION = 'FROZEN_TYPED_ADMISSION_1'
 REQUEST_VERSION = 'PROPOSED_SEMANTIC_PLAN_REQUEST_1'
 PERSISTENCE_VERSION = 'RAW_ACCEPTED_IDENTITY_1'
 EVALUATOR_VERSION = 'ACCEPTED_PRODUCT_WITH_RAW_PROVENANCE_1'
+BOUNDED_BINDING_VERSION = 'FORMAL_BOUNDED_BINDING_1'
+DISPLAY_POLICY = 'BOUNDED_CONVERSATION_1'
+BOUNDED_PERSISTENCE_VERSION = 'RAW_DISPLAY_ACCEPTED_IDENTITY_2'
+DUAL_GATE_VERSION = 'DUAL_GATE_DISPLAY_STATE_1'
+ARCHITECTURE_CONTRACT = 'APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1'
+STATE_POLICY = 'admission-46.2'
+BOUNDED_FIELDS = {'architecture_contract','contract_manifest','criterion_routing',
+    'consumer_authority_matrix','display_policy_version','state_admission_policy_version',
+    'strict_semantic_policy_version','consumer_purpose','task_role'}
 LAYERS = {'PROVIDER','TRANSPORT','ADMISSION','VALIDATOR','CERTIFICATE','RENDERER',
           'PERSISTENCE','CONSUMER','EVALUATION'}
 ROOT = Path(__file__).resolve().parents[2]
@@ -54,11 +63,22 @@ def validate_binding(binding, scope=None, *, check_files=True):
         'runtime_source_hashes','admission_adapter_version','semantic_source',
         'provider_config_identity','dataset_identity','rubric_identity','consumers',
         'request_contract_version','persistence_version','evaluator_contract_version'}
-    require(type(binding) is dict and set(binding)==required,'ADMISSION','FORMAL_ACCEPTANCE_BINDING_REQUIRED')
+    bounded=type(binding) is dict and binding.get('schema_version')==BOUNDED_BINDING_VERSION
+    require(type(binding) is dict and set(binding)==required | (BOUNDED_FIELDS if bounded else set()),
+            'ADMISSION','FORMAL_ACCEPTANCE_BINDING_REQUIRED')
     expected={'schema_version':BINDING_VERSION,'semantic_acceptance_mode':'TRUSTED',
         'acceptance_policy_version':VERSION,'trusted_semantic_runtime_version':RUNTIME_VERSION,
         'admission_adapter_version':ADAPTER_VERSION,'request_contract_version':REQUEST_VERSION,
         'persistence_version':PERSISTENCE_VERSION,'evaluator_contract_version':EVALUATOR_VERSION}
+    if bounded:
+        expected.update(schema_version=BOUNDED_BINDING_VERSION,semantic_acceptance_mode='BOUNDED',
+            acceptance_policy_version=DISPLAY_POLICY,persistence_version=BOUNDED_PERSISTENCE_VERSION,
+            evaluator_contract_version=DUAL_GATE_VERSION,architecture_contract=ARCHITECTURE_CONTRACT,
+            display_policy_version=DISPLAY_POLICY,state_admission_policy_version=STATE_POLICY,
+            strict_semantic_policy_version=VERSION)
+        require((binding['task_role'],binding['consumer_purpose']) in
+                {('CONVERSATION','DISPLAY'),('STRICT_BOUNDED_CLAIM','BOUNDED_CLAIM')},
+                'CONSUMER','BOUNDED_PURPOSE_REQUIRED')
     for k,v in expected.items():
         failure='EVALUATION' if k=='evaluator_contract_version' else 'PERSISTENCE' if k=='persistence_version' else 'ADMISSION'
         require(binding.get(k)==v,failure,'FORMAL_'+k.upper()+'_MISMATCH')
@@ -80,6 +100,20 @@ def validate_binding(binding, scope=None, *, check_files=True):
             require(manifest['files'].get(ref['path'])==ref['sha256'],'ADMISSION','SOURCE_NOT_FROZEN')
         catalog=json.loads(reference(binding['semantic_source']).read_text(encoding='utf-8-sig'))
         require(catalog.get('version')==ADAPTER_VERSION,'ADMISSION','SEMANTIC_SOURCE_SCHEMA')
+        if bounded:
+            contract=json.loads(reference(binding['contract_manifest']).read_text(encoding='utf-8-sig'))
+            require(contract.get('contract')==ARCHITECTURE_CONTRACT,'ADMISSION','ARCHITECTURE_CONTRACT_CHANGED')
+            require(type(contract.get('files')) is dict and bool(contract['files']),
+                    'ADMISSION','CONTRACT_MANIFEST_REQUIRED')
+            for name,h in contract['files'].items(): reference({'path':name,'sha256':h})
+            for key in ('contract_manifest','criterion_routing','consumer_authority_matrix'):
+                ref=binding[key]; reference(ref)
+                require(manifest['files'].get(ref['path'])==ref['sha256'],'ADMISSION','BOUNDED_SOURCE_NOT_FROZEN')
+            for key in ('criterion_routing','consumer_authority_matrix'):
+                ref=binding[key]
+                require(contract['files'].get(ref['path'])==ref['sha256'],'ADMISSION','BOUNDED_CONTRACT_REFERENCE_CHANGED')
+            # Routing bytes are hashed as evaluator provenance, never read as
+            # production semantic rules, prompt data or claim selection.
     return binding
 
 def install_binding(store, handle, binding, scope):
@@ -88,7 +122,7 @@ def install_binding(store, handle, binding, scope):
     existing=session_binding(store.db,handle.session_id)
     if existing is not None:
         require_session(store.db,handle.session_id,binding)
-    bind_mode(store,handle,'TRUSTED')
+    bind_mode(store,handle,binding['semantic_acceptance_mode'])
     with layer('PERSISTENCE'):
         store.db.executescript('''
         CREATE TABLE IF NOT EXISTS semantic_session_binding(
@@ -125,7 +159,9 @@ def session_binding(db, session_id):
     binding=json.loads(row[0])
     require(digest(binding)==row[1],'PERSISTENCE','SESSION_BINDING_CORRUPT')
     from accepted_output import session_mode
-    require(session_mode(db,session_id)=='TRUSTED','CONSUMER','FORMAL_SESSION_MUST_BE_TRUSTED')
+    expected=binding.get('semantic_acceptance_mode')
+    require(expected in {'TRUSTED','BOUNDED'} and session_mode(db,session_id)==expected,
+            'CONSUMER','FORMAL_SESSION_MUST_BE_TRUSTED' if expected=='TRUSTED' else 'BOUNDED_SESSION_POLICY_CHANGED')
     return binding
 
 def require_session(db, session_id, binding):
@@ -133,8 +169,16 @@ def require_session(db, session_id, binding):
     for name in ('semantic_raw_outputs','accepted_outputs'):
         require(db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",(name,)).fetchone(),
                 'PERSISTENCE','ACCEPTED_PERSISTENCE_REQUIRED')
+    if binding['semantic_acceptance_mode']=='BOUNDED':
+        for name in ('displayed_outputs','bounded_claim_outputs'):
+            require(db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",(name,)).fetchone(),
+                    'PERSISTENCE','BOUNDED_PERSISTENCE_REQUIRED')
 
 def consumer_text(record, text):
     require(record is not None and text==record.get('accepted_assistant_text'),
             'CONSUMER','GUARD_ESCAPE_DETECTED')
     return text
+
+def strict_selected(binding):
+    """Only a host-bound policy chooses a finite proof request."""
+    return binding['semantic_acceptance_mode']=='TRUSTED' or binding.get('consumer_purpose')=='BOUNDED_CLAIM'

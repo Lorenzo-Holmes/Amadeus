@@ -359,6 +359,17 @@ def load_bundle(*, audit, source_manifest, cases_manifest, capture_manifest, cas
                "cases_sha256": case_sha, "captures_sha256": sha_bytes(capture_raw),
                "revision_id": capture_doc["revision_id"],
                "rubric_sha256": sha_bytes(case_files[Path(rubric).resolve()]) if rubric else None, **seal_binding}
+    formal=capture_doc.get('semantic_acceptance_binding')
+    if formal and formal.get('semantic_acceptance_mode')=='BOUNDED':
+        code=str(Path(__file__).resolve().parents[2]/'operational_runtime_v1')
+        if code not in sys.path:sys.path.insert(0,code)
+        from accepted_output import raw_text_for_audit
+        routes=bounded_routes(formal)
+        require(set(routes)=={(sid,c) for sid in rows for c in criteria},'DUAL_GATE_CAPTURE_COVERAGE')
+        for row in rows.values():
+            raw_text_for_audit(row)
+            require(row['accepted_output']['acceptance_identity']==formal,'DUAL_GATE_CAPTURE_POLICY_CHANGED')
+        binding['semantic_acceptance_binding']=formal
     return Bundle(normalized, criteria, thresholds, rows, binding, options, spec if spec is not None else case_doc)
 
 
@@ -366,6 +377,51 @@ def fresh(bundle):
     current = load_bundle(**bundle.options)
     require(current.binding == bundle.binding, "EVIDENCE_CHANGED_SINCE_LOAD")
     return current
+
+
+def bounded_routes(binding):
+    """Read frozen evaluator routing; never provide it to generation."""
+    from semantic_binding import validate_binding,reference
+    validate_binding(binding)
+    doc=read_json(reference(binding['criterion_routing']))
+    require(doc.get('original_denominator')==176 and doc.get('turn_count')==44,'DUAL_GATE_DENOMINATOR_CHANGED')
+    require(doc['source_hashes']['CASES.json']==binding['dataset_identity']['sha256'] and
+            doc['source_hashes']['PRIVATE_RUBRIC.json']==binding['rubric_identity']['sha256'],'DUAL_GATE_DATASET_CHANGED')
+    routes={(r['turn_id'],r['criterion_id']):r for r in doc['criteria']}
+    require(len(routes)==len(doc['criteria'])==176,'DUAL_GATE_ROUTING_COVERAGE')
+    require(Counter(r['route'] for r in routes.values())=={'CONVERSATION_UTILITY':44,'BOTH':132},'DUAL_GATE_ROUTES_CHANGED')
+    require(all(r['original_criterion_wording']==r['criterion_id'] for r in routes.values()),'CRITERION_WORDING_CHANGED')
+    return routes
+
+
+def bind_dual_judgment(row,item,route):
+    """Bind supplied judgments to display and state evidence, never score them."""
+    from semantic_types import digest
+    require(row.get('output_provenance')=='HOST_ACKNOWLEDGED_DISPLAY','DUAL_GATE_DISPLAY_REQUIRED')
+    a=item.get('conversation_utility')
+    allowed={'PASS','FAIL','UNCLEAR','UNREVIEWED'}
+    require(type(a) is dict and a.get('verdict') in allowed,'CONVERSATION_JUDGMENT_REQUIRED')
+    require(nonempty(a.get('quote')) and a['quote'] in row['displayed_text'] and nonempty(a.get('rationale')),
+            'CONVERSATION_DISPLAY_QUOTE_REQUIRED')
+    verdicts=[a['verdict']]
+    b=item.get('state_integrity')
+    if route=='BOTH':
+        require(type(b) is dict and b.get('verdict') in allowed and nonempty(b.get('rationale')),'STATE_JUDGMENT_REQUIRED')
+        trace=row.get('state_lineage')
+        if b['verdict']=='PASS':
+            require(type(trace) is dict and trace.get('turn_id')==row['turn_id'] and trace.get('displayed') is True
+                    and trace.get('model_text_is_event_proof') is False,'STATE_TRACE_REQUIRED')
+            require(trace.get('state_before') is not None and trace.get('state_after') is not None
+                    and type(trace.get('events')) is dict,'STATE_BEFORE_AFTER_REQUIRED')
+            expected={k+'_sha256':digest(trace[k]) for k in ('state_before','state_after','events')}
+            expected['trace_sha256']=digest(trace)
+            require(b.get('evidence')==expected,'STATE_JUDGMENT_EVIDENCE_MISMATCH')
+        verdicts.append(b['verdict'])
+    else:
+        require(route=='CONVERSATION_UTILITY' and b is None,'STATE_ROUTE_MISMATCH')
+    verdict='FAIL' if 'FAIL' in verdicts else 'UNREVIEWED' if 'UNREVIEWED' in verdicts else 'UNCLEAR' if 'UNCLEAR' in verdicts else 'PASS'
+    require(item.get('verdict')==verdict,'DUAL_GATE_VERDICT_MISMATCH')
+    return verdict
 
 
 def blank_review(bundle):
@@ -381,6 +437,14 @@ def blank_review(bundle):
               "rationale": None, "finding_ids": []} for dim in bundle.criteria]} for t in case["turns"]],
             "quality": {q: {"score": None, "rationale": None, "evidence": []} for q in QUALITY}
             if case["quality_eligible"] else None})
+    if bundle.binding.get('semantic_acceptance_binding',{}).get('semantic_acceptance_mode')=='BOUNDED':
+        routes=bounded_routes(bundle.binding['semantic_acceptance_binding'])
+        for case in result['cases']:
+            for turn in case['turn_reviews']:
+                for item in turn['judgments']:
+                    item.update(route=routes[(turn['slot_id'],item['criterion_id'])]['route'],
+                        conversation_utility={'verdict':None,'quote':None,'rationale':None},state_integrity=None)
+                    if item['route']=='BOTH': item['state_integrity']={'verdict':None,'rationale':None,'evidence':None}
     return result
 
 
@@ -439,6 +503,9 @@ def bind_review(bundle, review):
     cases = unique_rows(review.get("cases"), "case_id", "INVALID_OR_DUPLICATE_REVIEW_CASE")
     require(set(cases) == {c["id"] for c in bundle.cases}, "REVIEW_CASE_COVERAGE_MISMATCH")
     verdicts = Counter()
+    bounded=bundle.binding.get('semantic_acceptance_binding',{}).get('semantic_acceptance_mode')=='BOUNDED'
+    routes=bounded_routes(bundle.binding['semantic_acceptance_binding']) if bounded else {}
+    gate_a=Counter();gate_b=Counter()
     groups = defaultdict(list)
     for case in bundle.cases:
         notes = cases[case["id"]]
@@ -448,7 +515,14 @@ def bind_review(bundle, review):
             judgments = unique_rows(turn.get("judgments"), "criterion_id", "INVALID_OR_DUPLICATE_CRITERION")
             require(set(judgments) == set(bundle.criteria), "FOUR_CRITERIA_COVERAGE_MISMATCH")
             for item in judgments.values():
-                require(item.get("verdict") in {"PASS", "FAIL", "UNKNOWN", "UNCLEAR", "SPEC_CONFLICT", "NOT_APPLICABLE"}, "EXPLICIT_VERDICT_REQUIRED")
+                if bounded:
+                    route=routes[(sid,item['criterion_id'])]['route']
+                    require(item.get('route')==route,'DUAL_GATE_ROUTE_CHANGED')
+                    bind_dual_judgment(bundle.captures[sid],item,route)
+                    gate_a[item['conversation_utility']['verdict']]+=1
+                    if route=='BOTH':gate_b[item['state_integrity']['verdict']]+=1
+                require(item.get("verdict") in ({'PASS','FAIL','UNCLEAR','UNREVIEWED'} if bounded else
+                    {"PASS", "FAIL", "UNKNOWN", "UNCLEAR", "SPEC_CONFLICT", "NOT_APPLICABLE"}), "EXPLICIT_VERDICT_REQUIRED")
                 _quote({"slot_id": sid, "quote": item.get("quote")}, bundle.captures, {sid})
                 require(nonempty(item.get("rationale")), "JUDGMENT_RATIONALE_REQUIRED")
                 refs = item.get("finding_ids")
@@ -484,7 +558,9 @@ def bind_review(bundle, review):
     all_pass = verdicts == {"PASS": len(bundle.captures) * 4}
     quality_pass = bool(groups) and not failing
     gate = all_pass and quality_pass and not critical
-    return {"schema_version": "semantic-binding-report-v2-1", "status": "BOUND", "binding": bundle.binding,
+    blocking=[f['id'] for f in findings.values() if f['severity'] in {'MAJOR','CRITICAL'} and f['status']=='OPEN'] if bounded else critical
+    if bounded:gate=gate and not blocking and gate_a=={'PASS':176} and gate_b=={'PASS':132}
+    result={"schema_version": "semantic-binding-report-v2-1", "status": "BOUND", "binding": bundle.binding,
             "review_sha256": sha_bytes(json_bytes(review)), "reviewer": copy.deepcopy(review["reviewer"]),
             "coverage": {"turns": len(bundle.captures), "criteria": sum(verdicts.values()),
                          "quality_scores": sum(len(g) for g in groups.values()) * 3},
@@ -496,6 +572,12 @@ def bind_review(bundle, review):
             "reviewer_independence_authenticated": False, "independent_review_complete": False,
             "semantic_judgments_generated_by_tool": False, "provider_execution_verified_by_this_tool": False,
             "product_acceptance_complete": False, "target_calls": 0}
+    if bounded:
+        result['dual_gate']={'contract_version':'DUAL_GATE_DISPLAY_STATE_1','original_criteria':176,
+            'conversation_subchecks':dict(gate_a),'state_subchecks':dict(gate_b),
+            'conversation_utility_pass':gate_a=={'PASS':176} and quality_pass and not blocking,
+            'state_integrity_pass':gate_b=={'PASS':132} and not blocking,'unresolved_blocking_findings':blocking}
+    return result
 
 
 def _public_view(bundle, package_id):

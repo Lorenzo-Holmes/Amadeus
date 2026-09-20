@@ -25,6 +25,20 @@ def export_calls(store: TranscriptStore, destination: Path) -> dict:
         accepted = load_record(store.db, record['turn_id'])
         if accepted is not None:
             values['ACCEPTED_OUTPUT.json'] = (json.dumps(accepted,ensure_ascii=False,indent=2)+'\n').encode('utf-8')
+            if accepted.get('feature_gate')=='BOUNDED':
+                from accepted_output import load_display_record,load_bounded_claim
+                displayed=load_display_record(store.db,record['turn_id'],accepted)
+                if displayed is not None:
+                    values['DISPLAYED_OUTPUT.json']=(json.dumps(displayed,ensure_ascii=False,indent=2)+'\n').encode('utf-8')
+                    claim=load_bounded_claim(store.db,record['turn_id'],accepted,displayed)
+                    if claim is not None:
+                        values['BOUNDED_CLAIM_OUTPUT.json']=(json.dumps(claim,ensure_ascii=False,indent=2)+'\n').encode('utf-8')
+                trace=store.db.execute('SELECT trace_json FROM chat_traces WHERE turn_id=?',(record['turn_id'],)).fetchone()
+                if trace is not None:
+                    state=json.loads(trace[0])
+                    values['STATE_ADMISSION.json']=(json.dumps({k:state[k] for k in
+                        ('turn_id','state_before','state_after','events','model_text_is_event_proof')},
+                        ensure_ascii=False,indent=2)+'\n').encode('utf-8')
         # A completion manifest is emitted only once a terminal raw capture is
         # known. Unknown intents retain evolving DB status and immutable input.
         if record["status"] != "SUBMITTED_STATUS_UNKNOWN":
