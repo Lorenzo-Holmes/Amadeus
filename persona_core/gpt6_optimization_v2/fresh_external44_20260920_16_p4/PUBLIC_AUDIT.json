@@ -1,0 +1,91 @@
+{
+  "task": "G6-07-P4-FRESH-VALIDATION",
+  "at_utc": "2026-09-20T14:20:01.515335+00:00",
+  "stage_a": "PASS",
+  "premature_build_scope_flags": "FIXED",
+  "canonical_guide_alignment": "PASS",
+  "zero_provider_preflight": "READY",
+  "p3_source_freeze": "BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01",
+  "new_p4_revision": "external44_20260920_16_fresh_bounded",
+  "revision_status": "PERMANENTLY_QUARANTINED",
+  "provider": "DeepSeek Official",
+  "planned_model_mix": {
+    "deepseek-v4-pro": 42,
+    "deepseek-flash": 2
+  },
+  "actual_model_mix": {
+    "deepseek-v4-pro": 3,
+    "deepseek-flash": 0
+  },
+  "api": "responses",
+  "reasoning": "max",
+  "route": "DIRECT_NO_PROXY",
+  "stream": true,
+  "counts": {
+    "submitted": 3,
+    "provider_valid": 3,
+    "displayed_product_outputs": 3,
+    "strict_path_outputs": 0,
+    "state_effect_candidates": 3,
+    "state_effect_candidates_scope": "HOST_UTTERANCE_OBSERVATIONS_ONLY",
+    "state_observation_commits": 3,
+    "terminal_known_rejected": 0,
+    "new_unknown": 0,
+    "reviewed": 12,
+    "PASS": 11,
+    "FAIL": 1,
+    "UNCLEAR": 0,
+    "UNREVIEWED": 164,
+    "not_submitted": 41
+  },
+  "conversation_utility": "FAIL",
+  "state_integrity": "INCOMPLETE",
+  "gate_a_subchecks": {
+    "PASS": 11,
+    "FAIL": 1,
+    "UNREVIEWED": 164
+  },
+  "gate_b_subchecks": {
+    "PASS": 9,
+    "UNREVIEWED": 123
+  },
+  "quality_status": "INCOMPLETE_SCENARIO_AND_CATEGORY_COVERAGE",
+  "Critical": 0,
+  "Major": 1,
+  "conversation_task_failures": 1,
+  "state_integrity_failures": 0,
+  "unauthorized_promotions": 0,
+  "cross_entity_contamination": 0,
+  "false_execution_completion": 0,
+  "generic_fallback_failures": 0,
+  "benchmark_leakage": "PASS",
+  "automatic_paid_retries": 0,
+  "readiness_calls": 0,
+  "source_modified_after_first_request": false,
+  "historical_verdict_modified": false,
+  "historical_evidence_unchanged": true,
+  "p3_rerun": false,
+  "historical_pass_inherited": false,
+  "reviewer": "CURRENT_SESSION_INTERNAL_DEVELOPER_NONBLIND",
+  "independent_review": false,
+  "g6_07": "FAIL",
+  "g6_08": "LOCKED",
+  "g6_09": "LOCKED",
+  "build_scope_complete_validation_pending": false,
+  "gpt6_core_build_complete_validation_pending": false,
+  "product_acceptance_complete": false,
+  "production_activated": false,
+  "safe_stop": true,
+  "source_members_match": 182,
+  "findings_summary": [
+    {
+      "id": "R16-N02-01",
+      "gate": "CONVERSATION_UTILITY",
+      "severity": "MAJOR",
+      "failure_layer": "MODEL_RAW",
+      "category": "TEMPORAL_CAUSAL_EXPLANATION_DIRECTION_ERROR",
+      "state_integrity_failure": false
+    }
+  ],
+  "raw_or_private_content_published": false
+}
