@@ -1,0 +1,7 @@
+{
+  "schema_version": "pcore-decision-state-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "current_goals": [],
+  "pending_commitments": [],
+  "state_version": 0
+}

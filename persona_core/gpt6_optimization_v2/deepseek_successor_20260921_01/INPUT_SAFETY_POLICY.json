@@ -1,0 +1,34 @@
+{
+  "version": "APCORE_DEEPSEEK_INPUT_SAFETY_1",
+  "provider": "DeepSeek Official",
+  "status": "FROZEN",
+  "independent_input_count_api": "NOT_AVAILABLE_IN_INSPECTED_OFFICIAL_API_CONTRACT",
+  "method": "HOST_CANONICAL_BYTES_AND_DOCUMENTED_CONTEXT_TERMINAL_GUARD",
+  "canonical_message_bytes_max": 24576,
+  "canonical_request_bytes_max": 32768,
+  "documented_context_capacity": "1M tokens",
+  "budget_input_token_envelope": 1100000,
+  "budget_envelope_basis": "Rounded above both decimal 1000000 and binary 1048576 interpretations of documented 1M. Monetary reservation only, not an exact pre-request tokenizer/framing proof.",
+  "pre_request_exact_tokens": null,
+  "pre_request_exact_proof_required": false,
+  "automatic_truncation": false,
+  "silent_context_deletion": false,
+  "benchmark_input_changes": false,
+  "provider_length_rejection": "TERMINAL_KNOWN_INPUT_LIMIT_REJECTION",
+  "post_response_audit": [
+    "usage.input_tokens",
+    "usage.output_tokens",
+    "usage.total_tokens",
+    "usage.input_tokens_details.cached_tokens",
+    "usage.output_tokens_details.reasoning_tokens"
+  ],
+  "post_response_tokens_are_pre_request_proof": false,
+  "usage_limit_breach": "STOP_AND_QUARANTINE",
+  "generation_requests_per_slot": 1,
+  "automatic_retries": 0,
+  "timeout_or_ambiguous_terminal": "STOP_AND_QUARANTINE",
+  "official_evidence": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/OFFICIAL_DOCUMENTATION_EVIDENCE.json",
+    "sha256": "0fee7f4aaf5e53304c64b849993b49a67d96ac8765dd6dfefd9d699381b8087c"
+  }
+}

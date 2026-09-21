@@ -1,0 +1,15 @@
+{
+  "task_type": [
+    "INFRASTRUCTURE",
+    "VALIDATION"
+  ],
+  "transition": "validated scope/request -> journal reservation -> one submission -> verified receipt -> unchanged dual gate",
+  "conversation_semantics_changed": false,
+  "durable_state_semantics_changed": false,
+  "validation_scope_expanded": false,
+  "source_allowlist_count": 8,
+  "network_generation_requires_input_proof_and_formal_preflight_ready": true,
+  "budget_supersession": "PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED",
+  "original_frozen_source_allowlist_count": 7,
+  "extension": "LIMITED_ALLOWLIST_EXTENSION.json"
+}

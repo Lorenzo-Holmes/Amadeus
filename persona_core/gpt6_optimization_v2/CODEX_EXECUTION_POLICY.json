@@ -1,0 +1,104 @@
+{
+  "schema_version": "APCORE_CODEX_GOVERNANCE_2_1",
+  "status": "ADOPTED_OFFLINE_ORCHESTRATION",
+  "principle": "VERIFY_ONCE_SEAL_REUSE_UNTIL_INVALIDATED",
+  "task_authorization": {
+    "scope": "GOVERNANCE_REFACTOR_AND_OFFLINE_HARNESS_REPAIR",
+    "paid_validation_allowed": false,
+    "provider_request_limit": 0,
+    "r18_resume_allowed": false,
+    "historical_verdict_rewrite_allowed": false
+  },
+  "scientific_invariants": {
+    "turns": 44,
+    "criteria": 176,
+    "gate_a": 176,
+    "gate_b": 132,
+    "criterion_ids_wording_order": "FROZEN",
+    "rubric": "FROZEN",
+    "routing": "FROZEN",
+    "conversation_utility": "UNCHANGED",
+    "state_integrity": "UNCHANGED",
+    "major_critical_thresholds": "UNCHANGED",
+    "benchmark_leakage_controls": "RETAINED",
+    "persona_genesis_protection": "RETAINED",
+    "display_fact_state_boundaries": "DISTINCT",
+    "unknown_auto_resend": false,
+    "provider_auto_retry": false,
+    "retry_until_pass": false,
+    "historical_raw_overwrite": false,
+    "historical_revision_rewrite": false
+  },
+  "preserved_acceptance_references": [
+    {"path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json", "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"},
+    {"path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json", "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"},
+    {"path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/MODEL_QUALITY_ACCEPTANCE_POLICY.md", "sha256": "166c067ce7103a7420a4605547e1e978205fd8c843e01c98109b0d93cb7ed100"}
+  ],
+  "failure_precedence": ["CRITICAL_OR_STATE_ESCAPE", "SCIENTIFIC_BLOCKING_MAJOR", "PROVIDER_UNKNOWN", "INTEGRITY_UNPROVEN", "PROVEN_LOCAL_HARNESS_DEFECT", "MILESTONE_OR_DECISION"],
+  "classification": {
+    "scientific_or_acceptance_failure": "HARD_STOP_PRESERVE_QUARANTINE",
+    "provider_uncertainty": "HARD_STOP_QUARANTINE_NO_RETRY",
+    "proven_local_harness_defect": "LOCAL_REPAIR_CONTINUE_WITH_PAID_GATE_CLOSED",
+    "missing_or_mixed_evidence": "FAIL_CLOSED_NO_AUTOMATIC_RECLASSIFICATION",
+    "unclear_quality": "OFFLINE_REPAIR_ALLOWED_BUT_NO_NEW_DRAW_UNTIL_EXISTING_EVIDENCE_ADJUDICATED",
+    "provider_terminal_known_rejection": "NOT_ACCEPTED_NOT_AUTOMATICALLY_A_HARNESS_DEFECT",
+    "billing_unknown": "NOT_TRANSPORT_UNKNOWN_RETAIN_CONSERVATIVE_RESERVATION"
+  },
+  "draw_policy": {
+    "allocation_ledger": "EVERY_ACTUAL_REQUEST_AND_ALLOCATION_RETAINED",
+    "quality_draw_accounting": "ALLOCATION_RESERVED_UNTIL_COMPLETE_ADJUDICATION_OR_DOCUMENTED_HARNESS_EXCLUSION",
+    "harness_exclusion": "SEPARATE_ADJUDICATION_NOT_AUTOMATIC_ON_EXCEPTION",
+    "maximum_harness_replacements_per_lineage": 1,
+    "lineage_keys": ["root_id", "candidate_id", "configuration_sha256", "benchmark_sha256"],
+    "counter_reset_on_new_session_revision_or_campaign_name": false,
+    "counter_charge": "AT_REPLACEMENT_ALLOCATION_BEFORE_ANY_PROVIDER_REQUEST",
+    "old_request_resend": false,
+    "new_revision_from_zero": true,
+    "old_observation_transfer_or_best_of_selection": false,
+    "unclear_observation_erasure": false,
+    "output_independent_defect_required": true,
+    "all_observed_quality_adjudicated_required": true,
+    "any_established_required_criterion_fail_blocks_exclusion": true,
+    "retrospective_exception_must_be_disclosed": true,
+    "second_invalidated_replacement": "STOP_FOR_GOVERNANCE_REVIEW_NOT_AUTOMATIC_RENEWAL"
+  },
+  "local_repair_pipeline": ["CLOSE_PAID_GATE", "PRESERVE_EVIDENCE", "PROVE_FAILURE_LAYER", "TARGETED_REPAIR", "TARGETED_TEST", "AFFECTED_REGRESSION", "COMPLETED_ROW_FULL_PATH_TEST", "TESTED_SOURCE_FREEZE", "ZERO_PROVIDER_PREFLIGHT", "ELIGIBILITY_REVIEW_WITHIN_EXISTING_AUTHORIZATION"],
+  "test_policy": {
+    "matrix": "persona_core/gpt6_optimization_v2/TEST_INVALIDATION_MATRIX.json",
+    "full_component_receipt": "work/deepseek_successor/COMPONENT.json",
+    "full_component_receipt_sha256": "e65da0e68ec48d05af06997c08ce704e703fb7dd07677665aa4ea1fa5a92b2ca",
+    "full_suite_scope": "EXACT_ORIGINAL_34_MODULES_821_TEST_BASELINE_PLUS_NEW_RELEVANT_TESTS",
+    "full_suite_trigger": "ONCE_PER_SOURCE_FREEZE_CANDIDATE_OR_RELEASE_NOT_EACH_EDIT",
+    "cache_key": ["source_and_transitive_dependencies", "test_collection", "fixtures", "configuration", "interpreter", "dependency_versions", "platform", "test_environment"],
+    "skipped_or_missing_tests_are_pass": false,
+    "unclassified_change": "CONSERVATIVE_FULL_AND_LEGACY_DEPENDENCY_REVIEW",
+    "parallel_test_scheduling": "MODULES_OBSERVING_OR_MUTATING_SHARED_EVIDENCE_DIRECTORY_REQUIRE_SERIAL_RESOURCE_LOCK",
+    "confirmed_test_isolation_race": "RETAIN_FAILED_RECEIPT_REPAIR_SCHEDULING_RERUN_AFFECTED_MODULE_ONLY_IF_SOURCE_UNCHANGED"
+  },
+  "integrity_policy": {
+    "manifest_must_be_pinned": true,
+    "stored_manifest_digest_alone_proves_live_tree": false,
+    "current_implementation": "RECOMPUTE_ACTUAL_LEAF_HASHES_AND_RETURN_COMPACT_SUMMARY",
+    "incremental_skip_prerequisite": "TRUSTED_IMMUTABLE_SNAPSHOT_OR_COMPLETE_CHANGE_JOURNAL",
+    "trusted_change_journal_available": false,
+    "root_mismatch": "CHANGED_PATH_DEEP_AUDIT_NO_RESEAL_TO_HIDE_DRIFT"
+  },
+  "state_policy": {
+    "writer": "persona_core/gpt6_optimization_v2/tools/governance_v2.py::commit_state",
+    "pointer": "persona_core/gpt6_optimization_v2/CANONICAL_MACHINE_STATE.json",
+    "publication": "IMMUTABLE_GENERATION_THEN_ATOMIC_POINTER_REPLACE",
+    "concurrency": "EXCLUSIVE_LOCK_PLUS_SHA256_COMPARE_AND_SWAP",
+    "legacy_four_machine_files": "PRESERVED_V1_FACT_SNAPSHOTS_NOT_V2_DERIVED_MIRRORS",
+    "legacy_writer_migration": "DEFERRED_EXPLICIT_ADAPTER_PLAN_NO_FALSE_COMPLETION_CLAIM",
+    "v2_public_summary": "DETERMINISTIC_ALLOWLIST_PROJECTION"
+  },
+  "milestone_artifacts": ["PRIVATE_RUN_RECEIPT.json", "PUBLIC_SUMMARY.json", "STATE_CHECKPOINT.json"],
+  "extra_artifacts_only_for_independent_duty": ["SOURCE_MANIFEST", "HISTORICAL_PINNED_MANIFEST", "PUBLICATION_RECEIPT"],
+  "resume": {
+    "entry": "persona_core/CODEX_EXECUTION_RULES.md",
+    "command": "python persona_core/gpt6_optimization_v2/tools/governance_v2.py resume",
+    "deep_recovery_triggers": ["IDENTITY_MISMATCH", "POLICY_PIN_MISMATCH", "SCOPE_AMBIGUITY", "HISTORICAL_CONFLICT", "UNVERIFIABLE_CHECKPOINT"]
+  },
+  "output_limits": {"normal_summary_lines": 40, "failure_log_tail_lines": 60, "changed_path_first_page": 30, "raw_json_dump_by_default": false},
+  "git_policy": "ONE_REVIEWED_EXPLICIT_ALLOWLIST_COMMIT_AT_GREEN_MILESTONE_NO_GIT_ADD_ALL"
+}

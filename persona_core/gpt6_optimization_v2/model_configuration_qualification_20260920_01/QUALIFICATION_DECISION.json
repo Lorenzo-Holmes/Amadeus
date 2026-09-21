@@ -1,0 +1,55 @@
+{
+  "task": "G6-07-MODEL-CONFIGURATION-QUALIFICATION-PLAN-V1",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "successor_candidate_selected": true,
+  "successor_candidate_count": 1,
+  "qualification_status": "VALIDATION_BINDING_CHANGE_REQUIRED",
+  "blocker": "VALIDATION_BINDING_CHANGE_REQUIRED",
+  "additional_blockers": [
+    "BUDGET_NOT_READY"
+  ],
+  "selection_confidence": "MED_PRODUCT_FIT_INFERENCE_NOT_PROJECT_QUALITY_PROOF",
+  "formal_driver_compatibility": "CHANGE_REQUIRED",
+  "budget": "NOT_READY",
+  "preflight": "NOT_RUN",
+  "current_failed_configuration_additional_revisions": 0,
+  "future_revision_design_limit": 1,
+  "executable_future_revision_count": 0,
+  "fresh_revision": "NOT_CREATED",
+  "provider_requests": 0,
+  "readiness_calls": 0,
+  "paid_requests": 0,
+  "production_source_modified": false,
+  "r16": "FAIL / PERMANENTLY_QUARANTINED",
+  "r16_finding": "R16-N02-01 / MAJOR / OPEN_BLOCKING",
+  "g6_07": "FAIL",
+  "g6_08": "LOCKED",
+  "g6_09": "LOCKED",
+  "ready_for_fresh_validation": false,
+  "effective_configuration_freeze": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/CONFIGURATION_PREREGISTRATION.json",
+    "sha256": "b110549e5d76372cbbff79f4f919d92af89a482636498c7604a4b6c45fe9e0ff"
+  },
+  "budget_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/BUDGET_ANALYSIS.json",
+    "sha256": "48afd89210b7ae2413569f02c15d0b2e9c38d8d3e90f25bbdbd37e22c60072de"
+  },
+  "stop_rules_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/STOP_RULES.md",
+    "sha256": "82fa5cc404afd8c02640821b82cc6ff2ca0f63ed6255e60b3af42efebb3539d9"
+  },
+  "source_identity": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+    "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  },
+  "source_members_match": 182,
+  "policy_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+    "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+  },
+  "next_action": "Next session: resolve the exact selected configuration binding and budget decision with zero provider calls. Adopt a finite change-control contract before any runtime binding implementation; retain the 19 CNY ceiling unless a separate exact-batch budget decision is recorded. No fresh revision, readiness, fallback candidate or R16 replay. Follow model_configuration_qualification_20260920_01/NEXT_EXECUTION_PROMPT.md.",
+  "recovery_point": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/FINAL_AUDIT.json",
+  "next_execution_prompt": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/NEXT_EXECUTION_PROMPT.md",
+  "safe_stop": true,
+  "at_utc": "2026-09-20T16:09:41.150940+00:00"
+}

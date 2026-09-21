@@ -1,0 +1,13 @@
+{
+  "schema_version": "pcore-affect-state-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "deviation_from_baseline": {
+    "valence": 0.0,
+    "arousal": 0.0,
+    "defensiveness": 0.0,
+    "curiosity": 0.0,
+    "embarrassment": 0.0,
+    "concern_for_other": 0.0
+  },
+  "state_version": 0
+}

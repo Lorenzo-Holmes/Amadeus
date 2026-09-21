@@ -1,0 +1,185 @@
+{
+  "active_revision": "external44_20260917_08_pro",
+  "build_scope_complete_validation_pending": false,
+  "current_runtime_source_sha256": {
+    "persona_core/operational_runtime_v1/__init__.py": "1de21dcfc791249cdcbf4cb4990008600eca9a71aafb36474e00af98f35a7634",
+    "persona_core/operational_runtime_v1/admission.py": "296900a081943c8c6c37a4b20cb35af26f3fc589675c8b1da37f977b3e334b1a",
+    "persona_core/operational_runtime_v1/capture_export.py": "3209669b6496b9cc46df8930c2230ee506aa7b486370975709bd9b3da9a1d2d7",
+    "persona_core/operational_runtime_v1/chat.py": "ece004bad18b4d9c31ae1d1be585f6543d0dce7954fe062d35379359df986b69",
+    "persona_core/operational_runtime_v1/chat_cli.py": "3d811a10fc7460b1fd752eeb5b2b17d22020921ddc448262b885639dfcf5a4ea",
+    "persona_core/operational_runtime_v1/claim_evidence.py": "e0053320426dbb8b2bc78f4dd1d1a3c209caf6826ba5069683685859a69e95bf",
+    "persona_core/operational_runtime_v1/context_projection.py": "eb00c5560d855d09903069177913c212a5719071823fc573f6074319a021641c",
+    "persona_core/operational_runtime_v1/context_router.py": "cf8dd5c7d6557f4c6e93506278dffcdee51e944ec91f653be497b204bfd49c23",
+    "persona_core/operational_runtime_v1/dialogue_admission.py": "44b8f9c9aa55a906e0afbd1d3a9c2abf0bb73ba3fdc49c10619f2a5adb298c35",
+    "persona_core/operational_runtime_v1/expression_policy.py": "0cf0904a3131fb9e261173966cb14e97742809852af8272aabfcc009351634b0",
+    "persona_core/operational_runtime_v1/expression_prompt.py": "81ae727d204c548aa9f110d0b1534194c55d4666e17e798c1bb37fee9d720330",
+    "persona_core/operational_runtime_v1/legacy_import.py": "d3cab45390e693b9d59fc222e3e4b97eac14ddd7941a5b38f86aa14c25403375",
+    "persona_core/operational_runtime_v1/migration.py": "b23fecc001e7ca2cd43f03b4518c581e3ec2aabd780d284ab6a74897c81d7077",
+    "persona_core/operational_runtime_v1/operations.py": "3b1f5203f9271370315974e4e0bae7ec66470ccf64ccbaad68b3a8672a0724bc",
+    "persona_core/operational_runtime_v1/persona_growth.py": "1d4da263adfb2ac3a221ebdb56e317cc6727d1a34b07e7a4092a019a5d06451f",
+    "persona_core/operational_runtime_v1/provider.py": "160eb137b7fe8d3dd7096847de39a85a442fe01edb0bc25e591bc0c94e41e1bf",
+    "persona_core/operational_runtime_v1/provider_http_worker.py": "b845699038346eaefffce75897980e29f69911522efa8d693039a93e97decc9e",
+    "persona_core/operational_runtime_v1/recovery.py": "9dcb61a54a972cd8e84d12144657bb5e044dd27c941c36583f3d903d30fabe3b",
+    "persona_core/operational_runtime_v1/response_check.py": "13e27c6d14116354544d634e3f2694e9103bbcc3544f35afefe03f333e3ae915",
+    "persona_core/operational_runtime_v1/retrieval.py": "5d47d954a2b68392ea96d89b0a0b7552f34063a715cfe90e0e5db06b558ba301",
+    "persona_core/operational_runtime_v1/runtime_store.py": "080923c65d74296b81dc43cbde31243caa78667009075fa998cef79da7937b32",
+    "persona_core/operational_runtime_v1/state_projection.py": "5291335b95980c5971f68387b89fad8195a8e4de91a3c549b9cab0a7aad914bb",
+    "persona_core/operational_runtime_v1/transcript_store.py": "ee10d30acaafc94aac3fd4b6d576e72e5a02f5d3cafc74cfd230cf0c384fb235"
+  },
+  "current_source_change_after_last_provider_revision": "CLAIM_EVIDENCE_REPRESENTATION_OFFLINE_VALIDATED",
+  "current_source_semantic_acceptance": false,
+  "external_review": "WAITING_EXTERNAL_NEW_CURRENT_CANDIDATE_PACKAGE_REQUIRED",
+  "gates": [
+    {
+      "prior_gate_state_preserved": {
+        "evidence": "persona_core/gpt6_optimization_v2/component_checks/transport_diagnostics_20260918_final/TESTS.json",
+        "evidence_sha256": "54b0af61a794245db7e5aaf21bfaafa82f52d32d4b64b2aff03346db5e43bc05",
+        "id": "GATE-1",
+        "prior_gate_state_preserved": {
+          "evidence": "persona_core/gpt6_optimization_v2/component_checks/external44_repair_08_20260918_complete/TESTS.json",
+          "id": "GATE-1",
+          "semantic_acceptance": false,
+          "status": "PASS_STATIC_AND_COMPONENT",
+          "tests": 110
+        },
+        "semantic_acceptance": false,
+        "status": "PASS_STATIC_AND_COMPONENT",
+        "tests": 116
+      },
+      "id": "GATE-1",
+      "status": "PASS_STATIC_AND_COMPONENT",
+      "tests": 279,
+      "evidence": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/component_complete/TESTS.json",
+      "evidence_sha256": "1e4a08321f7d10cb6a78151783582b35ce7c28ce7266a60396a43c6dea819fc8",
+      "semantic_acceptance": false
+    },
+    {
+      "prior_gate_state_preserved": {
+        "compatible_pass": 449,
+        "evidence": "persona_core/gpt6_optimization_v2/G6_07_TRANSPORT_DIAGNOSTICS_ADJUDICATION.json",
+        "evidence_sha256": "5b27d99e078085c9b9f36efc9ca35e9913d5f08449f25e7fe6013774235f248b",
+        "expected_historical_identity_error": 1,
+        "id": "GATE-2",
+        "legacy_tests": 450,
+        "prior_gate_state_preserved": {
+          "compatible_pass": 449,
+          "evidence": "persona_core/gpt6_optimization_v2/G6_07_REVISION08_READINESS.json",
+          "expected_historical_identity_error": 1,
+          "id": "GATE-2",
+          "legacy_tests": 450,
+          "status": "PASS_CURRENT_COMPATIBILITY_WITH_EXPECTED_HISTORICAL_BINDING_INVALIDATION",
+          "unexpected_functional_failure": 0
+        },
+        "status": "PASS_CURRENT_COMPATIBILITY_WITH_EXPECTED_HISTORICAL_BINDING_INVALIDATION",
+        "unexpected_functional_failure": 0
+      },
+      "id": "GATE-2",
+      "status": "PASS_CURRENT_COMPATIBILITY_WITH_EXPECTED_HISTORICAL_BINDING_INVALIDATION",
+      "legacy_tests": 450,
+      "compatible_pass": 449,
+      "expected_historical_identity_error": 1,
+      "unexpected_functional_failure": 0,
+      "raw_regression_passed": false,
+      "evidence": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/LEGACY_REGRESSION_ADJUDICATION.json"
+    },
+    {
+      "captured_displayed": 20,
+      "evidence": "persona_core/gpt6_optimization_v2/EXTERNAL44_20260917_08_PRO_PARTIAL_ADJUDICATION.json",
+      "expected_turns": 44,
+      "fresh_revision_required": true,
+      "id": "GATE-3",
+      "prior_gate_state_preserved": {
+        "captured_displayed": 15,
+        "evidence": "persona_core/gpt6_optimization_v2/EXTERNAL44_20260917_07_PARTIAL_ADJUDICATION.json",
+        "expected_turns": 44,
+        "fresh_revision_required": true,
+        "id": "GATE-3",
+        "prior_gate_state_preserved": {
+          "captured_displayed": 44,
+          "evidence": "persona_core/gpt6_optimization_v2/EXTERNAL44_20260917_06_ADJUDICATION.json",
+          "expected_turns": 44,
+          "fresh_revision_required": true,
+          "id": "GATE-3",
+          "prior_gate_state_preserved": {
+            "captured_displayed": 13,
+            "evidence": "persona_core/gpt6_optimization_v2/resume_20260917_review/REVISION05_REVIEW_RECOVERY_SUMMARY.json",
+            "expected_turns": 44,
+            "fresh_revision_required": true,
+            "id": "GATE-3",
+            "prior_gate_state_preserved": {
+              "evidence": "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_04_pro/REVIEW_BINDING_REPORT.json",
+              "fresh_revision_required": true,
+              "id": "GATE-3",
+              "semantic_fail": 28,
+              "semantic_pass": 148,
+              "status": "FAIL_CURRENT_REVISION_STRUCTURAL_REPAIR_PENDING"
+            },
+            "reviewed_criteria": 52,
+            "semantic_fail": 4,
+            "semantic_pass": 48,
+            "source_revision": "external44_20260913_05",
+            "status": "INCOMPLETE_KNOWN_REJECTION_REPAIR_VALIDATION_PENDING",
+            "unjudged_criteria": 124,
+            "whole_revision_acceptance": false
+          },
+          "reviewed_criteria": 176,
+          "semantic_fail": 17,
+          "semantic_pass": 159,
+          "source_revision": "external44_20260917_06",
+          "status": "FAIL_REPAIR_AND_FRESH_VALIDATION_REQUIRED",
+          "unjudged_criteria": 0,
+          "whole_revision_acceptance": false
+        },
+        "reviewed_criteria": 60,
+        "semantic_fail": 14,
+        "semantic_pass": 46,
+        "source_revision": "external44_20260917_07",
+        "status": "INCOMPLETE_QUARANTINED_REMOTE_UNKNOWN_AND_SEMANTIC_FINDINGS",
+        "unjudged_criteria": 116,
+        "whole_revision_acceptance": false
+      },
+      "reviewed_criteria": 80,
+      "semantic_fail": 10,
+      "semantic_pass": 70,
+      "source_revision": "external44_20260917_08_pro",
+      "status": "INCOMPLETE_QUARANTINED_REMOTE_UNKNOWN_AND_SEMANTIC_FINDINGS",
+      "unjudged_criteria": 96,
+      "whole_revision_acceptance": false
+    },
+    {
+      "id": "GATE-4",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GATE-5",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GATE-6",
+      "status": "NOT_RUN"
+    }
+  ],
+  "gpt6_core_build_complete_validation_pending": false,
+  "internal_build_complete": false,
+  "natural_day_status": "WAITING_REAL_TIME_NEW_CANDIDATE_REQUIRED",
+  "natural_days": 0,
+  "old_days_inherited": false,
+  "open_current_findings": [
+    "R8-N02-01",
+    "R8-N06-01"
+  ],
+  "preparation_evidence": "persona_core/gpt6_optimization_v2/RELEASE_PREPARATION_STATUS_20260918.json",
+  "product_acceptance_complete": false,
+  "production_activated": false,
+  "required_natural_days": 3,
+  "static_tests_are_semantic_review": false,
+  "updated_at_utc": "2026-09-17T17:45:28.223840+00:00",
+  "offline_claim_evidence_status": {
+    "tests": 20,
+    "authored_language_fixtures": 12,
+    "passed": true,
+    "semantic_parser_accuracy_tested": false,
+    "evidence": "persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json"
+  },
+  "paid_validation_ready": false
+}

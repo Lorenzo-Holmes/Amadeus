@@ -1,0 +1,16 @@
+{
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "classification": [
+    "INFRASTRUCTURE",
+    "VALIDATION"
+  ],
+  "protected_transition": "frozen request -> certified local input receipt -> permitted single submission",
+  "conversation_change": false,
+  "durable_state_change": false,
+  "validation_scope_expanded": false,
+  "production_source_edits": "Only if a sufficient proof is established and minimal integration is necessary; otherwise zero.",
+  "remote_phase": "Public documentation and package artifacts only. No Provider/count/readiness calls before all execution gates READY.",
+  "fresh_revision_limit": 1,
+  "no_budget_reapproval": true,
+  "automatic_paid_retries": 0
+}

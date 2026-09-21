@@ -1,0 +1,18 @@
+{
+  "task": "G6-07-SUCCESSOR-BINDING-CONTRACT-AND-BUDGET-DECISION-V1",
+  "category": "VALIDATION_GOVERNANCE",
+  "protected_transition": "configuration -> request -> native receipt -> display lineage; bounded budget reservation",
+  "conversation_changed": false,
+  "durable_state_changed": false,
+  "validation_scope_expanded": false,
+  "production_source_edits": 0,
+  "provider_api_calls": 0,
+  "allowed_writes": [
+    "new governance directory",
+    "work snapshots/scripts/doc evidence",
+    "current machine state and mirrors",
+    "append-only decision log",
+    "public-safe Git branch"
+  ],
+  "historical_content_read_for_distribution": false
+}

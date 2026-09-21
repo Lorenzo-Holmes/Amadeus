@@ -1,0 +1,16 @@
+{
+  "CURRENT_STATE": "G6_07_P4_FRESH_R16_STOPPED_REVIEW_COMPLETE",
+  "BLOCKER": "P4_CONVERSATION_UTILITY_MAJOR",
+  "active_revision": "external44_20260920_16_fresh_bounded",
+  "revision_status": "PERMANENTLY_QUARANTINED",
+  "G6-07": "FAIL",
+  "G6-08": "LOCKED",
+  "G6-09": "LOCKED",
+  "source_members_match": 182,
+  "build_scope_complete_validation_pending": false,
+  "gpt6_core_build_complete_validation_pending": false,
+  "product_acceptance_complete": false,
+  "production_activated": false,
+  "historical_verdict_modified": false,
+  "next_action": "SAFE STOP; separately authorized repair required; preserve failed validation evidence."
+}

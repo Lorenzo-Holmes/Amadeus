@@ -1,0 +1,14 @@
+{
+  "task": "G6-07-DEEPSEEK-SUCCESSOR-REQUALIFICATION-TO-FRESH-VALIDATION-V1",
+  "candidate_id": "APCORE_SUCCESSOR_DEEPSEEK_FLASH_MAX_1",
+  "status": "PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED",
+  "batch_design_id": "APCORE_DEEPSEEK_FLASH_EXTERNAL44_SINGLE_BATCH_1",
+  "max_fresh_revisions": 1,
+  "max_generation_requests": 44,
+  "readiness_requests": 0,
+  "count_api_requests": 0,
+  "automatic_paid_retries": 0,
+  "fallback_allowed": false,
+  "source": "Current user supplied task; sections 1,5,7,14,18,22,28,29,43",
+  "at_utc": "2026-09-21T02:06:05.960712+00:00"
+}

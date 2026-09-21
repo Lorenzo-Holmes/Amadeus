@@ -1,0 +1,620 @@
+{
+  "status": "GREEN",
+  "task": "G6-07-SUCCESSOR-BINDING-IMPLEMENTATION-TO-FRESH-VALIDATION-V1",
+  "new_tests": 40,
+  "new_requirements": 30,
+  "new_tests_log": {
+    "path": "work/openai_formal_binding/tests_sixth.log",
+    "sha256": "1b0349d025aa4ed49755d3fbcc834d2f056bcbc0dcb9a20c72318d69b40a34dd"
+  },
+  "requirement_mapping": {
+    "OB-01": [
+      "test_ob01_exact_models"
+    ],
+    "OB-02": [
+      "test_ob02_exact_roles_and_schedule",
+      "test_ob02_inputs_cannot_be_substituted"
+    ],
+    "OB-03": [
+      "test_ob03_closed_golden_serialization"
+    ],
+    "OB-04": [
+      "test_ob04_unknown_fields_and_types"
+    ],
+    "OB-05": [
+      "test_ob05_additional_echo_metadata_is_preserved",
+      "test_ob05_reasoning_echo"
+    ],
+    "OB-06": [
+      "test_ob06_fragmentation_and_conflicts",
+      "test_ob06_invalid_terminal_and_eof"
+    ],
+    "OB-07": [
+      "test_ob07_empty_reasoning_tool_multiple",
+      "test_ob07_visible_only"
+    ],
+    "OB-08": [
+      "test_ob08_usage_decimal_and_native"
+    ],
+    "OB-09": [
+      "test_ob09_reasoning_is_not_double_billed"
+    ],
+    "OB-10": [
+      "test_ob10_cache_buckets_and_missing_write",
+      "test_ob10_invalid_cache_and_reasoning"
+    ],
+    "OB-11": [
+      "test_ob11_completed_journal_display"
+    ],
+    "OB-12": [
+      "test_ob12_incomplete_not_displayed"
+    ],
+    "OB-13": [
+      "test_ob13_failed_and_empty"
+    ],
+    "OB-14": [
+      "test_ob14_unknown_keeps_wire_reserve"
+    ],
+    "OB-15": [
+      "test_ob15_http_failures_submit_only_once",
+      "test_ob15_no_retry"
+    ],
+    "OB-16": [
+      "test_ob16_raw_wire_and_native_preserved"
+    ],
+    "OB-17": [
+      "test_ob17_display_projection"
+    ],
+    "OB-18": [
+      "test_ob18_accepted_identity"
+    ],
+    "OB-19": [
+      "test_ob19_state_effect_separate"
+    ],
+    "OB-20": [
+      "test_ob20_identity_mutations"
+    ],
+    "OB-21": [
+      "test_ob21_crash_after_journal_and_before_commit",
+      "test_ob21_restart_after_journal_and_terminal"
+    ],
+    "OB-22": [
+      "test_ob22_concurrent_journal_contenders",
+      "test_ob22_slot_idempotency"
+    ],
+    "OB-23": [
+      "test_ob23_wrong_role_model"
+    ],
+    "OB-24": [
+      "test_ob24_fallback_and_route"
+    ],
+    "OB-25": [
+      "test_ob25_input_proof_fail_before_key",
+      "test_ob25_untrusted_proof_and_many_messages"
+    ],
+    "OB-26": [
+      "test_ob26_actual_breach_not_clamped"
+    ],
+    "OB-27": [
+      "test_ob27_scope_isolation"
+    ],
+    "OB-28": [
+      "test_ob28_authorization_supersession_and_reserve"
+    ],
+    "OB-29": [
+      "test_ob29_real_worker_ipc_fake_http"
+    ],
+    "OB-30": [
+      "test_ob30_sandbox_containment",
+      "test_ob30_zero_call_construction_and_not_ready"
+    ]
+  },
+  "new_test_module": {
+    "path": "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+    "sha256": "90eda5066a80683819e0d8420e41fc847ef2f20de62961bd5c027cc23f8431e3"
+  },
+  "budget_requirement_supersession": "OB-28 uses current project-completion authorization; historical unapproved753 assertion is superseded for future execution only.",
+  "component_tests": 821,
+  "component_modules": 34,
+  "component_results": [
+    {
+      "module": "test_blind_review_v2.py",
+      "exit_code": 0,
+      "tests": 27,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_blind_review_v2.py.log",
+        "sha256": "d6dd1777cb5a2ed99feec8ec685684edf9f6f123f52d2692b633d24b0158fac3"
+      },
+      "test_module_sha256": "292f619522b012a7a852d5f4cce8cc7397ff625eb53bdd1b503c1931230722df"
+    },
+    {
+      "module": "test_candidate_closure.py",
+      "exit_code": 0,
+      "tests": 28,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_candidate_closure.py.log",
+        "sha256": "4201bcc13b5305c75fef5e3f35459de97d9dfbdc6736d7faf5f0ff5c3df3aa7a"
+      },
+      "test_module_sha256": "d406cd5a6761e95d293a40c8915f5b94b29fae5e6f5606958a8c5cdaa243c41d"
+    },
+    {
+      "module": "test_candidate_day_v2.py",
+      "exit_code": 0,
+      "tests": 33,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_candidate_day_v2.py.log",
+        "sha256": "baf56bcc3246b4455eae9c70b1265cff7921420d1411dbfc80cffb483d8327d7"
+      },
+      "test_module_sha256": "3f9934f12a463501155538dc1a891b19548f45685a9c0f09730e1f7a2c159c8a"
+    },
+    {
+      "module": "test_candidate_host_v2.py",
+      "exit_code": 0,
+      "tests": 10,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_candidate_host_v2.py.log",
+        "sha256": "7f63ae6f1b699c9991f6b64d48f79ce58ed89e3080f51c438d9800ebcc70558c"
+      },
+      "test_module_sha256": "d43477efc0a6de8ef421c3ab62df15b43b74a53ae0971f006aaecfb1987462ae"
+    },
+    {
+      "module": "test_candidate_longitudinal_v2.py",
+      "exit_code": 0,
+      "tests": 14,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_candidate_longitudinal_v2.py.log",
+        "sha256": "c3b34ec7f887bc3d929ea39f9ca29c25f2147fd59f5b59e4e1cb01c9c7dd7393"
+      },
+      "test_module_sha256": "880ac806cd287ce8abb1db3ddb9d2e6ebc4b0096eb37a62e65040e0eda1a8ff6"
+    },
+    {
+      "module": "test_claim_evidence.py",
+      "exit_code": 0,
+      "tests": 20,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_claim_evidence.py.log",
+        "sha256": "b0fcc9a0464d0817c1bf2bfedb846d0baf0b9773869ffe0ecd9997df47126d66"
+      },
+      "test_module_sha256": "9e78622e8e1cf3f08834272ad59c1f19ca65da380c4196bcba1f12b5bf333625"
+    },
+    {
+      "module": "test_context_budget_recovery.py",
+      "exit_code": 0,
+      "tests": 3,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_context_budget_recovery.py.log",
+        "sha256": "2a5a949ff72c3c6ce6923e0cba3312abfda0085aa779c462fc9f9197c7eac72c"
+      },
+      "test_module_sha256": "dd4232c7c5d16dcf3c3338aec39bbf4901b26e85a732443d1d18b36b5f183062"
+    },
+    {
+      "module": "test_context_projection.py",
+      "exit_code": 0,
+      "tests": 18,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_context_projection.py.log",
+        "sha256": "8da30e4e507103686e829566a449a00366b90d17761c935de75b658d1bd7b18e"
+      },
+      "test_module_sha256": "df828154b7d5ed1c289550d503d553635418b5081546f3637b7081a46b6b77f0"
+    },
+    {
+      "module": "test_discourse_scope.py",
+      "exit_code": 0,
+      "tests": 4,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_discourse_scope.py.log",
+        "sha256": "7af946cb041fa54753d216d52605e57237a0caed68f459a439c3cee6a95fd6eb"
+      },
+      "test_module_sha256": "b23d7b61c8605d159af2c7664a2663103e563e57ac828895122cf818adf444c9"
+    },
+    {
+      "module": "test_evaluation_runner.py",
+      "exit_code": 0,
+      "tests": 20,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_evaluation_runner.py.log",
+        "sha256": "f6c391cd3c24d7bc552088f5bc4ad077b49890b7c619870954f96424f4f203be"
+      },
+      "test_module_sha256": "b7bd73f697cc730f517c9b5e5f85830dcd2b69433b959ff55e0f335d2103f21a"
+    },
+    {
+      "module": "test_expression_axes_v9.py",
+      "exit_code": 0,
+      "tests": 10,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_expression_axes_v9.py.log",
+        "sha256": "805995472187aad116cc34e70b7338d710165aaf95a9d1dc8949072707edfbc5"
+      },
+      "test_module_sha256": "6b1bba848951bba4d831d1f9fdcbb42f51035f2f0a760a1877caf1b6a0917bfe"
+    },
+    {
+      "module": "test_expression_contracts_recovery.py",
+      "exit_code": 0,
+      "tests": 18,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_expression_contracts_recovery.py.log",
+        "sha256": "062f94cbad50b0c35eae9766faf7f1337dc49c398f63c02d361b46580ac58c42"
+      },
+      "test_module_sha256": "f310ee648a22afb20cf6f76ee73474c3955fa52ea79a8698221123bb9378c7d6"
+    },
+    {
+      "module": "test_expression_prompt.py",
+      "exit_code": 0,
+      "tests": 28,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_expression_prompt.py.log",
+        "sha256": "b3050eb4ab3085346646ad1665e550ec7eb517f04c5c18ae53ca3a7a68b138ab"
+      },
+      "test_module_sha256": "22abb55725fa2f51c0870e553f0a6c87719f8fc7017fcbe0f5a82eba29e87c80"
+    },
+    {
+      "module": "test_external_audit_regressions.py",
+      "exit_code": 0,
+      "tests": 2,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_external_audit_regressions.py.log",
+        "sha256": "7a7a6ddb8ce3886d959a8aa0b5d54b4c92f5d39e617bde4fbcb22042de29feb7"
+      },
+      "test_module_sha256": "ebe49c3c8bd787ea99fe975e1114ea07323dc35ef46fa445028fe7b0936d98be"
+    },
+    {
+      "module": "test_long_stream_diagnostics.py",
+      "exit_code": 0,
+      "tests": 20,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_long_stream_diagnostics.py.log",
+        "sha256": "13fa41ace32d9669b0236adf942744e879130a933ad8b65f9a96923b29697136"
+      },
+      "test_module_sha256": "a0f71e1eadcbe9d81ea206630f70b2041495c7624842ffa04f418b5215ef8175"
+    },
+    {
+      "module": "test_memory_capability_projection.py",
+      "exit_code": 0,
+      "tests": 12,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_memory_capability_projection.py.log",
+        "sha256": "ad008f8e35f90284b36810aaa68edfd1cf2fc1de4875d08af3456201efe484f3"
+      },
+      "test_module_sha256": "5faccb9ed3e0fc6395def668f4134c68429c1d5619e5c1f518102fed36ec26f3",
+      "count_source": "Actual module JSON summary, not unittest stderr"
+    },
+    {
+      "module": "test_network_route.py",
+      "exit_code": 0,
+      "tests": 15,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_network_route.py.log",
+        "sha256": "7cead68e0c69b45b1c2baabf74cd8a81cd46ad78390ddfc031ed276bd0f97ca9"
+      },
+      "test_module_sha256": "e89ea0d347cc6cd5e98ab9b2700b192523754fb80402c4350da988fdf700e1db"
+    },
+    {
+      "module": "test_persona_growth.py",
+      "exit_code": 0,
+      "tests": 4,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_persona_growth.py.log",
+        "sha256": "fb518948beee35e2a3deefd9f4b51e7a5190696027b8133e711c90eaaf440483"
+      },
+      "test_module_sha256": "8ec33d958dde931656aa97532e58a855d2ff9bd9e03badcd5c08266eca495cdc"
+    },
+    {
+      "module": "test_projection_evidence_axes_v9.py",
+      "exit_code": 0,
+      "tests": 9,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_projection_evidence_axes_v9.py.log",
+        "sha256": "95418c58cfbbd4891440799e211d232adee43373c0f4cd8705f322dbd0deabf8"
+      },
+      "test_module_sha256": "7d7d2c739b3993b439ebb4cce8472a16fd621aea033b128d7319b0bd15577a1c"
+    },
+    {
+      "module": "test_provider2_remote_adapter.py",
+      "exit_code": 0,
+      "tests": 42,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_provider2_remote_adapter.py.log",
+        "sha256": "beef3dab7d034e0ef570335bfbebb6281a88947e7499b9495cb096f562a0b64d"
+      },
+      "test_module_sha256": "20cdd470611e722ef4109e3c5be071fc9b812180a8c1c8bda6d4bd7a6cc1e2be"
+    },
+    {
+      "module": "test_provider_agnostic_runtime.py",
+      "exit_code": 0,
+      "tests": 56,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_provider_agnostic_runtime.py.log",
+        "sha256": "edd61c8083ba783eddf045ecfdcb00b1a938157d32697a1d5586732ac4675255"
+      },
+      "test_module_sha256": "7b7ba581cb49f0d86da1234b03190cd74f612b7433e589ff4e8db60e3acbf8f0"
+    },
+    {
+      "module": "test_reasoning_scope.py",
+      "exit_code": 0,
+      "tests": 22,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_reasoning_scope.py.log",
+        "sha256": "d64b30bc047645b28cfa2e0a73f5949a26490abb74050a7f53f89a2ceefd9fc8"
+      },
+      "test_module_sha256": "0ca7563b4a94ba06e4fa20cadbf8d983c9170cb559bac5e324312534610c9914"
+    },
+    {
+      "module": "test_response_clause_scope.py",
+      "exit_code": 0,
+      "tests": 2,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_response_clause_scope.py.log",
+        "sha256": "7128f482844a7d0206b23a649647d7587e60bde286f04e4b32e6b3871431bad6"
+      },
+      "test_module_sha256": "b80e242c8841ef0cdb1c4b8699d7540142ebf48cee99eaaf2909adceffcd13b3"
+    },
+    {
+      "module": "test_responses_api_transport.py",
+      "exit_code": 0,
+      "tests": 7,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_responses_api_transport.py.log",
+        "sha256": "c79f2b6af8bebb7bbfe0a45c10edaf6322fc414895761a69f826cd7eface848a"
+      },
+      "test_module_sha256": "3c3d6a5151130f89db5a89d33084556779268dc11b115048592f3a6cfc67f923"
+    },
+    {
+      "module": "test_responses_provider_integration.py",
+      "exit_code": 0,
+      "tests": 17,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_responses_provider_integration.py.log",
+        "sha256": "de07ca6ca0bc560daa8b5bdbc0c40c65caef06f24b422d9d59e56b0f194c01d8"
+      },
+      "test_module_sha256": "71724539f2295eeed45d8c7eaf71d21bb6306422921bf06e7e5e211b0f75def6"
+    },
+    {
+      "module": "test_responses_terminal_classification.py",
+      "exit_code": 0,
+      "tests": 23,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_responses_terminal_classification.py.log",
+        "sha256": "3bafebb4731959be16901a39a2864effdf2b90371fb72b1c52e2ea9837f55ee0"
+      },
+      "test_module_sha256": "ce3d2eb08e50af0c3113b8938f0c563c7723c4928b226ba2e939939a5cf9ad2b"
+    },
+    {
+      "module": "test_semantic_grounding.py",
+      "exit_code": 0,
+      "tests": 56,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_semantic_grounding.py.log",
+        "sha256": "4d1aa9fa7aa0e9647d811db1bd41a9d98545d4b1f47aa2f65d8fcb258aba9556"
+      },
+      "test_module_sha256": "f7090a51b2c137877fddcc1acaa56ba2d4a69af1cebf173b9da51c90718c6783"
+    },
+    {
+      "module": "test_semantic_review.py",
+      "exit_code": 0,
+      "tests": 43,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_semantic_review.py.log",
+        "sha256": "4b69c8256ea95c17291318b07a5ea49413b7be3fbfb93ac714839b672d051c63"
+      },
+      "test_module_sha256": "58a03ceacca1bac76d1137f22fd57e8a2a96c7546b0a786ca33bf0b59cbb06d4"
+    },
+    {
+      "module": "test_transport_error_details.py",
+      "exit_code": 0,
+      "tests": 6,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_transport_error_details.py.log",
+        "sha256": "516ba3a02a853dd0433c21d7134a74c76476cc026dbef00f93c61a0e688f61ef"
+      },
+      "test_module_sha256": "5d1ebf3733efede3890a46634774a269df42bb7b5ca13aa6d372aeddddd77ed8"
+    },
+    {
+      "module": "test_transport_lifecycle.py",
+      "exit_code": 0,
+      "tests": 28,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_transport_lifecycle.py.log",
+        "sha256": "308308b649e281a87651abf04c8bc23bccdf55a67dc05db7784bbc07861584d8"
+      },
+      "test_module_sha256": "2b4f8da509d2c57ef38258993991c5629b6373e156e8b8b57a540816c8ad83a9"
+    },
+    {
+      "module": "test_semantic_acceptance.py",
+      "exit_code": 0,
+      "tests": 135,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_semantic_acceptance.py.log",
+        "sha256": "b9f9639cb7a3c84e6cc2df57866ba69cf7dfa5106a8d47a4a5e0b7af36c82499"
+      },
+      "test_module_sha256": "12d146c608cda6c1a6b8c54b7339b7ec07119e40b852764ef8459a8f04f0a7cc"
+    },
+    {
+      "module": "test_formal_acceptance_integration.py",
+      "exit_code": 0,
+      "tests": 45,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_formal_acceptance_integration.py.log",
+        "sha256": "a3862f569b70d53a48461faa40365e478d1f9128973def77593ef5f063aae07b"
+      },
+      "test_module_sha256": "3aba8f0b19335b4fb9d07f408897e384189f3ab2957850cc618c7917ec9b87e7"
+    },
+    {
+      "module": "test_bounded_display_state_contract.py",
+      "exit_code": 0,
+      "tests": 28,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_bounded_display_state_contract.py.log",
+        "sha256": "f60a743b520ce8655df862d668e4ffecd441bb7e82ba3c09520b11fe95d373fb"
+      },
+      "test_module_sha256": "dd2e056c15de6a8ed42e988ad78107a60dae96815ee7d7f308aad7d89f376ad2"
+    },
+    {
+      "module": "test_bounded_consumer_binding.py",
+      "exit_code": 0,
+      "tests": 16,
+      "log": {
+        "path": "work/openai_formal_binding/component_02/test_bounded_consumer_binding.py.log",
+        "sha256": "4c9b83f115360f1f646e0b80b6b20a801b367d28d70e8d2441ca59a9c3f7822d"
+      },
+      "test_module_sha256": "7ff3f3011f58526be18f13a9b81eb58499423008414b80af2e94178c4822dc12"
+    }
+  ],
+  "component_source_hashes": {
+    "persona_core/operational_runtime_v1/accepted_output.py": "8bf6f4f320ab77e356eb9b4617581b0a299c23bcb888b99fcf3c48c7539e6e93",
+    "persona_core/operational_runtime_v1/admission.py": "c0e6cc651e8eb0be7e8b2a70e1a88dea0dd26b21f2195ed58e3c0bcb0f49b502",
+    "persona_core/operational_runtime_v1/capture_export.py": "cea5978ef86fd3ec30bd47383af3dcf98c7abc78616b1c276fd5c835869b8708",
+    "persona_core/operational_runtime_v1/chat.py": "e9a068cbb7939bfe8b36308e81e1e96831cdcf15eaaf5a1162978e739dbd818d",
+    "persona_core/operational_runtime_v1/chat_cli.py": "3d811a10fc7460b1fd752eeb5b2b17d22020921ddc448262b885639dfcf5a4ea",
+    "persona_core/operational_runtime_v1/claim_evidence.py": "ac4a19b4e5f13a423638b6272c32d55b9baaa5d0db5a7e762faad30a1d4ea98c",
+    "persona_core/operational_runtime_v1/context_projection.py": "eb00c5560d855d09903069177913c212a5719071823fc573f6074319a021641c",
+    "persona_core/operational_runtime_v1/context_router.py": "66aa4239cde215fbfe1e10be968d854a598d2bcb65b2ebc4befff13ad0f778eb",
+    "persona_core/operational_runtime_v1/dialogue_admission.py": "5dfcdeddc291ee617edd8aaded411e0afdc16b006d0ffa446181b566f57f21c1",
+    "persona_core/operational_runtime_v1/expression_policy.py": "0cf0904a3131fb9e261173966cb14e97742809852af8272aabfcc009351634b0",
+    "persona_core/operational_runtime_v1/expression_prompt.py": "23927566d4e9320d86ba6620299508eec1a23b5f097e15de86da74d58e52c50f",
+    "persona_core/operational_runtime_v1/legacy_import.py": "d3cab45390e693b9d59fc222e3e4b97eac14ddd7941a5b38f86aa14c25403375",
+    "persona_core/operational_runtime_v1/migration.py": "b23fecc001e7ca2cd43f03b4518c581e3ec2aabd780d284ab6a74897c81d7077",
+    "persona_core/operational_runtime_v1/operations.py": "8753d31a74b0a3f4c90e18a0e542800d1a7690f683f88badac0ef457591d3d40",
+    "persona_core/operational_runtime_v1/persona_growth.py": "1d4da263adfb2ac3a221ebdb56e317cc6727d1a34b07e7a4092a019a5d06451f",
+    "persona_core/operational_runtime_v1/provider.py": "fa611ef9551c014435c8706fa17d0108b8b3cb30b76d26b6e50a91f078becd0f",
+    "persona_core/operational_runtime_v1/provider_adapters.py": "d720d5fc23b33e6b7e4135ec78f5563ebb5fad550e9e3df656da2e22f6c4caab",
+    "persona_core/operational_runtime_v1/provider_contract.py": "0db401bcbf50fea6943619730ef5b03c4238299a852270f33374455d7ed82d38",
+    "persona_core/operational_runtime_v1/provider_fixture.py": "33c9afd2fddb0e3d837434bcde0b45f455034ac5a477785303391452daccecbe",
+    "persona_core/operational_runtime_v1/provider_http_worker.py": "2eb60b93a5a973901f57aa6a541d43b33cbe28794cd72898046a86033da58dd7",
+    "persona_core/operational_runtime_v1/provider_network_route.py": "258445090c2dbd73a6622278c0102bfc7b4f7a57f3ca60f6b7220d498407112e",
+    "persona_core/operational_runtime_v1/provider_openai.py": "35991b4d3a7f4c260728eb4b033b08399e01d36c932998b83e4459dc204f446b",
+    "persona_core/operational_runtime_v1/provider_openrouter.py": "917f24a4cb593fd52aa1d8ae360bdc6efccdc31563d6c35d09df7e0e9fc8c00a",
+    "persona_core/operational_runtime_v1/provider_transport.py": "9ea0ed28f17dd559facb4c4bdef1600044a5b2aca9f12da676d63cc7f6e76a17",
+    "persona_core/operational_runtime_v1/reasoning_scope.py": "eef3845863a84c902299f8ab9f93d44b32be31013b72ce9647905dce7c769170",
+    "persona_core/operational_runtime_v1/recovery.py": "9dcb61a54a972cd8e84d12144657bb5e044dd27c941c36583f3d903d30fabe3b",
+    "persona_core/operational_runtime_v1/response_check.py": "13e27c6d14116354544d634e3f2694e9103bbcc3544f35afefe03f333e3ae915",
+    "persona_core/operational_runtime_v1/retrieval.py": "5d47d954a2b68392ea96d89b0a0b7552f34063a715cfe90e0e5db06b558ba301",
+    "persona_core/operational_runtime_v1/runtime_store.py": "080923c65d74296b81dc43cbde31243caa78667009075fa998cef79da7937b32",
+    "persona_core/operational_runtime_v1/semantic_admission.py": "51f20b2e97830b287211c690b3593a6471e107437291b3c47f21293f74d94a3b",
+    "persona_core/operational_runtime_v1/semantic_binding.py": "1f5344852205eda880367fe65fa8864463ba2ceaef51a334c0457cd25563ea71",
+    "persona_core/operational_runtime_v1/semantic_grounding.py": "66cbee32b9ffd03b54b7ba00fa8a5ae96db33ce3523bfbcd100e06fb3423a66d",
+    "persona_core/operational_runtime_v1/semantic_renderer.py": "d6108c216327f057b05273091327109d01f45654b99f59a4041c6175a2a03f98",
+    "persona_core/operational_runtime_v1/semantic_types.py": "80dbade6aa5310024549b0117ad6094455e4df6f08e1a51247fbc81df9b97112",
+    "persona_core/operational_runtime_v1/semantic_validator.py": "50bf6b7dca411118f7fb9a1c41c19fba072466c0095e096ce01bf3dde7c84bad",
+    "persona_core/operational_runtime_v1/state_projection.py": "5291335b95980c5971f68387b89fad8195a8e4de91a3c549b9cab0a7aad914bb",
+    "persona_core/operational_runtime_v1/transcript_store.py": "021cce0dbd60a27d11a4ff9242cb4590fbfa3c759aa0d7f1767a3bc27e4cb793",
+    "persona_core/operational_runtime_v1/trusted_admission_adapter.py": "d30cdc094f14ecb134439574d4692c984ced95928e054112e7717ff2175d5001",
+    "persona_core/operational_runtime_v1/__init__.py": "1de21dcfc791249cdcbf4cb4990008600eca9a71aafb36474e00af98f35a7634",
+    "persona_core/gpt6_optimization_v2/tools/apply_context_refactor.py": "1499ba716d69fe90364eedfb8067c4fbf7e408013ab2110bc658190ae5c9ec85",
+    "persona_core/gpt6_optimization_v2/tools/author_external44_01_review.py": "a110f1266e35995b448c286578e25efca0b1f9ca4a19d6fa32c3fc96a73e5eb1",
+    "persona_core/gpt6_optimization_v2/tools/author_external44_02_review.py": "e39a0e8051fffa1be4676377d6683cfdced7f29d42dc772b6738d843f12640fb",
+    "persona_core/gpt6_optimization_v2/tools/author_external44_03_review.py": "baa2b28cebc81907c939355cef126f5c7f3d760c7c644af2e165aca8efc4f272",
+    "persona_core/gpt6_optimization_v2/tools/author_external44_04_review.py": "6e13435fe891dd32985f1a1b332ee241512a8d397cad9032bec79a3465b3fd1c",
+    "persona_core/gpt6_optimization_v2/tools/bind_authored_case_review.py": "1757af7d19e17b2efd1cdab49ddd18ad11249fe7bc759683887aa5c8b2cab050",
+    "persona_core/gpt6_optimization_v2/tools/bind_partial_review.py": "1ab7d2854ccf7cb8dd210652adef0968dcda4d882a65665e842911cf9dc1c0c2",
+    "persona_core/gpt6_optimization_v2/tools/blind_review_v2.py": "822ac84d19c0bd8c9f8bc4f76cb5a246ae7b05b21d748b0e0b5294d87afc34e4",
+    "persona_core/gpt6_optimization_v2/tools/candidate_closure_fixtures.py": "9a160b3d7755188beb907a5f8ea426271b57e4b5a52799d356a88e8d85b84d99",
+    "persona_core/gpt6_optimization_v2/tools/candidate_day_v2.py": "c463df13c4c4b6f2b3606d8f845c8fed1e778fef75f3207e677cafc0c7f6e02e",
+    "persona_core/gpt6_optimization_v2/tools/candidate_host_v2.py": "94383b3941448bd41bce13043935d9c2d00484618cd3d213654f11875dbe4cce",
+    "persona_core/gpt6_optimization_v2/tools/candidate_longitudinal_v2.py": "ee42d387a93974f358eddaf666a7375ac745b35bb5a7cc3527782ebbb4649e06",
+    "persona_core/gpt6_optimization_v2/tools/checkpoint_validation.py": "d676912864cf267f86cdf75276ac7d499a8d0ac469ddce0463aee8db267724a1",
+    "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py": "957facd4fdbb2def452ecff71ac24e80563a1f98c49e8907fb16e034caceb65f",
+    "persona_core/gpt6_optimization_v2/tools/formal_acceptance.py": "74c7c4cbbb23d1c6be84b52d263e31dc5961ea617010d7f75441eae67dd6bf98",
+    "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py": "e23382e08c19382c94b05779c0ebbbddbc748e3efedefbbfb05fb325d33bde60",
+    "persona_core/gpt6_optimization_v2/tools/freeze_baseline_audit.py": "f8abd5e6faf336bc3b31e6b0fe5ff4a3ef5e75dbf5aad2e11f70f0e443a96b98",
+    "persona_core/gpt6_optimization_v2/tools/freeze_heldout.py": "105605fcee413d044a900229f769edfc6b0af271277b187d5914e1716345c339",
+    "persona_core/gpt6_optimization_v2/tools/initialize_audit.py": "b38f1a5fabd41f22b08997a712ba40d46ae5609b96d96836561359cbbd1cc0a5",
+    "persona_core/gpt6_optimization_v2/tools/inspect_baseline.py": "ab8baa0377d4f7aed38af4241448052e959db6b172d9b4a4aa2cc795edfd0e0c",
+    "persona_core/gpt6_optimization_v2/tools/measure_real_context_path.py": "bdc201bbeb03867c9da2e522b119f78f831d91bc65e6ebd42a25a3b4200dd517",
+    "persona_core/gpt6_optimization_v2/tools/merge_external44_reviews.py": "08ba44d8e626de75ec2f754f296d27dbc0b3594cf6679e433a537d6bfe583e8b",
+    "persona_core/gpt6_optimization_v2/tools/provider2_remote_validation.py": "ad1cf88cc87a69414f0a8ccd7400a44bebc59533105eeadef1123d0f1aeb4bdd",
+    "persona_core/gpt6_optimization_v2/tools/provider_independent_validation.py": "2770dcfb8b296a7b7c185ec1c20a31b63ab39d15cb2170c1a1588f9ce3e4f03d",
+    "persona_core/gpt6_optimization_v2/tools/reasoning_scope_fixtures.py": "c0d6cb3f4394f9f590b292fda9ef583c677b3eb59de7e8fb43f16571b1075fed",
+    "persona_core/gpt6_optimization_v2/tools/record_external44_failure.py": "9a4b31abf58139e70be6f4a36791b09e9d2e1c4e476d487c9b33d2b6b8b7498b",
+    "persona_core/gpt6_optimization_v2/tools/record_model_candidate_policy.py": "64998b092f3a29a7e51a0a705b93058e267e07e8b070f0100a4197270853ac0b",
+    "persona_core/gpt6_optimization_v2/tools/record_resume_review_20260917.py": "0467c9581e5a9b2234362f77083912d095ae3a8b81a98886904d571ea409c8fb",
+    "persona_core/gpt6_optimization_v2/tools/record_review06_c.py": "d0fc2f622af8fd91a26113b6f300dbe69d0f2a9adc5b72b01117981f4225b15f",
+    "persona_core/gpt6_optimization_v2/tools/record_revision02_adjudication.py": "f2beeaec8a4a5406df02b1f7709b05ee632360e9f6fe8496ea09cc3cb3b66dd4",
+    "persona_core/gpt6_optimization_v2/tools/record_revision04_adjudication.py": "4d4c6fb5864dd9a6d244fa35f6e3f04f3c188fc0c5a943f5b557b41c5429be81",
+    "persona_core/gpt6_optimization_v2/tools/record_revision06_readiness.py": "600ee6fe3d554e25e1db916657a4badebdd57846baa400c22357955eadf0b7cb",
+    "persona_core/gpt6_optimization_v2/tools/record_source_readiness.py": "36c0fa000ba1f4c67db949b2743a29c4acd7d7b48c5a601022df7b00cf884d81",
+    "persona_core/gpt6_optimization_v2/tools/record_validation_outcome.py": "c3c34a7e2c5fbc0af2d618e4b5882df8a620cd2533864398491637b6d899ded0",
+    "persona_core/gpt6_optimization_v2/tools/responses_api_readiness_probe.py": "6e42e0b16a300bb67f40a7154c16089d88e3a034e4b2751c67ec1e93f236605a",
+    "persona_core/gpt6_optimization_v2/tools/responses_api_transport.py": "b8dc63163c851ed06c79df5f7ccbed38e0939721a64422be9df98c8ca68a8d30",
+    "persona_core/gpt6_optimization_v2/tools/responses_formal_readiness.py": "f66d10eb1c02db82c103bf4f5d2002d1fbaec37c72ac8e80d9e217464db52d51",
+    "persona_core/gpt6_optimization_v2/tools/responses_terminal_fixtures.py": "793f43a14af73c6bed644be5246418fbf0ba67980aa2e4e70a98de4b000c0488",
+    "persona_core/gpt6_optimization_v2/tools/semantic_acceptance_fixtures.py": "3e40d5253abe8d880652b0407a5518c9fef0872cd1939d4071dda426c83ea875",
+    "persona_core/gpt6_optimization_v2/tools/semantic_grounding_fixtures.py": "7a138af4b1c9dc97108bf7be497134239e35f8047a801a3055a8934b24f2d7eb",
+    "persona_core/gpt6_optimization_v2/tools/semantic_review.py": "299b9810376806b5593f4bae87b5a351d2737116466c17386ea91b0e60116c7c",
+    "persona_core/gpt6_optimization_v2/tools/test_blind_review_v2.py": "292f619522b012a7a852d5f4cce8cc7397ff625eb53bdd1b503c1931230722df",
+    "persona_core/gpt6_optimization_v2/tools/test_bounded_consumer_binding.py": "7ff3f3011f58526be18f13a9b81eb58499423008414b80af2e94178c4822dc12",
+    "persona_core/gpt6_optimization_v2/tools/test_bounded_display_state_contract.py": "dd2e056c15de6a8ed42e988ad78107a60dae96815ee7d7f308aad7d89f376ad2",
+    "persona_core/gpt6_optimization_v2/tools/test_candidate_closure.py": "d406cd5a6761e95d293a40c8915f5b94b29fae5e6f5606958a8c5cdaa243c41d",
+    "persona_core/gpt6_optimization_v2/tools/test_candidate_day_v2.py": "3f9934f12a463501155538dc1a891b19548f45685a9c0f09730e1f7a2c159c8a",
+    "persona_core/gpt6_optimization_v2/tools/test_candidate_host_v2.py": "d43477efc0a6de8ef421c3ab62df15b43b74a53ae0971f006aaecfb1987462ae",
+    "persona_core/gpt6_optimization_v2/tools/test_candidate_longitudinal_v2.py": "880ac806cd287ce8abb1db3ddb9d2e6ebc4b0096eb37a62e65040e0eda1a8ff6",
+    "persona_core/gpt6_optimization_v2/tools/test_claim_evidence.py": "9e78622e8e1cf3f08834272ad59c1f19ca65da380c4196bcba1f12b5bf333625",
+    "persona_core/gpt6_optimization_v2/tools/test_context_budget_recovery.py": "dd4232c7c5d16dcf3c3338aec39bbf4901b26e85a732443d1d18b36b5f183062",
+    "persona_core/gpt6_optimization_v2/tools/test_context_projection.py": "df828154b7d5ed1c289550d503d553635418b5081546f3637b7081a46b6b77f0",
+    "persona_core/gpt6_optimization_v2/tools/test_discourse_scope.py": "b23d7b61c8605d159af2c7664a2663103e563e57ac828895122cf818adf444c9",
+    "persona_core/gpt6_optimization_v2/tools/test_evaluation_runner.py": "b7bd73f697cc730f517c9b5e5f85830dcd2b69433b959ff55e0f335d2103f21a",
+    "persona_core/gpt6_optimization_v2/tools/test_expression_axes_v9.py": "6b1bba848951bba4d831d1f9fdcbb42f51035f2f0a760a1877caf1b6a0917bfe",
+    "persona_core/gpt6_optimization_v2/tools/test_expression_contracts_recovery.py": "f310ee648a22afb20cf6f76ee73474c3955fa52ea79a8698221123bb9378c7d6",
+    "persona_core/gpt6_optimization_v2/tools/test_expression_prompt.py": "22abb55725fa2f51c0870e553f0a6c87719f8fc7017fcbe0f5a82eba29e87c80",
+    "persona_core/gpt6_optimization_v2/tools/test_external_audit_regressions.py": "ebe49c3c8bd787ea99fe975e1114ea07323dc35ef46fa445028fe7b0936d98be",
+    "persona_core/gpt6_optimization_v2/tools/test_formal_acceptance_integration.py": "3aba8f0b19335b4fb9d07f408897e384189f3ab2957850cc618c7917ec9b87e7",
+    "persona_core/gpt6_optimization_v2/tools/test_long_stream_diagnostics.py": "a0f71e1eadcbe9d81ea206630f70b2041495c7624842ffa04f418b5215ef8175",
+    "persona_core/gpt6_optimization_v2/tools/test_memory_capability_projection.py": "5faccb9ed3e0fc6395def668f4134c68429c1d5619e5c1f518102fed36ec26f3",
+    "persona_core/gpt6_optimization_v2/tools/test_network_route.py": "e89ea0d347cc6cd5e98ab9b2700b192523754fb80402c4350da988fdf700e1db",
+    "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py": "90eda5066a80683819e0d8420e41fc847ef2f20de62961bd5c027cc23f8431e3",
+    "persona_core/gpt6_optimization_v2/tools/test_persona_growth.py": "8ec33d958dde931656aa97532e58a855d2ff9bd9e03badcd5c08266eca495cdc",
+    "persona_core/gpt6_optimization_v2/tools/test_projection_evidence_axes_v9.py": "7d7d2c739b3993b439ebb4cce8472a16fd621aea033b128d7319b0bd15577a1c",
+    "persona_core/gpt6_optimization_v2/tools/test_provider2_remote_adapter.py": "20cdd470611e722ef4109e3c5be071fc9b812180a8c1c8bda6d4bd7a6cc1e2be",
+    "persona_core/gpt6_optimization_v2/tools/test_provider_agnostic_runtime.py": "7b7ba581cb49f0d86da1234b03190cd74f612b7433e589ff4e8db60e3acbf8f0",
+    "persona_core/gpt6_optimization_v2/tools/test_reasoning_scope.py": "0ca7563b4a94ba06e4fa20cadbf8d983c9170cb559bac5e324312534610c9914",
+    "persona_core/gpt6_optimization_v2/tools/test_responses_api_transport.py": "3c3d6a5151130f89db5a89d33084556779268dc11b115048592f3a6cfc67f923",
+    "persona_core/gpt6_optimization_v2/tools/test_responses_provider_integration.py": "71724539f2295eeed45d8c7eaf71d21bb6306422921bf06e7e5e211b0f75def6",
+    "persona_core/gpt6_optimization_v2/tools/test_responses_terminal_classification.py": "ce3d2eb08e50af0c3113b8938f0c563c7723c4928b226ba2e939939a5cf9ad2b",
+    "persona_core/gpt6_optimization_v2/tools/test_response_clause_scope.py": "b80e242c8841ef0cdb1c4b8699d7540142ebf48cee99eaaf2909adceffcd13b3",
+    "persona_core/gpt6_optimization_v2/tools/test_semantic_acceptance.py": "12d146c608cda6c1a6b8c54b7339b7ec07119e40b852764ef8459a8f04f0a7cc",
+    "persona_core/gpt6_optimization_v2/tools/test_semantic_grounding.py": "f7090a51b2c137877fddcc1acaa56ba2d4a69af1cebf173b9da51c90718c6783",
+    "persona_core/gpt6_optimization_v2/tools/test_semantic_review.py": "58a03ceacca1bac76d1137f22fd57e8a2a96c7546b0a786ca33bf0b59cbb06d4",
+    "persona_core/gpt6_optimization_v2/tools/test_transport_error_details.py": "5d1ebf3733efede3890a46634774a269df42bb7b5ca13aa6d372aeddddd77ed8",
+    "persona_core/gpt6_optimization_v2/tools/test_transport_lifecycle.py": "2b4f8da509d2c57ef38258993991c5629b6373e156e8b8b57a540816c8ad83a9",
+    "persona_core/gpt6_optimization_v2/tools/transport_final_configuration_probe.py": "7ea3e249bd131e8c5a023742bbeca7b557d8951b0e8ae9661de417a58cd5670c",
+    "persona_core/gpt6_optimization_v2/tools/transport_readiness_gate.py": "41eae52f55e27980e48cb24c5cad03575677bcb7fbc31e29202f3f2ba7f1aba0",
+    "persona_core/gpt6_optimization_v2/tools/transport_readiness_ladder.py": "ba17652f2b530f9dd512e196b5021bd380b52d1cd48c67cfad07199a8958b643",
+    "persona_core/gpt6_optimization_v2/tools/transport_readiness_probe.py": "eac8082e9d9c5fad378b5c8a0deb9bf880e58197dd54e828001c69c7dd111842",
+    "persona_core/gpt6_optimization_v2/tools/validate_expression_revision.py": "3c0e56ad2e5f1514e6504a15c0b3749b75b1a62c258296b7de811bb60720fea4"
+  },
+  "component_raw_result": {
+    "path": "work/openai_formal_binding/component_02/TESTS.json",
+    "sha256": "05dc7ee7bb3c1e108a50fa14de534a5fec139c9f8e213380045e7c00a34982bf"
+  },
+  "component_count_correction": "One existing module reports JSON instead of unittest stderr. Parsed its actual tests12/ passedtrue/errors0/failures0. Raw report preserved; no expectation or exit code changed.",
+  "prior_attempts": {
+    "component_01": {
+      "path": "work/openai_formal_binding/component_01/TESTS.json",
+      "sha256": "af726fd2d4b64cff004307be81f1c805f429a2f08faf2a9e722f11c1b54ad0bf"
+    },
+    "registry_compatibility": "Fixed within provider_adapters.py: retain scope-6 default registry; expose OpenAI only for formal selection and validated worker contracts.",
+    "loopback_harness": "Initial blanket socket deny blocked two existing loopback tests; dedicated guard permits loopback only. Final entire component suite rerun.",
+    "concurrent_harness": {
+      "log": {
+        "path": "work/openai_formal_binding/tests_fifth.log",
+        "sha256": "9d23fe05ed4b622692adced06029093406b731db123a14077ea0df7c74253a17"
+      },
+      "reason": "OB-30 global evidence-directory observation saw concurrent authored regression fixtures; final new suite rerun separately with unchanged code."
+    }
+  },
+  "legacy": {
+    "compatible_pass": 449,
+    "expected_historical_source_identity_sentinel": 1,
+    "unexpected": 0,
+    "raw_runner_exit_code": 1,
+    "raw_report_passed": false,
+    "report": {
+      "path": "persona_core/operational_build_v1/evidence/R047-03/regression_20260920T181028399860Z/REGRESSION.json",
+      "sha256": "482ed3d546c8f18477c5a75cf151d8dfe5b41c8d080673a3989740b89937e7b4"
+    }
+  },
+  "test_network_scope": "New suite zero socket connections; existing transport suite uses loopback fixtures only; external network blocked in all test processes.",
+  "provider_requests": 0,
+  "credential_reads": 0,
+  "model_quality_evaluated": false,
+  "at_utc": "2026-09-20T18:19:10.708129+00:00"
+}

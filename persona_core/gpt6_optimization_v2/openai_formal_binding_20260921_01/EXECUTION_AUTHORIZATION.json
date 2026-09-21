@@ -1,0 +1,20 @@
+{
+  "version": "APCORE_PROJECT_COMPLETION_SPEND_AUTHORIZATION_1",
+  "task": "G6-07-SUCCESSOR-BINDING-IMPLEMENTATION-TO-FRESH-VALIDATION-V1",
+  "status": "PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED",
+  "budget_approval_blocker": "CLEARED_BY_USER_PROJECT_COMPLETION_AUTHORIZATION",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "batch_design_id": "APCORE_SUCCESSOR_EXTERNAL44_ASTRA_SOL_MAX_SINGLE_BATCH_1",
+  "max_fresh_revisions": 1,
+  "max_generation_requests": 44,
+  "automatic_paid_retries": 0,
+  "count_api_requests": 0,
+  "readiness_requests": 0,
+  "retry_until_pass": "FORBIDDEN",
+  "historical_budget_decision": "PRESERVED_SUPERSEDED_FOR_FUTURE_EXECUTION",
+  "exact_amount_approval_required": false,
+  "estimates_are_bills": false,
+  "billing_certified": false,
+  "source": "User pasted-text attachment ffae4305-a6d2-43c3-89b4-722be12493a1; sections 4, 23, 26, 41",
+  "at_utc": "2026-09-20T17:18:50.908135+00:00"
+}

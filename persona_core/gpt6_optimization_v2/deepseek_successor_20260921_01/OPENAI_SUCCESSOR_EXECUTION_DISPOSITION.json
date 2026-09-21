@@ -1,0 +1,32 @@
+{
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "status": "SUPERSEDED_FOR_EXECUTION_FEASIBILITY_NO_OPENAI_CREDENTIAL",
+  "quality_verdict": "NOT_EVALUATED",
+  "original_binding": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "1daf9e58b0331570507dbd08ab2f22b72abf9bcb208f33e1e23fb8c334c533cb"
+  },
+  "original_binding_members": 184,
+  "original_members_archived_match": 184,
+  "later_binding": {
+    "path": "persona_core/gpt6_optimization_v2/authoritative_input_count_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "ca7c11cb82116aec2da59b7a068f9dbbfa495278cbffb08a0cb365c6e4c5fbf6"
+  },
+  "later_members_current_match": 187,
+  "correction_to_requested_recovery_assumption": "Later on-disk work allocated R17; original 184-member stage itself allocated no revision. Do not erase the later allocation.",
+  "later_revision": "external44_20260921_17_fresh_openai_count",
+  "later_disposition": "SUPERSEDED_UNSUBMITTED_NO_RESUME",
+  "later_allocation": {
+    "path": "persona_core/gpt6_optimization_v2/authoritative_input_count_20260921_01/FRESH_REVISION_ALLOCATION_PRIVATE.json",
+    "sha256": "e1b2a65cdc00fbdd0320f4c399484b793c163c88b651ef730cdcaaa92e55c5d1"
+  },
+  "later_observation": {
+    "path": "persona_core/gpt6_optimization_v2/authoritative_input_count_20260921_01/LIVE_OBSERVATION_PRIVATE.json",
+    "sha256": "ea39e5e54779a73e7b7709bc6540041b053ce6cc052d0b7c4ce8f2d2cd9d5b1e"
+  },
+  "later_recorded_count_requests": 0,
+  "later_recorded_generation_requests": 0,
+  "historical_journals_modified": false,
+  "model_quality_fail_assigned": false,
+  "at_utc": "2026-09-21T02:03:17.059578+00:00"
+}

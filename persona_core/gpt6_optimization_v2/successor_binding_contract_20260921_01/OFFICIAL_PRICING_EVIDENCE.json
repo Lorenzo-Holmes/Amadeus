@@ -1,0 +1,116 @@
+{
+  "observation_date_shanghai": "2026-09-21",
+  "at_utc": "2026-09-20T16:48:17.528881+00:00",
+  "official_pricing_refreshed": true,
+  "method": "fresh public documentation GET with no-cache request headers; prior local snapshots not used",
+  "currency": "USD",
+  "unit": "per million tokens",
+  "service_tier": "default / Standard",
+  "rates": {
+    "gpt-6-astra": {
+      "input": "10",
+      "cached_input": "1",
+      "cache_write": "12.5",
+      "output": "50"
+    },
+    "gpt-5.6-sol": {
+      "input": "4",
+      "cached_input": "0.4",
+      "cache_write": "5",
+      "output": "20"
+    }
+  },
+  "sources": [
+    {
+      "name": "openai_astra",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-astra.md",
+      "resolved_url": "https://developers.openai.com/api/docs/models/gpt-6-astra.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.740582+00:00",
+      "sha256": "f45ae813c3f69708e2576328056de14cdf71fec174c875f4b81d236105545625",
+      "bytes": 3812,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_sol",
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol.md",
+      "resolved_url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.741574+00:00",
+      "sha256": "23f4ff2c236486d42145e21693f450bfcac272c37ee839a5ee6f9455cd1d8b7b",
+      "bytes": 3991,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_pricing",
+      "url": "https://developers.openai.com/api/docs/pricing.md",
+      "resolved_url": "https://developers.openai.com/api/docs/pricing.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.741574+00:00",
+      "sha256": "714cbb324e68df34baa206f6d2052977a79de4ee54f655437d4faa09ca4a87d3",
+      "bytes": 23063,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_latest",
+      "url": "https://developers.openai.com/api/docs/guides/latest-model.md",
+      "resolved_url": "https://developers.openai.com/api/docs/guides/latest-model.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.741574+00:00",
+      "sha256": "aac7e7e1b0bf90b346f5fc4ffd523902279841c60c3adf572452a529bd5b1e5e",
+      "bytes": 16592,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_caching",
+      "url": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "resolved_url": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.741574+00:00",
+      "sha256": "ecced3016c57dcef3115dbda6f73ba6f153f99856f1dadac46d165c12611ab44",
+      "bytes": 45605,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_reasoning",
+      "url": "https://developers.openai.com/api/docs/guides/reasoning.md",
+      "resolved_url": "https://developers.openai.com/api/docs/guides/reasoning.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.742578+00:00",
+      "sha256": "91604df954335250d16e33f3b07ebbfa3e6e2b7f821f0722ad7a69b9d586719a",
+      "bytes": 70253,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_responses",
+      "url": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "resolved_url": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.742578+00:00",
+      "sha256": "96bb4559f04f15f285f83c9a48472f247548c11ce8e722632676988ec421e630",
+      "bytes": 500332,
+      "cache_control_requested": "no-cache"
+    },
+    {
+      "name": "openai_token_counting",
+      "url": "https://developers.openai.com/api/docs/guides/token-counting.md",
+      "resolved_url": "https://developers.openai.com/api/docs/guides/token-counting.md",
+      "status": 200,
+      "at_utc": "2026-09-20T16:40:45.742578+00:00",
+      "sha256": "a446c08afd6dca0e252e69a3ebf82c117d45b8f60b304dc09a21340e3b6a07f6",
+      "bytes": 22672,
+      "cache_control_requested": "no-cache"
+    }
+  ],
+  "private_fetch_receipts": {
+    "path": "work/successor_binding_contract/docs/FETCH_RECEIPTS.json",
+    "sha256": "1ee6835697ecde63f1334c15f44f1fed94505061893c4c62c9fce9e5f7402bec"
+  },
+  "cache_categories": "uncached,read,write are disjoint; no additive double billing",
+  "output_total_includes_reasoning_and_nonvisible_formatting": true,
+  "actual_account_access": "UNKNOWN_NOT_PROBED",
+  "actual_payment_fx": "UNKNOWN",
+  "actual_fees": "UNKNOWN",
+  "billing_certified": false,
+  "provider_api_calls": 0
+}

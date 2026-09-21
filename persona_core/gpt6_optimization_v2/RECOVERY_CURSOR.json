@@ -1,0 +1,90 @@
+{
+  "BLOCKER": "Two remote outcomes remain UNKNOWN and non-replayable; long-generation transport readiness is not established. The offline evidence representation is implemented and tested, but its actual model semantic effectiveness and naturalness are unproven. R8-N02-01/R8-N06-01 remain OPEN; no new paid batch is ready.",
+  "CURRENT_STATE": "WAITING_PROVIDER_READINESS_WITH_OFFLINE_CLAIM_EVIDENCE_VALIDATED",
+  "IN_FLIGHT": {
+    "local_execution_active": false,
+    "external_effect": null,
+    "unresolved_requests": [
+      {
+        "call_id": "call_8e8d8eba92354b6bb12c8fb4e6eed8b8",
+        "slot_id": "N06_T4",
+        "status": "SUBMITTED_STATUS_UNKNOWN",
+        "request_sha256": "28cff25a89feae542c8753152f576685d0043b287bc5a3c8b9f59ef4b9bf8199",
+        "raw_sha256": null,
+        "reserve_micro_cny": 288182,
+        "revision": "external44_20260917_07"
+      },
+      {
+        "call_id": "call_b4bb72bc78f74acaaadba41011a03cf4",
+        "slot_id": "N07_T3",
+        "status": "SUBMITTED_STATUS_UNKNOWN",
+        "request_sha256": "b3fdd4ce377f556901ecc164e2018d158946411a8eff64b1423e3b865b2493a1",
+        "raw_sha256": null,
+        "reserve_micro_cny": 997344,
+        "revision": "external44_20260917_08_pro"
+      }
+    ]
+  },
+  "LAST_COMPLETED": "G6-06",
+  "NEXT_ACTION": "Read CURRENT_EXECUTION_RUNBOOK.md and G6_07_CLAIM_EVIDENCE_ADJUDICATION.json. The complete current-source offline mechanism checks are finished; do not redo without source change or new evidence. Keep both historical UNKNOWNs quarantined and inspect only genuine existing receipts. No reliable long-generation transport readiness evidence is available; do not infer it from HTTP401 or create a renamed replay. Once independent readiness and a substantive new experiment basis are available, freeze a new complete source/model/configuration/price/finite-spend scope with automatic_paid_retries=0, then complete fresh external44 44/176 quote-bound review, heldout113/452 and original82/328 in order before candidate/review/new real dates. The two MAJOR findings remain OPEN and all build/product/production flags false.",
+  "RECOVERY_POINT": "persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json",
+  "SPEND": {
+    "automatic_paid_retries": 0,
+    "batch_id": "APCORE-G6-V2-external44_20260917_08_pro",
+    "billing_certified": false,
+    "calls": 21,
+    "captured_displayed": 20,
+    "guard_cny": 48.64,
+    "journal": "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_08_pro/runtime/runtime.sqlite3",
+    "known_usage_estimate_cny": 0.728794,
+    "not_submitted": 23,
+    "revision_id": "external44_20260917_08_pro",
+    "source_manifest_sha256": "12a70c86d1ba0840fa254e1538a5d4238f4227954a979137a07f200c7617aa37",
+    "total_usage_estimate_cny": null,
+    "unknown_cost_reserve_cny": 0.997344,
+    "unknown_count": 1
+  },
+  "VALIDATION_PENDING": [
+    "G6-07 quote-bound semantic and quality review",
+    "G6-08 frozen 24/113/452",
+    "G6-09 fresh original82/328",
+    "G6-10 candidate V2",
+    "G6-11 new blind package",
+    "G6-12 actual external return",
+    "G6-13 new real dates 0/3",
+    "G6-14 product rollup"
+  ],
+  "active_revision": "external44_20260917_08_pro",
+  "active_task": "G6-07",
+  "goal": "APCORE-GPT6-OPTIMIZATION-V2",
+  "in_flight_external_effect": {
+    "local_execution_active": false,
+    "external_effect": null,
+    "unresolved_requests": [
+      {
+        "call_id": "call_8e8d8eba92354b6bb12c8fb4e6eed8b8",
+        "slot_id": "N06_T4",
+        "status": "SUBMITTED_STATUS_UNKNOWN",
+        "request_sha256": "28cff25a89feae542c8753152f576685d0043b287bc5a3c8b9f59ef4b9bf8199",
+        "raw_sha256": null,
+        "reserve_micro_cny": 288182,
+        "revision": "external44_20260917_07"
+      },
+      {
+        "call_id": "call_b4bb72bc78f74acaaadba41011a03cf4",
+        "slot_id": "N07_T3",
+        "status": "SUBMITTED_STATUS_UNKNOWN",
+        "request_sha256": "b3fdd4ce377f556901ecc164e2018d158946411a8eff64b1423e3b865b2493a1",
+        "raw_sha256": null,
+        "reserve_micro_cny": 997344,
+        "revision": "external44_20260917_08_pro"
+      }
+    ]
+  },
+  "last_completed_task": "G6-06",
+  "next_action": "Read CURRENT_EXECUTION_RUNBOOK.md and G6_07_CLAIM_EVIDENCE_ADJUDICATION.json. The complete current-source offline mechanism checks are finished; do not redo without source change or new evidence. Keep both historical UNKNOWNs quarantined and inspect only genuine existing receipts. No reliable long-generation transport readiness evidence is available; do not infer it from HTTP401 or create a renamed replay. Once independent readiness and a substantive new experiment basis are available, freeze a new complete source/model/configuration/price/finite-spend scope with automatic_paid_retries=0, then complete fresh external44 44/176 quote-bound review, heldout113/452 and original82/328 in order before candidate/review/new real dates. The two MAJOR findings remain OPEN and all build/product/production flags false.",
+  "safe_to_resume": false,
+  "state": "BLOCKED",
+  "updated_at_utc": "2026-09-17T17:45:28.223840+00:00",
+  "safe_to_resume_offline": true
+}

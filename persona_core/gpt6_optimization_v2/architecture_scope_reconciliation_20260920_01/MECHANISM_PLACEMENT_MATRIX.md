@@ -1,0 +1,24 @@
+# Placement of the 14 Existing Mechanisms
+
+The columns describe duties, not a demand to instantiate a certificate for every sentence. MANDATORY means the applicable discipline is always preserved. CONDITIONAL means the stated trigger must be tested and recorded; when triggered the required evidence is mandatory. NOT_REQUIRED does not waive another column. All rows have mandatory auditability: record invocation, evidence and disposition when used, or NOT_INVOKED_WITH_SCOPE when irrelevant; do not manufacture unused certificates.
+
+High-authority here means a bound claim about responsibility, execution, permissions, identity/source memory, persisted facts or certified finite exclusion/closure. It does not turn all ordinary declarative sentences into typed proof obligations.
+
+| Mechanism | Conversation Layer | High-authority claim | State Admission | Execution / Permission | Audit | Why / condition |
+|---|---|---|---|---|---|---|
+| Claim / Evidence | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Conversation keeps grounds, attribution and uncertainty; not every sentence needs a certificate. An effect needs its own evidence class, never text fluency. |
+| Reasoning Scope | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Premise/domain/condition strength cannot be silently broadened. Formal checking is required only for the selected bounded proof or effect path. |
+| Candidate Closure | CONDITIONAL | CONDITIONAL | CONDITIONAL | CONDITIONAL | MANDATORY | Triggered by exclusion/exhaustiveness or an effect relying on a closed set. Ordinary open discussion is allowed; claiming closure requires a defined universe, remainder and evidence. |
+| Responsibility Grounding | CONDITIONAL | MANDATORY | CONDITIONAL | MANDATORY | MANDATORY | Conversation triggers it for actor/task/ownership/execution assertions. All high-authority attribution needs grounding; unrelated events do not need a responsibility proof. Suggestions are not assignments. |
+| Provenance | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Preserve source, entity, speaker, mode, policy and transformation across every consumer, summary, retrieval and restart. |
+| UNKNOWN | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Never strengthen uncertainty by repetition. Separate semantic unknown, source unknown, request outcome unknown and delivery unknown; only the appropriate recovery rule applies. |
+| Typed Semantic Plan | NOT_REQUIRED | CONDITIONAL | CONDITIONAL | CONDITIONAL | MANDATORY | Required only when a selected finite claim/effect uses typed proof. Transcript observations and existing independently evidenced event admission do not require a universal natural-language plan. |
+| Trusted Admission | NOT_REQUIRED | CONDITIONAL | CONDITIONAL | CONDITIONAL | MANDATORY | This row means R6 TrustedAdmission for a finite typed inventory. AdmissionController remains mandatory for every state commit, including an ordinary utterance observation. |
+| Claim Certificate | NOT_REQUIRED | CONDITIONAL | CONDITIONAL | CONDITIONAL | MANDATORY | Mandatory if the selected bounded policy claims certified support. Other host evidence classes retain their own contracts. A certificate never grants permission or proves execution. |
+| Exclusion Certificate | NOT_REQUIRED | CONDITIONAL | CONDITIONAL | CONDITIONAL | MANDATORY | Mandatory for certified finite-domain exclusion or an effect relying on it. An explicitly tentative hypothesis is not an exclusion conclusion. |
+| Closure Certificate | NOT_REQUIRED | CONDITIONAL | CONDITIONAL | CONDITIONAL | MANDATORY | Mandatory for certified finite-universe exhaustive closure. No universal closure certificate is required to discuss an open world. |
+| Raw / Accepted Separation | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Keep immutable raw, actual displayed lineage and policy-scoped accepted output separate. None can be substituted silently for another. |
+| Fail-closed | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Conversation fails closed for applicable identity/privacy/known false action boundaries, not pure UNPARSED. State effects, permissions, commits and binding integrity remain strict. |
+| Consumer Binding | MANDATORY | MANDATORY | MANDATORY | MANDATORY | MANDATORY | Every consumer selects a declared purpose and authority. History follows display; state consumers require target-specific admission and commit, not accepted-text inheritance. |
+
+R6 TrustedAdmission and operational AdmissionController are distinct. The former is conditional finite semantic proof; the latter remains required for all authorized event effects. This distinction prevents both universal proof-before-speech and evidence-free state admission. Existing R13/R14 reasoning, closure and responsibility findings remain relevant to both truthful speech and state promotion.

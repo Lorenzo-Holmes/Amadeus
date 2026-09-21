@@ -1,0 +1,14 @@
+{
+  "at_utc": "2026-09-21T02:44:26.030877+00:00",
+  "status": "PASS",
+  "snapshot_freeze": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/PUBLIC_FREEZE.json",
+    "sha256": "9a56c49f88eb9fb194b7ac8f080452a3aa7d769739d4fc21e9ba2f0e810fc8de"
+  },
+  "unchanged_already_committed_member": "persona_core/gpt6_optimization_v2/tools/responses_api_transport.py",
+  "member_sha256": "b8dc63163c851ed06c79df5f7ccbed38e0939721a64422be9df98c8ca68a8d30",
+  "clarification_to_carry_forward_record": "The Responses bridge is unchanged at the exact Git blob level. A working-tree line-ending comparison reported a difference; the carry-forward snapshot preserves its bytes but this file is not a new commit change. The three other carried source/test files contain earlier unpublished count work.",
+  "initial_staging_assertion": "Expected every allowlisted snapshot member to be a changed path; corrected the publication accounting to separate identical members. No source or evidence bytes changed.",
+  "unrelated_staged_paths": 0,
+  "private_content_published": false
+}

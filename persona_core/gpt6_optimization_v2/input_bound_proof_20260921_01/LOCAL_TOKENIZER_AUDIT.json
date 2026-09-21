@@ -1,0 +1,47 @@
+{
+  "package": "tiktoken",
+  "version": "0.14.0",
+  "package_metadata_sha256": "fe742a14977a8a72185a3c1788e8db04515e16206d1eb5733910de5ccb03e018",
+  "wheel": {
+    "filename": "tiktoken-0.14.0-cp312-cp312-win_amd64.whl",
+    "url": "https://files.pythonhosted.org/packages/bd/bd/a2e884fb1402cba5be08836590320012b2d8ada0e2eef9911a64df4bcd2d/tiktoken-0.14.0-cp312-cp312-win_amd64.whl",
+    "path": "work/input_bound_proof/packages/tiktoken-0.14.0-cp312-cp312-win_amd64.whl",
+    "sha256": "087538c080e5ff421abd3a0785ed63c5111d06af98e6cd0d374dbe5969147ca3"
+  },
+  "isolated_install": "work/input_bound_proof/vendor",
+  "global_environment_modified": false,
+  "import_and_mapping_network_disabled": true,
+  "model_map": {
+    "path": "work/input_bound_proof/vendor/tiktoken/model.py",
+    "sha256": "855caa8d58ba8e694d20a1bf1e9aba8e9ed4f11bbefec68dfb93e7ef677b15f9"
+  },
+  "main_model_map_identical_to_wheel": false,
+  "model_results": {
+    "gpt-6-astra": {
+      "lookup_result": null,
+      "exception": "'Could not automatically map gpt-6-astra to a tokeniser. Please use `tiktoken.get_encoding` to explicitly get the tokeniser you expect.'",
+      "exact_MODEL_TO_ENCODING_entry": null,
+      "matching_prefixes": {},
+      "certified_model_encoding": false
+    },
+    "gpt-5.6-sol": {
+      "lookup_result": "o200k_base",
+      "exception": null,
+      "exact_MODEL_TO_ENCODING_entry": null,
+      "matching_prefixes": {
+        "gpt-5": "o200k_base"
+      },
+      "certified_model_encoding": false
+    },
+    "nonexistent_prefix_control": {
+      "name": "gpt-5-NONEXISTENT-APCORE-CONTROL",
+      "lookup_result": "o200k_base",
+      "purpose": "Local string lookup only, never submitted to any service."
+    }
+  },
+  "Responses_message_framing_available": false,
+  "production_proof_registry_modified": false,
+  "provider_requests": 0,
+  "count_requests": 0,
+  "conclusion": "NOT_READY; PRIMARY unmapped, SECONDARY generic prefix only, model-specific framing unproven."
+}

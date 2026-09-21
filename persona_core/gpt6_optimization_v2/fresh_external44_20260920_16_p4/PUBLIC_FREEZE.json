@@ -1,0 +1,12 @@
+{
+  "kind": "PUBLIC_RECONCILIATION_AND_P4_VALIDATION_SUMMARY_ONLY",
+  "at_utc": "2026-09-20T14:22:04.826194+00:00",
+  "files": {
+    "persona_core/gpt6_optimization_v2/p3_machine_state_reconciliation_20260920_01/PUBLIC_AUDIT.json": "e604bebdafb1b4620925f8990da92447e71ecea1309c125df86f3b86ae9ad915",
+    "persona_core/gpt6_optimization_v2/fresh_external44_20260920_16_p4/PUBLIC_AUDIT.json": "4605d7f34ca7ab1bd973f1a5b8a0fc158d2b1c030843b9c11bd9c77ddc83acca",
+    "persona_core/gpt6_optimization_v2/fresh_external44_20260920_16_p4/PUBLIC_STATE.json": "a18a2f1713c2a10350e6f4054d4380a16c5458af71b2afae8fbca14c89264b4f"
+  },
+  "source_freeze": "BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01",
+  "source_modified": false,
+  "private_content_excluded": true
+}

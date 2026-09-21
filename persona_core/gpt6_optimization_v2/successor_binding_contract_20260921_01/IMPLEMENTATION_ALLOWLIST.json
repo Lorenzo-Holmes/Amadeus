@@ -1,0 +1,65 @@
+{
+  "contract": "APCORE_SUCCESSOR_IMPLEMENTATION_ALLOWLIST_1",
+  "task": "G6-07-SUCCESSOR-BINDING-CONTRACT-AND-BUDGET-DECISION-V1",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "status": "FROZEN_DESIGN_ONLY",
+  "implementation_authorized_this_task": false,
+  "paths": [
+    {
+      "path": "persona_core/operational_runtime_v1/provider_openai.py",
+      "operation": "ADD",
+      "baseline_sha256": null,
+      "responsibility": "OpenAIAdapter: exact host/models; closed serializer; private credential reader; native SSE/HTTP decoding; native usage preservation; worker contract; validated token-bound receipt consumption.",
+      "sufficiency": "The existing native worker delegates to an adapter-owned worker_exchange and decode_http_result. OpenAI differences stay here."
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_adapters.py",
+      "operation": "MODIFY",
+      "baseline_sha256": "9d4822ca758ec1c3b2e64446825e614fde5a5ceeb510cc094e3a6434a848d3de",
+      "responsibility": "registry/select/native-worker registration of OpenAIAdapter; preserve strict independent wire re-decode in verified_result.",
+      "sufficiency": "The registry already supports provider-owned serialization, transport, decoding, rates and terminal methods."
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_contract.py",
+      "operation": "MODIFY",
+      "baseline_sha256": "b0b63106600cc0a4fd8fa3a7961f8b8bffe083f7d3595a1a0e1412072642c168",
+      "responsibility": "Add FORMAL_SCOPE_VERSION=apcore-provider-scope-7 and a separate formal checker, scope-7 generation identity, Decimal cache-aware accounting and reserve checks. Keep SCOPE_VERSION=scope-6 unchanged.",
+      "sufficiency": "Scope-6 hardcodes synthetic purpose and 1–2 slots. A separate formal branch avoids reinterpreting it; no generic endpoint support."
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider.py",
+      "operation": "MODIFY",
+      "baseline_sha256": "adb0d0fb6890c47e12bf87ef52f26247841f7c20e6b01411ed7e286e49f37e77",
+      "responsibility": "Route only scope-7 through formal adapter; journal/reservation before network; bind native receipt and usage; get_call/summary distinguish complete vs bounded estimate; retain immutable request, wire and lineage.",
+      "sufficiency": "ProviderJournal already owns transactional call contract rows, capture and stop state. Scope-7 can use these storage surfaces without transcript schema source edits."
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+      "operation": "MODIFY",
+      "baseline_sha256": "18b36d81cc7b18f7efede9d5a9ad0c27b25048dda8d96cd6e3f01d7847513a73",
+      "responsibility": "Scope-7 branches in load_suite, checked_pricing, build_scope, prepare, validate_rows, worker/run/status: exact 44 role schedule, formal source/config construction, adapter request/wire/accounting verification and explicit execute guard.",
+      "sufficiency": "The old five-field serializer, DeepSeek rates and verify_responses_wire(scope-4/5) must not run on scope-7. Use adapter re-decode in this branch."
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+      "operation": "MODIFY",
+      "baseline_sha256": "5435c6e43a8afd34a37f7e441b8498336d479347ebf8653af8dcc931153d0986",
+      "responsibility": "Configuration-driven ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT; temporary root only under work; 44 metadata bindings, seven initial contexts, source/policy/consumer checks; no call, credential, revision allocation or network.",
+      "sufficiency": "Existing preflight hardcodes old models and calls prepare into formal evidence. Add explicit offline construction destination, implemented in runner; no other allocator edit."
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+      "operation": "ADD",
+      "baseline_sha256": null,
+      "responsibility": "Independent neutral fixtures and minimum offline coverage; network-denied child worker harness; mutation, crash/restart and idempotency tests.",
+      "sufficiency": "One test module may contain fixture bytes and temporary harness code; no benchmark answer fixture or new production helper."
+    }
+  ],
+  "count": 7,
+  "expanded_paths": [],
+  "unlisted_implementation": "FORBIDDEN",
+  "baseline_source": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+    "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": "pcore-final-memory-admission-candidate-1",
+  "revision": "R034",
+  "status": "FROZEN_MEMORY_ADMISSION_POLICY",
+  "source_snapshot_id": "KURISU_V03_SG0_GAME_MARCH_2010",
+  "decision_records": [
+    {
+      "id": "RC-R005-001",
+      "decision": "ADMIT_AT_GENESIS",
+      "kind": "PRE_CUTOFF_SOURCE_EPISODIC_RECALL",
+      "supporting_events": [
+        "E127",
+        "E128"
+      ],
+      "referent_period": "2009-09 relationship development with Maho",
+      "why_eligible": [
+        "The fictional Amadeus instance explicitly prompts Maho to remember the specific music-linked relationship episode.",
+        "Adjacent flashback anchors the relationship sequence to 2009-09, before the 2010-03 source cutoff.",
+        "The episode is narrower than generic familiarity and does not require importing later Okabe/shared-summer memories."
+      ],
+      "limits": [
+        "Capture pipeline details remain unknown.",
+        "Admission is scoped to the explicitly recalled Maho relationship episode only.",
+        "Does not admit Maho residence/sloppy-habit details, forum habit, account-memory details, or post-snapshot runtime information."
+      ],
+      "safe_first_person_scope_candidate": "I can remember an earlier period of getting to know Maho through shared music/research interaction, within the source representation's 2009 relationship flashback; exact sensory wording should not exceed the admitted event record.",
+      "installed": false
+    }
+  ],
+  "relationship_core_admissions_candidate": [
+    {
+      "entity": "Maho",
+      "decision": "ADMIT_BASE_RELATIONSHIP_ONLY",
+      "exclude_details": [
+        "residence_detail",
+        "always_sloppy_detail"
+      ]
+    },
+    {
+      "entity": "Leskinen",
+      "decision": "ADMIT_BASE_PROFESSOR_RESEARCH_RELATIONSHIP_ONLY",
+      "exclude_details": [
+        "post_snapshot_recent_information"
+      ]
+    }
+  ],
+  "source_fact_only_not_first_person_memory": [
+    "Human Kurisu fixed forum-ID history around 2008"
+  ],
+  "claim_level_holds": [
+    "E099:SLOPPY_HABIT_DETAIL_ORIGIN",
+    "E100:MAHO_RESIDENCE_DETAIL_ORIGIN",
+    "E106:FORUM_REACTION_HABIT_PRE_CUTOFF_ORIGIN",
+    "E107:AMADEUS_ENCODED_ACCOUNT_MEMORY_ORIGIN"
+  ],
+  "new_installed_memories": 0,
+  "genesis_approved": false,
+  "installed": false
+}

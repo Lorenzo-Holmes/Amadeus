@@ -1,0 +1,13 @@
+{
+  "kind": "AUDIT_PUBLICATION_IDENTITY_NOT_NEW_SOURCE_FREEZE",
+  "source_unchanged": true,
+  "retained_source_freeze": "BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01",
+  "retained_source_manifest_sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b",
+  "expression_prompt_sha256": "23927566d4e9320d86ba6620299508eec1a23b5f097e15de86da74d58e52c50f",
+  "architecture_contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+  "public_files": {
+    "persona_core/gpt6_optimization_v2/r16_generic_reasoning_assessment_20260920_01/PUBLIC_AUDIT.json": "772fff3a1c1872bd87c23ddb1c30c898ed74005c7f3ddbc0254408d0d4b28885",
+    "persona_core/gpt6_optimization_v2/r16_generic_reasoning_assessment_20260920_01/PUBLIC_AUDIT.md": "17b23442dc3f989784e59d4c471a646c44326a8a8d7a4183fe45c286cd4e13b4"
+  },
+  "private_dialogue_answers_rubric_sqlite_spend_credentials_excluded": true
+}

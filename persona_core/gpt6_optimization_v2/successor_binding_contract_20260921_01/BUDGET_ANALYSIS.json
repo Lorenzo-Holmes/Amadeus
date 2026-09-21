@@ -1,0 +1,78 @@
+{
+  "version": "APCORE_SUCCESSOR_BUDGET_DECISION_1",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "batch_design_id": "APCORE_SUCCESSOR_EXTERNAL44_ASTRA_SOL_MAX_SINGLE_BATCH_1",
+  "configuration_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/CONFIGURATION_PREREGISTRATION.json",
+    "sha256": "b110549e5d76372cbbff79f4f919d92af89a482636498c7604a4b6c45fe9e0ff"
+  },
+  "schedule_identity": {
+    "algorithm": "SHA256_CANONICAL_JSON_UTF8_SORTED_KEYS_NO_WHITESPACE",
+    "sha256": "3b705f63c3bf36ff01b4d9a3ea05479e1e564496814bbfb1c86012546d354430"
+  },
+  "status": "BUDGET_NOT_READY",
+  "current_budget_ceiling_cny": "19.00",
+  "user_approved_new_budget": null,
+  "new_budget_authorized": false,
+  "prior_48_64_authorization_inherited": false,
+  "broad_historical_authorization_inherited": false,
+  "rates": {
+    "gpt-6-astra": {
+      "input": "10",
+      "cached_input": "1",
+      "cache_write": "12.5",
+      "output": "50"
+    },
+    "gpt-5.6-sol": {
+      "input": "4",
+      "cached_input": "0.4",
+      "cache_write": "5",
+      "output": "20"
+    }
+  },
+  "role_costs": [
+    {
+      "role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "slots": 42,
+      "input_upper_usd_per_slot": "0.3584",
+      "output_upper_usd_per_slot": "1.6384",
+      "total_upper_usd_per_slot": "1.9968",
+      "role_total_upper_usd": "83.8656",
+      "reserve_micro_cny_per_slot": 17571840
+    },
+    {
+      "role": "SECONDARY",
+      "model": "gpt-5.6-sol",
+      "slots": 2,
+      "input_upper_usd_per_slot": "0.14336",
+      "output_upper_usd_per_slot": "0.65536",
+      "total_upper_usd_per_slot": "0.79872",
+      "role_total_upper_usd": "1.59744",
+      "reserve_micro_cny_per_slot": 7028736
+    }
+  ],
+  "worst_case_api_usd": "85.46304",
+  "bound_status": "CONDITIONAL_DESIGN_BOUND_INPUT_PROOF_PENDING",
+  "conditional_cny": "752.0747520",
+  "proposed_ceiling_cny": "753",
+  "fx_cap": "8",
+  "fee_cap_fraction": "0.10",
+  "actual_fx": "UNKNOWN",
+  "actual_fees": "UNKNOWN",
+  "input_tokens_reserved_per_slot": 28672,
+  "output_tokens_cap_per_slot": 32768,
+  "output_cap_includes_reasoning": true,
+  "output_only_full_cap_usd": "70.12352",
+  "tighter_certified_full_batch_bound": null,
+  "input_bound_proven": false,
+  "billing_certified": false,
+  "official_price_identity": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/OFFICIAL_PRICING_EVIDENCE.json",
+    "sha256": "e2e273877218a764cbfecf898fd170816deff9ff0e761df92a6e2239399c79b4"
+  },
+  "provider_api_calls": 0,
+  "readiness_calls": 0,
+  "paid_requests": 0,
+  "current_task_cost_cny": "0.00"
+}

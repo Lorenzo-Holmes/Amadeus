@@ -1,0 +1,63 @@
+{
+  "observation_date_shanghai": "2026-09-21",
+  "at_utc": "2026-09-20T18:19:11.772362+00:00",
+  "official_pricing_refreshed": true,
+  "method": "Fresh public documentation GET; body hashes independently matched the frozen exact rates.",
+  "currency": "USD",
+  "unit": "per million tokens",
+  "service_tier": "default / Standard",
+  "rates": {
+    "gpt-6-astra": {
+      "input": "10",
+      "cached_input": "1",
+      "cache_write": "12.5",
+      "output": "50"
+    },
+    "gpt-5.6-sol": {
+      "input": "4",
+      "cached_input": "0.4",
+      "cache_write": "5",
+      "output": "20"
+    }
+  },
+  "sources": [
+    {
+      "name": "astra",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-astra.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.215043+00:00",
+      "path": "work/openai_formal_binding/docs/astra.txt",
+      "sha256": "f45ae813c3f69708e2576328056de14cdf71fec174c875f4b81d236105545625",
+      "bytes": 3812
+    },
+    {
+      "name": "sol",
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.233928+00:00",
+      "path": "work/openai_formal_binding/docs/sol.txt",
+      "sha256": "23f4ff2c236486d42145e21693f450bfcac272c37ee839a5ee6f9455cd1d8b7b",
+      "bytes": 3991
+    },
+    {
+      "name": "pricing",
+      "url": "https://developers.openai.com/api/docs/pricing.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.111315+00:00",
+      "path": "work/openai_formal_binding/docs/pricing.txt",
+      "sha256": "714cbb324e68df34baa206f6d2052977a79de4ee54f655437d4faa09ca4a87d3",
+      "bytes": 23063
+    }
+  ],
+  "private_fetch_receipts": {
+    "path": "work/openai_formal_binding/docs/RECEIPTS.json",
+    "sha256": "f747a51a6751ded6c9058c46eac2e84e14af3398c654cf7de4a2f0db2380b008"
+  },
+  "cache_categories": "uncached,read,write are disjoint; no additive double billing",
+  "output_total_includes_reasoning_and_nonvisible_formatting": true,
+  "actual_account_access": "UNKNOWN_NOT_PROBED",
+  "actual_payment_fx": "UNKNOWN",
+  "actual_fees": "UNKNOWN",
+  "billing_certified": false,
+  "provider_api_calls": 0
+}

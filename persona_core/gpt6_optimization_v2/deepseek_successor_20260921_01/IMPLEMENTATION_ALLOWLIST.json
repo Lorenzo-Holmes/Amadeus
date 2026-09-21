@@ -1,0 +1,17 @@
+{
+  "task": "G6-07-DEEPSEEK-SUCCESSOR-REQUALIFICATION-TO-FRESH-VALIDATION-V1",
+  "paths": [
+    "persona_core/operational_runtime_v1/provider_deepseek_formal.py",
+    "persona_core/operational_runtime_v1/provider_adapters.py",
+    "persona_core/operational_runtime_v1/provider.py",
+    "persona_core/operational_runtime_v1/provider_contract.py",
+    "persona_core/operational_runtime_v1/transcript_store.py",
+    "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+    "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+    "persona_core/gpt6_optimization_v2/tools/test_deepseek_successor_binding.py"
+  ],
+  "reason": "Reuse existing DeepSeek Responses streaming and journal code; add isolated formal scope, byte/context policy, native usage binding, same-model role mapping and per-turn review guards.",
+  "forbidden": "Persona, Genesis, Memory, Relationship, retrieval, semantic parser, expression and display/state/strict semantics",
+  "source_changes_require_new_freeze": true,
+  "at_utc": "2026-09-21T02:03:17.055577+00:00"
+}

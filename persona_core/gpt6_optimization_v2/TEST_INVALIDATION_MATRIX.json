@@ -1,0 +1,180 @@
+{
+  "schema_version": "APCORE_TEST_INVALIDATION_MATRIX_2_1",
+  "always_tests": [
+    "test_governance_v2.py"
+  ],
+  "protected_patterns": [
+    "*/PRIVATE_RUBRIC.json",
+    "*/NEW_MULTITURN_CASES.json",
+    "*/external_failure_v1/CASES.json",
+    "*/external_failure_v1/SELECTION.json",
+    "*/G6_07_DUAL_GATE_SPEC.md",
+    "*/CRITERION_ROUTING*.json",
+    "*/GENESIS_SNAPSHOT*.json"
+  ],
+  "rules": [
+    {
+      "patterns": [
+        "persona_core/operational_runtime_v1/claim_calibration.py",
+        "persona_core/operational_runtime_v1/calibration_journal.py",
+        "persona_core/operational_runtime_v1/chat.py",
+        "persona_core/gpt6_optimization_v2/tools/structural_*.py",
+        "persona_core/gpt6_optimization_v2/structural_calibration_20260921_01/*.json",
+        "persona_core/gpt6_optimization_v2/structural_calibration_20260921_01/ARCHITECTURE_DECISION.md"
+      ],
+      "tests": [
+        "test_structural_calibration.py",
+        "test_structural_preflight.py",
+        "test_structural_governance.py",
+        "test_bounded_consumer_binding.py",
+        "test_bounded_display_state_contract.py",
+        "test_deepseek_successor_binding.py",
+        "test_evaluation_runner.py",
+        "test_formal_acceptance_integration.py",
+        "test_epistemic_calibration.py",
+        "test_new_candidate_governance.py",
+        "test_governance_v2.py"
+      ],
+      "freeze_full_suite": true,
+      "legacy_required": true,
+      "rationale": "Versioned fixed response stages extend journal, display identity, evaluation consumers and task-specific paid gates. Old policies and scientific objects are unchanged; legacy compatibility is required."
+    },
+    {
+      "patterns": [
+        "persona_core/operational_runtime_v1/expression_prompt.py",
+        "persona_core/gpt6_optimization_v2/tools/calibration_synthetic_cases.py"
+      ],
+      "tests": [
+        "test_epistemic_calibration.py",
+        "test_expression_prompt.py",
+        "test_expression_axes_v9.py",
+        "test_expression_contracts_recovery.py",
+        "test_context_budget_recovery.py",
+        "test_context_projection.py",
+        "test_bounded_display_state_contract.py",
+        "test_bounded_consumer_binding.py",
+        "test_formal_acceptance_integration.py",
+        "test_deepseek_successor_binding.py",
+        "test_evaluation_runner.py"
+      ],
+      "freeze_full_suite": true,
+      "legacy_required": true,
+      "rationale": "Conversation generation flows through context composition, request serialization, display, consumers and review. Shared runtime identity requires legacy compatibility coverage."
+    },
+    {
+      "patterns": [
+        "persona_core/gpt6_optimization_v2/epistemic_calibration_20260921_01/CONFIGURATION*.json",
+        "persona_core/gpt6_optimization_v2/epistemic_calibration_20260921_01/EXECUTION_AUTHORIZATION.json"
+      ],
+      "tests": [
+        "test_epistemic_calibration.py",
+        "test_new_candidate_governance.py",
+        "test_deepseek_successor_binding.py"
+      ],
+      "freeze_full_suite": true,
+      "legacy_required": false,
+      "rationale": "Append-only product candidate registration and conditional task authorization; original model, dataset and gates retained."
+    },
+    {
+      "patterns": [
+        "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py"
+      ],
+      "tests": [
+        "test_evaluation_runner.py",
+        "test_deepseek_successor_binding.py",
+        "test_openai_formal_binding.py",
+        "test_authoritative_input_count.py",
+        "test_formal_acceptance_integration.py",
+        "test_bounded_consumer_binding.py",
+        "test_bounded_display_state_contract.py",
+        "test_semantic_acceptance.py",
+        "test_transport_lifecycle.py"
+      ],
+      "freeze_full_suite": true,
+      "legacy_required": false,
+      "rationale": "SQL/evaluator callers, completed-row schemas 7/8/9, display/state consumers, review gate. No Persona/prompt edit permitted."
+    },
+    {
+      "patterns": [
+        "persona_core/operational_runtime_v1/provider*.py",
+        "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py"
+      ],
+      "tests": [
+        "test_provider_agnostic_runtime.py",
+        "test_provider2_remote_adapter.py",
+        "test_deepseek_successor_binding.py",
+        "test_openai_formal_binding.py",
+        "test_authoritative_input_count.py",
+        "test_evaluation_runner.py",
+        "test_responses_provider_integration.py",
+        "test_responses_terminal_classification.py",
+        "test_network_route.py",
+        "test_transport_lifecycle.py",
+        "test_formal_acceptance_integration.py"
+      ],
+      "freeze_full_suite": true,
+      "legacy_required": true,
+      "rationale": "Shared provider/transport/accounting APIs can affect legacy runtime; conservative compatibility coverage."
+    },
+    {
+      "patterns": [
+        "persona_core/operational_runtime_v1/transcript*.py",
+        "persona_core/operational_runtime_v1/admission*.py",
+        "persona_core/operational_runtime_v1/accepted_output*.py",
+        "persona_core/operational_runtime_v1/semantic*.py"
+      ],
+      "tests": [
+        "test_bounded_consumer_binding.py",
+        "test_bounded_display_state_contract.py",
+        "test_semantic_acceptance.py",
+        "test_semantic_grounding.py",
+        "test_evaluation_runner.py",
+        "test_formal_acceptance_integration.py",
+        "test_deepseek_successor_binding.py"
+      ],
+      "freeze_full_suite": true,
+      "legacy_required": true,
+      "rationale": "Persistence/admission effects require legacy compatibility and state-integrity regression."
+    },
+    {
+      "patterns": [
+        "persona_core/gpt6_optimization_v2/tools/test_*.py"
+      ],
+      "tests": [],
+      "freeze_full_suite": true,
+      "legacy_required": false,
+      "additional_rule": "The changed test file itself is mandatory; suite collection/environment fingerprints are invalidated."
+    },
+    {
+      "patterns": [
+        "AGENTS.md",
+        "persona_core/APCORE_CANONICAL_EXECUTION_GUIDE.md",
+        "persona_core/APCORE_CODEX_EXECUTION_POLICY_V2.md",
+        "persona_core/CODEX_EXECUTION_RULES.md",
+        "persona_core/gpt6_optimization_v2/CODEX_EXECUTION_POLICY.json",
+        "persona_core/gpt6_optimization_v2/TEST_INVALIDATION_MATRIX.json",
+        "persona_core/gpt6_optimization_v2/CANONICAL_MACHINE_STATE.json",
+        "persona_core/gpt6_optimization_v2/governance_v2_20260921_01/*",
+        "persona_core/gpt6_optimization_v2/tools/governance_v2.py"
+      ],
+      "tests": [
+        "test_governance_v2.py"
+      ],
+      "freeze_full_suite": false,
+      "legacy_required": false,
+      "rationale": "Governance-only paths; schema, invariant, pinned-reference, CAS, recovery and privacy projection tests."
+    }
+  ],
+  "unmatched_path_action": "FULL_COMPONENT_PLUS_LEGACY_DEPENDENCY_REVIEW",
+  "environment_or_dependency_change": "INVALIDATE_ALL_AFFECTED_RECEIPTS_DEFAULT_FULL_IF_SCOPE_UNKNOWN",
+  "same_tested_freeze_at_preflight": "REUSE_EXACT_SUITE_RECEIPT_NOT_SECOND_FULL_RUN",
+  "legacy_reuse_constraint": "CURRENT_RUNTIME_AND_LEGACY_DEPENDENCIES_MATCH_RECEIPT; HISTORICAL_SENTINEL_EXACT_AND_NO_NEW_FAILURES; OTHERWISE_RERUN",
+  "exclusive_test_resources": {
+    "G6_EVIDENCE_DIRECTORY_NAMESPACE": [
+      "test_openai_formal_binding.py",
+      "test_formal_acceptance_integration.py",
+      "test_evaluation_runner.py"
+    ],
+    "rule": "Run listed shared-directory observers/writers serially; unknown directory side effects also require isolation."
+  }
+}

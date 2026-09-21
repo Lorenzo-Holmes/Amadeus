@@ -1,0 +1,6 @@
+{
+  "version": "apcore-transport-lifecycle-1",
+  "connect_timeout_seconds": 15,
+  "read_timeout_seconds": 120,
+  "worker_deadline_seconds": 595
+}

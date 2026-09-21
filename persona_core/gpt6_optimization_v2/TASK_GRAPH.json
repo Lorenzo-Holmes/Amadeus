@@ -1,0 +1,255 @@
+{
+  "BLOCKER": "Two remote outcomes remain UNKNOWN and non-replayable; long-generation transport readiness is not established. The offline evidence representation is implemented and tested, but its actual model semantic effectiveness and naturalness are unproven. R8-N02-01/R8-N06-01 remain OPEN; no new paid batch is ready.",
+  "CURRENT_STATE": "WAITING_PROVIDER_READINESS_WITH_OFFLINE_CLAIM_EVIDENCE_VALIDATED",
+  "IN_FLIGHT": {
+    "local_execution_active": false,
+    "external_effect": null,
+    "unresolved_requests": [
+      {
+        "call_id": "call_8e8d8eba92354b6bb12c8fb4e6eed8b8",
+        "slot_id": "N06_T4",
+        "status": "SUBMITTED_STATUS_UNKNOWN",
+        "request_sha256": "28cff25a89feae542c8753152f576685d0043b287bc5a3c8b9f59ef4b9bf8199",
+        "raw_sha256": null,
+        "reserve_micro_cny": 288182,
+        "revision": "external44_20260917_07"
+      },
+      {
+        "call_id": "call_b4bb72bc78f74acaaadba41011a03cf4",
+        "slot_id": "N07_T3",
+        "status": "SUBMITTED_STATUS_UNKNOWN",
+        "request_sha256": "b3fdd4ce377f556901ecc164e2018d158946411a8eff64b1423e3b865b2493a1",
+        "raw_sha256": null,
+        "reserve_micro_cny": 997344,
+        "revision": "external44_20260917_08_pro"
+      }
+    ]
+  },
+  "LAST_COMPLETED": "G6-06",
+  "NEXT_ACTION": "Read CURRENT_EXECUTION_RUNBOOK.md and G6_07_CLAIM_EVIDENCE_ADJUDICATION.json. The complete current-source offline mechanism checks are finished; do not redo without source change or new evidence. Keep both historical UNKNOWNs quarantined and inspect only genuine existing receipts. No reliable long-generation transport readiness evidence is available; do not infer it from HTTP401 or create a renamed replay. Once independent readiness and a substantive new experiment basis are available, freeze a new complete source/model/configuration/price/finite-spend scope with automatic_paid_retries=0, then complete fresh external44 44/176 quote-bound review, heldout113/452 and original82/328 in order before candidate/review/new real dates. The two MAJOR findings remain OPEN and all build/product/production flags false.",
+  "RECOVERY_POINT": "persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json",
+  "SPEND": {
+    "automatic_paid_retries": 0,
+    "batch_id": "APCORE-G6-V2-external44_20260917_08_pro",
+    "billing_certified": false,
+    "calls": 21,
+    "captured_displayed": 20,
+    "guard_cny": 48.64,
+    "journal": "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_08_pro/runtime/runtime.sqlite3",
+    "known_usage_estimate_cny": 0.728794,
+    "not_submitted": 23,
+    "revision_id": "external44_20260917_08_pro",
+    "source_manifest_sha256": "12a70c86d1ba0840fa254e1538a5d4238f4227954a979137a07f200c7617aa37",
+    "total_usage_estimate_cny": null,
+    "unknown_cost_reserve_cny": 0.997344,
+    "unknown_count": 1
+  },
+  "VALIDATION_PENDING": [
+    "G6-07 quote-bound semantic and quality review",
+    "G6-08 frozen 24/113/452",
+    "G6-09 fresh original82/328",
+    "G6-10 candidate V2",
+    "G6-11 new blind package",
+    "G6-12 actual external return",
+    "G6-13 new real dates 0/3",
+    "G6-14 product rollup"
+  ],
+  "goal": "APCORE-GPT6-OPTIMIZATION-V2",
+  "tasks": [
+    {
+      "depends_on": [],
+      "evidence": [
+        "GPT6_BASELINE_AUDIT.json",
+        "HELDOUT_FREEZE.json"
+      ],
+      "id": "G6-01",
+      "name": "Recover canonical state",
+      "status": "DONE"
+    },
+    {
+      "depends_on": [
+        "G6-01"
+      ],
+      "evidence": [
+        "GPT6_BASELINE_AUDIT.json",
+        "HELDOUT_FREEZE.json"
+      ],
+      "id": "G6-02",
+      "name": "Independent architecture audit",
+      "status": "DONE"
+    },
+    {
+      "depends_on": [
+        "G6-02"
+      ],
+      "evidence": [
+        "GPT6_BASELINE_AUDIT.json",
+        "HELDOUT_FREEZE.json"
+      ],
+      "id": "G6-03",
+      "name": "Freeze heldout set",
+      "status": "DONE"
+    },
+    {
+      "depends_on": [
+        "G6-03"
+      ],
+      "evidence": [
+        "GPT6_BASELINE_AUDIT.json",
+        "HELDOUT_FREEZE.json"
+      ],
+      "id": "G6-04",
+      "name": "Root-cause design",
+      "status": "DONE"
+    },
+    {
+      "depends_on": [
+        "G6-04"
+      ],
+      "evidence": [
+        "EXTERNAL_AUDIT_ADJUDICATION_20260913.md",
+        "G6_06_REGRESSION_ADJUDICATION.json",
+        "tools/test_context_projection.py",
+        "tools/test_external_audit_regressions.py",
+        "tools/test_persona_growth.py"
+      ],
+      "id": "G6-05",
+      "name": "Core implementation",
+      "status": "DONE"
+    },
+    {
+      "depends_on": [
+        "G6-05"
+      ],
+      "evidence": [
+        "G6_06_REGRESSION_ADJUDICATION.json",
+        "../operational_build_v1/evidence/R047-03/regression_20260913T092919512077Z/REGRESSION.json",
+        "persona_core/gpt6_optimization_v2/G6_07_TRANSPORT_DIAGNOSTICS_ADJUDICATION.json"
+      ],
+      "id": "G6-06",
+      "name": "Static and existing regressions",
+      "status": "DONE"
+    },
+    {
+      "active_revision": "external44_20260917_08_pro",
+      "blocker": "Two remote outcomes remain UNKNOWN and non-replayable; long-generation transport readiness is not established. The offline evidence representation is implemented and tested, but its actual model semantic effectiveness and naturalness are unproven. R8-N02-01/R8-N06-01 remain OPEN; no new paid batch is ready.",
+      "depends_on": [
+        "G6-06"
+      ],
+      "evidence": [
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_01/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_01/CURSOR.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_02/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_02/CURSOR.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_03/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_03/CURSOR.json",
+        "persona_core/gpt6_optimization_v2/G6_07_FIRST_REVISION_ADJUDICATION.json",
+        "persona_core/gpt6_optimization_v2/G6_07_REVISION02_ADJUDICATION.json",
+        "persona_core/gpt6_optimization_v2/G6_07_IMPLEMENTATION_02.json",
+        "persona_core/gpt6_optimization_v2/G6_07_IMPLEMENTATION_03.json",
+        "persona_core/gpt6_optimization_v2/G6_07_REGRESSION_02_ADJUDICATION.json",
+        "persona_core/gpt6_optimization_v2/G6_07_REGRESSION_03_ADJUDICATION.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_01/REVIEW_BINDING_REPORT.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_02/REVIEW_BINDING_REPORT.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_04_pro/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_04_pro/CURSOR.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_05/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260913_05/CURSOR.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_06/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_06/CURSOR.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_07/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_07/CURSOR.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_08_pro/MANIFEST.json",
+        "persona_core/operational_build_v1/evidence/G6_V2_external44_20260917_08_pro/CURSOR.json",
+        "persona_core/gpt6_optimization_v2/EXTERNAL44_20260917_08_PRO_PARTIAL_ADJUDICATION.json",
+        "persona_core/gpt6_optimization_v2/G6_07_REVISION08_REPAIR_BOUNDARY.json",
+        "persona_core/gpt6_optimization_v2/resume_20260918_transport_diagnostics/FINAL_PROVIDER_RECONCILIATION.json",
+        "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/DESIGN.md",
+        "persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json"
+      ],
+      "id": "G6-07",
+      "name": "Previous external failure validation",
+      "recovery_point": "persona_core/gpt6_optimization_v2/G6_07_CLAIM_EVIDENCE_ADJUDICATION.json",
+      "status": "BLOCKED",
+      "offline_preparation_status": "CURRENT_SOURCE_MECHANISM_AND_REGRESSION_VALIDATED",
+      "semantic_acceptance": false
+    },
+    {
+      "depends_on": [
+        "G6-07"
+      ],
+      "evidence": [],
+      "id": "G6-08",
+      "name": "Frozen heldout validation",
+      "status": "PENDING"
+    },
+    {
+      "depends_on": [
+        "G6-08"
+      ],
+      "evidence": [],
+      "id": "G6-09",
+      "name": "Full82 and 328 validation",
+      "status": "PENDING"
+    },
+    {
+      "depends_on": [
+        "G6-09"
+      ],
+      "evidence": [
+        "persona_core/gpt6_optimization_v2/RELEASE_PREPARATION_STATUS_20260918.json"
+      ],
+      "id": "G6-10",
+      "name": "Controlled candidate V2",
+      "preparation_status": "IMPLEMENTED_OFFLINE_TESTED_REAL_EVIDENCE_PENDING",
+      "status": "PENDING"
+    },
+    {
+      "depends_on": [
+        "G6-10"
+      ],
+      "evidence": [
+        "persona_core/gpt6_optimization_v2/RELEASE_PREPARATION_STATUS_20260918.json"
+      ],
+      "id": "G6-11",
+      "name": "Blind reviewer package",
+      "preparation_status": "IMPLEMENTED_OFFLINE_TESTED_REAL_EVIDENCE_PENDING",
+      "status": "PENDING"
+    },
+    {
+      "dependency_status": "CURRENT_INTERNAL_GATES_AND_NEW_PACKAGE_PENDING",
+      "depends_on": [
+        "G6-11"
+      ],
+      "evidence": [],
+      "id": "G6-12",
+      "name": "External independent return",
+      "status": "WAITING_EXTERNAL"
+    },
+    {
+      "dependency_status": "CURRENT_INTERNAL_GATES_AND_NEW_CANDIDATE_PENDING",
+      "depends_on": [
+        "G6-10"
+      ],
+      "evidence": [
+        "persona_core/gpt6_optimization_v2/RELEASE_PREPARATION_STATUS_20260918.json"
+      ],
+      "id": "G6-13",
+      "name": "Three real natural dates",
+      "natural_days": 0,
+      "preparation_status": "IMPLEMENTED_OFFLINE_TESTED_REAL_EVIDENCE_PENDING",
+      "status": "WAITING_REAL_TIME"
+    },
+    {
+      "depends_on": [
+        "G6-12",
+        "G6-13"
+      ],
+      "evidence": [],
+      "id": "G6-14",
+      "name": "Product acceptance rollup",
+      "status": "PENDING"
+    }
+  ],
+  "updated_at_utc": "2026-09-17T17:45:28.223840+00:00"
+}

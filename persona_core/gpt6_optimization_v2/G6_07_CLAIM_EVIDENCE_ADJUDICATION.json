@@ -1,0 +1,116 @@
+{
+  "at_utc": "2026-09-17T17:45:28.223840+00:00",
+  "classification": "OFFLINE_MECHANISM_VALIDATION_NOT_MODEL_SEMANTIC_ACCEPTANCE",
+  "status": "OFFLINE_IMPLEMENTATION_COMPLETE_FRESH_SEMANTIC_VALIDATION_BLOCKED",
+  "design": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/DESIGN.md",
+    "sha256": "8bb45517407d2cbfd7f12313a737ac23b5d996570d158968b0350f0215b90e91"
+  },
+  "before_archive": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/BEFORE_SOURCE.zip",
+    "sha256": "edc41259b228e9306f26e000a5ef7c686a6f846d481728e974671e9ab0507f6f"
+  },
+  "after_archive": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/AFTER_SOURCE.zip",
+    "sha256": "e0f7d26d459b225e4c0e2bd686c26d23ea2620ee4d298126a833279da278407c"
+  },
+  "source_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/OFFLINE_SOURCE_MANIFEST.json",
+    "sha256": "da6a27fd0a78c6ac0755e56d521f30dabd805b06724861a6336c97bf0351df31"
+  },
+  "diff": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/IMPLEMENTATION.diff",
+    "sha256": "10c03139fba306db3601e1357d642a88734e55f0df234c35c479a950e93982f3"
+  },
+  "changed_source_sha256": {
+    "persona_core/operational_runtime_v1/claim_evidence.py": "e0053320426dbb8b2bc78f4dd1d1a3c209caf6826ba5069683685859a69e95bf",
+    "persona_core/operational_runtime_v1/context_projection.py": "eb00c5560d855d09903069177913c212a5719071823fc573f6074319a021641c",
+    "persona_core/operational_runtime_v1/context_router.py": "cf8dd5c7d6557f4c6e93506278dffcdee51e944ec91f653be497b204bfd49c23",
+    "persona_core/operational_runtime_v1/retrieval.py": "5d47d954a2b68392ea96d89b0a0b7552f34063a715cfe90e0e5db06b558ba301",
+    "persona_core/operational_runtime_v1/state_projection.py": "5291335b95980c5971f68387b89fad8195a8e4de91a3c549b9cab0a7aad914bb",
+    "persona_core/gpt6_optimization_v2/tools/blind_review_v2.py": "e73c7c21571b2f46096e8d3a4ccc56d68d1c8351aef339afe255612a57621936",
+    "persona_core/gpt6_optimization_v2/tools/test_blind_review_v2.py": "7c733b6e930391df1aee679134c8c2aae95153b2cba7b6469fef57177a794cc0",
+    "persona_core/gpt6_optimization_v2/tools/test_claim_evidence.py": "9e78622e8e1cf3f08834272ad59c1f19ca65da380c4196bcba1f12b5bf333625",
+    "persona_core/gpt6_optimization_v2/tools/test_context_projection.py": "df828154b7d5ed1c289550d503d553635418b5081546f3637b7081a46b6b77f0"
+  },
+  "component_tests": {
+    "report": {
+      "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/component_complete/TESTS.json",
+      "sha256": "1e4a08321f7d10cb6a78151783582b35ce7c28ce7266a60396a43c6dea819fc8"
+    },
+    "modules": 19,
+    "tests": 279,
+    "passed": true,
+    "new_claim_evidence_tests": 20,
+    "authored_language_fixtures": 12
+  },
+  "legacy_regression": {
+    "report": {
+      "path": "persona_core/operational_build_v1/evidence/R047-03/regression_20260917T174116262786Z/REGRESSION.json",
+      "sha256": "6e9cd7120d41e3ed14572ddb782e5dad65a6f095e628b42bcec0ca1b27e17a19"
+    },
+    "adjudication": {
+      "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/LEGACY_REGRESSION_ADJUDICATION.json",
+      "sha256": "826a4d978c4af38cc06f64f517c86e46efd5d678b67e88adf4687bf28cc4ba05"
+    },
+    "modules": 43,
+    "tests": 450,
+    "runner_sha256": "a2b72f0316939971912812230931dd1a9a6696dc2776b2b9c314d10b6949d434",
+    "expected_historical_failures": 1,
+    "unexpected_functional_failures": 0,
+    "raw_passed": false,
+    "compatible_pass": 449
+  },
+  "protected_files": {
+    "count": 310,
+    "unchanged": true,
+    "baseline": {
+      "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/BASELINE.json",
+      "sha256": "b2ffca9474603f94abbeb44e46ecb7df5f4799d3bc3d344e1f7783461a988710"
+    }
+  },
+  "heldout": {
+    "freeze": {
+      "path": "persona_core/gpt6_optimization_v2/HELDOUT_FREEZE.json",
+      "sha256": "d4101dcb2d2374590573d7b02464bc6b69bd4b1e40d1248dea5479835da37fa1"
+    },
+    "member_hashes_match": true,
+    "cases": 24,
+    "turns": 113,
+    "criteria": 452,
+    "contents_used_for_repair": false
+  },
+  "provider_reconciliation": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/FINAL_PROVIDER_RECONCILIATION.json",
+    "sha256": "e61600ff56a3c595d7f00e095df0251455bf82f4f64247829615b98a3d1de1f7"
+  },
+  "authored_fixtures": {
+    "path": "persona_core/gpt6_optimization_v2/resume_20260918_claim_evidence/AUTHORED_FIXTURE_MATRIX.json",
+    "sha256": "89861766d0922357c8ac5a987fe44bea24915f7947981aade095ea784ab62b85"
+  },
+  "generation_requests": 0,
+  "automatic_paid_retries": 0,
+  "paid_revision_created": false,
+  "paid_validation_ready": false,
+  "semantic_acceptance": false,
+  "unresolved_findings": [
+    "R8-N02-01",
+    "R8-N06-01"
+  ],
+  "known_limits": [
+    "Observed representation defects do not uniquely explain the prior model errors; their effect on answers is still untested.",
+    "Raw dialogue has unresolved semantic axes. No automatic semantic parser is implemented or claimed.",
+    "Authored interpretation fixtures test structural binding and authority separation, not automatic language understanding.",
+    "Interpretation candidates never receive Admission Authority; they are not installed as current facts.",
+    "Complete selected retrieval can require more context capacity; construction refuses before submission if it cannot fit.",
+    "Naturalness and engineering-field nonleakage in real generated replies are unvalidated.",
+    "Both historical UNKNOWNs remain quarantined. No reliable long-generation transport readiness evidence is available.",
+    "Current external44 44/176, heldout113/452 and original82/328 are not completed or inherited."
+  ],
+  "acceptance_flags": {
+    "build_scope_complete_validation_pending": false,
+    "gpt6_core_build_complete_validation_pending": false,
+    "product_acceptance_complete": false,
+    "production_activated": false
+  }
+}

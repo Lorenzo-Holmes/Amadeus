@@ -1,0 +1,28 @@
+{
+  "automatic_paid_retries": 0,
+  "files": {
+    "persona_core/gpt6_optimization_v2/G6_07R4_PUBLIC_AUDIT.json": "caa5f9e9173759b953ffa331d6ad95edaa250302e4e38817531c31ecebbd9b87",
+    "persona_core/gpt6_optimization_v2/G6_07R4_PUBLIC_SUMMARY.md": "b55a16be4d66bad3d00509b8948330a55d042c71157f7a8f47f0b260f21630f6",
+    "persona_core/gpt6_optimization_v2/SEMANTIC_GROUNDING_REPAIR_DESIGN.md": "79073d08e5f6729b3dddfad47a5b07e0b754685757bc1d444bcfd1226a3a2e67",
+    "persona_core/gpt6_optimization_v2/tools/semantic_grounding_fixtures.py": "7a138af4b1c9dc97108bf7be497134239e35f8047a801a3055a8934b24f2d7eb",
+    "persona_core/gpt6_optimization_v2/tools/test_semantic_grounding.py": "f7090a51b2c137877fddcc1acaa56ba2d4a69af1cebf173b9da51c90718c6783",
+    "persona_core/operational_runtime_v1/claim_evidence.py": "ac4a19b4e5f13a423638b6272c32d55b9baaa5d0db5a7e762faad30a1d4ea98c",
+    "persona_core/operational_runtime_v1/context_router.py": "dabf1b95c1204b93cad8e928bee4389111e010e3f21abbccec25bc0bbabaf429",
+    "persona_core/operational_runtime_v1/expression_prompt.py": "23927566d4e9320d86ba6620299508eec1a23b5f097e15de86da74d58e52c50f",
+    "persona_core/operational_runtime_v1/reasoning_scope.py": "eef3845863a84c902299f8ab9f93d44b32be31013b72ce9647905dce7c769170",
+    "persona_core/operational_runtime_v1/semantic_grounding.py": "66cbee32b9ffd03b54b7ba00fa8a5ae96db33ce3523bfbcd100e06fb3423a66d"
+  },
+  "freeze_id": "SEMANTIC_GROUNDING_REPAIR_R13_20260919_01",
+  "freeze_kind": "SEMANTIC_SOURCE_FREEZE_WITH_OFFLINE_VALIDATION",
+  "full_private_source_manifest_published": false,
+  "g6_07": "VALIDATION_PENDING",
+  "g6_08": "LOCKED",
+  "historical_findings_closed": false,
+  "next_fresh_revision": "READY_FOR_NEW_REVISION",
+  "persona_semantic_source_changed": true,
+  "prior_public_commit": "e22e31fb7a1ac439fe00942a5467084643f0c878",
+  "provider_runtime_source_changed": false,
+  "remote_generation": 0,
+  "semantic_acceptance": false,
+  "source_freeze_member_count_private_manifest": 150
+}

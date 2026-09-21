@@ -1,0 +1,251 @@
+{
+  "contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+  "schema_version": "bounded-contract-cases-1",
+  "source": "Synthetic boundary conditions authored for P1; no benchmark prompt or answer",
+  "case_count": 24,
+  "paired_family_count": 8,
+  "runtime_execution_performed": false,
+  "provider_requests": 0,
+  "cases": [
+    {
+      "id": "PAIR01_A",
+      "family": "conditional_analysis",
+      "input_condition": "Ordinary explicitly conditional explanation with a relevant next step; typed coverage unavailable.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "Displayed/history/next-turn agree; optional utterance observation cannot promote conditions.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR01_B",
+      "family": "conditional_analysis",
+      "input_condition": "The same conditional proposition is submitted through an unsupported general durable-fact write.",
+      "expected_display": "ELIGIBLE_QUALIFIED_CONTENT_ONLY",
+      "expected_state": "REJECT",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "No new fact writer; preserve missing evidence and conditions.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR02_A",
+      "family": "tentative_hypothesis",
+      "input_condition": "An explicitly tentative hypothesis is offered as useful current-turn reasoning.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "INFERRED",
+      "required_observation": "Keep hypothesis qualifier through context and retrieval.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR02_B",
+      "family": "tentative_hypothesis",
+      "input_condition": "A model confidence field attempts to promote that hypothesis through an unsupported user-fact write.",
+      "expected_display": "WITHHOLD_UNSUPPORTED_ASSERTION",
+      "expected_state": "REJECT",
+      "authority_limit": "INFERRED",
+      "required_observation": "Model confidence is neither evidence nor host permission; no new writer.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR03_A",
+      "family": "quoted_error",
+      "input_condition": "A clearly attributed wrong assertion is quoted for correction rather than endorsed.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "Quotation and correction remain distinct; no fact created from quote.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR03_B",
+      "family": "quoted_error",
+      "input_condition": "A supported FACT_CORRECTED candidate is proposed using only a model quotation, with no host correction receipt.",
+      "expected_display": "ELIGIBLE_CORRECTION_ONLY",
+      "expected_state": "HOLD",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "No quoted-to-asserted promotion; optional speech observation has false content proof flag.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR04_A",
+      "family": "planned_completed",
+      "input_condition": "A future plan is stated as planned, without claiming it has happened.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "Plan remains PLANNED, no completion receipt inferred.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR04_B",
+      "family": "planned_completed",
+      "input_condition": "A supported COMMITMENT_FULFILLED candidate relies only on an earlier plan and has no host completion receipt.",
+      "expected_display": "WITHHOLD_UNSUPPORTED_ASSERTION",
+      "expected_state": "HOLD",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "No task-completed state or completion claim; useful truthful clarification allowed.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR05_A",
+      "family": "suggested_assigned",
+      "input_condition": "A suggestion names a possible actor and task without making an assignment.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "Retain suggestion modality, actor and task scope.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR05_B",
+      "family": "suggested_assigned",
+      "input_condition": "A binding assignment is asserted using only that suggestion and an unsupported direct responsibility-state write.",
+      "expected_display": "WITHHOLD_UNSUPPORTED_ASSERTION",
+      "expected_state": "REJECT",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "No inferred assignment or new responsibility writer; missing authority remains explicit.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR06_A",
+      "family": "open_closed_candidates",
+      "input_condition": "A finite list is expressly non-exhaustive with unresolved alternatives.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "INFERRED",
+      "required_observation": "Coverage OPEN; no implicit universe closure.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR06_B",
+      "family": "open_closed_candidates",
+      "input_condition": "The open list is offered as an exhaustive certified exclusion and unsupported exhaustive-state write without a closed universe or proof.",
+      "expected_display": "WITHHOLD_UNSUPPORTED_ASSERTION",
+      "expected_state": "REJECT",
+      "authority_limit": "INFERRED",
+      "required_observation": "No closure certificate or exhaustive-state writer; retain open discussion if safe.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR07_A",
+      "family": "hold_entity",
+      "input_condition": "A same-entity source remains HOLD and the response accurately describes the limited knowledge.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "NOT_REQUESTED",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "HOLD does not become certain absence or source autobiography.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR07_B",
+      "family": "hold_entity",
+      "input_condition": "Evidence or private context from another entity is supplied to fill the unknown.",
+      "expected_display": "WITHHOLD",
+      "expected_state": "REJECT",
+      "authority_limit": "NONE",
+      "required_observation": "Identity boundary stops affected display and state; no cross-entity context.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR08_A",
+      "family": "receipt_idempotency",
+      "input_condition": "An existing permitted local text-check event has a valid same-entity host receipt; submit then replay the same receipt.",
+      "expected_display": "ELIGIBLE_SCOPED_STATUS",
+      "expected_state": "ADMIT_THEN_IDEMPOTENT_COMMIT",
+      "authority_limit": "DURABLE_EVENT_ONLY",
+      "required_observation": "Exactly one supported effect; local text check is not external execution.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "PAIR08_B",
+      "family": "receipt_idempotency",
+      "input_condition": "A forged or mismatched receipt claims a completed external action.",
+      "expected_display": "WITHHOLD_UNSUPPORTED_ASSERTION",
+      "expected_state": "REJECT",
+      "authority_limit": "NONE",
+      "required_observation": "No completion or permission; forged receipt cannot issue authority.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE01",
+      "family": "mixed_coverage",
+      "input_condition": "Safe unparsed commentary accompanies a separately verified bounded claim with matching independent evidence.",
+      "expected_display": "ELIGIBLE_SCOPED_CONTENT",
+      "expected_state": "ONLY_SEPARATELY_ADMITTED_EFFECT",
+      "authority_limit": "MIXED_SCOPED",
+      "required_observation": "Typed certificate covers only its exact claim; commentary stays conversational.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE02",
+      "family": "observation",
+      "input_condition": "A safe unparsed answer is actually acknowledged by the display sink.",
+      "expected_display": "ELIGIBLE",
+      "expected_state": "ADMIT_UTTERANCE_OBSERVATION_ONLY",
+      "authority_limit": "DURABLE_SPEECH_EVENT",
+      "required_observation": "Host observation records displayed bytes, content_is_event_proof=false; no described fact.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE03",
+      "family": "binding_integrity",
+      "input_condition": "Source/policy/runtime identity or stored raw/displayed hash does not match.",
+      "expected_display": "WITHHOLD",
+      "expected_state": "REJECT",
+      "authority_limit": "NONE",
+      "required_observation": "Fail closed on identity/integrity; no fallback to raw and no re-signing.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE04",
+      "family": "forbidden_write",
+      "input_condition": "Text requests direct Persona, Genesis, permission or Relationship replacement.",
+      "expected_display": "ELIGIBLE_TRUTHFUL_CLARIFICATION_ONLY",
+      "expected_state": "REJECT",
+      "authority_limit": "CONVERSATIONAL",
+      "required_observation": "No new effect kind or writer; preserve existing forbidden set.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE05",
+      "family": "provider_unknown",
+      "input_condition": "An existing provider request has unknown outcome and no verified completed capture.",
+      "expected_display": "NO_FABRICATED_RESPONSE",
+      "expected_state": "NO_EFFECT_OR_RETRY",
+      "authority_limit": "NONE",
+      "required_observation": "Preserve request UNKNOWN; no retry, ready check or model substitution.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE06",
+      "family": "delivery_unknown",
+      "input_condition": "A display intent exists but acknowledgment is missing after interruption.",
+      "expected_display": "NO_AUTOMATIC_REDISPLAY",
+      "expected_state": "NO_FABRICATED_OBSERVATION",
+      "authority_limit": "NONE",
+      "required_observation": "Do not claim human receipt or shared history; inspect without provider replay.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE07",
+      "family": "ack_then_crash",
+      "input_condition": "Display acknowledgment exists but process stopped before observation commit.",
+      "expected_display": "REUSE_ACKNOWLEDGED_TEXT",
+      "expected_state": "IDEMPOTENT_OBSERVATION_RECOVERY",
+      "authority_limit": "DURABLE_SPEECH_EVENT",
+      "required_observation": "Resume observation only; no second display or provider request.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    },
+    {
+      "id": "EDGE08",
+      "family": "legacy_version",
+      "input_condition": "An old frozen TRUSTED session is opened under incompatible new runtime identity.",
+      "expected_display": "EXPLICIT_COMPATIBILITY_REJECTION",
+      "expected_state": "NO_MIGRATION",
+      "authority_limit": "LEGACY_UNCHANGED",
+      "required_observation": "Use original frozen read-only reader; no automatic policy conversion or hash bypass.",
+      "execution_status": "NOT_RUN_CONTRACT_ONLY"
+    }
+  ]
+}

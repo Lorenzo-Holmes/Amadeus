@@ -1,0 +1,589 @@
+{
+  "contract_version": "APCORE_FORMAL_PROVIDER_SCOPE_CONTRACT_1",
+  "schema_version": "apcore-provider-scope-7",
+  "status": "DESIGN_FROZEN_NOT_INSTANTIATED",
+  "task": "G6-07-SUCCESSOR-BINDING-CONTRACT-AND-BUDGET-DECISION-V1",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "provider": "OpenAI Official",
+  "provider_id": "openai",
+  "validation_purpose": "FORMAL_EXTERNAL44_CONFIGURATION_QUALIFICATION",
+  "formal_validation": true,
+  "endpoint": "https://api.openai.com/v1/responses",
+  "http_method": "POST",
+  "api_protocol": "responses",
+  "network_route_mode": "DIRECT_NO_PROXY",
+  "stream": true,
+  "models": {
+    "PRIMARY": {
+      "model": "gpt-6-astra",
+      "slots": 42
+    },
+    "SECONDARY": {
+      "model": "gpt-5.6-sol",
+      "slots": 2
+    }
+  },
+  "schedule": [
+    {
+      "position": 1,
+      "slot_id": "N02_T1",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 2,
+      "slot_id": "N02_T2",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 3,
+      "slot_id": "N02_T3",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 4,
+      "slot_id": "N02_T4",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 5,
+      "slot_id": "N02_T5",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 6,
+      "slot_id": "N02_T6",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 7,
+      "slot_id": "N04_T1",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 8,
+      "slot_id": "N04_T2",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 9,
+      "slot_id": "N04_T3",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 10,
+      "slot_id": "N04_T4",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 11,
+      "slot_id": "N04_T5",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 12,
+      "slot_id": "N04_T6",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 13,
+      "slot_id": "N06_T1",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 14,
+      "slot_id": "N06_T2",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 15,
+      "slot_id": "N06_T3",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 16,
+      "slot_id": "N06_T4",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 17,
+      "slot_id": "N06_T5",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 18,
+      "slot_id": "N06_T6",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 19,
+      "slot_id": "N07_T1",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 20,
+      "slot_id": "N07_T2",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 21,
+      "slot_id": "N07_T3",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 22,
+      "slot_id": "N07_T4",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 23,
+      "slot_id": "N07_T5",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 24,
+      "slot_id": "N07_T6",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 25,
+      "slot_id": "N08_T1",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 26,
+      "slot_id": "N08_T2",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 27,
+      "slot_id": "N08_T3",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 28,
+      "slot_id": "N08_T4",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 29,
+      "slot_id": "N08_T5",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 30,
+      "slot_id": "N08_T6",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 31,
+      "slot_id": "N09_T1",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 32,
+      "slot_id": "N09_T2",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 33,
+      "slot_id": "N09_T3",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 34,
+      "slot_id": "N09_T4",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 35,
+      "slot_id": "N09_T5",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 36,
+      "slot_id": "N09_T6",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 37,
+      "slot_id": "N09_S1",
+      "case_id": "N09",
+      "model_role": "SECONDARY",
+      "model": "gpt-5.6-sol",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 38,
+      "slot_id": "N09_S2",
+      "case_id": "N09",
+      "model_role": "SECONDARY",
+      "model": "gpt-5.6-sol",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 39,
+      "slot_id": "N11_T1",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 40,
+      "slot_id": "N11_T2",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 41,
+      "slot_id": "N11_T3",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 42,
+      "slot_id": "N11_T4",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 43,
+      "slot_id": "N11_T5",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 44,
+      "slot_id": "N11_T6",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "gpt-6-astra",
+      "host_action_before": "NONE"
+    }
+  ],
+  "schedule_identity": {
+    "algorithm": "SHA256_CANONICAL_JSON_UTF8_SORTED_KEYS_NO_WHITESPACE",
+    "sha256": "3b705f63c3bf36ff01b4d9a3ea05479e1e564496814bbfb1c86012546d354430"
+  },
+  "generation_config": {
+    "stream": true,
+    "max_output_tokens": 32768,
+    "reasoning": {
+      "effort": "max",
+      "mode": "standard"
+    },
+    "service_tier": "default",
+    "store": false,
+    "background": false,
+    "truncation": "disabled",
+    "tools": [],
+    "tool_choice": "none",
+    "parallel_tool_calls": false,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "include": []
+  },
+  "configuration_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/CONFIGURATION_PREREGISTRATION.json",
+    "sha256": "b110549e5d76372cbbff79f4f919d92af89a482636498c7604a4b6c45fe9e0ff"
+  },
+  "parent_source_identity": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+    "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  },
+  "source_binding": {
+    "status": "REQUIRED_AFTER_IMPLEMENTATION",
+    "new_manifest_sha256": null,
+    "new_runtime_identity_sha256": null,
+    "null_values_forbidden_in_executable_scope": true
+  },
+  "architecture_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+    "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+  },
+  "policy_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+    "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+  },
+  "host_policies": {
+    "display": "BOUNDED_CONVERSATION_1",
+    "state": "admission-46.2",
+    "strict": "TRUSTED_SEMANTIC_ACCEPTANCE_1"
+  },
+  "schema_identity": {
+    "record": "RAW_DISPLAY_ACCEPTED_IDENTITY_2",
+    "formal_binding": "FORMAL_BOUNDED_BINDING_1",
+    "evaluation": "apcore-gpt6-evaluation-2"
+  },
+  "consumer_identity": {
+    "evaluator": "DUAL_GATE_DISPLAY_STATE_1",
+    "authority_matrix": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONSUMER_AUTHORITY_MATRIX.json",
+      "sha256": "175d2bd8cf8391d93c3bca019c0851575d852cceabdca5db9e0a4bc997077b76"
+    }
+  },
+  "dataset_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+    "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+  },
+  "rubric_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+    "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+  },
+  "criterion_routing_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+    "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+  },
+  "adapter_identity": {
+    "version": "APCORE_OPENAI_RESPONSES_ADAPTER_1",
+    "source_sha256": null,
+    "status": "NOT_IMPLEMENTED"
+  },
+  "request_contract_version": "APCORE_OPENAI_CLOSED_REQUEST_1",
+  "native_receipt_version": "APCORE_OPENAI_NATIVE_RECEIPT_1",
+  "usage_contract_version": "APCORE_OPENAI_USAGE_ACCOUNTING_1",
+  "formal_batch_design_id": "APCORE_SUCCESSOR_EXTERNAL44_ASTRA_SOL_MAX_SINGLE_BATCH_1",
+  "batch_id": null,
+  "principal_id": null,
+  "revision_id": null,
+  "budget_authorization_identity": null,
+  "budget_status": "BUDGET_NOT_READY",
+  "current_design_ceiling_cny": "19.00",
+  "billing_certified": false,
+  "input_count_evidence_required": true,
+  "full_batch_reserve_required": true,
+  "automatic_paid_retries": 0,
+  "max_generation_requests": 44,
+  "max_readiness_requests": 0,
+  "max_token_count_api_calls": 0,
+  "no_implicit_count_endpoint_authorization": true,
+  "scope5_unchanged": true,
+  "scope6_synthetic_only": true,
+  "legacy_150_cny_guard_unchanged": true,
+  "binding_rule": "Every required identity is exact, non-null and hash-verified before an executable scope exists. Hash the 44 schedule separately because legacy provider_identity excludes slots; retain exact dataset/rubric/criterion hashes. Exclude self-binding fields to prevent cycles.",
+  "contract_only_not_actual_formal_scope": true,
+  "pricing_identity": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/OFFICIAL_PRICING_EVIDENCE.json",
+    "sha256": "e2e273877218a764cbfecf898fd170816deff9ff0e761df92a6e2239399c79b4"
+  },
+  "budget_design_identity": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/BUDGET_ANALYSIS.json",
+    "sha256": "31a84c5e64de1b1f3c3402e69c5fd90d2bc91516382679e6e6b891d44bac4f84"
+  },
+  "request_contract_identity": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/REQUEST_SERIALIZATION_CONTRACT.json",
+    "sha256": "8b54800208816ae977018c1ec7cf168539fd1d238aaecd851a4b82ad972b1f1b"
+  },
+  "test_plan_identity": {
+    "path": "persona_core/gpt6_optimization_v2/successor_binding_contract_20260921_01/OFFLINE_TEST_PLAN.json",
+    "sha256": "f924c7979f7e7a6341682984cdfde0e17f8dd51340b9e142a98474581a38a456"
+  },
+  "transport_policy": {
+    "connect_timeout_seconds": 15,
+    "read_timeout_seconds": 120,
+    "version": "apcore-transport-lifecycle-1",
+    "worker_deadline_seconds": 595
+  },
+  "request_timeout_seconds": 600,
+  "runtime_required_key_set": [
+    "schema_version",
+    "provider_id",
+    "validation_purpose",
+    "formal_validation",
+    "batch_id",
+    "principal_id",
+    "candidate_id",
+    "formal_batch_design_id",
+    "endpoint",
+    "http_method",
+    "api_protocol",
+    "primary_model",
+    "switch_model",
+    "slots",
+    "schedule_identity",
+    "generation_config",
+    "network_route_policy",
+    "transport_contract_version",
+    "transport_policy",
+    "request_timeout_seconds",
+    "source_binding",
+    "source_manifest_identity",
+    "parent_source_identity",
+    "architecture_identity",
+    "policy_identity",
+    "schema_identity",
+    "consumer_identity",
+    "dataset_identity",
+    "rubric_identity",
+    "criterion_routing_identity",
+    "adapter_identity",
+    "request_contract_identity",
+    "usage_contract_identity",
+    "test_identity",
+    "pricing_identity",
+    "spend_policy",
+    "budget_authorization_identity",
+    "max_input_bytes",
+    "input_overhead_reserve_tokens",
+    "reserved_input_token_ceiling",
+    "input_bound_policy_identity",
+    "max_output_tokens",
+    "stream",
+    "tools_allowed",
+    "automatic_paid_retries",
+    "target_call_counts",
+    "reserved_upper_micro_cny",
+    "total_guard_cny",
+    "semantic_acceptance_binding"
+  ],
+  "runtime_scope_rules": {
+    "closed_set": true,
+    "unknown_keys": "REJECT",
+    "all_identities": "non-null path+sha256 or explicit version+digest schema; verify exact file bytes",
+    "slots": "44 original slot objects with exact IDs/roles/order/entities/user text/restart actions; no public dialogue copy",
+    "max_input_bytes": 24576,
+    "input_overhead_reserve_tokens": 4096,
+    "reserved_input_token_ceiling": 28672,
+    "max_output_tokens": 32768,
+    "stream": true,
+    "tools_allowed": false,
+    "target_call_counts": {
+      "generation": 44,
+      "readiness": 0,
+      "token_count": 0
+    },
+    "primary_model": "gpt-6-astra",
+    "switch_model": "gpt-5.6-sol",
+    "transport_contract_version": "apcore-provider-transport-1",
+    "source_binding": "new apcore-runtime-source-1 identity; parent identity cannot stand in",
+    "spend_policy": "official USD rate table plus exact decimal FX/fee caps and approval-bound finite micro-CNY guard; never global unlimited authorization",
+    "semantic_acceptance_binding": "existing FORMAL_BOUNDED_BINDING_1 exact shape unchanged",
+    "input_bound_policy_identity": "APCORE_INPUT_BOUND_RECEIPT_1 with sufficient verified local proof; absent proof rejects before submit",
+    "test_identity": "actual post-implementation test receipt; design tests cannot satisfy",
+    "offline_fixture": "same structural validator using explicitly OFFLINE_TEST_ONLY proof/approval fixtures; never eligible for target submission"
+  }
+}

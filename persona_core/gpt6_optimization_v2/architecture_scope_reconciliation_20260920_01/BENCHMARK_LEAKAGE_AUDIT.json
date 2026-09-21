@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "files_checked": 21,
+  "secret_pattern_matches": 0,
+  "private_fragment_comparisons": 65,
+  "private_prompt_expectation_or_response_matches": 0,
+  "private_strings_exposed_by_audit": false,
+  "review_method": "Exact fragment disclosure scan plus manual contract review; not a proof against all paraphrase leakage",
+  "manual_review": "No expected answers, specific ownership/timestamp/log-order solutions, response exemplars or production per-turn whitelist. Original generic criterion wording/IDs/hashes only.",
+  "generation_payloads_created": 0,
+  "runtime_can_import_routing": false
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "APCORE_R18_GOVERNANCE_DISPOSITION_2_1",
+  "revision": "external44_20260921_18_fresh_deepseek_flash",
+  "original_verdict": "FAIL_PERMANENTLY_QUARANTINED_PRESERVED_UNDER_V1",
+  "historical_revision_mutated": false,
+  "technical_disposition": "HARNESS_INVALIDATED_PERMANENT_HISTORY",
+  "quality_result": "INCOMPLETE_NOT_PASS",
+  "quality_draw_exclusion_accounting": "PENDING_ADJUDICATION_NOT_AUTOMATICALLY_REFUNDED",
+  "retrospective_governance_amendment": true,
+  "finding": "R18-DRIVER-01",
+  "failure_layer": "EVALUATOR",
+  "provider_terminal": "KNOWN",
+  "http_status": 200,
+  "observed_provider_valid": 1,
+  "new_unknown": 0,
+  "observed_model_quality_fail": 0,
+  "observed_state_integrity_major": 0,
+  "critical": 0,
+  "quality_unclear": 1,
+  "unreviewed_criteria": 172,
+  "unresolved_observation": "R18-N02-U01_MODEL_RAW_UNCLEAR_UNRESOLVED_NOT_ACCEPTED",
+  "observed_request_leakage_audit": "PASS_ONE_SUBMITTED_REQUEST_ONLY",
+  "replacement": {
+    "status": "BLOCKED_QUALITY_OBSERVATION_AND_NO_PAID_AUTHORIZATION",
+    "maximum_future_harness_replacements_per_immutable_lineage": 1,
+    "replacement_allocations_this_task": 0,
+    "old_request_resend": false,
+    "old_revision_resume": false,
+    "required": ["FIX_AND_REQUIRED_TESTS_VERIFIED", "NEW_SOURCE_FREEZE_MATCH", "ZERO_PROVIDER_PREFLIGHT_READY", "ALL_EXISTING_QUALITY_OBSERVATIONS_ADJUDICATED", "OUTPUT_INDEPENDENT_DEFECT_EXCLUSION_RECORDED", "SEPARATE_VALID_PAID_AUTHORIZATION"]
+  }
+}

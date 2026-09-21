@@ -1,0 +1,265 @@
+{
+  "kind": "STATIC_BINDING_CONTRACT_CHECK",
+  "task": "G6-07-SUCCESSOR-BINDING-CONTRACT-AND-BUDGET-DECISION-V1",
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "source_membership_and_hash",
+      "pass": true,
+      "evidence": {
+        "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+        "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+      }
+    },
+    {
+      "check": "p1_membership_and_hash",
+      "pass": true,
+      "evidence": {
+        "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+        "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+      }
+    },
+    {
+      "check": "policy_membership_and_hash",
+      "pass": true,
+      "evidence": {
+        "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+        "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+      }
+    },
+    {
+      "check": "qualification_membership_and_hash",
+      "pass": true,
+      "evidence": {
+        "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/QUALIFICATION_FREEZE.json",
+        "sha256": "3e1b6a21d145a84c46164e1dbb5139ee8f29b007fd9b380fbcee26b8f00a4466"
+      }
+    },
+    {
+      "check": "history_and_previous_qualification_unchanged",
+      "pass": true,
+      "evidence": {
+        "members": 3284
+      }
+    },
+    {
+      "check": "entry_machine_receipt_match",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "exact_seven_paths_no_expansion",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "no_implementation_performed",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "seven_paths_from_previous_proposal",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "exact_schedule_retained",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "role_mapping_42_2",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "closed_request_preserves_original_template",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "request_required_fields_officially_documented",
+      "pass": true,
+      "evidence": {
+        "official_field_count": 31
+      }
+    },
+    {
+      "check": "request_nested_controls_fixed",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "unsupported_and_unknown_defaults_explicit",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "new_formal_scope_separate",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "retain_architecture_identity",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "retain_dataset_identity",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "retain_rubric_identity",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "retain_criterion_routing_identity",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "retain_consumer_identity",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "quality_policy_exact",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "consumer_schemas_unchanged",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "all_required_formal_identities_named",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "no_actual_scope_or_revision",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "no_budget_approval",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "19_cny_preserved",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "usd_bound_arithmetic",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "cny_conditional_and_rounding",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "integer_reservations_reconcile",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "input_proof_not_fabricated",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "technical_vs_protocol_caps",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "fresh_document_receipts_valid",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "standard_official_prices_match",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "official_usage_and_cache_write_supported",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "reasoning_cap_source",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "usage_contract_complete",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "token_count_endpoint_not_silently_authorized",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "minimum_24_plus_tests_defined",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "terminal_unknown_no_retry_contract",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "planned_not_fake_source_freeze",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "budget_only_next_prompt",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "original_g6_status_retained",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "worker_delegate_exists",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "source_no_unlisted_python_modules",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "check": "source_freeze_runner_governance_union",
+      "pass": true,
+      "evidence": null
+    }
+  ],
+  "check_count": 46,
+  "formal_zero_provider_preflight": "NOT_RUN",
+  "production_regression": "NOT_RUN",
+  "implementation_tests": "NOT_RUN",
+  "provider_api_calls": 0,
+  "readiness": 0,
+  "paid_requests": 0,
+  "fresh_revision": "NOT_CREATED",
+  "does_not_establish_input_bound": true,
+  "does_not_establish_model_quality": true,
+  "does_not_establish_formal_adapter_implementation": true,
+  "at_utc": "2026-09-20T16:53:04.341560+00:00"
+}

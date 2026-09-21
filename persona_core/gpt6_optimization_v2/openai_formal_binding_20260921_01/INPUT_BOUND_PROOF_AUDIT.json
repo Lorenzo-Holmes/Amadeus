@@ -1,0 +1,90 @@
+{
+  "status": "INPUT_BOUND_PROOF_NOT_READY",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "local_environment": {
+    "openai": "1.70.0",
+    "tiktoken": "NOT_INSTALLED"
+  },
+  "official_documentation": [
+    {
+      "name": "token_counting",
+      "url": "https://developers.openai.com/api/docs/guides/token-counting.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.342573+00:00",
+      "path": "work/openai_formal_binding/docs/token_counting.txt",
+      "sha256": "a446c08afd6dca0e252e69a3ebf82c117d45b8f60b304dc09a21340e3b6a07f6",
+      "bytes": 22672
+    },
+    {
+      "name": "astra",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-astra.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.215043+00:00",
+      "path": "work/openai_formal_binding/docs/astra.txt",
+      "sha256": "f45ae813c3f69708e2576328056de14cdf71fec174c875f4b81d236105545625",
+      "bytes": 3812
+    },
+    {
+      "name": "sol",
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.233928+00:00",
+      "path": "work/openai_formal_binding/docs/sol.txt",
+      "sha256": "23f4ff2c236486d42145e21693f450bfcac272c37ee839a5ee6f9455cd1d8b7b",
+      "bytes": 3991
+    },
+    {
+      "name": "pricing",
+      "url": "https://developers.openai.com/api/docs/pricing.md",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.111315+00:00",
+      "path": "work/openai_formal_binding/docs/pricing.txt",
+      "sha256": "714cbb324e68df34baa206f6d2052977a79de4ee54f655437d4faa09ca4a87d3",
+      "bytes": 23063
+    },
+    {
+      "name": "sdk_responses",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/main/src/openai/resources/responses/input_tokens.py",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.296988+00:00",
+      "path": "work/openai_formal_binding/docs/sdk_responses.txt",
+      "sha256": "b65e94f57f69ea8089e061885dda9225f4a2029c7dfe44a143d56a6742093a1e",
+      "bytes": 15544
+    },
+    {
+      "name": "tokenizer_model_map",
+      "url": "https://raw.githubusercontent.com/openai/tiktoken/main/tiktoken/model.py",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.260042+00:00",
+      "path": "work/openai_formal_binding/docs/tokenizer_model_map.txt",
+      "sha256": "600f26902d1cf6a1a5f54e37be988b3e0d911f1ff17ba7060bb361f9b5295521",
+      "bytes": 3909
+    },
+    {
+      "name": "tokenizer_core",
+      "url": "https://raw.githubusercontent.com/openai/tiktoken/main/tiktoken/core.py",
+      "status": 200,
+      "at_utc": "2026-09-20T17:55:11.296988+00:00",
+      "path": "work/openai_formal_binding/docs/tokenizer_core.txt",
+      "sha256": "3c136f06b05992855dc329216dfa1fa5b6718cccd3d79f658262de8f871f45f0",
+      "bytes": 17601
+    }
+  ],
+  "findings": [
+    "Official token guide distinguishes message-role/boundary formatting from locally tokenized text.",
+    "The documented exact Responses count operation is a remote POST to /v1/responses/input_tokens, not a local SDK calculation.",
+    "No audited local model-specific Responses message-framing implementation or universal upper-bound proof was found in the inspected sources.",
+    "An encoding map or text byte bound alone cannot certify all allowed role sequences and server formatting.",
+    "No count endpoint, generation endpoint, credential lookup or account probe was called.",
+    "Offline authored proof fixtures are test doubles only and are not entries in the production proof registry."
+  ],
+  "interpretation": "Evidence insufficiency for this exact frozen contract; not a claim that an offline proof can never exist.",
+  "input_reserve_design_tokens": 28672,
+  "certified_input_upper_bound": null,
+  "formal_preflight": "NOT_READY",
+  "generation_requests": 0,
+  "input_count_api_requests": 0,
+  "credentials_read": 0,
+  "required_next_evidence": "An auditable exact-model local tokenizer plus framing proof covering all allowed messages, Unicode and structure, or separately changed finite counting protocol. The latter is not authorized by the current zero-provider phase.",
+  "at_utc": "2026-09-20T17:55:11.361388+00:00"
+}

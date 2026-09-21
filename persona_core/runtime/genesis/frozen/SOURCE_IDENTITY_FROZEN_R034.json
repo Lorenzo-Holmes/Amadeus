@@ -1,0 +1,48 @@
+{
+  "schema_version": "pcore-source-identity-freeze-1",
+  "revision": "R034",
+  "status": "FROZEN_SOURCE_IDENTITY",
+  "source_snapshot_id": "KURISU_V03_SG0_GAME_MARCH_2010",
+  "known_cutoff_month": "2010-03",
+  "exact_cutoff_day": null,
+  "r005_delivery_sha256": "e26d3d7ad5637f81beea91d4bd6372bd9f53dae14d30f4c96807538c52986fd7",
+  "r005_manifest_sha256": "ae14995343874c20b5f0eae6de28252e27c6e9c711081d83de40029ac1eb220c",
+  "candidate_files": [
+    {
+      "path": "EventLedger_candidate_R005.json",
+      "sha256": "38aff2dd311baa7d57fab90c0a6452cff51b7e95f945a3d878e21507ba9632f4"
+    },
+    {
+      "path": "Memory_candidate_R005.json",
+      "sha256": "05c6b76d70f3b69793e97b3a9ff0ee7cdaaff439c60dc6db927ad54a7fa3237c"
+    },
+    {
+      "path": "Persona_Relationship_candidate_R005.json",
+      "sha256": "a1447040ad7a741e1750e57d1230f1a43699f15f7e22f635b6cd9aae2f0118da"
+    },
+    {
+      "path": "PersonaFormation_candidate_R005.json",
+      "sha256": "32fe25b98fb616ce5f074c62ee1477ea0519813a9c0b183e27438188f4029012"
+    },
+    {
+      "path": "Genesis_Source_Pack_candidate_R005.json",
+      "sha256": "ba5c88ce213ee16038b0fba07682ea8a62b3182c6a2ff2f3808258645da5c47b"
+    }
+  ],
+  "identity_boundaries": [
+    "Human Kurisu != Encoded Amadeus autobiographical memory",
+    "Encoded memory != externally learned facts",
+    "Other continuity/route material != current first-person past",
+    "Product runtime experience begins only after Genesis",
+    "Model output is not authority for identity, memory, persona, relationship or experience"
+  ],
+  "unknowns_and_conflicts": [
+    "Exact source capture day/time/location/device remains UNKNOWN",
+    "R005-C01 education/year/age version conflict remains OPEN",
+    "S051 specific primary source gap remains OPEN",
+    "Audiovisual/audio bodies not fully verified",
+    "Claim-level memory origins remain unknown for selected habit/residence/forum details"
+  ],
+  "route_merge_allowed": false,
+  "model_output_source_authority": false
+}

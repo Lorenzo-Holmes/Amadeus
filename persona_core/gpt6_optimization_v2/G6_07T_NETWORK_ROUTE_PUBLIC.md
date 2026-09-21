@@ -1,0 +1,13 @@
+# Explicit DeepSeek network routing
+
+The formal Responses transport now supports `apcore-provider-scope-5`, which requires a versioned `network_route_policy` for `api.deepseek.com`. Modes are `SYSTEM_PROXY` and `DIRECT_NO_PROXY`. Direct mode uses an opener-local `ProxyHandler({})`; it never changes environment variables, the global opener, Windows proxy settings or other applications. TLS certificate and hostname verification remain enabled. Existing Chat Completions and scope4 evidence retain their historical behavior.
+
+The previous formal opener implicitly discovered the Windows user proxy despite absent proxy environment variables and direct WinHTTP configuration. The observed historical failure occurred during TLS handshake after proxy CONNECT. A bounded comparison completed ten authenticated metadata requests on each route: both had10/10 verified TLS handshakes and10/10 HTTP200 terminals. The intermittent failure was not reproduced, and the current proxy process started after the failed request, so the precise historical upstream cause remains unestablished. Direct mode was selected to remove this implicit loopback dependency after passing the finite stability gate. A separate request through the actual formal worker also completed directly.
+
+The route is bound into the immutable journal scope, the private worker frame and candidate generation settings. Evaluation, candidate, longitudinal and blind-review consumers cannot treat different routes as the same generation configuration. Existing lifecycle telemetry, journal-first submission, UNKNOWN quarantine and zero automatic paid retries remain in place. Route policy is host configuration and is never added to the provider's model payload.
+
+Freeze: `RESPONSES_DIRECT_ROUTE_20260919_01`,134 source members. Offline validation:24 current modules/372 tests passed, including15 route tests. The complete unchanged legacy denominator is450:449 compatible passes and one expected historical source-identity sentinel, with zero unexpected functional failures. Historical evidence was not edited to make that sentinel pass.
+
+Persona Core, Claim/Evidence, Reasoning Scope, source/Genesis and semantic thresholds are unchanged. This engineering result does not establish semantic acceptance or future network availability. Exactly one new synthetic formal readiness is required before a fresh full evaluation; any new UNKNOWN stops paid execution. Product acceptance and production activation remain false.
+
+References: [Python proxy discovery](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies), [ProxyHandler](https://docs.python.org/3/library/urllib.request.html#urllib.request.ProxyHandler).

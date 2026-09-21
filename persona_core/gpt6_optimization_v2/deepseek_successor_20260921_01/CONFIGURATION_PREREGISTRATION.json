@@ -1,0 +1,148 @@
+{
+  "schema_version": "APCORE_CONFIGURATION_PREREGISTRATION_2",
+  "task": "G6-07-DEEPSEEK-SUCCESSOR-REQUALIFICATION-TO-FRESH-VALIDATION-V1",
+  "candidate_id": "APCORE_SUCCESSOR_DEEPSEEK_FLASH_MAX_1",
+  "status": "FROZEN_PENDING_OFFLINE_BINDING",
+  "selected": true,
+  "candidate_limit": 1,
+  "fallback_candidate": null,
+  "real_sampling_for_selection": false,
+  "provider": "DeepSeek Official",
+  "provider_id": "deepseek",
+  "models": {
+    "PRIMARY": {
+      "model": "deepseek-flash",
+      "documented_version": "DeepSeek-V4.1-Flash",
+      "slots": 42
+    },
+    "SECONDARY": {
+      "model": "deepseek-flash",
+      "documented_version": "DeepSeek-V4.1-Flash",
+      "slots": 2
+    }
+  },
+  "model_identity_rule": "Exact returned model deepseek-flash required; no legacy alias, unexpected dated model, fallback or automatic substitution. Internal server build unavailable.",
+  "server_internal_build": "UNKNOWN",
+  "api": "responses",
+  "endpoint": "https://api.deepseek.com/responses",
+  "http_method": "POST",
+  "route": {
+    "mode": "DIRECT_NO_PROXY",
+    "host": "api.deepseek.com",
+    "proxy_fallback": false
+  },
+  "requested_payload_template": {
+    "model": "deepseek-flash",
+    "input": "UNCHANGED_FROZEN_HOST_MESSAGES",
+    "stream": true,
+    "max_output_tokens": 32768,
+    "reasoning": {
+      "effort": "max"
+    },
+    "top_p": 1
+  },
+  "sampling_parameters": {
+    "top_p": {
+      "wire_status": "SENT",
+      "value": 1
+    },
+    "temperature": {
+      "wire_status": "NOT_SENT",
+      "support": "NO_EFFECT_IN_THINKING_MODE"
+    },
+    "seed": {
+      "wire_status": "NOT_SENT",
+      "effective_value": "UNKNOWN"
+    },
+    "penalties": {
+      "wire_status": "NOT_SENT",
+      "support": "NO_EFFECT_IN_THINKING_MODE"
+    }
+  },
+  "unlisted_request_fields": "FORBIDDEN",
+  "tools_allowed": false,
+  "tools_parameter": "NOT_SENT",
+  "host_input_limit_bytes": 24576,
+  "max_output_tokens": 32768,
+  "output_includes_visible_and_reasoning": true,
+  "request_timeout_seconds": 600,
+  "transport_policy": {
+    "connect_timeout_seconds": 15,
+    "read_timeout_seconds": 120,
+    "version": "apcore-transport-lifecycle-1",
+    "worker_deadline_seconds": 595
+  },
+  "automatic_paid_retries": 0,
+  "automatic_capacity_escalation": false,
+  "context_policy": "Frozen host composition; acknowledged displayed history only; unchanged Persona context, fixture histories and per-case continuation. No provider-managed conversation or hidden reasoning replay.",
+  "host_policies": {
+    "display": "BOUNDED_CONVERSATION_1",
+    "state": "admission-46.2",
+    "strict": "TRUSTED_SEMANTIC_ACCEPTANCE_1"
+  },
+  "consumer_identity": {
+    "evaluator": "DUAL_GATE_DISPLAY_STATE_1",
+    "authority_matrix": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONSUMER_AUTHORITY_MATRIX.json",
+      "sha256": "175d2bd8cf8391d93c3bca019c0851575d852cceabdca5db9e0a4bc997077b76"
+    }
+  },
+  "consumer_purpose": "DISPLAY",
+  "task_role": "CONVERSATION",
+  "acceptance_mode": "BOUNDED",
+  "schema_identity": {
+    "plan": "APCORE_CONFIGURATION_PREREGISTRATION_2",
+    "record": "RAW_DISPLAY_ACCEPTED_IDENTITY_2",
+    "formal_binding": "FORMAL_BOUNDED_BINDING_1",
+    "evaluation": "apcore-gpt6-evaluation-2",
+    "candidate_provider_scope": "apcore-provider-scope-9",
+    "legacy_provider_scope": "apcore-provider-scope-5",
+    "synthetic_provider_scope": "apcore-provider-scope-6"
+  },
+  "parent_source_identity": {
+    "path": "persona_core/gpt6_optimization_v2/authoritative_input_count_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "ca7c11cb82116aec2da59b7a068f9dbbfa495278cbffb08a0cb365c6e4c5fbf6"
+  },
+  "new_source_freeze_required": true,
+  "new_source_identity_binding": "Independent SOURCE_MANIFEST and IMPLEMENTATION_BINDING_MANIFEST must bind final bytes before preflight.",
+  "architecture_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+    "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+  },
+  "model_quality_policy_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+    "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+  },
+  "policy_amendment_identity": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/MODEL_QUALITY_EXECUTION_FEASIBILITY_AMENDMENT.json",
+    "sha256": "9ab4e99d776832727c97683905fe725af7afae01e96ea57c913f58210524bb1f"
+  },
+  "dataset_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+    "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+  },
+  "rubric_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+    "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+  },
+  "criterion_routing_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+    "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+  },
+  "schedule_identity": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SLOT_SCHEDULE.json",
+    "sha256": "883d783da101b99132d0f074dc6d3e441ee48a991cf40c592aa0d2ebb1682c4d"
+  },
+  "input_safety_policy_identity": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/INPUT_SAFETY_POLICY.json",
+    "sha256": "bb3ddf6ca980916b70166d132e818d95fcfc3784b3a41e680ebf592418493836"
+  },
+  "official_documents": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/OFFICIAL_DOCUMENTATION_EVIDENCE.json",
+    "sha256": "0fee7f4aaf5e53304c64b849993b49a67d96ac8765dd6dfefd9d699381b8087c"
+  },
+  "credential_status": "PRESENT_FORMAT_CHECKED_ACCOUNT_ACCESS_NOT_PROBED",
+  "future_revision_design_limit": 1,
+  "quality_threshold_changes": false,
+  "at_utc": "2026-09-21T02:06:05.960712+00:00"
+}

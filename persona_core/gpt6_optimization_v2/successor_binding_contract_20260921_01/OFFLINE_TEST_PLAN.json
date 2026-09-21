@@ -1,0 +1,160 @@
+{
+  "version": "APCORE_OPENAI_FORMAL_OFFLINE_TEST_PLAN_1",
+  "status": "DEFINED_NOT_RUN",
+  "test_module": "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+  "tests": [
+    {
+      "id": "OB-01",
+      "requirement": "exact model allowlist",
+      "oracle": "exact two IDs pass; aliases/date inventions/old provider IDs fail before key read"
+    },
+    {
+      "id": "OB-02",
+      "requirement": "role mapping",
+      "oracle": "44 schedule exact order; 42 PRIMARY and N09_S1/N09_S2 SECONDARY; preserve restart actions"
+    },
+    {
+      "id": "OB-03",
+      "requirement": "request serialization",
+      "oracle": "canonical golden neutral payload for both roles, recursive key equality, byte/hash equality parent-worker"
+    },
+    {
+      "id": "OB-04",
+      "requirement": "unsupported field rejection",
+      "oracle": "every omitted field plus arbitrary nested key/null/type mismatch rejected; no silent drop"
+    },
+    {
+      "id": "OB-05",
+      "requirement": "reasoning field binding",
+      "oracle": "effort=max and mode=standard sent, returned mismatch/missing required echo rejected"
+    },
+    {
+      "id": "OB-06",
+      "requirement": "stream parser",
+      "oracle": "fragment at every UTF-8/event boundary, CRLF, multi-data; malformed, duplicate/conflicting terminal/index rejected"
+    },
+    {
+      "id": "OB-07",
+      "requirement": "visible response extraction",
+      "oracle": "only final assistant output_text; delta/final equality; refusal/tool/reasoning-only cannot become displayed text"
+    },
+    {
+      "id": "OB-08",
+      "requirement": "usage accounting",
+      "oracle": "native object preserved; integer/count identities; fractional rates and conservative micro-CNY rounding"
+    },
+    {
+      "id": "OB-09",
+      "requirement": "reasoning/output accounting",
+      "oracle": "O includes R; O-R labelled nonreasoning not visible; formatting residual UNKNOWN; no second charge"
+    },
+    {
+      "id": "OB-10",
+      "requirement": "cache read/write accounting",
+      "oracle": "C/W/U disjoint; no-hit/all-write/mixed; missing W retains upper reserve and not accepted"
+    },
+    {
+      "id": "OB-11",
+      "requirement": "completed classification",
+      "oracle": "trusted completed plus valid identity/usage/text captures; quality still unreviewed"
+    },
+    {
+      "id": "OB-12",
+      "requirement": "incomplete classification",
+      "oracle": "max_output_tokens/content_filter known rejected, partial not displayed, stops/no replacement"
+    },
+    {
+      "id": "OB-13",
+      "requirement": "failed classification",
+      "oracle": "matching failed/error terminal known; HTTP error not promoted; missing usage retains reserve"
+    },
+    {
+      "id": "OB-14",
+      "requirement": "UNKNOWN handling",
+      "oracle": "EOF/timeout/partial/wire mismatch preserves raw partial and whole reserve, batch stopped"
+    },
+    {
+      "id": "OB-15",
+      "requirement": "no automatic retry",
+      "oracle": "inject 429/5xx/timeout; exactly one fake exchange; no fallback/reconnect/poll/count"
+    },
+    {
+      "id": "OB-16",
+      "requirement": "raw preservation",
+      "oracle": "wire bytes/hash, redaction flags, native usage and normalized compatibility projection linked"
+    },
+    {
+      "id": "OB-17",
+      "requirement": "displayed projection",
+      "oracle": "original display ACK/evaluation/next-turn equality; unacknowledged raw excluded"
+    },
+    {
+      "id": "OB-18",
+      "requirement": "accepted lineage",
+      "oracle": "same bound source/policy/consumer identities throughout; forged or old accepted identity rejected"
+    },
+    {
+      "id": "OB-19",
+      "requirement": "state-effect separation",
+      "oracle": "neutral hypothetical display allowed; unsupported durable candidate HOLD/REJECT; no Persona/Genesis effects"
+    },
+    {
+      "id": "OB-20",
+      "requirement": "identity fail-closed",
+      "oracle": "mutate source/policy/schema/dataset/rubric/criterion/schedule/price/FX/approval independently; no submission"
+    },
+    {
+      "id": "OB-21",
+      "requirement": "restart",
+      "oracle": "crash before journal, after journal, during wire, after terminal before commit; restart never issues second request"
+    },
+    {
+      "id": "OB-22",
+      "requirement": "idempotency",
+      "oracle": "repeat same turn/slot and concurrent contenders produce one durable call at most; no slot reset"
+    },
+    {
+      "id": "OB-23",
+      "requirement": "wrong-model rejection",
+      "oracle": "requested vs returned model mismatch incl allowed other role model fails"
+    },
+    {
+      "id": "OB-24",
+      "requirement": "provider fallback prohibited",
+      "oracle": "unknown provider/host/proxy/redirect rejected, same exact endpoint only"
+    },
+    {
+      "id": "OB-25",
+      "requirement": "input bound",
+      "oracle": "missing proof/old payload hash/Unicode/large message count/over cap fails; valid receipt binds full payload"
+    },
+    {
+      "id": "OB-26",
+      "requirement": "server accounting breach",
+      "oracle": "I>I_bound/O>cap stops with actual evidence, not clamped; budget guarantee withdrawn"
+    },
+    {
+      "id": "OB-27",
+      "requirement": "scope isolation",
+      "oracle": "scope-5 old restrictions and150 CNY unchanged, scope-6 max2/synthetic unchanged, scope-7 external44 only"
+    },
+    {
+      "id": "OB-28",
+      "requirement": "budget and authorization",
+      "oracle": "19 cannot cover complete bound; no753 approval; exact foreign batch/amount/rate approval rejected"
+    },
+    {
+      "id": "OB-29",
+      "requirement": "worker subprocess",
+      "oracle": "real existing worker IPC with fake HTTP transport in isolated child; deny sockets/key lookup in both processes"
+    },
+    {
+      "id": "OB-30",
+      "requirement": "zero-provider preflight boundary",
+      "oracle": "all44 static bindings+7 initial composed contexts, no call rows, no formal revision dir, network and key reader fail if touched"
+    }
+  ],
+  "provider_calls": 0,
+  "readiness": 0,
+  "production_regression_run_this_task": false
+}

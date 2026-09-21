@@ -1,0 +1,255 @@
+{
+  "contract_version": "APCORE_OPENAI_CLOSED_REQUEST_1",
+  "status": "FROZEN_DESIGN_ONLY",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "endpoint": "https://api.openai.com/v1/responses",
+  "method": "POST",
+  "required_top_level_keys": [
+    "background",
+    "include",
+    "input",
+    "max_output_tokens",
+    "model",
+    "parallel_tool_calls",
+    "prompt_cache_options",
+    "reasoning",
+    "service_tier",
+    "store",
+    "stream",
+    "text",
+    "tool_choice",
+    "tools",
+    "truncation"
+  ],
+  "payload_template": {
+    "model": "ROLE_BOUND_EXACT_ID",
+    "input": "UNCHANGED_FROZEN_HOST_MESSAGES",
+    "stream": true,
+    "max_output_tokens": 32768,
+    "reasoning": {
+      "effort": "max",
+      "mode": "standard"
+    },
+    "service_tier": "default",
+    "store": false,
+    "background": false,
+    "truncation": "disabled",
+    "tools": [],
+    "tool_choice": "none",
+    "parallel_tool_calls": false,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "include": []
+  },
+  "nested_closed_keys": {
+    "reasoning": [
+      "effort",
+      "mode"
+    ],
+    "text": [
+      "format",
+      "verbosity"
+    ],
+    "text.format": [
+      "type"
+    ],
+    "prompt_cache_options": [
+      "mode",
+      "ttl"
+    ],
+    "input[*]": [
+      "role",
+      "content"
+    ]
+  },
+  "input_contract": {
+    "type": "nonempty ordered array of {role,content}",
+    "roles": {
+      "system": "system",
+      "user": "user",
+      "assistant": "assistant",
+      "other": "REJECT"
+    },
+    "content_type": "string",
+    "transformations": "NONE; no normalization, trim, truncation, synthetic hidden messages, provider conversation or reasoning replay",
+    "canonical_messages_utf8_max_bytes": 24576,
+    "last_message": "exact current frozen slot user text",
+    "history": "acknowledged displayed messages only"
+  },
+  "encoding": {
+    "utf8": true,
+    "ensure_ascii": false,
+    "sort_keys": true,
+    "separators": [
+      ",",
+      ":"
+    ],
+    "allow_nan": false,
+    "duplicate_json_keys": "REJECT",
+    "bool_as_integer": "REJECT",
+    "null_in_required_field": "REJECT"
+  },
+  "sampling_parameters": {
+    "temperature": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "primary_support": "UNSUPPORTED",
+      "secondary_support": "UNKNOWN_NOT_USED"
+    },
+    "top_p": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "primary_support": "UNSUPPORTED",
+      "secondary_support": "UNKNOWN_NOT_USED"
+    },
+    "seed": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "frequency_penalty": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "presence_penalty": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "top_k": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "min_p": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "stop": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "n": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "best_of": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "logit_bias": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "logprobs": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "top_logprobs": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "primary_support": "UNSUPPORTED",
+      "secondary_support": "UNKNOWN_NOT_USED"
+    }
+  },
+  "explicit_not_sent": {
+    "thinking": "NOT_SENT",
+    "reasoning.summary": "NOT_SENT",
+    "reasoning.generate_summary": "NOT_SENT",
+    "reasoning.context": "NOT_SENT",
+    "previous_response_id": "NOT_SENT",
+    "conversation": "NOT_SENT",
+    "instructions": "NOT_SENT",
+    "prompt": "NOT_SENT",
+    "prompt_cache_key": "NOT_SENT",
+    "prompt_cache_retention": "NOT_SENT",
+    "prompt_cache_options.prewarm": "NOT_SENT",
+    "prompt_cache_options.comparison_response_id": "NOT_SENT",
+    "max_tool_calls": "NOT_SENT",
+    "metadata": "NOT_SENT",
+    "safety_identifier": "NOT_SENT",
+    "user": "NOT_SENT",
+    "stream_options": "NOT_SENT",
+    "response_format": "NOT_SENT",
+    "max_tokens": "NOT_SENT",
+    "configuration_update": "NOT_SENT",
+    "async": "NOT_SENT",
+    "generate": "NOT_SENT",
+    "moderation": "NOT_SENT",
+    "context_management": "NOT_SENT",
+    "reasoning.max_tokens": "NOT_SENT",
+    "input[*].prompt_cache_breakpoint": "NOT_SENT",
+    "input[*].content[*]": "UNSUPPORTED_STRING_CONTENT_ONLY"
+  },
+  "all_other_fields": {
+    "wire": "NOT_SENT",
+    "adapter_support": "UNSUPPORTED_BY_THIS_CLOSED_CONTRACT",
+    "server_support": "UNKNOWN_UNLESS_DOCUMENTED",
+    "behavior": "reject unknown keys recursively; never silently drop or fill defaults"
+  },
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "text/event-stream",
+    "Authorization": "runtime private Bearer value never serialized to evidence",
+    "User-Agent": "Amadeus-APCORE-OpenAI-Formal/1"
+  },
+  "hidden_defaults": "No unobserved effective server value is a qualification proof; retain observed echoes and UNKNOWN for omissions. Explicit model/effort/mode/service_tier/caps must match returned values when defined; missing required effective identity evidence stops acceptance.",
+  "count_endpoint": "NOT_ALLOWED_BY_THIS_SCOPE; no count API calls during contract, implementation or zero-provider preflight",
+  "native_usage_required": [
+    "input_tokens",
+    "input_tokens_details.cached_tokens",
+    "input_tokens_details.cache_write_tokens",
+    "output_tokens",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+  ],
+  "effective_on_wire_this_task": "NOT_SENT",
+  "official_top_level_inventory": {
+    "background": "REQUIRED_EXPLICIT",
+    "context_management": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "conversation": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "include": "REQUIRED_EXPLICIT",
+    "input": "REQUIRED_EXPLICIT",
+    "instructions": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "max_output_tokens": "REQUIRED_EXPLICIT",
+    "max_tool_calls": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "metadata": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "model": "REQUIRED_EXPLICIT",
+    "moderation": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "parallel_tool_calls": "REQUIRED_EXPLICIT",
+    "previous_response_id": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "prompt": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "prompt_cache_key": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "prompt_cache_options": "REQUIRED_EXPLICIT",
+    "prompt_cache_retention": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "reasoning": "REQUIRED_EXPLICIT",
+    "safety_identifier": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "service_tier": "REQUIRED_EXPLICIT",
+    "store": "REQUIRED_EXPLICIT",
+    "stream": "REQUIRED_EXPLICIT",
+    "stream_options": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "temperature": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "text": "REQUIRED_EXPLICIT",
+    "tool_choice": "REQUIRED_EXPLICIT",
+    "tools": "REQUIRED_EXPLICIT",
+    "top_logprobs": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "top_p": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT",
+    "truncation": "REQUIRED_EXPLICIT",
+    "user": "NOT_SENT; UNSUPPORTED_BY_LOCAL_CLOSED_CONTRACT"
+  }
+}

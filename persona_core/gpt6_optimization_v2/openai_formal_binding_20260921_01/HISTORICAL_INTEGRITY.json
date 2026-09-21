@@ -1,0 +1,61 @@
+{
+  "status": "MATCH",
+  "parent_archive_members": 182,
+  "protected_baseline_members": 3315,
+  "protected_unchanged_except_authorized_current_source": 3309,
+  "authorized_current_source_replacements": 6,
+  "historical_R12_R16_UNKNOWN_SPEND_journals": "UNCHANGED",
+  "unlisted_source_modifications": 0,
+  "allowlist_count": 8,
+  "changes": [
+    {
+      "path": "persona_core/operational_runtime_v1/provider_openai.py",
+      "operation": "ADD",
+      "old_sha256": null,
+      "new_sha256": "35991b4d3a7f4c260728eb4b033b08399e01d36c932998b83e4459dc204f446b"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_adapters.py",
+      "operation": "MODIFY",
+      "old_sha256": "9d4822ca758ec1c3b2e64446825e614fde5a5ceeb510cc094e3a6434a848d3de",
+      "new_sha256": "d720d5fc23b33e6b7e4135ec78f5563ebb5fad550e9e3df656da2e22f6c4caab"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_contract.py",
+      "operation": "MODIFY",
+      "old_sha256": "b0b63106600cc0a4fd8fa3a7961f8b8bffe083f7d3595a1a0e1412072642c168",
+      "new_sha256": "0db401bcbf50fea6943619730ef5b03c4238299a852270f33374455d7ed82d38"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider.py",
+      "operation": "MODIFY",
+      "old_sha256": "adb0d0fb6890c47e12bf87ef52f26247841f7c20e6b01411ed7e286e49f37e77",
+      "new_sha256": "fa611ef9551c014435c8706fa17d0108b8b3cb30b76d26b6e50a91f078becd0f"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+      "operation": "MODIFY",
+      "old_sha256": "18b36d81cc7b18f7efede9d5a9ad0c27b25048dda8d96cd6e3f01d7847513a73",
+      "new_sha256": "957facd4fdbb2def452ecff71ac24e80563a1f98c49e8907fb16e034caceb65f"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+      "operation": "MODIFY",
+      "old_sha256": "5435c6e43a8afd34a37f7e441b8498336d479347ebf8653af8dcc931153d0986",
+      "new_sha256": "e23382e08c19382c94b05779c0ebbbddbc748e3efedefbbfb05fb325d33bde60"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+      "operation": "ADD",
+      "old_sha256": null,
+      "new_sha256": "90eda5066a80683819e0d8420e41fc847ef2f20de62961bd5c027cc23f8431e3"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/transcript_store.py",
+      "operation": "MODIFY",
+      "old_sha256": "da56e2409e0a3dcc73cdb38580b589e74165022a831b11a6747287c594eb02eb",
+      "new_sha256": "021cce0dbd60a27d11a4ff9242cb4590fbfa3c759aa0d7f1767a3bc27e4cb793"
+    }
+  ],
+  "at_utc": "2026-09-20T18:19:11.563494+00:00"
+}

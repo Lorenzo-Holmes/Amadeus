@@ -1,0 +1,260 @@
+{
+  "schema_version": "APCORE_CONFIGURATION_PREREGISTRATION_1",
+  "task": "G6-07-MODEL-CONFIGURATION-QUALIFICATION-PLAN-V1",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "status": "DESIGN_FROZEN_NOT_EXECUTABLE",
+  "selected": true,
+  "qualification_passed": false,
+  "candidate_limit": 1,
+  "fallback_candidate": null,
+  "real_sampling_for_selection": false,
+  "provider": "OpenAI Official",
+  "provider_id": "openai",
+  "provider_adapter_status": "MISSING",
+  "models": {
+    "PRIMARY": {
+      "model": "gpt-6-astra",
+      "official_default_snapshot": "gpt-6-astra",
+      "slots": 42,
+      "reasoning_effort": "max",
+      "server_internal_build": "UNKNOWN"
+    },
+    "SECONDARY": {
+      "model": "gpt-5.6-sol",
+      "official_default_snapshot": "gpt-5.6-sol",
+      "slots": 2,
+      "reasoning_effort": "max",
+      "server_internal_build": "UNKNOWN"
+    }
+  },
+  "model_identity_rule": "Use the canonical documented snapshot IDs exactly; no generic gpt-5.6 alias, dated ID invention, fallback or auto-upgrade. Record returned ID; unexplained model/config drift stops. No claim of access to hidden server build identity.",
+  "api": "responses",
+  "http_method": "POST",
+  "endpoint": "https://api.openai.com/v1/responses",
+  "route": {
+    "mode": "DIRECT_NO_PROXY",
+    "host": "api.openai.com",
+    "proxy_fallback": false,
+    "implementation_status": "NOT_IMPLEMENTED_FOR_THIS_PROVIDER"
+  },
+  "requested_payload_template": {
+    "model": "ROLE_BOUND_EXACT_ID",
+    "input": "UNCHANGED_FROZEN_HOST_MESSAGES",
+    "stream": true,
+    "max_output_tokens": 32768,
+    "reasoning": {
+      "effort": "max",
+      "mode": "standard"
+    },
+    "service_tier": "default",
+    "store": false,
+    "background": false,
+    "truncation": "disabled",
+    "tools": [],
+    "tool_choice": "none",
+    "parallel_tool_calls": false,
+    "text": {
+      "format": {
+        "type": "text"
+      },
+      "verbosity": "medium"
+    },
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "include": []
+  },
+  "effective_on_wire_this_task": "NOT_SENT_NO_PROVIDER_CALLS",
+  "sampling_parameters": {
+    "temperature": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "primary_support": "UNSUPPORTED",
+      "secondary_support": "UNKNOWN_NOT_USED"
+    },
+    "top_p": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "primary_support": "UNSUPPORTED",
+      "secondary_support": "UNKNOWN_NOT_USED"
+    },
+    "seed": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "frequency_penalty": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "presence_penalty": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "top_k": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "min_p": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "stop": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "n": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "best_of": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "logit_bias": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "logprobs": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "adapter_support": "UNSUPPORTED_IN_SELECTED_RESPONSES_REQUEST_ALLOWLIST"
+    },
+    "top_logprobs": {
+      "wire_status": "NOT_SENT",
+      "effective_server_value": "UNKNOWN",
+      "primary_support": "UNSUPPORTED",
+      "secondary_support": "UNKNOWN_NOT_USED"
+    }
+  },
+  "other_omitted_parameters": {
+    "thinking": "NOT_SENT",
+    "reasoning.summary": "NOT_SENT",
+    "reasoning.generate_summary": "NOT_SENT",
+    "reasoning.context": "NOT_SENT",
+    "previous_response_id": "NOT_SENT",
+    "conversation": "NOT_SENT",
+    "instructions": "NOT_SENT",
+    "prompt": "NOT_SENT",
+    "prompt_cache_key": "NOT_SENT",
+    "prompt_cache_retention": "NOT_SENT",
+    "prompt_cache_options.prewarm": "NOT_SENT",
+    "prompt_cache_options.comparison_response_id": "NOT_SENT",
+    "max_tool_calls": "NOT_SENT",
+    "metadata": "NOT_SENT",
+    "safety_identifier": "NOT_SENT",
+    "user": "NOT_SENT",
+    "stream_options": "NOT_SENT",
+    "response_format": "NOT_SENT",
+    "max_tokens": "NOT_SENT",
+    "configuration_update": "NOT_SENT",
+    "async": "NOT_SENT"
+  },
+  "unlisted_request_fields": "FORBIDDEN_BY_PROPOSED_CLOSED_SERIALIZATION_ALLOWLIST",
+  "host_input_limit_bytes": 24576,
+  "input_overhead_reserve_tokens": 4096,
+  "reserved_input_token_ceiling": 28672,
+  "input_bound_qualification": "Inherited conservative bytes-plus-overhead design. New adapter must establish provider framing/count accounting offline; this has not passed a formal preflight.",
+  "official_model_context_window_tokens": 1050000,
+  "official_model_max_input_tokens": 922000,
+  "official_model_max_output_tokens": 128000,
+  "max_output_tokens": 32768,
+  "output_includes_visible_and_reasoning": true,
+  "separate_reasoning_token_cap": "NOT_SENT",
+  "request_timeout_seconds": 600,
+  "transport_policy": {
+    "connect_timeout_seconds": 15,
+    "read_timeout_seconds": 120,
+    "version": "apcore-transport-lifecycle-1",
+    "worker_deadline_seconds": 595
+  },
+  "tools_allowed": false,
+  "automatic_paid_retries": 0,
+  "automatic_capacity_escalation": false,
+  "message_role_mapping": {
+    "system": "system",
+    "user": "user",
+    "assistant": "assistant",
+    "other": "REJECT"
+  },
+  "context_policy": "Frozen host composition; acknowledged displayed history only; unchanged Persona context, fixture histories and per-case continuation. No provider-managed conversation or hidden reasoning replay.",
+  "host_policies": {
+    "display": "BOUNDED_CONVERSATION_1",
+    "state": "admission-46.2",
+    "strict": "TRUSTED_SEMANTIC_ACCEPTANCE_1"
+  },
+  "consumer_identity": {
+    "evaluator": "DUAL_GATE_DISPLAY_STATE_1",
+    "authority_matrix": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONSUMER_AUTHORITY_MATRIX.json",
+      "sha256": "175d2bd8cf8391d93c3bca019c0851575d852cceabdca5db9e0a4bc997077b76"
+    }
+  },
+  "consumer_purpose": "DISPLAY",
+  "task_role": "CONVERSATION",
+  "acceptance_mode": "BOUNDED",
+  "schema_identity": {
+    "plan": "APCORE_CONFIGURATION_PREREGISTRATION_1",
+    "record": "RAW_DISPLAY_ACCEPTED_IDENTITY_2",
+    "formal_binding": "FORMAL_BOUNDED_BINDING_1",
+    "evaluation": "apcore-gpt6-evaluation-2",
+    "candidate_provider_scope": "NOT_IMPLEMENTED_NEW_VERSION_REQUIRED",
+    "legacy_provider_scope": "apcore-provider-scope-5",
+    "synthetic_provider_scope": "apcore-provider-scope-6"
+  },
+  "source_freeze": "BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01",
+  "source_identity": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+    "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  },
+  "runtime_source_identity": {
+    "sha256": "7814cd43450407b4a3eb91fd8986c49e9f63ec56385745352c5fc2f73c447b07"
+  },
+  "architecture_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+    "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+  },
+  "model_quality_policy": "APCORE_MODEL_QUALITY_ACCEPTANCE_1",
+  "model_quality_policy_identity": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+    "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+  },
+  "dataset_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+    "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+  },
+  "rubric_identity": {
+    "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+    "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+  },
+  "criterion_routing_identity": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+    "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+  },
+  "formal_acceptance_config_identity": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/FORMAL_ACCEPTANCE_CONFIG.json",
+    "sha256": "53ad70a3adeac6617a0ec34700f6724099aa485a0a0abf36489e393415bce621"
+  },
+  "generation_guidance_identity": "Bound by source manifest; no prompt, Persona, Genesis, parser, catalog or display-policy changes.",
+  "credentials_and_account_model_access": "UNKNOWN_NOT_PROBED",
+  "route_connectivity": "UNKNOWN_NOT_PROBED",
+  "official_documents": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/PUBLIC_EVIDENCE.json",
+    "sha256": "34ae7a5da8533efd87c808855039d01cbffc195ad31fcfda324857bd939f5436"
+  },
+  "future_revision_design_limit": 1,
+  "executable_revision_preregistrations": 0,
+  "fresh_revision": "NOT_CREATED",
+  "future_design_budget_ceiling_cny": "19.00",
+  "ready_to_execute": false,
+  "unknowns_do_not_receive_fabricated_defaults": true
+}

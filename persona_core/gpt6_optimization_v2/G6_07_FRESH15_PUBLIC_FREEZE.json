@@ -1,0 +1,21 @@
+{
+  "acceptance_mode": "TRUSTED",
+  "acceptance_policy": "TRUSTED_SEMANTIC_ACCEPTANCE_1",
+  "files": {
+    "persona_core/gpt6_optimization_v2/G6_07_FRESH15_PUBLIC_AUDIT.json": "5b43c7b1399568a5c430c4a1dd037d4d97c678363c84d06951d8e9a8ec6419b7",
+    "persona_core/gpt6_optimization_v2/G6_07_FRESH15_PUBLIC_SUMMARY.md": "6db2e4bf9610f2e54e84272c43e826617f97247a56fdce82e1aac0df3b9dd835"
+  },
+  "freeze_id": "EXTERNAL44_20260920_15_FRESH_TRUSTED_VALIDATION_FREEZE",
+  "freeze_kind": "VALIDATION_EVIDENCE_FREEZE",
+  "g6_07": "STOPPED",
+  "g6_08": "LOCKED",
+  "prior_public_commit": "813e1fa6272b7d4fc7e8ac6fa1b6ba3ace9a2c5c",
+  "private_evidence_published": false,
+  "revision": "external44_20260920_15_fresh_trusted",
+  "self_hash_excluded": true,
+  "semantic_acceptance": false,
+  "source_freeze_id": "TRUSTED_ACCEPTANCE_EXTERNAL44_INTEGRATION_20260920_01",
+  "source_identity": "MATCH",
+  "source_manifest_sha256": "0995cf66719e5c0a9aaec5aad2e38bec97ccf480182386333a1fa05c7065753b",
+  "source_members": 163
+}

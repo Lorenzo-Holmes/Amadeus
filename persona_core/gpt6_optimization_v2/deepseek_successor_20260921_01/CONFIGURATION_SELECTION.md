@@ -1,0 +1,11 @@
+# DeepSeek successor qualification
+
+Selected one configuration: APCORE_SUCCESSOR_DEEPSEEK_FLASH_MAX_1, DeepSeek Official, deepseek-flash (documented DeepSeek-V4.1-Flash), max reasoning, streaming Responses. All original 44 role positions and case mappings are retained; both roles use this one model as expressly permitted by the current user. No output was sampled to choose the model and no private rubric answer was used.
+
+The current Models & Pricing page identifies Flash and the historical Pro as different model versions. Its 1M context, Responses and thinking support meet the documented interface needs. The release/news page contains an earlier planned Pro redirection, while the current pricing page and updated change log retain Pro; current model-table mapping controls this qualification. This is a capability-fit inference, not proof of quality or superiority.
+
+Reuse the existing DeepSeek adapter credential reader, journal, network route, streaming worker and Responses parser. Add a separate scope only for this formal configuration, exact model/slot/identity enforcement, post-response native usage preservation, bounded requests and mandatory per-turn review. No Persona, Genesis, Memory, Relationship, retrieval or display/state/strict changes are permitted.
+
+The official Responses guide states that over-context requests receive HTTP400 and that truncation is unsupported. No independent count endpoint was found in the inspected official API reference/guides. The new policy retains a 24576-byte canonical message guard and a 32768-byte complete request ceiling, forbids deletion/truncation and stops on length rejection, unknown terminal or usage-envelope breach. The monetary envelope rounds above both standard interpretations of the advertised 1M context; it is not pre-request exact token evidence. Native usage remains post-request accounting only.
+
+The existing one-successor policy is preserved and explicitly amended solely because available provider credentials changed. Historical R16 remains FAIL/permanently quarantined with its Major open. The OpenAI candidate and its later unsubmitted allocation remain preserved with a feasibility supersession, without quality FAIL. This DeepSeek candidate has one future acceptance revision and no fallback candidate or second draw.

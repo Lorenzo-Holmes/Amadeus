@@ -1,0 +1,46 @@
+{
+  "status": "NOT_RUN",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "actual_preflight_executed": false,
+  "reason": [
+    "VALIDATION_BINDING_CHANGE_REQUIRED",
+    "BUDGET_NOT_READY"
+  ],
+  "eligibility_checks": {
+    "candidate_selected": true,
+    "configuration_fields_documented": true,
+    "source_identity": "182/182 MATCH",
+    "policy_binding": "9/9 MATCH",
+    "formal_driver_compatible": false,
+    "budget_ready": false,
+    "all_prerequisites_satisfied": false
+  },
+  "static_audit_is_formal_preflight": false,
+  "prior_ready_inherited": false,
+  "future_mandatory_checks": [
+    "source identity",
+    "complete model configuration identity",
+    "provider identity",
+    "API and route",
+    "reasoning",
+    "sampling omission/support status",
+    "display policy",
+    "state policy",
+    "strict policy",
+    "schema identity",
+    "consumer identity",
+    "dataset identity",
+    "rubric identity",
+    "criterion routing",
+    "44-turn original schedule",
+    "176-criterion original denominator",
+    "stop rules",
+    "budget and current official price/FX identity",
+    "zero network/call invocations and zero provider journal rows"
+  ],
+  "provider_requests": 0,
+  "readiness_calls": 0,
+  "fresh_revision": "NOT_CREATED",
+  "mock_revision_created": false,
+  "legacy_preflight_not_invoked_reason": "It hardcodes the old provider models and allocates a mock revision in evidence. Running it cannot validate this candidate and eligibility prerequisites are not satisfied."
+}

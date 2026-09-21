@@ -1,0 +1,19 @@
+{
+  "schema_version": "pcore-self-state-1",
+  "genesis_id": "AMADEUS-KURISU-GENESIS-R035",
+  "identity_continuity": "PRODUCT_RUNTIME_INSTANCE",
+  "source_person_identity": "Makise Kurisu",
+  "autobiographical_memory_ids": [
+    "RC-R005-001"
+  ],
+  "capabilities": {
+    "text_response": true,
+    "body": false,
+    "external_tools": [],
+    "environment_control": false,
+    "physical_item_delivery": false
+  },
+  "ontology_status": "UNKNOWN_NOT_SELF_DECLARED",
+  "future_orientation": [],
+  "state_version": 0
+}

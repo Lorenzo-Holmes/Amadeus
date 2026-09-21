@@ -1,0 +1,31 @@
+{
+  "freeze_id": "BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01_PUBLIC",
+  "kind": "SOURCE_TESTS_PUBLIC_OFFLINE_SUMMARIES",
+  "files": {
+    "persona_core/gpt6_optimization_v2/tools/blind_review_v2.py": "822ac84d19c0bd8c9f8bc4f76cb5a246ae7b05b21d748b0e0b5294d87afc34e4",
+    "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py": "18b36d81cc7b18f7efede9d5a9ad0c27b25048dda8d96cd6e3f01d7847513a73",
+    "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py": "5435c6e43a8afd34a37f7e441b8498336d479347ebf8653af8dcc931153d0986",
+    "persona_core/gpt6_optimization_v2/tools/semantic_review.py": "299b9810376806b5593f4bae87b5a351d2737116466c17386ea91b0e60116c7c",
+    "persona_core/gpt6_optimization_v2/tools/test_bounded_consumer_binding.py": "7ff3f3011f58526be18f13a9b81eb58499423008414b80af2e94178c4822dc12",
+    "persona_core/gpt6_optimization_v2/tools/test_bounded_display_state_contract.py": "dd2e056c15de6a8ed42e988ad78107a60dae96815ee7d7f308aad7d89f376ad2",
+    "persona_core/operational_runtime_v1/accepted_output.py": "8bf6f4f320ab77e356eb9b4617581b0a299c23bcb888b99fcf3c48c7539e6e93",
+    "persona_core/operational_runtime_v1/admission.py": "c0e6cc651e8eb0be7e8b2a70e1a88dea0dd26b21f2195ed58e3c0bcb0f49b502",
+    "persona_core/operational_runtime_v1/capture_export.py": "cea5978ef86fd3ec30bd47383af3dcf98c7abc78616b1c276fd5c835869b8708",
+    "persona_core/operational_runtime_v1/chat.py": "e9a068cbb7939bfe8b36308e81e1e96831cdcf15eaaf5a1162978e739dbd818d",
+    "persona_core/operational_runtime_v1/operations.py": "8753d31a74b0a3f4c90e18a0e542800d1a7690f683f88badac0ef457591d3d40",
+    "persona_core/operational_runtime_v1/semantic_binding.py": "1f5344852205eda880367fe65fa8864463ba2ceaef51a334c0457cd25563ea71",
+    "persona_core/operational_runtime_v1/trusted_admission_adapter.py": "d30cdc094f14ecb134439574d4692c984ced95928e054112e7717ff2175d5001",
+    "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/IMPLEMENTATION_NOTES.md": "8b824d89fe80693b324b5db5275ffee04f423b39397516adbc43dbe6541d4707",
+    "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/PUBLIC_AUDIT.json": "0ced6c99d4d75082de7e2d449cf673b88c3d67e198c616cef28eba70c169f053",
+    "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/PUBLIC_STATE.json": "c60e5558fa31642e02e8b84e54b853be075331b581a3d25c6cecaf9fb121548f",
+    "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/UTILITY_PUBLIC_SUMMARY.json": "35f8a8dfdb513aaa2f4b21e286ff89676696783678fcf3189dbfda4f3f96b68b",
+    "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  },
+  "prior_public_commit": "1cbaef9ce73363fe84ebec1f56b546670dd0b6bc",
+  "self_hash_excluded": true,
+  "private_evidence_included": false,
+  "source_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/bounded_boundary_p2_p3_20260920_01/SOURCE_MANIFEST.json",
+    "sha256": "d239429964dde295e2cdf6316057f5f7c5bc4a114bcebbea612cdeb9b2e7980b"
+  }
+}
