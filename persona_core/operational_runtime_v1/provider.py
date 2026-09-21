@@ -207,6 +207,10 @@ def official_transport(payload: bytes, credential: str, *, timeout_seconds: floa
 
 def scope_check(scope: dict) -> None:
     version = scope.get('schema_version')
+    if version == adapter_contract.STRUCTURAL_SCOPE_VERSION:
+        from provider_structural import check_scope
+        check_scope(scope, provider_adapters.select(scope))
+        return
     if version == adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION:
         from provider_deepseek_formal import check_scope
         check_scope(scope, provider_adapters.select(scope))
@@ -387,7 +391,7 @@ class ProviderJournal:
         scope = json.loads(batch["scope_json"])
         scope_check(scope)
         formal = scope.get('schema_version') == adapter_contract.FORMAL_SCOPE_VERSION
-        deepseek_formal = scope.get('schema_version') == adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION
+        deepseek_formal = scope.get('schema_version') in (adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION, adapter_contract.STRUCTURAL_SCOPE_VERSION)
         generic = formal or deepseek_formal or scope.get('schema_version') == adapter_contract.SCOPE_VERSION
         adapter = provider_adapters.select(scope) if generic else None
         actual_provider = transport is official_transport and (adapter is None or adapter.capabilities.network_access)
@@ -704,7 +708,7 @@ class ProviderJournal:
         result.pop("raw_response")
         scope = json.loads(self.store.db.execute('SELECT scope_json FROM call_batches WHERE batch_id=?', (row['batch_id'],)).fetchone()[0])
         if scope.get('schema_version') in (adapter_contract.SCOPE_VERSION, adapter_contract.FORMAL_SCOPE_VERSION,
-                                         adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION):
+                                         adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION, adapter_contract.STRUCTURAL_SCOPE_VERSION):
             bound = self.store.db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?', (call_id,)).fetchone()
             ensure(bound is not None, 'PROVIDER_CALL_CONTRACT_MISSING')
             binding = json.loads(bound[0])
@@ -716,7 +720,7 @@ class ProviderJournal:
             result.update(provider_binding=binding, reserve_micro_cny=binding['reserve']['micro_cny'], billing_certified=False,
                           usage_status='KNOWN' if adapter_contract.usage_known(row['usage_json']) else 'UNKNOWN',
                           estimate_status='ESTIMATED' if row['estimate_peak_micro_cny'] is not None else 'UNESTIMATED')
-            if scope.get('schema_version') in (adapter_contract.FORMAL_SCOPE_VERSION, adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION):
+            if scope.get('schema_version') in (adapter_contract.FORMAL_SCOPE_VERSION, adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION, adapter_contract.STRUCTURAL_SCOPE_VERSION):
                 ensure(binding['request_sha256']==row['request_sha256'], 'OPENAI_CALL_REQUEST_CHANGED')
                 accounting=binding.get('accounting') or {}
                 result.update(native_usage=binding.get('native_usage'),
@@ -730,7 +734,7 @@ class ProviderJournal:
         batch = self.store.db.execute('SELECT scope_json FROM call_batches WHERE batch_id=?', (batch_id,)).fetchone()
         scope = json.loads(batch[0]) if batch else {}
         formal = scope.get('schema_version') == adapter_contract.FORMAL_SCOPE_VERSION
-        deepseek_formal = scope.get('schema_version') == adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION
+        deepseek_formal = scope.get('schema_version') in (adapter_contract.DEEPSEEK_FORMAL_SCOPE_VERSION, adapter_contract.STRUCTURAL_SCOPE_VERSION)
         generic = formal or deepseek_formal or scope.get('schema_version') == adapter_contract.SCOPE_VERSION
         if generic:
             for row in rows:
@@ -748,7 +752,15 @@ class ProviderJournal:
         support_calls=([dict(r) for r in self.store.db.execute(
             'SELECT slot_id,status,error_code,receipt_json FROM provider_input_counts WHERE batch_id=? ORDER BY rowid',(batch_id,))]
             if formal else [])
-        return {"batch_id": batch_id, "calls": rows, "calls_submitted": len(rows),
+        stage_summary={}
+        if scope.get('schema_version')==adapter_contract.STRUCTURAL_SCOPE_VERSION:
+            from calibration_journal import accounting_summary
+            stage_summary=accounting_summary(self.store.db,batch_id)
+            stage_summary.update(total_known_peak_usage_subtotal_micro_cny=
+                sum(r['estimate_peak_micro_cny'] or 0 for r in rows)+stage_summary['calibration_known_estimate_micro_cny'],
+                total_reserved_micro_cny=sum(r['reserve_micro_cny'] for r in rows)+stage_summary['calibration_reserved_micro_cny'],
+                total_provider_unknown=sum(r['status']=='SUBMITTED_STATUS_UNKNOWN' for r in rows)+stage_summary['calibration_provider_unknown'])
+        return {"batch_id": batch_id, "calls": rows, "calls_submitted": len(rows), **stage_summary,
                 **({'token_count_requests':len(support_calls),'generation_requests':len(rows),
                     'provider_support_calls':support_calls,'count_billed_amount':'UNKNOWN','count_billing_certified':False} if formal else {}),
                 "calls_recorded": len(rows),

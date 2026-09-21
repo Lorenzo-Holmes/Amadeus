@@ -20,6 +20,7 @@ def active_paid_driver_count(evidence=None):
     belong to unrelated processes. PID liveness is not evidence of a paid run.
     Never remove those markers or weaken the check for target-provider runs.
     """
+    default_evidence=evidence is None or evidence==runner.EVIDENCE
     evidence = runner.EVIDENCE if evidence is None else evidence
     active = 0
     for marker in evidence.glob('G6_V2_*/ACTIVE_RUN.json'):
@@ -34,6 +35,12 @@ def active_paid_driver_count(evidence=None):
         except (OSError, ValueError, KeyError, TypeError):
             pass  # Missing or unverified identity cannot justify exclusion.
         active += 1
+    if default_evidence:
+        marker=runner.ROOT/'work/structural_calibration_20260921_01/ACTIVE_PAID_DRIVER.json'
+        if marker.exists():
+            try:
+                if runner.process_alive(runner.read(marker).get('pid')):active+=1
+            except (OSError,ValueError,KeyError,TypeError):active+=1
     return active
 
 

@@ -101,7 +101,7 @@ class SemanticAcceptance:
         self.admit=admit
         self.binding=binding
 
-    def accept_display(self,*,handle,turn,context,raw_provider_response):
+    def accept_display(self,*,handle,turn,context,raw_provider_response,calibration=None):
         """Display-purpose acceptance is never event admission or fact proof."""
         from semantic_binding import (validate_binding,strict_selected,DISPLAY_POLICY,
             BOUNDED_PERSISTENCE_VERSION,STATE_POLICY)
@@ -116,6 +116,17 @@ class SemanticAcceptance:
             candidate=strict['accepted_assistant_text']
         else:
             candidate=turn['assistant_text']
+        from semantic_binding import CALIBRATED_PERSISTENCE_VERSION
+        calibrated=self.binding.get('persistence_version')==CALIBRATED_PERSISTENCE_VERSION
+        if calibrated:
+            require(type(calibration) is dict and calibration['turn_id']==turn['turn_id']
+                    and calibration['pipeline_identity']==self.binding['calibration_pipeline_identity']
+                    and calibration['decision'] in {'KEEP','REVISE'}
+                    and calibration['input_identity']['draft_sha256']==hashlib.sha256(turn['assistant_text'].encode()).hexdigest(),
+                    'CALIBRATED_ACCEPTANCE_REQUIRED')
+            candidate=calibration['final_text']
+        else:
+            require(calibration is None,'CALIBRATION_REQUIRES_VERSIONED_BINDING')
         check=check_response(candidate,context)
         record={'version':BOUNDED_PERSISTENCE_VERSION,'schema_version':BOUNDED_PERSISTENCE_VERSION,
             'policy_version':DISPLAY_POLICY,'policy_purpose':'DISPLAY',
@@ -141,6 +152,12 @@ class SemanticAcceptance:
                 'provider_text_preserved':True,'source_text_sha256':digest(turn['assistant_text']),
                 'candidate_text_sha256':digest(candidate)},
             'semantic_verdict':None,'raw_provider_violation':None}
+        if calibrated:
+            record.update(version=CALIBRATED_PERSISTENCE_VERSION,schema_version=CALIBRATED_PERSISTENCE_VERSION,
+                calibration_output=calibration,calibration_output_sha256=digest(calibration))
+            record['transformation'].update(action='FIXED_CLAIM_CALIBRATION_'+calibration['decision'],
+                draft_preserved_in_raw=True,final_text_is_raw=calibration['decision']=='KEEP',
+                calibration_call_id=calibration['call_id'])
         return AcceptedOutput(canonical(record),_ACCEPTED)
 
     def accept(self,*,handle,turn,context,raw_provider_response,proposed_plan=None):
@@ -234,6 +251,9 @@ def persist(store,handle,turn_id,raw_provider_response,accepted):
     store._authenticate(handle)
     require(type(accepted) is AcceptedOutput and accepted._seal is _ACCEPTED,'HOST_ACCEPTED_OUTPUT_REQUIRED')
     record=json.loads(accepted.payload); turn=store.get_turn(handle,turn_id)
+    if 'calibration_output' in record:
+        from calibration_journal import load as load_calibration
+        require(record['calibration_output']==load_calibration(store.db,turn_id),'CALIBRATION_PERSISTENCE_BINDING')
     from semantic_binding import session_binding, require_session
     binding=session_binding(store.db,handle.session_id)
     if binding is not None:
@@ -263,8 +283,8 @@ def load_record(db,turn_id):
     row=db.execute('SELECT record_json,record_sha256 FROM accepted_outputs WHERE turn_id=?',(turn_id,)).fetchone()
     if row is None: return None
     record=json.loads(row[0]); require(digest(record)==row[1],'ACCEPTED_RECORD_CORRUPT')
-    from semantic_binding import BOUNDED_PERSISTENCE_VERSION,validate_binding
-    bounded=record.get('version')==BOUNDED_PERSISTENCE_VERSION
+    from semantic_binding import BOUNDED_PERSISTENCE_VERSION,CALIBRATED_PERSISTENCE_VERSION,validate_binding
+    bounded=record.get('version') in (BOUNDED_PERSISTENCE_VERSION,CALIBRATED_PERSISTENCE_VERSION)
     require(bounded or (record['version']==VERSION and record['source_runtime_identity']['renderer']==RENDERER_VERSION),
             'ACCEPTED_VERSION_CHANGED')
     require(record['source_runtime_identity']['runtime_source_hashes']==runtime_identity(),'ACCEPTED_RUNTIME_CHANGED')
@@ -282,7 +302,7 @@ def load_record(db,turn_id):
     if bounded:
         require(binding is not None,'BOUNDED_BINDING_REQUIRED')
         validate_binding(binding)
-        require(record.get('feature_gate')=='BOUNDED' and record.get('schema_version')==BOUNDED_PERSISTENCE_VERSION
+        require(record.get('feature_gate')=='BOUNDED' and record.get('schema_version')==binding['persistence_version']
                 and binding['semantic_acceptance_mode']=='BOUNDED','BOUNDED_RECORD_VERSION')
         entity=db.execute('SELECT entity_id,mode FROM sessions WHERE session_id=?',(record['session_id'],)).fetchone()
         require(entity is not None and entity[0]==record['entity_id'] and entity[1]==record['mode'],
@@ -290,6 +310,12 @@ def load_record(db,turn_id):
         require(record['candidate_visible_sha256']==digest(record['candidate_visible_text']), 'DISPLAY_CANDIDATE_CHANGED')
         require(record['accepted_assistant_text']==(record['candidate_visible_text'] if record['display_decision']=='ELIGIBLE' else None),
                 'DISPLAY_ACCEPTANCE_CHANGED')
+        if record.get('version')==CALIBRATED_PERSISTENCE_VERSION:
+            from calibration_journal import load as load_calibration
+            calibration=load_calibration(db,turn_id)
+            require(calibration is not None and record.get('calibration_output')==calibration
+                    and record.get('calibration_output_sha256')==digest(calibration)
+                    and record['candidate_visible_text']==calibration['final_text'],'CALIBRATED_RECORD_BINDING')
     if binding is not None:
         require_session(db,record['session_id'],binding)
         require(record.get('acceptance_identity')==binding,'ACCEPTED_POLICY_SOURCE_CHANGED')
@@ -427,9 +453,9 @@ def project_turn(db,row,purpose):
 def raw_text_for_audit(row):
     """Validate versioned export lineage before applying the legacy raw invariant."""
     if row.get('output_provenance')=='HOST_ACKNOWLEDGED_DISPLAY':
-        from semantic_binding import BOUNDED_PERSISTENCE_VERSION,validate_binding
+        from semantic_binding import BOUNDED_PERSISTENCE_VERSION,CALIBRATED_PERSISTENCE_VERSION,validate_binding
         record=row.get('accepted_output'); displayed=row.get('display_record')
-        require(type(record) is dict and record.get('version')==BOUNDED_PERSISTENCE_VERSION
+        require(type(record) is dict and record.get('version') in (BOUNDED_PERSISTENCE_VERSION,CALIBRATED_PERSISTENCE_VERSION)
                 and type(displayed) is dict,'BOUNDED_EXPORT_REQUIRED')
         validate_binding(record['acceptance_identity'])
         require(all(record[k]==row[k]==displayed[k] for k in ('turn_id','session_id')),'BOUNDED_EXPORT_IDENTITY')

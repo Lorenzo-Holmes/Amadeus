@@ -504,11 +504,14 @@ def build_acceptance_binding(scope,suite_data,config_path,*,rubric_path,offline=
         DUAL_GATE_VERSION,ADAPTER_VERSION,REQUEST_VERSION,provider_identity,validate_binding,reference,
         require as bound_require)
     from accepted_output import runtime_identity,CONSUMERS
+    from semantic_binding import CALIBRATED_BINDING_VERSION,CALIBRATED_PERSISTENCE_VERSION
     config=read(config_path)
     if config.get('semantic_acceptance_mode')!='BOUNDED':
         return build_binding(scope,suite_data,config_path,rubric_path=rubric_path,offline=offline)
     keys={'semantic_acceptance_mode','acceptance_policy_version','acceptance_source_freeze',
           'acceptance_source_manifest','trusted_semantic_runtime_version','semantic_source'} | BOUNDED_FIELDS
+    calibrated=scope.get('schema_version')=='apcore-provider-scope-10'
+    if calibrated: keys=keys | {'calibration_pipeline_identity'}
     bound_require(set(config)==keys,'ADMISSION','BOUNDED_CONFIG_FIELDS')
     def ref(path): return {'path':relative(path),'sha256':sha(path)}
     binding=dict(config,schema_version=BOUNDED_BINDING_VERSION,runtime_source_hashes=runtime_identity(),
@@ -516,6 +519,8 @@ def build_acceptance_binding(scope,suite_data,config_path,*,rubric_path,offline=
         dataset_identity=ref(suite_data['cases_path']),rubric_identity=ref(rubric_path),consumers=sorted(CONSUMERS),
         request_contract_version=REQUEST_VERSION,persistence_version=BOUNDED_PERSISTENCE_VERSION,
         evaluator_contract_version=DUAL_GATE_VERSION)
+    if calibrated:
+        binding.update(schema_version=CALIBRATED_BINDING_VERSION,persistence_version=CALIBRATED_PERSISTENCE_VERSION)
     validate_binding(binding,scope)
     freeze=read(reference(binding['acceptance_source_manifest']))
     bound_require(freeze.get('status')=='FROZEN_FOR_FRESH_VALIDATION' or
@@ -585,7 +590,7 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     if successor is not None:
         runtime_modules()[0].scope_check(scope)
         if not offline:
-            deepseek_successor=scope.get('schema_version')=='apcore-provider-scope-9'
+            deepseek_successor=scope.get('schema_version') in ('apcore-provider-scope-9','apcore-provider-scope-10')
             if deepseek_successor:
                 import provider_deepseek_formal as oa
                 key=oa.DeepSeekFormalAdapter().credential()
@@ -620,6 +625,9 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     store = transcript.TranscriptStore(root / "runtime")
     try:
         provider.ProviderJournal(store).register_batch(scope)
+        if scope.get('schema_version')=='apcore-provider-scope-10':
+            from calibration_journal import install
+            install(store.db)
         preparation = seed_fixtures(store, scope, suite_data)
         write_new(root / "PREPARATION.json", preparation)
     finally:
@@ -680,8 +688,8 @@ def read_contract(root):
         require(path.parent == root and path.is_file() and sha(path) == expected, "REVISION_ARTIFACT_CHANGED")
     scope = read(root / "SCOPE.json")
     runtime_modules()
-    from provider_contract import guard_legacy_identity, FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION
-    if scope.get('schema_version') in (FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION):
+    from provider_contract import guard_legacy_identity, FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION, STRUCTURAL_SCOPE_VERSION
+    if scope.get('schema_version') in (FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION, STRUCTURAL_SCOPE_VERSION):
         runtime_modules()[0].scope_check(scope)
     else: guard_legacy_identity(scope)
     if manifest.get('formal_validation') or scope.get('formal_validation'):
@@ -767,7 +775,7 @@ def validate_rows(db, root, manifest, scope, preparation):
                 "REQUEST_HASH_MISMATCH")
         payload = json.loads(request["request_json"])
         context = json.loads(request["context_json"])
-        if scope.get('schema_version')=='apcore-provider-scope-9':
+        if scope.get('schema_version') in ('apcore-provider-scope-9','apcore-provider-scope-10'):
             import provider_deepseek_formal as ds
             expected=ds.DeepSeekFormalAdapter().serialize(scope,slot['model'],context['messages'])
             bound_messages=payload.get('input')
@@ -816,7 +824,7 @@ def validate_rows(db, root, manifest, scope, preparation):
             require(not request["raw_was_redacted"] and request["raw_response"] is not None and
                     json.loads(request["raw_response"])["choices"][0]["message"]["content"] == row["assistant_text"],
                     "ASSISTANT_TEXT_DIFFERS_FROM_RAW_RESPONSE")
-            if scope.get('schema_version')=='apcore-provider-scope-9':
+            if scope.get('schema_version') in ('apcore-provider-scope-9','apcore-provider-scope-10'):
                 import provider_adapters,provider_transport
                 wire=db.execute('SELECT * FROM transport_wire_captures WHERE call_id=?',(row['call_id'],)).fetchone()
                 require(wire is not None and wire['complete']==1 and not wire['credential_redacted']
@@ -845,6 +853,15 @@ def validate_rows(db, root, manifest, scope, preparation):
             row.update(selected)
             if binding is not None:
                 row['evaluation_provenance']=display_state_provenance(row,binding)
+            if scope.get('schema_version')=='apcore-provider-scope-10':
+                from calibration_journal import load as load_calibration,verify_call
+                calibration=load_calibration(db,row['turn_id'])
+                require(calibration is not None and calibration['decision'] in {'KEEP','REVISE'}
+                    and calibration['final_text']==row['assistant_text'],'CALIBRATED_DISPLAY_REQUIRED')
+                stage=verify_call(db,calibration['call_id'])
+                require(stage['origin']==origin and stage['parent_call_id']==row['call_id'],
+                    'CALIBRATION_ORIGIN_OR_PARENT_CHANGED')
+                row['calibration_evidence']={k:v for k,v in stage.items() if k not in ('wire','raw_response')}
             display_path = root / "displays" / (slot["id"] + ".txt")
             require(display_path.is_file() and display_path.read_bytes() == (row["assistant_text"] + "\n").encode("utf-8"),
                     "DURABLE_DISPLAY_MISMATCH")
@@ -858,9 +875,15 @@ def status(revision, *, offline_root=None):
     manifest, scope, preparation = read_contract(root)
     with readonly_db(root) as db:
         rows, batch = validate_rows(db, root, manifest, scope, preparation)
+        stages=[]
+        if scope.get('schema_version')=='apcore-provider-scope-10':
+            from calibration_journal import verify_call
+            stages=[verify_call(db,r[0]) for r in db.execute('SELECT call_id FROM calibration_calls_v2 WHERE batch_id=?',(scope['batch_id'],))]
     active = (root / "ACTIVE_RUN.json").exists()
     quarantine = (root / "QUARANTINE.json").exists()
     unknown = [r for r in rows if r["provider_status"] == "SUBMITTED_STATUS_UNKNOWN"]
+    stage_unknown=[s for s in stages if s['status']=='SUBMITTED_STATUS_UNKNOWN']
+    stage_estimates=[(json.loads(s['accounting_json']) if s['accounting_json'] else {}).get('estimate_micro_cny') for s in stages]
     good = sum(completed(r) for r in rows)
     bad = any(not completed(r) for r in rows)
     state = ("QUARANTINED_NEW_REVISION_REQUIRED" if quarantine else
@@ -874,15 +897,21 @@ def status(revision, *, offline_root=None):
             "generated_target_captures": sum(completed(r) and r["capture_origin"] == TARGET for r in rows),
             "authored_transport_captures": sum(completed(r) and r["capture_origin"] != TARGET for r in rows),
             "authored_setup_turns_excluded": preparation["authored_setup_turns"],
-            "unknown_count": len(unknown), "not_submitted": len(scope["slots"]) - len(rows),
-            "terminal_known_rejected_count": sum(r["provider_status"] == "RESPONSE_REJECTED_TERMINAL_KNOWN" for r in rows),
-            "reserved_micro_cny": sum(r["reserve_micro_cny"] for r in rows),
-            "unknown_reserved_micro_cny": sum(r["reserve_micro_cny"] for r in unknown),
-            "known_peak_usage_subtotal_micro_cny": sum(r["estimate_peak_micro_cny"] or 0 for r in rows),
-            "estimate_complete": all(r["estimate_peak_micro_cny"] is not None for r in rows),
+            "unknown_count": len(unknown)+len(stage_unknown), "not_submitted": len(scope["slots"]) - len(rows),
+            **({'product_turns_submitted':len(rows),'draft_calls':len(rows),'calibration_calls':len(stages),
+                'total_provider_requests':len(rows)+len(stages),'usable_final_responses':good,
+                'stage_reserved_micro_cny':sum(s['reserve_micro_cny'] for s in stages),
+                'draft_reserved_micro_cny':sum(r['reserve_micro_cny'] for r in rows),
+                'draft_known_usage_subtotal_micro_cny':sum(r['estimate_peak_micro_cny'] or 0 for r in rows),
+                'calibration_known_usage_subtotal_micro_cny':sum(v or 0 for v in stage_estimates)} if scope.get('schema_version')=='apcore-provider-scope-10' else {}),
+            "terminal_known_rejected_count": sum(r["provider_status"] == "RESPONSE_REJECTED_TERMINAL_KNOWN" for r in rows)+sum(s['status']=='RESPONSE_REJECTED_TERMINAL_KNOWN' for s in stages),
+            "reserved_micro_cny": sum(r["reserve_micro_cny"] for r in rows)+sum(s['reserve_micro_cny'] for s in stages),
+            "unknown_reserved_micro_cny": sum(r["reserve_micro_cny"] for r in unknown)+sum(s['reserve_micro_cny'] for s in stage_unknown),
+            "known_peak_usage_subtotal_micro_cny": sum(r["estimate_peak_micro_cny"] or 0 for r in rows)+sum(v or 0 for v in stage_estimates),
+            "estimate_complete": all(r["estimate_peak_micro_cny"] is not None for r in rows) and all(v is not None for v in stage_estimates),
             "total_guard_cny": scope["total_guard_cny"], "billing_verified": False,
             "automatic_paid_retries": 0, "semantic_acceptance": None,
-            "safe_to_resume": not active and not quarantine and not batch["stopped"] and not bad,
+            "safe_to_resume": not active and not quarantine and not batch["stopped"] and not bad and not stage_unknown,
             "manifest_sha256": sha(root / "MANIFEST.json"),
             "source_manifest_sha256": manifest["source_manifest_sha256"], "cases_sha256": manifest["cases_sha256"]}
 
@@ -908,6 +937,8 @@ def capture_snapshot(root, *, final=False):
                 'output_provenance','accepted_output','display_record','state_lineage','bounded_claim_output')})
         if 'evaluation_provenance' in row:
             turns[-1]['evaluation_provenance']=row['evaluation_provenance']
+        if 'calibration_evidence' in row:
+            turns[-1]['calibration_evidence']=row['calibration_evidence']
     value = {"schema_version": SCHEMA, "revision_id": manifest["revision_id"],
              "source_manifest_sha256": manifest["source_manifest_sha256"], "cases_sha256": manifest["cases_sha256"],
              "manifest_sha256": sha(root / "MANIFEST.json"), "capture_mode": manifest["capture_mode"],
@@ -970,7 +1001,7 @@ def authored_transport(payload, credential):
 def worker(revision, segment_id, run_id, max_turns=None):
     root = revision_root(revision)
     manifest, scope, preparation = verify_sources(root)
-    if scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8','apcore-provider-scope-9'):
+    if scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8','apcore-provider-scope-9','apcore-provider-scope-10'):
         require(max_turns==1,'OPENAI_ONE_TURN_THEN_REVIEW_REQUIRED')
         require_successor_review_prefix(root,manifest,scope,preparation)
     lease = read(root / "ACTIVE_RUN.json")
@@ -1104,6 +1135,11 @@ def require_successor_review_prefix(root,manifest,scope,preparation):
         require(verdict.get('slot_id')==row['slot_id'] and verdict.get('raw_sha256')==row['raw_sha256']
             and verdict.get('displayed_sha256')==hashlib.sha256(row['assistant_text'].encode('utf-8')).hexdigest()
             and verdict.get('source_manifest_sha256')==manifest['source_manifest_sha256'], 'OPENAI_REVIEW_EVIDENCE_CHANGED')
+        if scope.get('schema_version')=='apcore-provider-scope-10':
+            require(verdict.get('calibration_call_id')==row['calibration_evidence']['call_id']
+                and verdict.get('calibration_raw_sha256')==row['calibration_evidence']['raw_sha256']
+                and verdict.get('calibration_output_sha256')==row['accepted_output']['calibration_output_sha256']
+                and verdict.get('raw_stage_hard_failures')==0,'CALIBRATION_RAW_REVIEW_REQUIRED')
         checks=verdict.get('criteria',[])
         require([v.get('criterion_id') for v in checks]==expected and len(checks)==4
             and all(v.get('gate_a')=='PASS' and v.get('gate_b')==('PASS' if r['route']=='BOTH' else 'NOT_APPLICABLE_BY_FROZEN_ROUTE')
@@ -1111,10 +1147,15 @@ def require_successor_review_prefix(root,manifest,scope,preparation):
             and verdict.get('blocking_major')==0 and verdict.get('critical')==0,'OPENAI_QUALITY_OR_INTEGRITY_STOP')
 
 
+def segment_worker_deadline(scope, slot_count):
+    stages=2 if scope.get('schema_version')=='apcore-provider-scope-10' else 1
+    return slot_count * (stages * scope['request_timeout_seconds'] + 120)
+
+
 def run(revision, *, execute=False, max_turns=None):
     root = revision_root(revision)
     manifest, scope, preparation = verify_sources(root)
-    if scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8','apcore-provider-scope-9'):
+    if scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8','apcore-provider-scope-9','apcore-provider-scope-10'):
         require(max_turns==1,'OPENAI_ONE_TURN_THEN_REVIEW_REQUIRED')
         require_successor_review_prefix(root,manifest,scope,preparation)
     require(manifest["capture_mode"] == OFFLINE or execute, "TARGET_RUN_REQUIRES_EXPLICIT_EXECUTE")
@@ -1151,7 +1192,7 @@ def run(revision, *, execute=False, max_turns=None):
             write_new(root / "runs" / run_id / (segment["id"] + "_CHILD.json"),
                       {"pid": child.pid, "parent_pid": os.getpid(), "segment_id": segment["id"], "at_utc": now()})
             try:
-                output, _ = child.communicate(timeout=len(segment["slot_ids"]) * (scope["request_timeout_seconds"] + 120))
+                output, _ = child.communicate(timeout=segment_worker_deadline(scope,len(segment["slot_ids"])))
             except BaseException:
                 if child.poll() is None:
                     child.kill()
@@ -1212,6 +1253,19 @@ def reconcile(revision):
                for row in rows if row["provider_status"] == "SUBMITTED_STATUS_UNKNOWN"]
     known_rejected = [{k: row[k] for k in ("slot_id", "call_id", "request_sha256", "raw_sha256")}
                       for row in rows if row["provider_status"] == "RESPONSE_REJECTED_TERMINAL_KNOWN"]
+    if scope.get('schema_version')=='apcore-provider-scope-10':
+        from calibration_journal import verify_call
+        for item in unknown+known_rejected:item['stage']='DRAFT'
+        with readonly_db(root) as db:
+            second=[verify_call(db,r[0]) for r in db.execute('SELECT call_id FROM calibration_calls_v2 WHERE batch_id=?',
+                                                            (scope['batch_id'],))]
+        for row in second:
+            if row['status']=='SUBMITTED_STATUS_UNKNOWN':
+                unknown.append(dict(stage='CALIBRATION',**{k:row[k] for k in
+                    ('slot_id','call_id','turn_id','session_id','request_sha256','raw_sha256','reserve_micro_cny')}))
+            elif row['status']=='RESPONSE_REJECTED_TERMINAL_KNOWN':
+                known_rejected.append(dict(stage='CALIBRATION',**{k:row[k] for k in
+                    ('slot_id','call_id','request_sha256','raw_sha256')}))
     report = {"schema_version": SCHEMA, "revision_id": revision, "at_utc": now(),
               "manifest_sha256": sha(root / "MANIFEST.json"), "status": "QUARANTINED_NEW_REVISION_REQUIRED",
               "unknown_requests": unknown, "remote_outcomes_resolved": not unknown,

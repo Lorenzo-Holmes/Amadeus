@@ -75,6 +75,9 @@ def route():
     return {'version':'apcore-network-route-1','mode':'DIRECT_NO_PROXY','host':'api.deepseek.com'}
 
 def input_guard_receipt(scope,payload,slot_id):
+    if scope.get('schema_version') == pc.STRUCTURAL_SCOPE_VERSION:
+        from provider_structural import input_guard_receipt as stage_input_guard
+        return stage_input_guard(scope,payload,slot_id)
     value=strict_json(payload)
     ensure(payload==pc.canonical(value),'DEEPSEEK_NONCANONICAL_REQUEST')
     ensure(set(value)=={'model','input','stream','max_output_tokens','reasoning','top_p'},'DEEPSEEK_REQUEST_FIELDS')
@@ -96,12 +99,18 @@ def input_guard_receipt(scope,payload,slot_id):
         'input_policy_identity':scope['identity_references']['input_safety_policy']}
 
 def reserve(scope,model,nbytes):
+    if scope.get('schema_version') == pc.STRUCTURAL_SCOPE_VERSION:
+        from provider_structural import reserve as stage_reserve
+        return stage_reserve(scope,model,nbytes)
     ensure(model==MODEL and type(nbytes) is int and 0<=nbytes<=24576,'DEEPSEEK_RESERVE_INPUT')
     rates=scope['spend_policy']['rates'][model]
     return int((Decimal(INPUT_ENVELOPE)*Decimal(rates['input_miss']) +
         Decimal(32768)*Decimal(rates['output'])).to_integral_value(rounding=ROUND_CEILING))
 
 def check_spend(scope):
+    if scope.get('schema_version') == pc.STRUCTURAL_SCOPE_VERSION:
+        from provider_structural import check_spend as stage_check_spend
+        return stage_check_spend(scope)
     policy=scope.get('spend_policy')
     ensure(isinstance(policy,dict) and set(policy)=={'mode','currency','rates','price_identity','authorization_identity'},'DEEPSEEK_SPEND_FIELDS')
     ensure(policy['mode']=='REVIEWED_RATES_PROJECT_AUTHORIZATION' and policy['currency']=='CNY','DEEPSEEK_SPEND_MODE')
@@ -121,6 +130,12 @@ def check_spend(scope):
 
 def build_scope(revision,suite_data,pricing,transport_policy,network_route_policy,*,
                 authorization_file,pricing_file,acceptance_config_file,input_proof_file=None):
+    auth_preview=strict_json(authorization_file.read_bytes())
+    if auth_preview.get('schema_version')=='APCORE_STRUCTURAL_TASK_AUTHORIZATION_1':
+        from provider_structural import build_scope as structural_scope
+        return structural_scope(revision,suite_data,pricing,transport_policy,network_route_policy,
+            authorization_file=authorization_file,pricing_file=pricing_file,
+            acceptance_config_file=acceptance_config_file,input_proof_file=input_proof_file)
     ensure(input_proof_file is None,'DEEPSEEK_FOREIGN_INPUT_PROOF_FORBIDDEN')
     auth=strict_json(authorization_file.read_bytes());candidate=auth.get('candidate_id')
     directory,digest,_=candidate_profile(candidate)

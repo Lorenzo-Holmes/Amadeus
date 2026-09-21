@@ -12,6 +12,8 @@ REQUEST_VERSION = 'PROPOSED_SEMANTIC_PLAN_REQUEST_1'
 PERSISTENCE_VERSION = 'RAW_ACCEPTED_IDENTITY_1'
 EVALUATOR_VERSION = 'ACCEPTED_PRODUCT_WITH_RAW_PROVENANCE_1'
 BOUNDED_BINDING_VERSION = 'FORMAL_BOUNDED_BINDING_1'
+CALIBRATED_BINDING_VERSION = 'FORMAL_CALIBRATED_BINDING_1'
+CALIBRATED_PERSISTENCE_VERSION = 'RAW_CALIBRATED_DISPLAY_IDENTITY_3'
 DISPLAY_POLICY = 'BOUNDED_CONVERSATION_1'
 BOUNDED_PERSISTENCE_VERSION = 'RAW_DISPLAY_ACCEPTED_IDENTITY_2'
 DUAL_GATE_VERSION = 'DUAL_GATE_DISPLAY_STATE_1'
@@ -63,8 +65,9 @@ def validate_binding(binding, scope=None, *, check_files=True):
         'runtime_source_hashes','admission_adapter_version','semantic_source',
         'provider_config_identity','dataset_identity','rubric_identity','consumers',
         'request_contract_version','persistence_version','evaluator_contract_version'}
-    bounded=type(binding) is dict and binding.get('schema_version')==BOUNDED_BINDING_VERSION
-    require(type(binding) is dict and set(binding)==required | (BOUNDED_FIELDS if bounded else set()),
+    calibrated=type(binding) is dict and binding.get('schema_version')==CALIBRATED_BINDING_VERSION
+    bounded=type(binding) is dict and binding.get('schema_version') in (BOUNDED_BINDING_VERSION,CALIBRATED_BINDING_VERSION)
+    require(type(binding) is dict and set(binding)==required | (BOUNDED_FIELDS if bounded else set()) | ({'calibration_pipeline_identity'} if calibrated else set()),
             'ADMISSION','FORMAL_ACCEPTANCE_BINDING_REQUIRED')
     expected={'schema_version':BINDING_VERSION,'semantic_acceptance_mode':'TRUSTED',
         'acceptance_policy_version':VERSION,'trusted_semantic_runtime_version':RUNTIME_VERSION,
@@ -79,6 +82,14 @@ def validate_binding(binding, scope=None, *, check_files=True):
         require((binding['task_role'],binding['consumer_purpose']) in
                 {('CONVERSATION','DISPLAY'),('STRICT_BOUNDED_CLAIM','BOUNDED_CLAIM')},
                 'CONSUMER','BOUNDED_PURPOSE_REQUIRED')
+    if calibrated:
+        from provider_structural import pipeline_identity,SCOPE_VERSION
+        expected.update(schema_version=CALIBRATED_BINDING_VERSION,persistence_version=CALIBRATED_PERSISTENCE_VERSION)
+        require(binding['calibration_pipeline_identity']==pipeline_identity() and binding['consumer_purpose']=='DISPLAY',
+                'ADMISSION','CALIBRATION_PIPELINE_BINDING_CHANGED')
+        if scope is not None:
+            require(scope.get('schema_version')==SCOPE_VERSION and scope.get('pipeline_identity')==binding['calibration_pipeline_identity'],
+                    'ADMISSION','CALIBRATION_SCOPE_BINDING_CHANGED')
     for k,v in expected.items():
         failure='EVALUATION' if k=='evaluator_contract_version' else 'PERSISTENCE' if k=='persistence_version' else 'ADMISSION'
         require(binding.get(k)==v,failure,'FORMAL_'+k.upper()+'_MISMATCH')

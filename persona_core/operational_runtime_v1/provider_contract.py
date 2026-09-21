@@ -15,6 +15,7 @@ SCOPE_VERSION = 'apcore-provider-scope-6'
 HISTORICAL_LOCAL_FORMAL_SCOPE_VERSION = 'apcore-provider-scope-7'
 FORMAL_SCOPE_VERSION = 'apcore-provider-scope-8'
 DEEPSEEK_FORMAL_SCOPE_VERSION = 'apcore-provider-scope-9'
+STRUCTURAL_SCOPE_VERSION = 'apcore-provider-scope-10'
 TRANSPORT_VERSION = 'apcore-provider-transport-1'
 IDENTITY_FIELDS = frozenset({'provider_id', 'generation_config', 'transport_contract_version',
                              'source_binding', 'spend_policy', 'capabilities'})
@@ -59,7 +60,7 @@ def guard_legacy_identity(scope):
 
 
 def generation_identity(scope, model, messages):
-    if scope.get('schema_version') in (FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION):
+    if scope.get('schema_version') in (FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION, STRUCTURAL_SCOPE_VERSION):
         return digest({'version':'apcore-generation-identity-2','scope_sha256':digest(scope),
                        'model_id':model,'messages':messages})
     return digest({'version': 'apcore-generation-identity-1', 'provider_id': scope['provider_id'],

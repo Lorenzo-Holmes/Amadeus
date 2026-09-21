@@ -110,6 +110,9 @@ def registry(*, include_formal=False):
 
 
 def select(scope):
+    if scope.get('schema_version') == contract.STRUCTURAL_SCOPE_VERSION:
+        from provider_structural import StructuralAdapter
+        return StructuralAdapter()
     if scope.get('schema_version') == contract.DEEPSEEK_FORMAL_SCOPE_VERSION:
         from provider_deepseek_formal import DeepSeekFormalAdapter
         return DeepSeekFormalAdapter()

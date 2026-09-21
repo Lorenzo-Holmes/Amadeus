@@ -45,6 +45,10 @@ class ChatService:
         ensure(type(self.acceptance) is SemanticAcceptance, 'Host semantic acceptance adapter required')
         self.journal = ProviderJournal(store)
         self.journal.register_batch(scope)
+        self.calibrated = scope.get('schema_version') == 'apcore-provider-scope-10'
+        if self.calibrated:
+            from calibration_journal import install
+            install(store.db)
         store.db.executescript('''
         CREATE TABLE IF NOT EXISTS response_checks(
           turn_id TEXT PRIMARY KEY REFERENCES turns(turn_id),
@@ -156,17 +160,28 @@ class ChatService:
             kwargs['transport'] = transport
         if credential_reader is not None:
             kwargs['credential_reader'] = credential_reader
+        if self.calibrated:
+            from calibration_journal import before_draft
+            before_draft(self.store.db,self.scope,tid)
         call = self.journal.call(self.handle, tid, self.scope['batch_id'], slot_id, context, **kwargs)
         if call['status'] != 'RESPONSE_CAPTURED':
             return {'turn_id': tid, 'status': call['status'], 'call_id': call['call_id'],
                     'text': None, 'displayed_now': False, 'error_category': call.get('error_category')}
         turn = self.store.get_turn(self.handle, tid)
+        calibration = None
+        if self.calibrated:
+            from calibration_journal import run as calibrate
+            calibration=calibrate(self.store,self.handle,self.scope,turn,**kwargs)
+            if calibration['decision']=='HOLD':
+                return {'turn_id':tid,'status':'CALIBRATION_HOLD','call_id':call['call_id'],
+                        'calibration_call_id':calibration['call_id'],'text':None,'displayed_now':False,
+                        'calibration':calibration}
         if self.acceptance_mode == 'BOUNDED':
             from accepted_output import load_record,persist
             record=load_record(self.store.db,tid)
             if record is None:
                 raw=self.store.db.execute('SELECT raw_response FROM provider_calls WHERE turn_id=?',(tid,)).fetchone()[0]
-                selected=self.acceptance.accept_display(handle=self.handle,turn=turn,context=context,raw_provider_response=bytes(raw))
+                selected=self.acceptance.accept_display(handle=self.handle,turn=turn,context=context,raw_provider_response=bytes(raw),calibration=calibration)
                 record=persist(self.store,self.handle,tid,bytes(raw),selected)
             turn=dict(turn,assistant_text=record['candidate_visible_text'])
         if self.acceptance_mode == 'TRUSTED':

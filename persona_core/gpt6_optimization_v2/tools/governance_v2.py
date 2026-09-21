@@ -235,6 +235,9 @@ def task_authorization(root: Path, payload: dict) -> dict:
     """An append-only task authorization cannot rewrite the offline policy."""
     require(isinstance(payload.get('task_authorization'), dict), 'PAID_STATE_WRITE_FORBIDDEN')
     auth = pinned_json(root, payload['task_authorization'])
+    if auth.get('schema_version')=='APCORE_STRUCTURAL_TASK_AUTHORIZATION_1':
+        from structural_governance import authorization
+        return authorization(root,payload,auth)
     require(auth.get('kind') == 'POST_FAIL_PRODUCT_REPAIR_NEW_CANDIDATE'
             and auth.get('status') == 'PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED'
             and auth.get('source') == 'CURRENT_EXPLICIT_USER_REQUEST_20260921'
@@ -254,7 +257,10 @@ def validate_paid_state(root: Path, payload: dict) -> None:
     if payload.get('paid_requests_allowed') is False:
         return
     require(payload.get('paid_requests_allowed') is True, 'PAID_STATE_WRITE_FORBIDDEN')
-    task_authorization(root, payload)
+    auth=task_authorization(root, payload)
+    if auth.get('schema_version')=='APCORE_STRUCTURAL_TASK_AUTHORIZATION_1':
+        from structural_governance import paid_state
+        return paid_state(root,payload)
     require(payload.get('status') in {'READY_FOR_SINGLE_NEW_CANDIDATE_ATTEMPT', 'VALIDATING_NEW_CANDIDATE'}
             and payload.get('paid_validation_blockers') == [], 'PAID_GATE_BLOCKED')
     preflight = pinned_json(root, payload['preflight'])
@@ -301,11 +307,16 @@ def validate_new_lineage(root: Path, pointer: dict, old: dict, payload: dict) ->
     require(freeze.get('parent_manifest') == old['source_freeze']
             and payload['configuration']['sha256'] == new['configuration_sha256']
             and config.get('candidate_id') == new['candidate_id'], 'NEW_LINEAGE_SOURCE_CONFIGURATION_MISMATCH')
-    implementation = config.get('generation_calibration', {}).get('implementation', {})
-    verify_reference(root, implementation)
-    require(freeze['files'].get(implementation['path']) == implementation['sha256']
-            and parent['files'].get(implementation['path']) not in (None, implementation['sha256']),
-            'NEW_LINEAGE_REQUIRES_REAL_PRODUCT_CHANGE')
+    if auth.get('schema_version')=='APCORE_STRUCTURAL_TASK_AUTHORIZATION_1':
+        from structural_governance import implementation
+        implementation(root,config,freeze,parent)
+        require(payload.get('r19_parent_checkpoint')==pointer.get('checkpoint'), 'STRUCTURAL_R19_PARENT_REQUIRED')
+    else:
+        implementation = config.get('generation_calibration', {}).get('implementation', {})
+        verify_reference(root, implementation)
+        require(freeze['files'].get(implementation['path']) == implementation['sha256']
+                and parent['files'].get(implementation['path']) not in (None, implementation['sha256']),
+                'NEW_LINEAGE_REQUIRES_REAL_PRODUCT_CHANGE')
     import zipfile
     archive = verify_reference(root, transition['parent_source_archive'])
     with zipfile.ZipFile(archive) as z:
@@ -351,7 +362,11 @@ def commit_state(root: Path, payload: dict, expected_current_sha: str) -> dict:
                     require(type(used) is int and previous_lineage['replacement_allocations'] <= used <= 1,
                             'DRAW_COUNTER_RESET_OR_CAP_EXCEEDED')
                     prior_attempt = old.get('formal_attempt')
-                    if prior_attempt:
+                    structural=old.get('active_task')=='G6-07-STRUCTURAL-PRE-DISPLAY-CALIBRATION-AND-NEW-CANDIDATE-V1'
+                    if structural:
+                        from structural_governance import preserve_cycle
+                        preserve_cycle(root,old,payload)
+                    if prior_attempt and not structural:
                         attempt = payload.get('formal_attempt', {})
                         require(all(attempt.get(k) == prior_attempt.get(k) for k in ('allocations', 'revision', 'kind')),
                                 'FORMAL_ATTEMPT_REPLACEMENT_FORBIDDEN')
