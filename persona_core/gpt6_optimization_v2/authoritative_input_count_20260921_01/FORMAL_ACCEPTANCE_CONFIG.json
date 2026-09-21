@@ -1,0 +1,32 @@
+{
+  "semantic_acceptance_mode": "BOUNDED",
+  "acceptance_policy_version": "BOUNDED_CONVERSATION_1",
+  "acceptance_source_freeze": "OPENAI_AUTHORITATIVE_INPUT_COUNT_BINDING_20260921_01",
+  "acceptance_source_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/authoritative_input_count_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "ca7c11cb82116aec2da59b7a068f9dbbfa495278cbffb08a0cb365c6e4c5fbf6"
+  },
+  "trusted_semantic_runtime_version": "TRUSTED_SEMANTIC_RUNTIME_1",
+  "semantic_source": {
+    "path": "persona_core/operational_runtime_v1/trusted_semantic_catalog.json",
+    "sha256": "0a15d942ceb0a65136d29ec29a66f3610c93854ba11b606e1850d486f5ee0e96"
+  },
+  "architecture_contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+  "contract_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+    "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+  },
+  "criterion_routing": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+    "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+  },
+  "consumer_authority_matrix": {
+    "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONSUMER_AUTHORITY_MATRIX.json",
+    "sha256": "175d2bd8cf8391d93c3bca019c0851575d852cceabdca5db9e0a4bc997077b76"
+  },
+  "display_policy_version": "BOUNDED_CONVERSATION_1",
+  "state_admission_policy_version": "admission-46.2",
+  "strict_semantic_policy_version": "TRUSTED_SEMANTIC_ACCEPTANCE_1",
+  "consumer_purpose": "DISPLAY",
+  "task_role": "CONVERSATION"
+}

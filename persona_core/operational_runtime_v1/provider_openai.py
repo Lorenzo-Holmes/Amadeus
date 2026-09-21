@@ -1,8 +1,7 @@
-"""Frozen OpenAI Responses binding. No fallback, retry, polling or count API.
+"""Frozen OpenAI Responses binding with one authoritative input count per slot.
 
-Native wire, terminal certainty, usable text and accounting are separate. The
-local input proof registry is deliberately empty until an audited model-specific
-framing proof exists; a scope flag or an operator-supplied count cannot enable it.
+Count support calls, generation terminals, usable text and billing are separate.
+Scope-7 local-proof helpers remain historical and cannot authorize scope-8.
 """
 from __future__ import annotations
 import hashlib
@@ -11,14 +10,25 @@ import os
 from pathlib import Path
 from types import MappingProxyType
 import time
+import uuid
+import threading
+from datetime import datetime, timezone
 import urllib.error
 import urllib.request
 from transcript_store import WORKSPACE, ensure
 import provider_contract as contract
 import provider_transport as pt
 
-VERSION = 'APCORE_OPENAI_FORMAL_ADAPTER_1'
+VERSION = 'APCORE_OPENAI_AUTHORITATIVE_INPUT_COUNT_ADAPTER_1'
 ENDPOINT = 'https://api.openai.com/v1/responses'
+COUNT_ENDPOINT = 'https://api.openai.com/v1/responses/input_tokens'
+COUNT_RECEIPT_VERSION = 'APCORE_OPENAI_INPUT_COUNT_RECEIPT_1'
+INPUT_POLICY = 'AUTHORITATIVE_OPENAI_INPUT_TOKEN_COUNT_REQUIRED'
+COUNT_FIELDS = frozenset({'model','input','instructions','conversation','previous_response_id',
+    'parallel_tool_calls','personality','reasoning','text','tool_choice','tools','truncation'})
+COUNT_MAX_AGE_SECONDS = 600
+_issued_counts = {}
+_count_lock = threading.Lock()
 MODELS = ('gpt-6-astra', 'gpt-5.6-sol')
 CANDIDATE = 'APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1'
 BASE = 'persona_core/gpt6_optimization_v2/'
@@ -30,7 +40,8 @@ POLICY_PATH = BASE + 'model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFES
 POLICY_SHA = 'a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5'
 CAPABILITIES = contract.Capabilities(('responses',), ('DIRECT_NO_PROXY',),
     'openai_responses_native_terminal', supports_reasoning=True)
-WORKER_KEYS = {'provider_id','api_protocol','endpoint','network_route_policy','transport_contract_version'}
+WORKER_ROUTE_KEYS = {'provider_id','api_protocol','endpoint','network_route_policy','transport_contract_version'}
+WORKER_KEYS = WORKER_ROUTE_KEYS | {'input_count_receipt'}
 # An entry must contain a reviewed exact tokenizer implementation AND a proof
 # covering roles, message count, Unicode and all implicit Responses formatting.
 # Samples and the 4096-token allowance are not such a proof.
@@ -133,6 +144,139 @@ def verify_input_receipt(scope, payload, receipt):
         ('tokenizer','tokenizer_version','tokenizer_artifact_sha256','count_method')), 'INPUT_BOUND_ARTIFACT_MISSING')
     ensure(receipt==LOCAL_INPUT_PROOFS[receipt['proof_reference_sha256']](scope,value), 'INPUT_BOUND_RECOMPUTATION_MISMATCH')
     return receipt
+
+
+def validate_count_policy(scope):
+    ensure(scope.get('schema_version')=='apcore-provider-scope-8'
+        and scope.get('input_bound_mode')==INPUT_POLICY
+        and scope.get('count_endpoint')==COUNT_ENDPOINT
+        and scope.get('count_receipt_version')==COUNT_RECEIPT_VERSION
+        and type(scope.get('count_retry_policy')) is int and scope['count_retry_policy']==0
+        and type(scope.get('max_input_tokens')) is int and scope['max_input_tokens']==28672,
+        'OPENAI_INPUT_COUNT_POLICY_MISMATCH')
+    OpenAIAdapter().validate_route(scope)
+
+
+def build_count_payload(payload):
+    value=validate_payload(payload)
+    # Project only documented count fields. Never add absent instructions or
+    # conversations; generation controls such as stream/output cap/cache stay out.
+    return contract.canonical({k:v for k,v in value.items() if k in COUNT_FIELDS})
+
+
+def validate_count_payload(payload, generation_payload):
+    value=strict_json(payload)
+    ensure(isinstance(value,dict) and set(value)<=COUNT_FIELDS and
+        payload==build_count_payload(generation_payload), 'INPUT_COUNT_PAYLOAD_IDENTITY_MISMATCH')
+    return value
+
+
+def count_input_tokens(scope,payload,key,*,opener_factory=None):
+    """Exactly one POST; HTTP/protocol/connection errors never trigger retry."""
+    validate_count_policy(scope)
+    value=strict_json(payload)
+    ensure(isinstance(value,dict) and set(value)<=COUNT_FIELDS and
+        value.get('model') in MODELS and 'input' in value, 'INPUT_COUNT_PAYLOAD_IDENTITY_MISMATCH')
+    lifecycle=pt.Lifecycle(policy=scope['transport_policy'])
+    wire=bytearray(); status=None
+    try:
+        opener=(opener_factory(lifecycle) if opener_factory else
+            urllib.request.build_opener(urllib.request.ProxyHandler({}),*pt._handlers(lifecycle)))
+        request=urllib.request.Request(COUNT_ENDPOINT,data=payload,method='POST',headers={
+            'Authorization':'Bearer '+key,'Content-Type':'application/json','Accept':'application/json',
+            'User-Agent':'Amadeus-APCORE-Input-Count/1'})
+        with opener.open(request,timeout=15) as response:
+            status=response.status
+            ensure(status==200,'INPUT_COUNT_UNKNOWN_OR_FAILED')
+            while True:
+                remaining=120-(time.monotonic()-lifecycle.started)
+                ensure(remaining>0,'INPUT_COUNT_UNKNOWN_OR_FAILED')
+                try: response.fp.raw._sock.settimeout(remaining)
+                except AttributeError: pass
+                block=response.read1(min(8192,65537-len(wire)))
+                if not block: break
+                wire.extend(block)
+                ensure(len(wire)<=65536,'INPUT_COUNT_UNKNOWN_OR_FAILED')
+        result=strict_json(bytes(wire))
+        ensure(isinstance(result,dict) and result.get('object')=='response.input_tokens'
+            and type(result.get('input_tokens')) is int and result['input_tokens']>=0,
+            'INPUT_COUNT_UNKNOWN_OR_FAILED')
+        return {'response':result,'http_status':status,'response_sha256':hashlib.sha256(wire).hexdigest()}
+    except Exception:
+        # No credential, private input or response body escapes in the error.
+        raise ValueError('INPUT_COUNT_UNKNOWN_OR_FAILED') from None
+
+
+def count_binding(scope,payload,slot_id):
+    validate_count_policy(scope); value=validate_payload(payload)
+    slot=next((s for s in scope['slots'] if s['id']==slot_id),None)
+    ensure(slot is not None and slot['model']==value['model'], 'INPUT_COUNT_PAYLOAD_IDENTITY_MISMATCH')
+    return {'candidate_id':scope['candidate_id'],'slot_id':slot_id,'model':value['model'],
+        'generation_payload_sha256':hashlib.sha256(payload).hexdigest(),
+        'messages_sha256':contract.digest(value['input']),
+        'count_request_sha256':hashlib.sha256(build_count_payload(payload)).hexdigest(),
+        'endpoint':COUNT_ENDPOINT,'source_binding':scope['source_binding'],'scope_sha256':contract.digest(scope)}
+
+
+def validate_receipt_shape(receipt,*,at_time=None):
+    ensure(isinstance(receipt,dict) and receipt.get('version')==COUNT_RECEIPT_VERSION
+        and receipt.get('endpoint')==COUNT_ENDPOINT and receipt.get('origin')=='OPENAI_OFFICIAL_COUNT_RESPONSE',
+        'INPUT_COUNT_RECEIPT_REQUIRED')
+    ensure(type(receipt.get('input_tokens')) is int and receipt['input_tokens']>=0,
+        'INPUT_COUNT_UNKNOWN_OR_FAILED')
+    ensure(receipt['input_tokens']<=28672,'INPUT_TOKEN_LIMIT_EXCEEDED')
+    try:
+        timestamp=datetime.fromisoformat(receipt['timestamp'])
+        assert timestamp.tzinfo is not None
+        age=((at_time or datetime.now(timezone.utc))-timestamp).total_seconds()
+        assert 0<=age<=COUNT_MAX_AGE_SECONDS
+    except (KeyError,ValueError,TypeError,AssertionError):
+        raise ValueError('INPUT_COUNT_STALE_RECEIPT') from None
+    return receipt
+
+
+def verify_count_receipt(scope,payload,receipt,slot_id,*,at_time=None,require_live=True):
+    validate_receipt_shape(receipt,at_time=at_time)
+    expected=count_binding(scope,payload,slot_id)
+    ensure(all(receipt.get(k)==v for k,v in expected.items()),'INPUT_COUNT_PAYLOAD_IDENTITY_MISMATCH')
+    if require_live:
+        with _count_lock:
+            ensure(_issued_counts.get(receipt.get('receipt_id'))==contract.canonical(receipt),
+                'INPUT_COUNT_UNTRUSTED_OR_CONSUMED_RECEIPT')
+    return receipt
+
+
+def authoritative_input_count_guard(scope,payload,key,slot_id,*,persist):
+    binding=count_binding(scope,payload,slot_id)
+    count_payload=build_count_payload(payload); validate_count_payload(count_payload,payload)
+    result=count_input_tokens(scope,count_payload,key)
+    receipt={'version':COUNT_RECEIPT_VERSION,**binding,'receipt_id':'count_'+uuid.uuid4().hex,
+        'input_tokens':result['response']['input_tokens'],'timestamp':datetime.now(timezone.utc).isoformat(),
+        'origin':'OPENAI_OFFICIAL_COUNT_RESPONSE','response_sha256':result['response_sha256'],
+        'billing_certified':False,'billed_amount':'UNKNOWN','automatic_retries':0}
+    # Persist even an over-limit count, but never issue a generation permit for it.
+    persist(receipt,result)
+    validate_receipt_shape(receipt)
+    with _count_lock: _issued_counts[receipt['receipt_id']]=contract.canonical(receipt)
+    return verify_count_receipt(scope,payload,receipt,slot_id)
+
+
+def consume_count_receipt(scope,payload,receipt,slot_id):
+    verify_count_receipt(scope,payload,receipt,slot_id)
+    with _count_lock:
+        ensure(_issued_counts.pop(receipt['receipt_id'],None)==contract.canonical(receipt),
+            'INPUT_COUNT_UNTRUSTED_OR_CONSUMED_RECEIPT')
+
+
+def verify_worker_count(payload,receipt):
+    validate_receipt_shape(receipt)
+    value=validate_payload(payload)
+    ensure(receipt.get('candidate_id')==CANDIDATE and receipt.get('model')==value['model']
+        and receipt.get('generation_payload_sha256')==hashlib.sha256(payload).hexdigest()
+        and receipt.get('messages_sha256')==contract.digest(value['input'])
+        and receipt.get('count_request_sha256')==hashlib.sha256(build_count_payload(payload)).hexdigest()
+        and receipt.get('source_binding')==contract.runtime_source_binding(),
+        'INPUT_COUNT_PAYLOAD_IDENTITY_MISMATCH')
 
 
 def credential():
@@ -274,6 +418,7 @@ def decode_http(wire,status):
 
 def http_exchange(payload,key,policy,worker_contract,sink=lambda event:None,opener_factory=None):
     OpenAIAdapter().validate_worker_contract(worker_contract); validate_payload(payload)
+    verify_worker_count(payload,worker_contract['input_count_receipt'])
     lifecycle=pt.Lifecycle(sink,policy); lifecycle.emit('worker_started'); wire=bytearray(); status=None
     try:
         opener=(opener_factory(lifecycle) if opener_factory else
@@ -329,17 +474,19 @@ class OpenAIAdapter:
         result=dict(scope['generation_config'],model=model,input=messages)
         validate_payload(contract.canonical(result)); return result
 
-    def worker_contract(self,scope): return {k:scope[k] for k in WORKER_KEYS}
+    def worker_contract(self,scope,receipt=None):
+        return {**{k:scope[k] for k in WORKER_ROUTE_KEYS},'input_count_receipt':receipt}
 
     def validate_worker_contract(self,value):
         ensure(isinstance(value,dict) and set(value)==WORKER_KEYS and value.get('provider_id')=='openai'
             and value.get('api_protocol')=='responses' and value.get('transport_contract_version')==contract.TRANSPORT_VERSION,'OPENAI_WORKER_CONTRACT')
         self.validate_route(value)
+        validate_receipt_shape(value['input_count_receipt'])
 
-    def exchange(self,scope,payload,key,sink,command):
-        local_input_bound(scope,payload)  # No alternate direct adapter path around the gate.
+    def exchange(self,scope,payload,key,sink,command,*,count_receipt=None,slot_id=None):
+        consume_count_receipt(scope,payload,count_receipt,slot_id)
         return pt.worker_exchange(payload,key,scope['request_timeout_seconds'],scope['transport_policy'],command,WORKSPACE,sink,
-            adapter_contract=self.worker_contract(scope))
+            adapter_contract=self.worker_contract(scope,count_receipt))
 
     def worker_exchange(self,frame,sink):
         return http_exchange(frame['payload'].encode('utf-8'),frame['credential'],frame['transport_policy'],frame['adapter_contract'],sink)

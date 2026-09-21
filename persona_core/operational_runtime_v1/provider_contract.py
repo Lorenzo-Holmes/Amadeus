@@ -12,7 +12,9 @@ from pathlib import Path
 from transcript_store import ensure
 
 SCOPE_VERSION = 'apcore-provider-scope-6'
-FORMAL_SCOPE_VERSION = 'apcore-provider-scope-7'
+HISTORICAL_LOCAL_FORMAL_SCOPE_VERSION = 'apcore-provider-scope-7'
+FORMAL_SCOPE_VERSION = 'apcore-provider-scope-8'
+DEEPSEEK_FORMAL_SCOPE_VERSION = 'apcore-provider-scope-9'
 TRANSPORT_VERSION = 'apcore-provider-transport-1'
 IDENTITY_FIELDS = frozenset({'provider_id', 'generation_config', 'transport_contract_version',
                              'source_binding', 'spend_policy', 'capabilities'})
@@ -57,7 +59,7 @@ def guard_legacy_identity(scope):
 
 
 def generation_identity(scope, model, messages):
-    if scope.get('schema_version') == FORMAL_SCOPE_VERSION:
+    if scope.get('schema_version') in (FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION):
         return digest({'version':'apcore-generation-identity-2','scope_sha256':digest(scope),
                        'model_id':model,'messages':messages})
     return digest({'version': 'apcore-generation-identity-1', 'provider_id': scope['provider_id'],
@@ -180,7 +182,8 @@ def check_formal_spend(scope):
     ensure(auth.get('status')=='PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED'
         and auth.get('candidate_id')==oa.CANDIDATE and auth.get('batch_design_id')==scope['batch_design_id']
         and auth.get('max_fresh_revisions')==1 and auth.get('max_generation_requests')==44
-        and auth.get('automatic_paid_retries')==0 and auth.get('count_api_requests')==0,
+        and auth.get('automatic_paid_retries')==0 and auth.get('count_api_requests')==44
+        and auth.get('count_retry_policy')==0,
         'OPENAI_EXECUTION_AUTHORIZATION_MISMATCH')
     reserve=sum(formal_reserve(scope,s['model'],28672) for s in scope['slots'])
     ensure(type(scope.get('reserved_upper_micro_cny')) is int and scope['reserved_upper_micro_cny']==reserve
@@ -237,7 +240,7 @@ def check_formal_scope(scope, adapter):
         and scope.get('gate_denominators')=={'A':176,'B':132}, 'OPENAI_DENOMINATOR_CHANGED')
     ensure(scope.get('stop_rules')=={'quality_major':'QUALITY_FAILURE_STOP','state_major':'INTEGRITY_HARD_STOP',
         'critical':'SAFETY_HARD_STOP','unknown':'STOP_AND_QUARANTINE'}, 'OPENAI_STOP_RULES_CHANGED')
-    ensure(scope.get('input_bound_mode')=='VERIFIED_LOCAL_BOUND_REQUIRED', 'OPENAI_INPUT_BOUND_MODE')
+    oa.validate_count_policy(scope)
     adapter.validate_spend(scope)
 
 

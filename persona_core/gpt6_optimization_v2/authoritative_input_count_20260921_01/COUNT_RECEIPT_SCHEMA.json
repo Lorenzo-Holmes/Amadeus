@@ -1,0 +1,24 @@
+{
+  "version": "APCORE_OPENAI_INPUT_COUNT_RECEIPT_1",
+  "required_binding_fields": [
+    "candidate_id",
+    "slot_id",
+    "model",
+    "generation_payload_sha256",
+    "messages_sha256",
+    "count_request_sha256",
+    "input_tokens",
+    "endpoint",
+    "source_binding",
+    "scope_sha256",
+    "timestamp"
+  ],
+  "input_tokens_type": "nonnegative_integer_not_boolean",
+  "max_input_tokens": 28672,
+  "endpoint": "https://api.openai.com/v1/responses/input_tokens",
+  "freshness_seconds": 600,
+  "live_single_use_issuance_required": true,
+  "count_persistence_before_generation": true,
+  "billed_amount": "UNKNOWN",
+  "billing_certified": false
+}

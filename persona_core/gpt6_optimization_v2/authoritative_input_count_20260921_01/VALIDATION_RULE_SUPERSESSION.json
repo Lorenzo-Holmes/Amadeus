@@ -1,0 +1,36 @@
+{
+  "task": "G6-07-AUTHORITATIVE-REMOTE-INPUT-COUNT-GUARD-V1",
+  "at_utc": "2026-09-21T01:15:48.410889+00:00",
+  "status": "ADOPTED_BY_EXPLICIT_CURRENT_USER_REQUEST",
+  "previous": "VERIFIED_LOCAL_BOUND_REQUIRED",
+  "replacement": "AUTHORITATIVE_OPENAI_INPUT_TOKEN_COUNT_REQUIRED",
+  "old_scope": "apcore-provider-scope-7",
+  "new_scope": "apcore-provider-scope-8",
+  "count_endpoint": "https://api.openai.com/v1/responses/input_tokens",
+  "max_input_tokens": 28672,
+  "max_input_bytes": 24576,
+  "zero_provider_preflight_remote_calls": 0,
+  "future_count_calls_per_slot": 1,
+  "generation_calls_per_slot": 1,
+  "automatic_retries": 0,
+  "count_billed_amount": "UNKNOWN",
+  "billing_certified": false,
+  "production_allowlist": [
+    "persona_core/operational_runtime_v1/provider_openai.py",
+    "persona_core/operational_runtime_v1/provider.py",
+    "persona_core/operational_runtime_v1/provider_contract.py",
+    "persona_core/operational_runtime_v1/transcript_store.py",
+    "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+    "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+    "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+    "persona_core/gpt6_optimization_v2/tools/test_authoritative_input_count.py"
+  ],
+  "historical_audits_preserved": true,
+  "quality_gate_change": false,
+  "denominators": {
+    "turns": 44,
+    "criteria": 176,
+    "A": 176,
+    "B": 132
+  }
+}

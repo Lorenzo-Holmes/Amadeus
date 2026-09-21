@@ -1,0 +1,32 @@
+{
+  "version": "APCORE_MODEL_QUALITY_EXECUTION_FEASIBILITY_AMENDMENT_1",
+  "status": "ADOPTED",
+  "task": "G6-07-DEEPSEEK-SUCCESSOR-REQUALIFICATION-TO-FRESH-VALIDATION-V1",
+  "at_utc": "2026-09-21T02:03:17.057579+00:00",
+  "parent_policy": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+    "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+  },
+  "parent_decision": {
+    "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/MODEL_QUALITY_ACCEPTANCE_POLICY.md",
+    "sha256": "166c067ce7103a7420a4605547e1e978205fd8c843e01c98109b0d93cb7ed100"
+  },
+  "prior_successor": {
+    "path": "persona_core/gpt6_optimization_v2/model_configuration_qualification_20260920_01/CONFIGURATION_PREREGISTRATION.json",
+    "sha256": "b110549e5d76372cbbff79f4f919d92af89a482636498c7604a4b6c45fe9e0ff"
+  },
+  "change_reason": "CREDENTIAL_PROVIDER_EXECUTION_FEASIBILITY_CHANGE",
+  "user_constraint": "OpenAI credential unavailable; existing DeepSeek credential available.",
+  "prior_one_successor_rule": "VALID_UNDER_PREVIOUS_EXECUTION_CONSTRAINTS_PRESERVED",
+  "additional_candidates_authorized": 1,
+  "additional_provider": "DeepSeek Official",
+  "additional_revisions_authorized": 1,
+  "selection_before_real_samples": true,
+  "benchmark_or_threshold_changes": false,
+  "R16_additional_acceptance_revisions": 0,
+  "R16": "FAIL_PERMANENTLY_QUARANTINED",
+  "R16-N02-01": "MAJOR_OPEN_BLOCKING",
+  "no_candidate_after_new_successor_failure": true,
+  "retry_until_pass": "FORBIDDEN",
+  "spend_authorization": "PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED"
+}

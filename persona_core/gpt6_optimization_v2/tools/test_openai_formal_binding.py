@@ -77,7 +77,7 @@ def offline_config(base):
     # Test authorization is bound to this explicitly authored work artifact.
     auth=base/'authorization.json'; runner.write_new(auth,{'status':'PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED',
         'candidate_id':oa.CANDIDATE,'batch_design_id':'APCORE_SUCCESSOR_EXTERNAL44_ASTRA_SOL_MAX_SINGLE_BATCH_1',
-        'max_fresh_revisions':1,'max_generation_requests':44,'automatic_paid_retries':0,'count_api_requests':0})
+        'max_fresh_revisions':1,'max_generation_requests':44,'automatic_paid_retries':0,'count_api_requests':44,'count_retry_policy':0})
     price=ROOT/oa.CONTRACT_DIR/'OFFICIAL_PRICING_EVIDENCE.json'
     suite=runner.load_suite('external44',*oa.MODELS)
     scope=runner.build_successor_scope(base.name,suite,runner.read(price),runner.read(transport),runner.read(route),
@@ -105,6 +105,8 @@ class OpenAIFormalTests(unittest.TestCase):
 
     def enable_mock_proof(self):
         self.stack.enter_context(patch.object(oa,'LOCAL_INPUT_PROOFS',{PROOF:mock_proof}))
+        self.stack.enter_context(patch.object(oa,'count_input_tokens',return_value={
+            'response':{'object':'response.input_tokens','input_tokens':28672},'http_status':200,'response_sha256':PROOF}))
         self.scope['input_bound_proof']={'proof_reference_sha256':PROOF}
         self.scope['semantic_acceptance_binding']['provider_config_identity']=provider_identity(self.scope)
 
@@ -302,11 +304,11 @@ class OpenAIFormalTests(unittest.TestCase):
             bad=copy.deepcopy(self.scope); bad[key]=value
             with self.assertRaises(ValueError): p.scope_check(bad)
 
-    def test_ob25_input_proof_fail_before_key(self):
-        store,h,chat,slot=self.chat()
-        with self.assertRaisesRegex(ValueError,'INPUT_BOUND_PROOF_NOT_READY'):
-            chat.send_text(slot['user_text'],'missing-proof',slot_id=slot['id'])
-        self.keyguard.assert_not_called(); self.assertEqual(store.db.execute('SELECT count(*) FROM provider_calls').fetchone()[0],0)
+    def test_ob25_count_policy_fail_before_key(self):
+        self.scope['count_endpoint']='https://invalid.example/count'
+        with self.assertRaises(ValueError): self.chat()
+        self.keyguard.assert_not_called()
+        self.scope=copy.deepcopy(type(self).scope)
         self.enable_mock_proof(); payload=self.payload(); receipt=oa.local_input_bound(self.scope,payload)
         for key,value in [('request_sha256','f'*64),('input_upper_tokens',28673),('message_count',999),('model_id',oa.MODELS[1])]:
             bad=copy.deepcopy(receipt); bad[key]=value
@@ -337,7 +339,9 @@ class OpenAIFormalTests(unittest.TestCase):
 
     def test_ob29_real_worker_ipc_fake_http(self):
         # Real provider_http_worker main and pipe framing; child sockets disabled.
+        self.enable_mock_proof()
         payload=self.payload(); w=wire(); harness=self.base/('child_'+uuid.uuid4().hex+'.py')
+        count=oa.authoritative_input_count_guard(self.scope,payload,KEY,self.scope['slots'][0]['id'],persist=lambda *a:None)
         harness.write_text('import sys,socket,io\n'+f'sys.path.insert(0,{str(runner.CODE)!r})\n'+
             'def deny(*a,**k): raise AssertionError("OFFLINE_NETWORK_FORBIDDEN")\n'+
             'socket.socket.connect=deny\nsocket.socket.connect_ex=deny\n'+
@@ -347,7 +351,7 @@ class OpenAIFormalTests(unittest.TestCase):
             'original=o.http_exchange\ndef fake(*a,**k): return original(*a,**k,opener_factory=lambda lifecycle:Opener())\n'+
             'o.http_exchange=fake\nraise SystemExit(worker.main())\n',encoding='utf-8')
         result=pt.worker_exchange(payload,KEY,600,self.scope['transport_policy'],[sys.executable,'-B',str(harness)],ROOT,
-            lambda e:None,adapter_contract=self.adapter.worker_contract(self.scope))
+            lambda e:None,adapter_contract=self.adapter.worker_contract(self.scope,count))
         adapters.verified_result(self.adapter,self.scope,result); self.assertEqual(result.wire,w)
 
     def test_ob30_zero_call_construction_and_not_ready(self):
@@ -357,7 +361,8 @@ class OpenAIFormalTests(unittest.TestCase):
         self.assertEqual(result['status'],'NOT_READY'); self.assertEqual(len(result['slot_checks']),44)
         self.assertEqual(len(result['initial_context_checks']),7); self.assertEqual(result['provider_call_rows'],0)
         gate=successor_preflight(self.config,self.transport,self.route,authorization_file=self.auth,pricing_file=self.price)
-        self.assertFalse(gate['formal_preflight_executed']); self.assertEqual(gate['status'],'NOT_READY')
+        self.assertTrue(gate['formal_preflight_executed']); self.assertEqual(gate['status'],'READY')
+        self.assertEqual(gate['token_count_request_invocations'],0);self.assertEqual(gate['generation_request_invocations'],0)
         self.assertEqual(set(runner.EVIDENCE.glob('G6_V2_*')),before)
 
     def test_ob06_invalid_terminal_and_eof(self):
@@ -386,11 +391,11 @@ class OpenAIFormalTests(unittest.TestCase):
         self.enable_mock_proof()
         for stage in ('during_exchange','terminal_before_commit'):
             store,h,chat,slot=self.chat(); turn=store.begin_turn(h,slot['user_text'],'crash')
-            context=chat.build_request_context(turn['turn_id']); original=store.transaction; counts=[0]
+            context=chat.build_request_context(turn['turn_id']); original=store.transaction; counts=[0];sent_before=len(self.sent)
             @contextmanager
             def transaction():
                 counts[0]+=1
-                if counts[0]==3 and stage=='terminal_before_commit': raise SystemExit('AUTHORED_CRASH')
+                if len(self.sent)>sent_before and stage=='terminal_before_commit': raise SystemExit('AUTHORED_CRASH')
                 with original(): yield
             def transport(payload,key):
                 self.sent.append(payload)
@@ -445,6 +450,8 @@ class OpenAIFormalTests(unittest.TestCase):
 
     def test_ob15_http_failures_submit_only_once(self):
         import io
+        self.enable_mock_proof()
+        receipt=oa.authoritative_input_count_guard(self.scope,self.payload(),KEY,self.scope['slots'][0]['id'],persist=lambda *a:None)
         for status in (429,500):
             attempts=[]
             class Reply(io.BytesIO):
@@ -453,7 +460,7 @@ class OpenAIFormalTests(unittest.TestCase):
                 def open(self,request,timeout):
                     attempts.append(request.full_url); result=Reply(b'{"error":{"code":"authored"}}'); result.status=status; return result
             with self.assertRaises(pt.TransportFault): oa.http_exchange(self.payload(),KEY,self.scope['transport_policy'],
-                self.adapter.worker_contract(self.scope),opener_factory=lambda lifecycle:Opener())
+                self.adapter.worker_contract(self.scope,receipt),opener_factory=lambda lifecycle:Opener())
             self.assertEqual(attempts,[oa.ENDPOINT])
 
 

@@ -1,0 +1,141 @@
+{
+  "version": "APCORE_DEEPSEEK_SUCCESSOR_BINDING_1",
+  "source_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "e50abd8599163780d0ab8c29e0e54ee54d9a32a7086502efedcab8285fed7e9d"
+  },
+  "runtime_source_binding": {
+    "version": "apcore-runtime-source-1",
+    "sha256": "fdc99e1ff2b71d905acadb35dc7fe4fa9fd5d3497a12833446599a326ae5f2ba"
+  },
+  "provider_scope": "apcore-provider-scope-9",
+  "candidate_id": "APCORE_SUCCESSOR_DEEPSEEK_FLASH_MAX_1",
+  "adapter_version": "APCORE_DEEPSEEK_FORMAL_ADAPTER_1",
+  "adapter_source": {
+    "path": "persona_core/operational_runtime_v1/provider_deepseek_formal.py",
+    "sha256": "724a314cbcbdee6981ab4fe5ee05281ee09830ff61747d9976b6cbc1415cb441"
+  },
+  "identity_references": {
+    "configuration": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/CONFIGURATION_PREREGISTRATION.json",
+      "sha256": "80e7f80bd6b3c8ec78187bf7a0db719633fad2606fcef5eb0757f68ac8ecde30"
+    },
+    "contract": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/CONFIGURATION_FREEZE.json",
+      "sha256": "19bc5fa954032b4984ef01172cabcdd331b7e23ede741ed18bd61d5307986762"
+    },
+    "quality_policy": {
+      "path": "persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/POLICY_FREEZE_MANIFEST.json",
+      "sha256": "a54396c3c07088b07ad2f3682b8ea91c0a73ac10e9edd1195599e11ff784ddf5"
+    },
+    "dataset": {
+      "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+      "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+    },
+    "rubric": {
+      "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+      "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+    },
+    "criterion_routing": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+      "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+    },
+    "source_manifest": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SOURCE_MANIFEST.json",
+      "sha256": "e50abd8599163780d0ab8c29e0e54ee54d9a32a7086502efedcab8285fed7e9d"
+    },
+    "acceptance_config": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/FORMAL_ACCEPTANCE_CONFIG.json",
+      "sha256": "ecbbdca4a24f97b5b105044fcec499682d43538f98ddf97168cfab729cd93111"
+    },
+    "policy_amendment": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/MODEL_QUALITY_EXECUTION_FEASIBILITY_AMENDMENT.json",
+      "sha256": "9ab4e99d776832727c97683905fe725af7afae01e96ea57c913f58210524bb1f"
+    },
+    "input_safety_policy": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/INPUT_SAFETY_POLICY.json",
+      "sha256": "bb3ddf6ca980916b70166d132e818d95fcfc3784b3a41e680ebf592418493836"
+    },
+    "schedule": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SLOT_SCHEDULE.json",
+      "sha256": "883d783da101b99132d0f074dc6d3e441ee48a991cf40c592aa0d2ebb1682c4d"
+    }
+  },
+  "provider_identity": "29705f04359baf0d30bfc43c4afb3997060027d904646a2bb37927810f6ce793",
+  "consumer_display_state_strict_binding": {
+    "semantic_acceptance_mode": "BOUNDED",
+    "acceptance_policy_version": "BOUNDED_CONVERSATION_1",
+    "acceptance_source_freeze": "DEEPSEEK_SUCCESSOR_BINDING_20260921_01",
+    "acceptance_source_manifest": {
+      "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SOURCE_MANIFEST.json",
+      "sha256": "e50abd8599163780d0ab8c29e0e54ee54d9a32a7086502efedcab8285fed7e9d"
+    },
+    "trusted_semantic_runtime_version": "TRUSTED_SEMANTIC_RUNTIME_1",
+    "semantic_source": {
+      "path": "persona_core/operational_runtime_v1/trusted_semantic_catalog.json",
+      "sha256": "0a15d942ceb0a65136d29ec29a66f3610c93854ba11b606e1850d486f5ee0e96"
+    },
+    "architecture_contract": "APCORE_BOUNDED_ARCHITECTURE_CONTRACT_1",
+    "contract_manifest": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONTRACT_FREEZE_MANIFEST.json",
+      "sha256": "5d811a42642a63e0a9cea6f69c4e5dc85410bdbee9c1dfadf7c61e78112ea42b"
+    },
+    "criterion_routing": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/EXTERNAL44_CRITERION_ROUTING.json",
+      "sha256": "a10b4f9a32034603b802e65f964d49f9107f5df6fa8fefc04c7421f58f6316fb"
+    },
+    "consumer_authority_matrix": {
+      "path": "persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/CONSUMER_AUTHORITY_MATRIX.json",
+      "sha256": "175d2bd8cf8391d93c3bca019c0851575d852cceabdca5db9e0a4bc997077b76"
+    },
+    "display_policy_version": "BOUNDED_CONVERSATION_1",
+    "state_admission_policy_version": "admission-46.2",
+    "strict_semantic_policy_version": "TRUSTED_SEMANTIC_ACCEPTANCE_1",
+    "consumer_purpose": "DISPLAY",
+    "task_role": "CONVERSATION",
+    "schema_version": "FORMAL_BOUNDED_BINDING_1",
+    "runtime_source_hashes": {
+      "semantic_types.py": "80dbade6aa5310024549b0117ad6094455e4df6f08e1a51247fbc81df9b97112",
+      "semantic_admission.py": "51f20b2e97830b287211c690b3593a6471e107437291b3c47f21293f74d94a3b",
+      "semantic_validator.py": "50bf6b7dca411118f7fb9a1c41c19fba072466c0095e096ce01bf3dde7c84bad",
+      "semantic_renderer.py": "d6108c216327f057b05273091327109d01f45654b99f59a4041c6175a2a03f98",
+      "accepted_output.py": "8bf6f4f320ab77e356eb9b4617581b0a299c23bcb888b99fcf3c48c7539e6e93",
+      "chat.py": "e9a068cbb7939bfe8b36308e81e1e96831cdcf15eaaf5a1162978e739dbd818d",
+      "transcript_store.py": "570b5d08ff7d625fdc1a2eb126cdf9a0d4efe847890ef82274f88af2b8f2c83e",
+      "semantic_binding.py": "1f5344852205eda880367fe65fa8864463ba2ceaef51a334c0457cd25563ea71",
+      "trusted_admission_adapter.py": "d30cdc094f14ecb134439574d4692c984ced95928e054112e7717ff2175d5001",
+      "operations.py": "8753d31a74b0a3f4c90e18a0e542800d1a7690f683f88badac0ef457591d3d40"
+    },
+    "admission_adapter_version": "FROZEN_TYPED_ADMISSION_1",
+    "provider_config_identity": "29705f04359baf0d30bfc43c4afb3997060027d904646a2bb37927810f6ce793",
+    "dataset_identity": {
+      "path": "persona_core/gpt6_optimization_v2/external_failure_v1/CASES.json",
+      "sha256": "6fba3316965569c5e1dad828dd37b5fa43503f601eb7cee517112e61cdde1254"
+    },
+    "rubric_identity": {
+      "path": "persona_core/gpt6_optimization_v2/external_failure_v1/PRIVATE_RUBRIC.json",
+      "sha256": "9b36acfbf0cc1744f32c71c33c86b45a9771ceec1d0d8c65e337994acea2b5c9"
+    },
+    "consumers": [
+      "audit",
+      "blind",
+      "candidate",
+      "display",
+      "evaluation",
+      "history",
+      "memory",
+      "next_turn_context",
+      "review"
+    ],
+    "request_contract_version": "PROPOSED_SEMANTIC_PLAN_REQUEST_1",
+    "persistence_version": "RAW_DISPLAY_ACCEPTED_IDENTITY_2",
+    "evaluator_contract_version": "DUAL_GATE_DISPLAY_STATE_1"
+  },
+  "tests": {
+    "path": "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/OFFLINE_TEST_RECEIPT.json",
+    "sha256": "d6f64c2201d3a2df103668ffb52b03985c8ccaa20cf77322911ddf395b0cda7d"
+  },
+  "automatic_paid_retries": 0,
+  "independent_count_api": "NOT_AVAILABLE_IN_INSPECTED_OFFICIAL_DOCUMENTATION",
+  "at_utc": "2026-09-21T02:27:12.768402+00:00"
+}

@@ -1,0 +1,364 @@
+{
+  "slots": [
+    {
+      "position": 1,
+      "slot_id": "N02_T1",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 2,
+      "slot_id": "N02_T2",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 3,
+      "slot_id": "N02_T3",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 4,
+      "slot_id": "N02_T4",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 5,
+      "slot_id": "N02_T5",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 6,
+      "slot_id": "N02_T6",
+      "case_id": "N02",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 7,
+      "slot_id": "N04_T1",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 8,
+      "slot_id": "N04_T2",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 9,
+      "slot_id": "N04_T3",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 10,
+      "slot_id": "N04_T4",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 11,
+      "slot_id": "N04_T5",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 12,
+      "slot_id": "N04_T6",
+      "case_id": "N04",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 13,
+      "slot_id": "N06_T1",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 14,
+      "slot_id": "N06_T2",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 15,
+      "slot_id": "N06_T3",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 16,
+      "slot_id": "N06_T4",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 17,
+      "slot_id": "N06_T5",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 18,
+      "slot_id": "N06_T6",
+      "case_id": "N06",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 19,
+      "slot_id": "N07_T1",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 20,
+      "slot_id": "N07_T2",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 21,
+      "slot_id": "N07_T3",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 22,
+      "slot_id": "N07_T4",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 23,
+      "slot_id": "N07_T5",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 24,
+      "slot_id": "N07_T6",
+      "case_id": "N07",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 25,
+      "slot_id": "N08_T1",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 26,
+      "slot_id": "N08_T2",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 27,
+      "slot_id": "N08_T3",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 28,
+      "slot_id": "N08_T4",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 29,
+      "slot_id": "N08_T5",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 30,
+      "slot_id": "N08_T6",
+      "case_id": "N08",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 31,
+      "slot_id": "N09_T1",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 32,
+      "slot_id": "N09_T2",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 33,
+      "slot_id": "N09_T3",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 34,
+      "slot_id": "N09_T4",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 35,
+      "slot_id": "N09_T5",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 36,
+      "slot_id": "N09_T6",
+      "case_id": "N09",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 37,
+      "slot_id": "N09_S1",
+      "case_id": "N09",
+      "model_role": "SECONDARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 38,
+      "slot_id": "N09_S2",
+      "case_id": "N09",
+      "model_role": "SECONDARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 39,
+      "slot_id": "N11_T1",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 40,
+      "slot_id": "N11_T2",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 41,
+      "slot_id": "N11_T3",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 42,
+      "slot_id": "N11_T4",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 43,
+      "slot_id": "N11_T5",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    },
+    {
+      "position": 44,
+      "slot_id": "N11_T6",
+      "case_id": "N11",
+      "model_role": "PRIMARY",
+      "model": "deepseek-flash",
+      "host_action_before": "NONE"
+    }
+  ],
+  "role_semantics_preserved": true,
+  "one_model_for_both_roles_explicitly_authorized": true,
+  "denominators": {
+    "turns": 44,
+    "criteria": 176,
+    "A": 176,
+    "B": 132
+  }
+}

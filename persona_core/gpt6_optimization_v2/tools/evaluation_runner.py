@@ -185,11 +185,12 @@ def frozen_inputs():
     return cases
 
 
-def load_suite(suite, primary, secondary):
+def load_suite(suite, primary, secondary, *, allow_single_model=False):
     heldout = frozen_inputs()
     provider = runtime_modules()[0]
     successor = (primary,secondary)==('gpt-6-astra','gpt-5.6-sol')
-    require((successor and suite=='external44') or (primary in provider.RATES and secondary in provider.RATES and primary != secondary),
+    deepseek_successor=allow_single_model and suite=='external44' and primary==secondary=='deepseek-flash'
+    require(deepseek_successor or (successor and suite=='external44') or (primary in provider.RATES and secondary in provider.RATES and primary != secondary),
             "DISTINCT_SUPPORTED_MODELS_REQUIRED")
     if suite == "heldout":
         cases = heldout["cases"]
@@ -273,6 +274,14 @@ def source_bindings():
 
 def checked_pricing(record, offline, models=None):
     provider = runtime_modules()[0]
+    if tuple(models or ()) == ('deepseek-flash','deepseek-flash'):
+        require(record is not None,'DEEPSEEK_SUCCESSOR_PRICING_REQUIRED')
+        value=read(record)
+        require(value.get('currency')=='CNY' and value.get('official_pricing_refreshed') is True
+            and value.get('rates')=={'deepseek-flash':{'input_miss':'2','output':'8','input_hit':'0.04'}},'DEEPSEEK_SUCCESSOR_PRICING_MISMATCH')
+        if not offline:
+            require(value.get('observation_date_shanghai')==datetime.now(timezone(timedelta(hours=8))).date().isoformat(),'PRICING_RECORD_NOT_CURRENT')
+        return value
     if tuple(models or ()) == ('gpt-6-astra','gpt-5.6-sol'):
         require(record is not None,'OPENAI_PRICING_REQUIRED')
         value=read(record)
@@ -312,6 +321,11 @@ def build_scope(revision, suite_data, pricing, primary, secondary, max_input_byt
                 max_output_tokens=16384, guard_cny=None, timeout_seconds=600, transport_policy=None,
                 api_protocol=None, network_route_policy=None, successor=None):
     if successor is not None:
+        if primary==secondary=='deepseek-flash':
+            require(max_input_bytes==24576 and max_output_tokens==32768 and timeout_seconds==600
+                and api_protocol=='responses' and guard_cny is None,'DEEPSEEK_FROZEN_PREPARE_CONTROLS')
+            from provider_deepseek_formal import build_scope as build_deepseek_scope
+            return build_deepseek_scope(revision,suite_data,pricing,transport_policy,network_route_policy,**successor)
         require((primary,secondary)==('gpt-6-astra','gpt-5.6-sol') and max_input_bytes==24576
             and max_output_tokens==32768 and timeout_seconds==600 and api_protocol=='responses'
             and guard_cny is None,'OPENAI_FROZEN_PREPARE_CONTROLS')
@@ -381,7 +395,8 @@ def build_successor_scope(revision,suite_data,pricing,transport_policy,network_r
         'evaluation_schema':SCHEMA,'criteria_count':176,'gate_denominators':{'A':176,'B':132},
         'stop_rules':{'quality_major':'QUALITY_FAILURE_STOP','state_major':'INTEGRITY_HARD_STOP',
             'critical':'SAFETY_HARD_STOP','unknown':'STOP_AND_QUARANTINE'},
-        'input_bound_mode':'VERIFIED_LOCAL_BOUND_REQUIRED','input_bound_proof':read(input_proof_file) if input_proof_file else None,
+        'input_bound_mode':oa.INPUT_POLICY,'max_input_tokens':28672,
+        'count_endpoint':oa.COUNT_ENDPOINT,'count_receipt_version':oa.COUNT_RECEIPT_VERSION,'count_retry_policy':0,
         'spend_policy':{'mode':'REVIEWED_RATES_PROJECT_AUTHORIZATION','currency':'USD',
             'rates_usd_per_million':pricing['rates'],'price_identity':oa.reference(pricing_file),
             'fx_cny_per_usd':'8','fee_fraction':'0.10','authorization_identity':oa.reference(authorization_file)},
@@ -542,7 +557,7 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
             input_proof_file=None,preflight_file=None,offline_root=None):
     frozen_inputs()
     primary = primary or default_primary()
-    suite_data = load_suite(suite, primary, secondary)  # Gate before any write.
+    suite_data = load_suite(suite, primary, secondary, allow_single_model=successor_authorization_file is not None)  # Gate before any write.
     formal_validation=bool(formal_validation or acceptance_config_file is not None or (suite=='external44' and not offline))
     if formal_validation:
         from semantic_binding import require as binding_require
@@ -570,11 +585,22 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
     if successor is not None:
         runtime_modules()[0].scope_check(scope)
         if not offline:
-            import provider_openai as oa
-            require(oa.input_proof_ready(scope),'INPUT_BOUND_PROOF_NOT_READY')
+            deepseek_successor=scope.get('schema_version')=='apcore-provider-scope-9'
+            if deepseek_successor:
+                import provider_deepseek_formal as oa
+                key=oa.DeepSeekFormalAdapter().credential()
+                require(isinstance(key,str) and bool(key.strip()),'DEEPSEEK_CREDENTIAL_MISSING_BEFORE_ALLOCATION')
+                key=None
+            else:
+                import provider_openai as oa
+                oa.validate_count_policy(scope)
             require(preflight_file is not None,'OPENAI_FORMAL_PREFLIGHT_REQUIRED')
             ready=read(preflight_file)
             require(ready.get('status')=='READY' and ready.get('provider_call_invocations')==0
+                and ready.get('token_count_request_invocations')==0 and ready.get('generation_request_invocations')==0
+                and ready.get('kind')=='ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT'
+                and ready.get('formal_preflight_executed') is True
+                and (ready.get('input_guard_structural_binding')=='PASS' if deepseek_successor else ready.get('count_guard_structural_binding')=='PASS')
                 and ready.get('provider_identity')==scope['semantic_acceptance_binding']['provider_config_identity'],
                 'OPENAI_FORMAL_PREFLIGHT_NOT_READY')
             # Exclusive allocation survives an interrupted preparation; never
@@ -654,8 +680,8 @@ def read_contract(root):
         require(path.parent == root and path.is_file() and sha(path) == expected, "REVISION_ARTIFACT_CHANGED")
     scope = read(root / "SCOPE.json")
     runtime_modules()
-    from provider_contract import guard_legacy_identity, FORMAL_SCOPE_VERSION
-    if scope.get('schema_version')==FORMAL_SCOPE_VERSION:
+    from provider_contract import guard_legacy_identity, FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION
+    if scope.get('schema_version') in (FORMAL_SCOPE_VERSION, DEEPSEEK_FORMAL_SCOPE_VERSION):
         runtime_modules()[0].scope_check(scope)
     else: guard_legacy_identity(scope)
     if manifest.get('formal_validation') or scope.get('formal_validation'):
@@ -741,14 +767,34 @@ def validate_rows(db, root, manifest, scope, preparation):
                 "REQUEST_HASH_MISMATCH")
         payload = json.loads(request["request_json"])
         context = json.loads(request["context_json"])
-        if scope.get('schema_version')=='apcore-provider-scope-7':
+        if scope.get('schema_version')=='apcore-provider-scope-9':
+            import provider_deepseek_formal as ds
+            expected=ds.DeepSeekFormalAdapter().serialize(scope,slot['model'],context['messages'])
+            bound_messages=payload.get('input')
+            bound=db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?',(row['call_id'],)).fetchone()
+            require(bound is not None,'DEEPSEEK_CALL_CONTRACT_MISSING');receipt=json.loads(bound[0])
+            require(receipt['input_safety_receipt']==ds.input_guard_receipt(scope,request['request_json'].encode('utf-8'),slot['id'])
+                and receipt['scope_sha256']==value_sha(scope) and receipt['request_sha256']==row['request_sha256'], 'DEEPSEEK_CALL_IDENTITY_CHANGED')
+        elif scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8'):
             import provider_openai as oa
             expected=oa.OpenAIAdapter().serialize(scope,slot['model'],context['messages'])
             bound_messages=payload.get('input')
             bound=db.execute('SELECT contract_json FROM provider_call_contracts WHERE call_id=?',(row['call_id'],)).fetchone()
             require(bound is not None,'OPENAI_CALL_CONTRACT_MISSING')
             receipt=json.loads(bound[0])
-            oa.verify_input_receipt(scope,request['request_json'].encode('utf-8'),receipt['input_bound_receipt'])
+            if scope['schema_version']=='apcore-provider-scope-8':
+                from datetime import datetime
+                submitted=db.execute('SELECT submitted_at_utc FROM provider_calls WHERE call_id=?',(row['call_id'],)).fetchone()[0]
+                oa.verify_count_receipt(scope,request['request_json'].encode('utf-8'),receipt['input_count_receipt'],slot['id'],
+                    at_time=datetime.fromisoformat(submitted),require_live=False)
+                support=db.execute('SELECT receipt_json,response_json,status FROM provider_input_counts WHERE batch_id=? AND slot_id=?',
+                    (scope['batch_id'],slot['id'])).fetchone()
+                require(support is not None and support['status']=='COUNTED' and
+                    json.loads(support['receipt_json'])==receipt['input_count_receipt'],'OPENAI_COUNT_JOURNAL_MISMATCH')
+                require(json.loads(support['response_json'])['response']['input_tokens']==receipt['input_count_receipt']['input_tokens'],
+                    'OPENAI_COUNT_RESPONSE_MISMATCH')
+            else:
+                oa.verify_input_receipt(scope,request['request_json'].encode('utf-8'),receipt['input_bound_receipt'])
             require(receipt['scope_sha256']==value_sha(scope) and receipt['request_sha256']==row['request_sha256'], 'OPENAI_CALL_IDENTITY_CHANGED')
         elif scope.get('api_protocol') == 'responses':
             expected = {"model": slot["model"], "input": context["messages"],
@@ -770,14 +816,26 @@ def validate_rows(db, root, manifest, scope, preparation):
             require(not request["raw_was_redacted"] and request["raw_response"] is not None and
                     json.loads(request["raw_response"])["choices"][0]["message"]["content"] == row["assistant_text"],
                     "ASSISTANT_TEXT_DIFFERS_FROM_RAW_RESPONSE")
-            if scope.get('schema_version')=='apcore-provider-scope-7':
+            if scope.get('schema_version')=='apcore-provider-scope-9':
+                import provider_adapters,provider_transport
+                wire=db.execute('SELECT * FROM transport_wire_captures WHERE call_id=?',(row['call_id'],)).fetchone()
+                require(wire is not None and wire['complete']==1 and not wire['credential_redacted']
+                    and hashlib.sha256(wire['wire_bytes']).hexdigest()==wire['wire_sha256'],'DEEPSEEK_WIRE_CHANGED')
+                adapter=ds.DeepSeekFormalAdapter()
+                provider_adapters.verified_result(adapter,scope,provider_transport.TransportResult(row['http_status'],request['raw_response'],wire['wire_bytes']))
+                body=json.loads(request['raw_response']);adapter.validate_model(slot['model'],body['model'])
+                accounting=ds.accounting(body['native_usage'],scope,slot['model'])
+                require(receipt.get('accounting')==accounting and accounting['rejection'] is None,'DEEPSEEK_ACCOUNTING_CHANGED')
+            elif scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8'):
                 import provider_adapters,provider_transport,provider_contract
                 wire=db.execute('SELECT * FROM transport_wire_captures WHERE call_id=?',(row['call_id'],)).fetchone()
                 require(wire is not None and hashlib.sha256(wire['wire_bytes']).hexdigest()==wire['wire_sha256'],'OPENAI_WIRE_CHANGED')
                 adapter=oa.OpenAIAdapter()
                 provider_adapters.verified_result(adapter,scope,provider_transport.TransportResult(row['http_status'],request['raw_response'],wire['wire_bytes']))
                 body=json.loads(request['raw_response']); adapter.verify_effective_identity(scope,body,slot['model'])
-                accounting=provider_contract.formal_accounting(body['native_usage'],scope,slot['model'],receipt['input_bound_receipt']['input_upper_tokens'],row['assistant_text'])
+                input_limit=(receipt['input_count_receipt']['input_tokens'] if scope['schema_version']=='apcore-provider-scope-8'
+                    else receipt['input_bound_receipt']['input_upper_tokens'])
+                accounting=provider_contract.formal_accounting(body['native_usage'],scope,slot['model'],input_limit,row['assistant_text'])
                 require(receipt.get('accounting')==accounting and accounting['rejection'] is None,'OPENAI_ACCOUNTING_CHANGED')
             elif scope.get('api_protocol') == 'responses' and origin == TARGET:
                 import provider_transport
@@ -912,7 +970,7 @@ def authored_transport(payload, credential):
 def worker(revision, segment_id, run_id, max_turns=None):
     root = revision_root(revision)
     manifest, scope, preparation = verify_sources(root)
-    if scope.get('schema_version')=='apcore-provider-scope-7':
+    if scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8','apcore-provider-scope-9'):
         require(max_turns==1,'OPENAI_ONE_TURN_THEN_REVIEW_REQUIRED')
         require_successor_review_prefix(root,manifest,scope,preparation)
     lease = read(root / "ACTIVE_RUN.json")
@@ -1056,7 +1114,7 @@ def require_successor_review_prefix(root,manifest,scope,preparation):
 def run(revision, *, execute=False, max_turns=None):
     root = revision_root(revision)
     manifest, scope, preparation = verify_sources(root)
-    if scope.get('schema_version')=='apcore-provider-scope-7':
+    if scope.get('schema_version') in ('apcore-provider-scope-7','apcore-provider-scope-8','apcore-provider-scope-9'):
         require(max_turns==1,'OPENAI_ONE_TURN_THEN_REVIEW_REQUIRED')
         require_successor_review_prefix(root,manifest,scope,preparation)
     require(manifest["capture_mode"] == OFFLINE or execute, "TARGET_RUN_REQUIRES_EXPLICIT_EXECUTE")

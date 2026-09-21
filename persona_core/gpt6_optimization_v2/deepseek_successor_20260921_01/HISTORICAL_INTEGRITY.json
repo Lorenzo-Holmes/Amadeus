@@ -1,0 +1,55 @@
+{
+  "status": "MATCH",
+  "parent_archive_members": 187,
+  "original_OpenAI_archive_members": 184,
+  "protected_members": 3425,
+  "historical_members_unchanged": 3419,
+  "unlisted_modifications": 0,
+  "changes": [
+    {
+      "path": "persona_core/operational_runtime_v1/provider_deepseek_formal.py",
+      "before": null,
+      "after": "724a314cbcbdee6981ab4fe5ee05281ee09830ff61747d9976b6cbc1415cb441"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_adapters.py",
+      "before": "d720d5fc23b33e6b7e4135ec78f5563ebb5fad550e9e3df656da2e22f6c4caab",
+      "after": "8ebdb453a88c0279039cbbfe1fb0dc279f6dbcae6148767e7986ae4a4b80b1a8"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider.py",
+      "before": "d9c5ef9cd90af0d694a088691a7f9de2362a5e387ce579e375bf1bf5a8c22595",
+      "after": "8db3c586bdfc26e0a776ddfb557063c7de1b9f161b6738a363d5a0f1f5883667"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/provider_contract.py",
+      "before": "61a2b8d2ba1836d0ed94e7298315a9571fa0154c86e996a925cf81d2b0dcfe04",
+      "after": "eef2388edb60b38db4634489f48b7416aa89983814c183d558444a0b7ae8ce6e"
+    },
+    {
+      "path": "persona_core/operational_runtime_v1/transcript_store.py",
+      "before": "021cce0dbd60a27d11a4ff9242cb4590fbfa3c759aa0d7f1767a3bc27e4cb793",
+      "after": "570b5d08ff7d625fdc1a2eb126cdf9a0d4efe847890ef82274f88af2b8f2c83e"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/evaluation_runner.py",
+      "before": "23e3bf53e61b72d7016553adf8f5a2a0fd42a93d44118216ff80ab696640e5e5",
+      "after": "517e3e660184bd004b98bc7d1c3c9f7f4e639e04988a111749fb40ec8f1088b7"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+      "before": "d3f6f7ffb70f9ca5acb1a9535fc19402a7c09fd2bc8356363a411e04125c18c2",
+      "after": "61fea07acbca2e89bf539ed2050b34aee4151c38cda4ccdf9db4bb5b521f3d5b"
+    },
+    {
+      "path": "persona_core/gpt6_optimization_v2/tools/test_deepseek_successor_binding.py",
+      "before": null,
+      "after": "7a4fce3ff646559587b9b0463f13c8bfff051002e4ff4312a5c19fe6a03bc3ea"
+    }
+  ],
+  "R16": "FAIL_PERMANENTLY_QUARANTINED",
+  "R16-N02-01": "MAJOR_OPEN_BLOCKING",
+  "R17": "PRESERVED_SUPERSEDED_UNSUBMITTED_NO_RESUME",
+  "historical_UNKNOWN": 7,
+  "at_utc": "2026-09-21T02:27:12.125761+00:00"
+}

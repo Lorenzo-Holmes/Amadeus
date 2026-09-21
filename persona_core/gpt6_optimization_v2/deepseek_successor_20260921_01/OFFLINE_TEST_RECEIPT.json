@@ -1,0 +1,66 @@
+{
+  "task": "G6-07-DEEPSEEK-SUCCESSOR-REQUALIFICATION-TO-FRESH-VALIDATION-V1",
+  "status": "GREEN",
+  "focused_tests": 118,
+  "deepseek_formal_tests": 40,
+  "openai_formal_compatibility_tests": 40,
+  "authoritative_count_compatibility_tests": 38,
+  "focused_results": [
+    {
+      "module": "test_deepseek_successor_binding.py",
+      "exit_code": 0,
+      "tests": 40,
+      "log": {
+        "path": "work/deepseek_successor/focused/test_deepseek_successor_binding.py.log",
+        "sha256": "613d4db0f72b8b35f9e6487bd9f534589a01aad9dad048ad7e34ae4425436a0b"
+      },
+      "source_sha256": "7a4fce3ff646559587b9b0463f13c8bfff051002e4ff4312a5c19fe6a03bc3ea"
+    },
+    {
+      "module": "test_openai_formal_binding.py",
+      "exit_code": 0,
+      "tests": 40,
+      "log": {
+        "path": "work/deepseek_successor/focused/test_openai_formal_binding.py.log",
+        "sha256": "c4bdf8695f862fa6e8bb8e75b7b67df445080710731dd61141d70c8b7b6be917"
+      },
+      "source_sha256": "24890b1635a9330c9f2d70243462ed051d4ff8eef1744cce53f9584508608396"
+    },
+    {
+      "module": "test_authoritative_input_count.py",
+      "exit_code": 0,
+      "tests": 38,
+      "log": {
+        "path": "work/deepseek_successor/focused/test_authoritative_input_count.py.log",
+        "sha256": "ebc0b1d73b78b5a14af4b135c0f5138ca05addc7723d9e7d91108752c4d18553"
+      },
+      "source_sha256": "cf4b561fd54fa036973218e9fb0ae294c57771abe22bb0ec67509109e00f26e9"
+    }
+  ],
+  "component_tests": 821,
+  "component_modules": 34,
+  "component_receipt": {
+    "path": "work/deepseek_successor/COMPONENT.json",
+    "sha256": "e65da0e68ec48d05af06997c08ce704e703fb7dd07677665aa4ea1fa5a92b2ca"
+  },
+  "bounded_cases": {
+    "passed": 24,
+    "total": 24
+  },
+  "legacy": {
+    "compatible": 449,
+    "expected_historical_source_identity_sentinel": 1,
+    "unexpected": 0,
+    "raw_exit_code": 1,
+    "report": {
+      "path": "persona_core/operational_build_v1/evidence/R047-03/regression_20260921T021701326781Z/REGRESSION.json",
+      "sha256": "48081432e09e29835dca3b098e70aabdb6db2bc47389ce16698283f735c0fb40"
+    }
+  },
+  "provider_requests": 0,
+  "token_count_requests": 0,
+  "generation_requests": 0,
+  "readiness_requests": 0,
+  "evidence_kind": "OFFLINE_AUTHORED_NOT_MODEL_QUALITY",
+  "at_utc": "2026-09-21T02:27:12.126761+00:00"
+}

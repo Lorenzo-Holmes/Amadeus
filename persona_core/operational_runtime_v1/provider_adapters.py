@@ -110,6 +110,9 @@ def registry(*, include_formal=False):
 
 
 def select(scope):
+    if scope.get('schema_version') == contract.DEEPSEEK_FORMAL_SCOPE_VERSION:
+        from provider_deepseek_formal import DeepSeekFormalAdapter
+        return DeepSeekFormalAdapter()
     # Preserve the scope-6 synthetic registry. Worker contracts omit schema_version
     # and are separately checked against the adapter's closed worker field set.
     formal = scope.get('schema_version') == contract.FORMAL_SCOPE_VERSION or (

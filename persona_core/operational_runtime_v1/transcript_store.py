@@ -19,7 +19,8 @@ WORKSPACE = Path(__file__).resolve().parents[2]
 LEGACY = WORKSPACE / "persona_core/runtime"
 SANDBOX_PARENTS = (WORKSPACE / "persona_core/operational_runtime_v1/sandboxes",
                    WORKSPACE / "persona_core/operational_build_v1/evidence",
-                   WORKSPACE / "work/openai_formal_binding")
+                   WORKSPACE / "work/openai_formal_binding",
+                   WORKSPACE / "work/deepseek_successor")
 MODES = {"PRODUCT_RUNTIME", "CHARACTER_SIMULATION", "SOURCE_AUDIT"}
 
 class StoreGuard(ValueError):

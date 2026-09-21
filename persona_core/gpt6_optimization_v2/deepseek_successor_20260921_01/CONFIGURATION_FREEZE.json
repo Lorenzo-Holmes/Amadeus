@@ -1,0 +1,17 @@
+{
+  "freeze_id": "APCORE_DEEPSEEK_SUCCESSOR_CONFIGURATION_1",
+  "files": {
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/CONFIGURATION_PREREGISTRATION.json": "80e7f80bd6b3c8ec78187bf7a0db719633fad2606fcef5eb0757f68ac8ecde30",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/CREDENTIAL_AUDIT.json": "5bd3d75de780c3dcd55ea88b05038b7a2f2bced5e19e1efd934cc8c6201fcaba",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/EXECUTION_AUTHORIZATION.json": "3478f74bda0169be5266cc62fce43626b326ac6b9907b74ffb211b8e6fbb0278",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/IMPLEMENTATION_ALLOWLIST.json": "9768946e95c575a859c021665d492d621317937b600ffdcd0e13668cb43a7743",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/INPUT_SAFETY_POLICY.json": "bb3ddf6ca980916b70166d132e818d95fcfc3784b3a41e680ebf592418493836",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/MODEL_QUALITY_EXECUTION_FEASIBILITY_AMENDMENT.json": "9ab4e99d776832727c97683905fe725af7afae01e96ea57c913f58210524bb1f",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/OFFICIAL_DOCUMENTATION_EVIDENCE.json": "0fee7f4aaf5e53304c64b849993b49a67d96ac8765dd6dfefd9d699381b8087c",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/OFFICIAL_PRICING_EVIDENCE.json": "1060ddecae05e7fd315050b25ba5287439db1b22798ef2e93d968284148d75b1",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/OPENAI_SUCCESSOR_EXECUTION_DISPOSITION.json": "d4d2841e2e70ed060080292d2979957bad47a68106049d2308cc7dca879ab0f5",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SCOPE_ALIGNMENT.json": "9da79840295333e08846872ce4b92fdc3751d31258df8299ae92cf0a4d8c4b9e",
+    "persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/SLOT_SCHEDULE.json": "883d783da101b99132d0f074dc6d3e441ee48a991cf40c592aa0d2ebb1682c4d"
+  },
+  "at_utc": "2026-09-21T02:06:05.995351+00:00"
+}
