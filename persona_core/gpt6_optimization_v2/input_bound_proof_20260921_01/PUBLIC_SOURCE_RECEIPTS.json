@@ -1,0 +1,99 @@
+{
+  "sources": [
+    {
+      "name": "token_counting",
+      "url": "https://developers.openai.com/api/docs/guides/token-counting.md",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:57.083207+00:00",
+      "path": "work/input_bound_proof/docs/token_counting.txt",
+      "sha256": "a446c08afd6dca0e252e69a3ebf82c117d45b8f60b304dc09a21340e3b6a07f6",
+      "bytes": 22672
+    },
+    {
+      "name": "astra",
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-astra.md",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:57.602457+00:00",
+      "path": "work/input_bound_proof/docs/astra.txt",
+      "sha256": "f45ae813c3f69708e2576328056de14cdf71fec174c875f4b81d236105545625",
+      "bytes": 3812
+    },
+    {
+      "name": "sol",
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol.md",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:57.391365+00:00",
+      "path": "work/input_bound_proof/docs/sol.txt",
+      "sha256": "23f4ff2c236486d42145e21693f450bfcac272c37ee839a5ee6f9455cd1d8b7b",
+      "bytes": 3991
+    },
+    {
+      "name": "tokenizer_model_map",
+      "url": "https://raw.githubusercontent.com/openai/tiktoken/main/tiktoken/model.py",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:56.406356+00:00",
+      "path": "work/input_bound_proof/docs/tokenizer_model_map.txt",
+      "sha256": "600f26902d1cf6a1a5f54e37be988b3e0d911f1ff17ba7060bb361f9b5295521",
+      "bytes": 3909
+    },
+    {
+      "name": "tokenizer_core",
+      "url": "https://raw.githubusercontent.com/openai/tiktoken/main/tiktoken/core.py",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:57.602457+00:00",
+      "path": "work/input_bound_proof/docs/tokenizer_core.txt",
+      "sha256": "3c136f06b05992855dc329216dfa1fa5b6718cccd3d79f658262de8f871f45f0",
+      "bytes": 17601
+    },
+    {
+      "name": "tokenizer_bpe",
+      "url": "https://raw.githubusercontent.com/openai/tiktoken/main/src/lib.rs",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:57.607381+00:00",
+      "path": "work/input_bound_proof/docs/tokenizer_bpe.txt",
+      "sha256": "efb8ffce1eea0492944a242e46f80c49526295e8785728c9f8535e8d9b7147a5",
+      "bytes": 26068
+    },
+    {
+      "name": "tokenizer_registry",
+      "url": "https://raw.githubusercontent.com/openai/tiktoken/main/tiktoken_ext/openai_public.py",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:57.829897+00:00",
+      "path": "work/input_bound_proof/docs/tokenizer_registry.txt",
+      "sha256": "954392738e60d0fb6dca1dad80872efc47c8e2733babecbbf0a23970ed66c2cb",
+      "bytes": 5613
+    },
+    {
+      "name": "sdk_input_tokens",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/main/src/openai/resources/responses/input_tokens.py",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:58.232912+00:00",
+      "path": "work/input_bound_proof/docs/sdk_input_tokens.txt",
+      "sha256": "b65e94f57f69ea8089e061885dda9225f4a2029c7dfe44a143d56a6742093a1e",
+      "bytes": 15544
+    },
+    {
+      "name": "tiktoken_package_metadata",
+      "url": "https://pypi.org/pypi/tiktoken/json",
+      "http_status": 200,
+      "method": "GET",
+      "at_utc": "2026-09-21T00:43:59.450332+00:00",
+      "path": "work/input_bound_proof/docs/tiktoken_package_metadata.txt",
+      "sha256": "fe742a14977a8a72185a3c1788e8db04515e16206d1eb5733910de5ccb03e018",
+      "bytes": 628782
+    }
+  ],
+  "provider_requests": 0,
+  "token_count_requests": 0,
+  "credentials_read": 0,
+  "private_payloads_transmitted": false,
+  "scope": "Unauthenticated GET of public documentation/source/package metadata only."
+}

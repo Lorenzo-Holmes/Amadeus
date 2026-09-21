@@ -1,0 +1,81 @@
+{
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "status": "NOT_READY",
+  "certified_input_upper_tokens": null,
+  "frozen_limit": 28672,
+  "host_syntax_calculation": {
+    "minimal_message_bytes": 28,
+    "message_array_bytes_formula": "1 + 29 * n",
+    "host_max_bytes": 24576,
+    "max_minimal_messages": 847,
+    "max_minimal_array_bytes": 24564
+  },
+  "obligations": [
+    {
+      "id": "P01",
+      "requirement": "Exact PRIMARY tokenizer or provider-independent proven envelope",
+      "status": "UNSATISFIED",
+      "evidence": "tiktoken 0.14.0 exact map and prefix lookup do not recognize gpt-6-astra."
+    },
+    {
+      "id": "P02",
+      "requirement": "Exact SECONDARY tokenizer identity",
+      "status": "UNSATISFIED",
+      "evidence": "gpt-5.6-sol is accepted only by generic gpt-5 prefix; no exact model entry. Prefix lookup also accepts an invented control name."
+    },
+    {
+      "id": "P03",
+      "requirement": "Bound all Responses role/message/implicit formatting for frozen controls",
+      "status": "UNSATISFIED",
+      "evidence": "No auditable model-specific local template or certified global/role/message overhead bound in inspected sources."
+    },
+    {
+      "id": "P04",
+      "requirement": "Cover every allowed role sequence and UTF-8 string, including future history",
+      "status": "UNSATISFIED",
+      "evidence": "Host serialization and rejection tests cover representative forms; samples cannot establish the missing model/framing theorem."
+    },
+    {
+      "id": "P05",
+      "requirement": "Deterministic certified pre-submit calculation with input <=28672",
+      "status": "UNSATISFIED",
+      "evidence": "No qualifying calculator can be registered. A guessed constant or adjacent-model encoding would not supply the missing premises."
+    },
+    {
+      "id": "P06",
+      "requirement": "Fail closed before credentials/submission on missing proof or host overflow",
+      "status": "SATISFIED",
+      "evidence": "42 local checks plus original40 binding tests; existing production registry stays empty."
+    },
+    {
+      "id": "P07",
+      "requirement": "No remote provider/count requests used",
+      "status": "SATISFIED",
+      "evidence": "Only public GET documentation/package retrieval; offline tests deny network in child and parent."
+    },
+    {
+      "id": "P08",
+      "requirement": "Proof acceptance tests PASS",
+      "status": "NOT_RUN_NO_VALID_PROOF",
+      "evidence": "Negative tests PASS is separately recorded and does not certify upper tokens."
+    },
+    {
+      "id": "P09",
+      "requirement": "Persist sufficient proof receipt",
+      "status": "UNSATISFIED",
+      "evidence": "Persisted NOT_READY audit only; no fabricated InputBoundReceipt."
+    },
+    {
+      "id": "P10",
+      "requirement": "Current source identity MATCH",
+      "status": "SATISFIED",
+      "evidence": "184/184 current;182/182 parent archive."
+    }
+  ],
+  "candidate_methods": {
+    "EXACT": "NOT_ESTABLISHED",
+    "TOKENIZER_PLUS_FRAMING": "NOT_ESTABLISHED",
+    "CONSERVATIVE": "NOT_ESTABLISHED"
+  },
+  "conclusion": "No admissible bound is established from inspected artifacts. This does not prove that an offline certificate can never be supplied."
+}

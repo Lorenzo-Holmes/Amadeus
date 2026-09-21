@@ -1,0 +1,69 @@
+{
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "local_evidence_and_rejection_checks": {
+    "status": "PASS",
+    "tests": 42,
+    "proof_certified": false,
+    "receipt": {
+      "suite": "local_evidence_and_rejection",
+      "exit_code": 0,
+      "tests": 42,
+      "passed": true,
+      "test_identity": {
+        "path": "work/input_bound_proof/local_proof_checks.py",
+        "sha256": "9fbcabb3f58adf524d5101a8e2b568aa2f6ad7b9225f795489dedcd9f2144d38"
+      },
+      "log": {
+        "path": "work/input_bound_proof/local_evidence_and_rejection.log",
+        "sha256": "75cd14f808e5cac5c86dddd08d89ee3f65bb182260449c783d46af4b2491cfc4"
+      }
+    }
+  },
+  "original_binding_tests": {
+    "status": "PASS",
+    "tests": 40,
+    "rerun_this_task": true,
+    "receipt": {
+      "suite": "original_binding40",
+      "exit_code": 0,
+      "tests": 40,
+      "passed": true,
+      "test_identity": {
+        "path": "persona_core/gpt6_optimization_v2/tools/test_openai_formal_binding.py",
+        "sha256": "90eda5066a80683819e0d8420e41fc847ef2f20de62961bd5c027cc23f8431e3"
+      },
+      "log": {
+        "path": "work/input_bound_proof/original_binding40.log",
+        "sha256": "ac0e995a434205aaa4cbb92ffc471389545f3b4c492f2f01a0da48dc04e7ed1d"
+      }
+    }
+  },
+  "proof_acceptance_tests": "NOT_RUN_NO_VALID_PROOF; INPUT_BOUND_PROOF_NOT_READY",
+  "component_regression": {
+    "status": "PASS_RETAINED_SOURCE_AND_EVIDENCE_MATCH",
+    "tests": 821,
+    "modules": 34,
+    "rerun_this_task": false,
+    "rationale": "Production source unchanged; all 120 component source identities and prior test receipt/log hashes verified.",
+    "prior_receipt": {
+      "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/OFFLINE_TEST_RECEIPT.json",
+      "sha256": "bc9e304393dc23e12f7938e8cb039ad2dd9bc08d1f2df9d2fc109e92b618621a"
+    }
+  },
+  "legacy": {
+    "compatible_pass": 449,
+    "expected_historical_source_identity_sentinel": 1,
+    "unexpected": 0,
+    "raw_runner_exit_code": 1,
+    "raw_report_passed": false,
+    "report": {
+      "path": "persona_core/operational_build_v1/evidence/R047-03/regression_20260920T181028399860Z/REGRESSION.json",
+      "sha256": "482ed3d546c8f18477c5a75cf151d8dfe5b41c8d080673a3989740b89937e7b4"
+    },
+    "rerun_this_task": false,
+    "status": "RETAINED_VERIFIED_449_COMPATIBLE_PLUS_ONE_EXPECTED_SENTINEL"
+  },
+  "provider_requests": 0,
+  "real_model_quality_evaluated": false,
+  "at_utc": "2026-09-21T00:51:31.161916+00:00"
+}

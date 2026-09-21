@@ -1,0 +1,17 @@
+{
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "status": "MATCH",
+  "source_members": 184,
+  "source_freeze": "OPENAI_FORMAL_SUCCESSOR_BINDING_20260921_01",
+  "source_manifest": {
+    "path": "persona_core/gpt6_optimization_v2/openai_formal_binding_20260921_01/SOURCE_MANIFEST.json",
+    "sha256": "1daf9e58b0331570507dbd08ab2f22b72abf9bcb208f33e1e23fb8c334c533cb"
+  },
+  "parent_archive_members": 182,
+  "protected_members": 3342,
+  "production_source_modified": false,
+  "source_new_or_changed_members": 0,
+  "historical_R16_and_UNKNOWN_SPEND_journals": "UNCHANGED",
+  "source_changes_during_validation": 0,
+  "at_utc": "2026-09-21T00:51:31.164424+00:00"
+}

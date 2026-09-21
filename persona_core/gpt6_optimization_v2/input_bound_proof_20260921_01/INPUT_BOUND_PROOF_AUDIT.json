@@ -1,0 +1,71 @@
+{
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "status": "INPUT_BOUND_PROOF_NOT_READY",
+  "method": "NOT_READY",
+  "candidate_id": "APCORE_SUCCESSOR_OPENAI_ASTRA_MAX_SOL_MAX_1",
+  "tokenizer_examined": "tiktoken 0.14.0",
+  "tokenizer_artifact": {
+    "filename": "tiktoken-0.14.0-cp312-cp312-win_amd64.whl",
+    "url": "https://files.pythonhosted.org/packages/bd/bd/a2e884fb1402cba5be08836590320012b2d8ada0e2eef9911a64df4bcd2d/tiktoken-0.14.0-cp312-cp312-win_amd64.whl",
+    "path": "work/input_bound_proof/packages/tiktoken-0.14.0-cp312-cp312-win_amd64.whl",
+    "sha256": "087538c080e5ff421abd3a0785ed63c5111d06af98e6cd0d374dbe5969147ca3"
+  },
+  "model_encoding_results": {
+    "gpt-6-astra": {
+      "lookup_result": null,
+      "exception": "'Could not automatically map gpt-6-astra to a tokeniser. Please use `tiktoken.get_encoding` to explicitly get the tokeniser you expect.'",
+      "exact_MODEL_TO_ENCODING_entry": null,
+      "matching_prefixes": {},
+      "certified_model_encoding": false
+    },
+    "gpt-5.6-sol": {
+      "lookup_result": "o200k_base",
+      "exception": null,
+      "exact_MODEL_TO_ENCODING_entry": null,
+      "matching_prefixes": {
+        "gpt-5": "o200k_base"
+      },
+      "certified_model_encoding": false
+    },
+    "nonexistent_prefix_control": {
+      "name": "gpt-5-NONEXISTENT-APCORE-CONTROL",
+      "lookup_result": "o200k_base",
+      "purpose": "Local string lookup only, never submitted to any service."
+    }
+  },
+  "certified_input_upper_tokens": null,
+  "frozen_input_limit": 28672,
+  "framing_status": "UNPROVEN",
+  "precise_blockers": [
+    "PRIMARY_EXACT_MODEL_ENCODING_MAPPING_UNAVAILABLE_IN_INSPECTED_ARTIFACTS",
+    "SECONDARY_MAPPING_ONLY_GENERIC_PREFIX",
+    "RESPONSES_MODEL_SPECIFIC_FRAMING_BOUND_UNPROVEN"
+  ],
+  "framing_finding": "No exact-model local Responses framing template or valid framing-overhead upper bound was found in the inspected official documentation, SDK and tokenizer source.",
+  "conservative_bound_status": "NO_COMPLETE_PROOF",
+  "proof_obligations": {
+    "path": "persona_core/gpt6_optimization_v2/input_bound_proof_20260921_01/PROOF_OBLIGATIONS.json",
+    "sha256": "1331a764930668cd049be477f215ca5d35402cd31834b5ee751523dab2d47f38"
+  },
+  "local_environment_audit": {
+    "path": "persona_core/gpt6_optimization_v2/input_bound_proof_20260921_01/LOCAL_TOKENIZER_AUDIT.json",
+    "sha256": "f5e4ebce8de9c1be4c21f4d4875dd42c3ecdadb462defe7e353bb32a88a7d011"
+  },
+  "public_source_receipts": {
+    "path": "persona_core/gpt6_optimization_v2/input_bound_proof_20260921_01/PUBLIC_SOURCE_RECEIPTS.json",
+    "sha256": "d165c42db656b0e505f40d5a30c906b7c49739661d3bf5b3bf6b5552973e9bca"
+  },
+  "source_modified": false,
+  "proof_registry_modified": false,
+  "new_source_freeze_created": false,
+  "actual_formal_preflight_executed": false,
+  "fresh_revision_created": false,
+  "provider_requests": 0,
+  "token_count_requests": 0,
+  "readiness_requests": 0,
+  "paid_requests": 0,
+  "credentials_read": 0,
+  "new_evidence_vs_prior_audit": "Hash-verified isolated latest wheel imported offline; actual mapping/prefix-control behavior tested; framing theorem obligations and host-only bound separated.",
+  "interpretation": "Scoped evidence insufficiency, not a global impossibility claim.",
+  "at_utc": "2026-09-21T00:51:31.160924+00:00"
+}

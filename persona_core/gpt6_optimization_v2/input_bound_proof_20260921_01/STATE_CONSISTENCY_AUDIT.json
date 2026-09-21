@@ -1,0 +1,17 @@
+{
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "top_level_expected_machine_truth": "MATCH",
+  "source_bytes": "184/184 MATCH",
+  "entry_audit_scope": "The initial no-difference summary checked top-level machine truth; nested historical/current field roles were checked subsequently.",
+  "nested_difference": {
+    "path": "persona_core/gpt6_optimization_v2/TASK_GRAPH.json",
+    "node": "G6-07",
+    "field": "current_source_freeze_id",
+    "observed": "BOUNDED_CONVERSATION_STATE_BOUNDARY_P3_20260920_01",
+    "current_actual_source": "OPENAI_FORMAL_SUCCESSOR_BINDING_20260921_01",
+    "classification": "STALE_NESTED_CURRENT_POINTER; no source-byte mismatch",
+    "resolution": "Preserve the old value as historical R16 source identity and set current_source_freeze_id to the verified current freeze during reconciliation."
+  },
+  "historical_gate_source": "GATE-3 source_revision is R16; retain its source_freeze_id and label historical, add distinct current source identity.",
+  "main_blocker_unchanged": "INPUT_BOUND_PROOF_NOT_READY"
+}

@@ -1,0 +1,17 @@
+{
+  "status": "NOT_READY",
+  "blocker": "INPUT_BOUND_PROOF_NOT_READY",
+  "formal_preflight_executed": false,
+  "provider_call_invocations": 0,
+  "provider_call_rows": 0,
+  "paid_revision_created": false,
+  "kind": "ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT_PREREQUISITE_GATE",
+  "task": "G6-07-INPUT-BOUND-PROOF-TO-FRESH-SUCCESSOR-VALIDATION-V1",
+  "at_utc": "2026-09-21T00:51:31.140898+00:00",
+  "input_proof_status": "NOT_READY",
+  "exact_entry": {
+    "path": "persona_core/gpt6_optimization_v2/tools/formal_binding_preflight.py",
+    "sha256": "e23382e08c19382c94b05779c0ebbbddbc748e3efedefbbfb05fb325d33bde60"
+  },
+  "meaning": "Actual prerequisite gate only; complete formal preflight NOT_RUN, no inherited or synthetic READY."
+}
