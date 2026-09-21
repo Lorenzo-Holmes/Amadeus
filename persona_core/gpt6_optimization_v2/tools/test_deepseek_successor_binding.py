@@ -316,6 +316,36 @@ class DeepSeekSuccessorTests(unittest.TestCase):
         with self.assertRaises(ValueError):p.scope_check(self.scope)
     def test_source_membership_bound(self):
         self.assertIn('provider_deepseek_formal.py',{p.name for p in runner.source_files()})
+    def active_driver_fixture(self, mode):
+        evidence=self.base/('active_driver_audit_'+uuid.uuid4().hex)
+        root=evidence/'G6_V2_neutral';root.mkdir(parents=True)
+        runner.write_new(root/'ACTIVE_RUN.json',{'pid':12345})
+        runner.write_new(root/'MANIFEST.json',{'capture_mode':mode})
+        runner.write_new(root/'MANIFEST_SEAL.json',{'sha256':runner.sha(root/'MANIFEST.json')})
+        return evidence,root
+    def test_sealed_offline_marker_with_reused_live_pid_is_not_paid(self):
+        from formal_binding_preflight import active_paid_driver_count
+        evidence,_=self.active_driver_fixture(runner.OFFLINE)
+        with patch.object(runner,'process_alive',return_value=True):
+            self.assertEqual(active_paid_driver_count(evidence),0)
+    def test_live_target_driver_remains_blocking(self):
+        from formal_binding_preflight import active_paid_driver_count
+        evidence,_=self.active_driver_fixture(runner.TARGET)
+        with patch.object(runner,'process_alive',return_value=True):
+            self.assertEqual(active_paid_driver_count(evidence),1)
+    def test_unsealed_or_unknown_live_driver_identity_remains_blocking(self):
+        from formal_binding_preflight import active_paid_driver_count
+        for mode in (runner.OFFLINE,'UNKNOWN_MODE'):
+            with self.subTest(mode=mode):
+                evidence,root=self.active_driver_fixture(mode)
+                if mode==runner.OFFLINE:
+                    (root/'MANIFEST.json').write_bytes(b'{"capture_mode":"AUTHORED_OFFLINE_ONLY","tampered":true}')
+                with patch.object(runner,'process_alive',return_value=True):
+                    self.assertEqual(active_paid_driver_count(evidence),1)
+        evidence,root=self.active_driver_fixture(runner.OFFLINE)
+        (root/'MANIFEST_SEAL.json').unlink()
+        with patch.object(runner,'process_alive',return_value=True):
+            self.assertEqual(active_paid_driver_count(evidence),1)
     def test_full_zero_provider_preflight(self):
         from formal_binding_preflight import deepseek_successor_preflight
         report=deepseek_successor_preflight(self.cfg,self.transport,self.route,authorization_file=self.auth,pricing_file=self.price)

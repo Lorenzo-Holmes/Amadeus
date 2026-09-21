@@ -13,6 +13,30 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import evaluation_runner as runner
 
 
+def active_paid_driver_count(evidence=None):
+    """Exclude only sealed authored runs; unknown or live paid runs stay blocking.
+
+    Historical offline fixtures retain ACTIVE_RUN markers whose PIDs can later
+    belong to unrelated processes. PID liveness is not evidence of a paid run.
+    Never remove those markers or weaken the check for target-provider runs.
+    """
+    evidence = runner.EVIDENCE if evidence is None else evidence
+    active = 0
+    for marker in evidence.glob('G6_V2_*/ACTIVE_RUN.json'):
+        try:
+            if not runner.process_alive(runner.read(marker).get('pid')):
+                continue
+            manifest = marker.parent / 'MANIFEST.json'
+            seal = marker.parent / 'MANIFEST_SEAL.json'
+            if (runner.sha(manifest) == runner.read(seal)['sha256']
+                    and runner.read(manifest).get('capture_mode') == runner.OFFLINE):
+                continue
+        except (OSError, ValueError, KeyError, TypeError):
+            pass  # Missing or unverified identity cannot justify exclusion.
+        active += 1
+    return active
+
+
 def deepseek_successor_preflight(acceptance_config_file,transport_policy_file,network_route_policy_file,*,
                                 authorization_file,pricing_file,output=None):
     """Construct all frozen roles and actual initial contexts with I/O denied."""
@@ -58,7 +82,7 @@ def deepseek_successor_preflight(acceptance_config_file,transport_policy_file,ne
             rows,_=runner.validate_rows(store.db,root,manifest,scope,preparation)
             assert not rows and store.db.execute('SELECT count(*) FROM provider_calls').fetchone()[0]==0
             calls.assert_not_called();transport.assert_not_called();keys.assert_not_called()
-            active=sum(runner.process_alive(runner.read(p).get('pid')) for p in runner.EVIDENCE.glob('G6_V2_*/ACTIVE_RUN.json'))
+            active=active_paid_driver_count()
             assert active==0
             result={'status':'READY','kind':'ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT','formal_preflight_executed':True,
                 'candidate_id':ds.CANDIDATE,'scope_version':ds.SCOPE_VERSION,'provider_identity':binding['provider_config_identity'],
