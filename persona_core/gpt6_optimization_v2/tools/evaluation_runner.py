@@ -725,7 +725,7 @@ def readonly_db(root):
 def call_rows(db, scope):
     return [dict(r) for r in db.execute(
         "SELECT p.slot_id,p.call_id,p.turn_id,p.session_id,p.status AS provider_status,"
-        "p.model,p.capture_origin,p.raw_sha256,p.request_sha256,p.reserve_micro_cny,"
+        "p.model,p.capture_origin,p.http_status,p.raw_sha256,p.request_sha256,p.reserve_micro_cny,"
         "p.estimate_peak_micro_cny,t.status,t.user_text,t.assistant_text "
         "FROM provider_calls p JOIN turns t USING(turn_id) WHERE p.batch_id=? ORDER BY t.seq",
         (scope["batch_id"],))]

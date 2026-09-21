@@ -179,6 +179,112 @@ class DeepSeekSuccessorTests(unittest.TestCase):
         self.assertIsNone(store.db.execute("SELECT name FROM sqlite_master WHERE name='provider_input_counts'").fetchone())
         summary=p.ProviderJournal(store).summary(self.scope['batch_id'])
         self.assertEqual(summary['known_usage_count'],1);self.assertEqual(summary['provider_id'],'deepseek')
+    def test_completed_scope9_row_reaches_full_evaluator_path(self):
+        """Real mock-wire -> DB -> display -> evaluator -> review -> next-slot path."""
+        root,store,manifest,prep,send=self.completed_harness()
+        first,second=self.scope['slots'][:2]
+        send(first)
+        rows,batch=runner.validate_rows(store.db,root,manifest,self.scope,prep)
+        self.assertEqual(len(rows),1)
+        self.assertEqual(rows[0]['http_status'],200)
+        self.assertTrue(runner.completed(rows[0]))
+        self.assertEqual(rows[0]['assistant_text'],TEXT)
+        self.assertIn('evaluation_provenance',rows[0])
+        self.assertEqual(batch['stopped'],0)
+        self.assertEqual(store.db.execute('SELECT status FROM display_journal').fetchone()[0],'DISPLAY_ACK')
+        with self.assertRaisesRegex(runner.RunnerError,'REVIEW_REQUIRED'):
+            runner.require_successor_review_prefix(root,manifest,self.scope,prep)
+        self.assertEqual(len(self.sent),1)
+        self.write_synthetic_review(root,manifest,rows[0])
+        runner.require_successor_review_prefix(root,manifest,self.scope,prep)
+        send(second)
+        rows,_=runner.validate_rows(store.db,root,manifest,self.scope,prep)
+        self.assertEqual(len(rows),2)
+        self.assertTrue(all(runner.completed(r) and r['http_status']==200 for r in rows))
+        summary=p.ProviderJournal(store).summary(self.scope['batch_id'])
+        self.assertEqual(summary['known_usage_count'],2)
+        self.assertEqual(len(self.sent),2)
+        self.keys.assert_not_called()
+
+    def completed_harness(self):
+        root=self.base/('completed_harness_'+uuid.uuid4().hex)
+        create_sandbox(root/'runtime')
+        store=TranscriptStore(root/'runtime');self.addCleanup(store.close)
+        slot=self.scope['slots'][0]
+        h=store.open_session(self.scope['principal_id'],slot['entity_label'],'PRODUCT_RUNTIME')
+        chat=open_chat(store,h,self.scope)
+        binding=self.scope['semantic_acceptance_binding']
+        prep={'semantic_acceptance_binding':binding,'sessions':{slot['case_id']:{
+            'session_id':h.session_id,'entity_id':h.entity_id,'mode':h.mode
+        }}}
+        manifest={'capture_mode':runner.OFFLINE,'formal_validation':True,
+            'semantic_acceptance_binding':binding,'source_manifest_sha256':runner.sha(self.base/'SOURCE.json')}
+        for key in ('semantic_acceptance_mode','acceptance_policy_version','acceptance_source_freeze',
+                    'trusted_semantic_runtime_version','provider_config_identity',
+                    'dataset_identity','rubric_identity'):
+            manifest[key]=binding[key]
+        def transport(payload,key):
+            self.sent.append(payload)
+            w=wire()
+            return pt.TransportResult(200,self.adapter.decode_http_result(self.scope,w,200),w)
+        def send(current):
+            path=root/'displays'/(current['id']+'.txt')
+            path.parent.mkdir(parents=True,exist_ok=True)
+            result=chat.send_text(current['user_text'],'mock-'+current['id'],slot_id=current['id'],
+                display=lambda text:path.write_bytes((text+'\n').encode('utf-8')),
+                transport=transport,credential_reader=lambda:KEY)
+            self.assertEqual(result['status'],'DISPLAYED')
+        return root,store,manifest,prep,send
+
+    def write_synthetic_review(self,root,manifest,row,*,unclear=False,major=0):
+        routes=runner.read(ROOT/self.scope['identity_references']['criterion_routing']['path'])['criteria']
+        applicable=[r for r in routes if r['turn_id']==row['slot_id']]
+        checks=[{'criterion_id':r['criterion_id'],'gate_a':'PASS',
+            'gate_b':'PASS' if r['route']=='BOTH' else 'NOT_APPLICABLE_BY_FROZEN_ROUTE',
+            'evidence':'AUTHORED HARNESS ASSERTION ONLY; NOT TARGET MODEL QUALITY'} for r in applicable]
+        if unclear:checks[0]['gate_a']='UNCLEAR'
+        value={'slot_id':row['slot_id'],'raw_sha256':row['raw_sha256'],
+            'displayed_sha256':hashlib.sha256(row['assistant_text'].encode('utf-8')).hexdigest(),
+            'source_manifest_sha256':manifest['source_manifest_sha256'],
+            'criteria':checks,'blocking_major':major,'critical':0}
+        path=root/'reviews'/(row['slot_id']+'.json')
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_bytes(pc.canonical(value))
+
+    def test_completed_row_missing_http_projection_mutant_is_rejected(self):
+        root,store,manifest,prep,send=self.completed_harness()
+        send(self.scope['slots'][0])
+        original=runner.call_rows
+        def missing(db,scope):
+            return [{k:v for k,v in r.items() if k!='http_status'} for r in original(db,scope)]
+        with patch.object(runner,'call_rows',side_effect=missing):
+            with self.assertRaisesRegex(KeyError,'http_status'):
+                runner.validate_rows(store.db,root,manifest,self.scope,prep)
+        self.assertEqual(len(self.sent),1)
+
+    def test_completed_chain_unclear_major_and_unknown_never_authorize_next_slot(self):
+        root,store,manifest,prep,send=self.completed_harness()
+        send(self.scope['slots'][0])
+        rows,_=runner.validate_rows(store.db,root,manifest,self.scope,prep)
+        for unclear,major in ((True,0),(False,1)):
+            self.write_synthetic_review(root,manifest,rows[0],unclear=unclear,major=major)
+            with self.assertRaisesRegex(runner.RunnerError,'QUALITY_OR_INTEGRITY_STOP'):
+                runner.require_successor_review_prefix(root,manifest,self.scope,prep)
+        self.write_synthetic_review(root,manifest,rows[0])
+        with store.transaction():
+            store.db.execute("UPDATE provider_calls SET status='SUBMITTED_STATUS_UNKNOWN'")
+        with self.assertRaisesRegex(runner.RunnerError,'STOPPED_OR_UNKNOWN'):
+            runner.require_successor_review_prefix(root,manifest,self.scope,prep)
+        self.assertEqual(len(self.sent),1)
+
+    def test_completed_row_wire_tamper_stops_evaluator(self):
+        root,store,manifest,prep,send=self.completed_harness()
+        send(self.scope['slots'][0])
+        with store.transaction():
+            store.db.execute('UPDATE transport_wire_captures SET wire_bytes=?',(b'corrupted mock wire',))
+        with self.assertRaisesRegex(runner.RunnerError,'WIRE_CHANGED'):
+            runner.validate_rows(store.db,root,manifest,self.scope,prep)
+        self.assertEqual(len(self.sent),1)
     def test_no_paid_retry_after_capture(self):
         store,h,chat,slot,result,shown,transport=self.send()
         chat.send_text(slot['user_text'],'neutral-once',slot_id=slot['id'],transport=transport,credential_reader=lambda:KEY)

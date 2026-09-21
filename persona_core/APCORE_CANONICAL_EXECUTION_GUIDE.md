@@ -2,6 +2,20 @@
 
 版本：1.0 · 2026-09-20。交付状态：`INSTALLED_AS_CANONICAL_GOVERNANCE_ENTRY`。
 
+## Governance V2.1 adoption addendum — 2026-09-21
+
+Codex 执行治理已采用 persona_core/APCORE_CODEX_EXECUTION_POLICY_V2.md 与 persona_core/gpt6_optimization_v2/CODEX_EXECUTION_POLICY.json。该 V2 只改变执行编排、停止/恢复、测试选择、审计压缩、机器状态镜像与上下文加载，不改变本文定义的 Persona / Memory / Relationship / Execution 语义，也不改变冻结的 44 turns / 176 criteria / Gate A 176 / Gate B 132、rubric 或 Major/Critical 标准。
+
+默认恢复路径改为：
+
+Canonical Guide → Governance V2 Policy → CANONICAL_MACHINE_STATE.json → recovery_point
+
+Master Goal、Progress、Continuation Protocol、Decision Log 和深层历史审计仅在 Governance V2 的 DEEP RECOVERY trigger 发生时读取。治理原则为 VERIFY ONCE → SEAL → REUSE UNTIL INVALIDATED。
+
+当前 R18 的历史 evidence/verdict 保持不可变；技术处置为 HARNESS_INVALIDATED_PERMANENT_HISTORY，不是模型质量 PASS。R18-N02-U01 的 MODEL_RAW / UNCLEAR 仍未解决，所以即使工程回归和预检 GREEN，也不能自动结算 harness exclusion 或授权 replacement draw。本治理任务禁止任何新的 paid provider request。
+
+V2.1 活动摘要入口为 persona_core/CODEX_EXECUTION_RULES.md。新 single-writer 工具输出被 pin 的不可变 checkpoint 与公共投影；旧四份 machine JSON 保留为 V1 事实快照，不能将它们误称为已完成迁移的 V2 mirrors。下文旧“四文件恢复”步骤对科学事实取证仍有意义，但不再作为每次 Codex 恢复的重复加载义务。
+
 安装记录：2026-09-20 经用户明确授权写入当前 Persona Core 主工作区，并由根 `AGENTS.md` 设为 Persona Core 会话首读治理入口。本文中的 `PROPOSED_CHANGE`、P1–P8 路线和新增架构裁决仍须按 Change-Control Protocol 逐阶段采用；安装本文件不等于这些 proposed architecture 已实现、G6 machine truth 已改变或历史 validation verdict 已改写。
 
 本文件完成原始目标恢复、架构范围裁决及后续执行治理设计。它不是实现完成、验证通过或生产激活证书。本轮未向 Windows 项目写盘，未修改源码、机器状态、历史证据或 Codex 会话，未调用目标模型，未启动 R16 或新的 external44。
@@ -539,3 +553,12 @@ R15仍为 PERMANENTLY_QUARANTINED：1/44 submitted、1/44 accepted、4/176 revie
 本次实际范围：只读恢复和治理合同落盘、append-only采用与当前P1进度更新；runtime修改0、Provider requests0、readiness0、external44 generation0、paid requests0。没有新revision、没有P2实现、没有G6-07 PASS。原§13/§28/§34是之前的审计快照；当前next phase以本追加记录及machine state为准。
 
 当前状态：`G6_07_ARCHITECTURE_SCOPE_RECONCILED_IMPLEMENTATION_PENDING`；BLOCKER=`P2_MINIMAL_BOUNDARY_REPAIR_REQUIRED`；ACTIVE_TASK=`G6-07`；LAST_COMPLETED=`G6-06`；LAST_COMPLETED_INTERNAL_SUBTASK=`G6-07-P1-ARCHITECTURE-RECONCILIATION`；G6-08=`LOCKED`。唯一下一阶段：下一会话的 **P2 — Minimal Boundary Repair**，严格按精确allowlist并保持0 Provider调用；本会话在P1安全停止。恢复点：`persona_core/gpt6_optimization_v2/architecture_scope_reconciliation_20260920_01/FINAL_AUDIT.json`。
+
+
+## 39. Model Quality Policy Adoption — ADR-MQA-20260920-01
+
+采用时间：2026-09-20T15:31:19.138678+00:00。Task：G6-07-MODEL-QUALITY-ACCEPTANCE-DECISION-V1。正式采用 `APCORE_MODEL_QUALITY_ACCEPTANCE_1`，合同目录 `persona_core/gpt6_optimization_v2/model_quality_acceptance_20260920_01/`，以 POLICY_FREEZE_MANIFEST.json 绑定。选择 C（配置资格审查）并以 A（单 revision 严格门）实施；不采用多 revision 容错聚合，不新增 Major 容忍率。保留原44/176、P1 A176/B132及所有质量阈值。普通Conversation与Trusted State冻结架构不变。
+
+当前配置已未满足模型质量门，进入 MODEL_CONFIGURATION_REQUALIFICATION_REQUIRED；这是本次工程资格拒收，不是整体错误率或Provider能力的统计结论。无通用产品缺陷证据，不修改源码。R16永久FAIL/隔离，原Major OPEN_BLOCKING保留。同source+同有效配置不得通过换revision再抽样；以后同source+有实质差异的一个候选须先完整预注册、零调用绑定预检，再按新会话范围进行一次44/176。当前没有新revision。
+
+本版quality Major也停止采样；原因是严格门已不能满足，不是将对话错误升级成状态逃逸。安全/状态hard stop、UNKNOWN隔离、0自动retry不变。此记录细化§27 P4失败后的处理：没有产品缺陷时转配置审查，不能要求无依据修产品，也不能retry-until-pass。G6-07保持FAIL，G6-08/09 LOCKED，build flags false；本任务所有Provider/readiness/paid calls为0。下一恢复点为上述目录FINAL_AUDIT.json；旧章节的历史状态不被重写。
