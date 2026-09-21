@@ -173,12 +173,23 @@ class BudgetBoundaryTests(unittest.TestCase):
         class AuthoredStore:
             def get_turn(self,*args):return current
             def recent(self,*args):return rows+[current]
+        handle=SimpleNamespace(mode='PRODUCT_RUNTIME',entity_id='offline')
+        # This is a fitting-context test. Size the authored filler against the
+        # current prompt overhead; production limits and dedup assertions stay
+        # unchanged when generation guidance gains a bounded instruction.
+        with patch('context_router._load_frozen',return_value=(genesis,frozen)):
+            probe=build_context(AuthoredStore(),handle,'current',max_prompt_bytes=32768)
+        excess=max(0,probe['prompt_bytes']-24500)
+        if excess:
+            trim=(excess+35)//36
+            for r in rows:
+                r['user_text']=r['user_text'][:-trim]
+                r['assistant_text']=r['assistant_text'][:-trim]
         records=[{'record_id':f'e{i}','record_kind':'UTTERANCE_OBSERVED','source_turn_id':r['turn_id'],
                   'content':r['user_text'],'assistant_utterance':r['assistant_text'],
                   'provenance':'PRODUCT_RUNTIME','admitted_scope':'CURRENT_ENTITY',
                   'content_truncated':False,'sequence':i} for i,r in enumerate(rows,1)]
         before=copy.deepcopy((rows,current,records))
-        handle=SimpleNamespace(mode='PRODUCT_RUNTIME',entity_id='offline')
         with patch('context_router._load_frozen',return_value=(genesis,frozen)):
             baseline=build_context(AuthoredStore(),handle,'current',max_prompt_bytes=24576)
             packet=build_context(AuthoredStore(),handle,'current',max_prompt_bytes=24576,

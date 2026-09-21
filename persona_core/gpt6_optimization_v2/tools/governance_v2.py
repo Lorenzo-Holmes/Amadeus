@@ -231,9 +231,92 @@ def public_view(payload: dict) -> dict:
     return result
 
 
+def task_authorization(root: Path, payload: dict) -> dict:
+    """An append-only task authorization cannot rewrite the offline policy."""
+    require(isinstance(payload.get('task_authorization'), dict), 'PAID_STATE_WRITE_FORBIDDEN')
+    auth = pinned_json(root, payload['task_authorization'])
+    require(auth.get('kind') == 'POST_FAIL_PRODUCT_REPAIR_NEW_CANDIDATE'
+            and auth.get('status') == 'PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED'
+            and auth.get('source') == 'CURRENT_EXPLICIT_USER_REQUEST_20260921'
+            and auth.get('task') == payload.get('active_task')
+            and auth.get('candidate_id') == payload['draw_lineage']['candidate_id']
+            and auth.get('paid_validation_allowed') is True
+            and auth.get('max_fresh_revisions') == 1 and auth.get('max_generation_requests') == 44
+            and auth.get('automatic_paid_retries') == auth.get('readiness_requests') == auth.get('count_api_requests') == 0
+            and auth.get('fallback_allowed') is False
+            and auth.get('replacement_draw') is False and auth.get('historical_draw_refunded') is False
+            and auth.get('r18_preserved') is True and auth.get('r18_resume_replay_resend') is False,
+            'TASK_AUTHORIZATION_MISMATCH')
+    return auth
+
+
+def validate_paid_state(root: Path, payload: dict) -> None:
+    if payload.get('paid_requests_allowed') is False:
+        return
+    require(payload.get('paid_requests_allowed') is True, 'PAID_STATE_WRITE_FORBIDDEN')
+    task_authorization(root, payload)
+    require(payload.get('status') in {'READY_FOR_SINGLE_NEW_CANDIDATE_ATTEMPT', 'VALIDATING_NEW_CANDIDATE'}
+            and payload.get('paid_validation_blockers') == [], 'PAID_GATE_BLOCKED')
+    preflight = pinned_json(root, payload['preflight'])
+    require(preflight.get('status') == 'READY'
+            and preflight.get('kind') == 'ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT'
+            and preflight.get('candidate_id') == payload['draw_lineage']['candidate_id']
+            and preflight.get('denominators') == dict(turns=44, criteria=176, gate_a=176, gate_b=132)
+            and preflight.get('source_manifest') == payload.get('source_freeze')
+            and all(preflight.get(k) == 0 for k in ('provider_call_invocations', 'provider_call_rows',
+                'generation_request_invocations', 'readiness_requests', 'token_count_request_invocations',
+                'automatic_paid_retries', 'active_paid_driver_count')), 'PAID_PREFLIGHT_NOT_READY')
+    receipt = pinned_json(root, payload['test_receipt'])
+    freeze = pinned_json(root, payload['source_freeze'])
+    require(receipt.get('status') == 'PASS' and receipt.get('source_files') == freeze['files']
+            and verify_manifest(root, payload['source_freeze'])['status'] == 'MATCH'
+            and all(r.get('exit_code') == 0 and r.get('tests', 0) > 0 and r.get('skipped') == 0
+                    for r in receipt.get('results', [])) and bool(receipt.get('results')),
+            'PAID_TESTED_SOURCE_MISMATCH')
+    attempt = payload.get('formal_attempt', {})
+    require(attempt.get('allocations') == 1 and isinstance(attempt.get('revision'), str)
+            and bool(attempt['revision']) and attempt.get('kind') == 'POST_FAIL_PRODUCT_REPAIR_NEW_CANDIDATE',
+            'SINGLE_NEW_CANDIDATE_ALLOCATION_REQUIRED')
+
+
+def validate_new_lineage(root: Path, pointer: dict, old: dict, payload: dict) -> None:
+    transition = payload.get('lineage_transition', {})
+    require(transition.get('kind') == 'POST_FAIL_PRODUCT_REPAIR_NEW_CANDIDATE', 'DRAW_LINEAGE_CHANGED')
+    auth = task_authorization(root, payload)
+    require(transition.get('parent_checkpoint') == pointer.get('checkpoint') == auth.get('parent_checkpoint')
+            and transition.get('parent_lineage') == old.get('draw_lineage')
+            and payload.get('historical_lineages') == old.get('historical_lineages', []) + [old['draw_lineage']]
+            and payload.get('r18') == old.get('r18') and bool(payload.get('r18'))
+            and old.get('status') == 'HARD_STOP_REQUIRED_CONVERSATION_CRITERION_FAIL',
+            'NEW_LINEAGE_PARENT_NOT_PRESERVED')
+    new, previous = payload['draw_lineage'], old['draw_lineage']
+    require(all(new[k] != previous[k] for k in ('root_id', 'candidate_id', 'configuration_sha256'))
+            and new['benchmark_sha256'] == previous['benchmark_sha256']
+            and new['replacement_allocations'] == 0
+            and all(new['candidate_id'] != h['candidate_id'] for h in payload['historical_lineages']),
+            'NEW_LINEAGE_NOT_NEW_PRODUCT')
+    freeze = pinned_json(root, payload['source_freeze'])
+    parent = pinned_json(root, old['source_freeze'])
+    config = pinned_json(root, payload['configuration'])
+    require(freeze.get('parent_manifest') == old['source_freeze']
+            and payload['configuration']['sha256'] == new['configuration_sha256']
+            and config.get('candidate_id') == new['candidate_id'], 'NEW_LINEAGE_SOURCE_CONFIGURATION_MISMATCH')
+    implementation = config.get('generation_calibration', {}).get('implementation', {})
+    verify_reference(root, implementation)
+    require(freeze['files'].get(implementation['path']) == implementation['sha256']
+            and parent['files'].get(implementation['path']) not in (None, implementation['sha256']),
+            'NEW_LINEAGE_REQUIRES_REAL_PRODUCT_CHANGE')
+    import zipfile
+    archive = verify_reference(root, transition['parent_source_archive'])
+    with zipfile.ZipFile(archive) as z:
+        require(set(z.namelist()) == set(parent['files'])
+                and all(sha(z.read(p)) == h for p, h in parent['files'].items()),
+                'PARENT_SOURCE_ARCHIVE_MISMATCH')
+
+
 def commit_state(root: Path, payload: dict, expected_current_sha: str) -> dict:
     """Single-writer CAS. Publish immutable generation first, then replace one pointer."""
-    require(payload.get('paid_requests_allowed') is False, 'PAID_STATE_WRITE_FORBIDDEN')
+    validate_paid_state(root, payload)
     require(all(payload.get('scientific_invariants', {}).get(k) == v for k, v in INVARIANTS.items()),
             'STATE_INVARIANT_MISMATCH')
     lineage = payload.get('draw_lineage', {})
@@ -259,11 +342,25 @@ def commit_state(root: Path, payload: dict, expected_current_sha: str) -> dict:
             previous_lineage = old.get('draw_lineage')
             if previous_lineage is not None:
                 new_lineage = payload.get('draw_lineage', {})
-                for key in ('root_id', 'candidate_id', 'configuration_sha256', 'benchmark_sha256'):
-                    require(new_lineage.get(key) == previous_lineage.get(key), 'DRAW_LINEAGE_CHANGED')
-                used = new_lineage.get('replacement_allocations')
-                require(type(used) is int and previous_lineage['replacement_allocations'] <= used <= 1,
-                        'DRAW_COUNTER_RESET_OR_CAP_EXCEEDED')
+                same = all(new_lineage.get(key) == previous_lineage.get(key)
+                           for key in ('root_id', 'candidate_id', 'configuration_sha256', 'benchmark_sha256'))
+                if not same:
+                    validate_new_lineage(root, old_pointer, old, payload)
+                else:
+                    used = new_lineage.get('replacement_allocations')
+                    require(type(used) is int and previous_lineage['replacement_allocations'] <= used <= 1,
+                            'DRAW_COUNTER_RESET_OR_CAP_EXCEEDED')
+                    prior_attempt = old.get('formal_attempt')
+                    if prior_attempt:
+                        attempt = payload.get('formal_attempt', {})
+                        require(all(attempt.get(k) == prior_attempt.get(k) for k in ('allocations', 'revision', 'kind')),
+                                'FORMAL_ATTEMPT_REPLACEMENT_FORBIDDEN')
+                    for key in ('historical_lineages', 'lineage_transition'):
+                        if key in old:
+                            require(payload.get(key) == old[key], 'CANDIDATE_HISTORY_REWRITE_FORBIDDEN')
+                    if 'lineage_transition' in old:
+                        require(all(payload.get(k) == old.get(k) for k in ('r18', 'configuration', 'task_authorization')),
+                                'CANDIDATE_IDENTITY_HISTORY_REWRITE_FORBIDDEN')
         policy_ref = reference(root, POLICY)
         validate_policy(pinned_json(root, policy_ref))
         data = canonical_bytes(payload)
@@ -295,7 +392,7 @@ def resume(root: Path) -> dict:
     policy = pinned_json(root, pointer['policy'])
     validate_policy(policy)
     state = pinned_json(root, pointer['checkpoint'])
-    require(state.get('paid_requests_allowed') is False, 'CURRENT_TASK_AUTHORIZATION_MISMATCH')
+    validate_paid_state(root, state)
     for ref in policy.get('preserved_acceptance_references', []) + state.get('guidance_refs', []):
         verify_reference(root, ref)
     require(bool(state.get('integrity_manifests')), 'NO_VERIFIED_INTEGRITY_ROOT')

@@ -4,6 +4,20 @@
   "protected_patterns": ["*/PRIVATE_RUBRIC.json", "*/NEW_MULTITURN_CASES.json", "*/external_failure_v1/CASES.json", "*/external_failure_v1/SELECTION.json", "*/G6_07_DUAL_GATE_SPEC.md", "*/CRITERION_ROUTING*.json", "*/GENESIS_SNAPSHOT*.json"],
   "rules": [
     {
+      "patterns": ["persona_core/operational_runtime_v1/expression_prompt.py", "persona_core/gpt6_optimization_v2/tools/calibration_synthetic_cases.py"],
+      "tests": ["test_epistemic_calibration.py", "test_expression_prompt.py", "test_expression_axes_v9.py", "test_expression_contracts_recovery.py", "test_context_budget_recovery.py", "test_context_projection.py", "test_bounded_display_state_contract.py", "test_bounded_consumer_binding.py", "test_formal_acceptance_integration.py", "test_deepseek_successor_binding.py", "test_evaluation_runner.py"],
+      "freeze_full_suite": true,
+      "legacy_required": true,
+      "rationale": "Conversation generation flows through context composition, request serialization, display, consumers and review. Shared runtime identity requires legacy compatibility coverage."
+    },
+    {
+      "patterns": ["persona_core/gpt6_optimization_v2/epistemic_calibration_20260921_01/CONFIGURATION*.json", "persona_core/gpt6_optimization_v2/epistemic_calibration_20260921_01/EXECUTION_AUTHORIZATION.json"],
+      "tests": ["test_epistemic_calibration.py", "test_new_candidate_governance.py", "test_deepseek_successor_binding.py"],
+      "freeze_full_suite": true,
+      "legacy_required": false,
+      "rationale": "Append-only product candidate registration and conditional task authorization; original model, dataset and gates retained."
+    },
+    {
       "patterns": ["persona_core/gpt6_optimization_v2/tools/evaluation_runner.py"],
       "tests": ["test_evaluation_runner.py", "test_deepseek_successor_binding.py", "test_openai_formal_binding.py", "test_authoritative_input_count.py", "test_formal_acceptance_integration.py", "test_bounded_consumer_binding.py", "test_bounded_display_state_contract.py", "test_semantic_acceptance.py", "test_transport_lifecycle.py"],
       "freeze_full_suite": true,

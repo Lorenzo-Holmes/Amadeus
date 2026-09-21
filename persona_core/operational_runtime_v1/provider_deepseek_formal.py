@@ -21,6 +21,9 @@ ENDPOINT = 'https://api.deepseek.com/responses'
 DIRECTORY = 'persona_core/gpt6_optimization_v2/deepseek_successor_20260921_01/'
 CONFIG_PATH = DIRECTORY + 'CONFIGURATION_PREREGISTRATION.json'
 CONFIG_SHA = '80e7f80bd6b3c8ec78187bf7a0db719633fad2606fcef5eb0757f68ac8ecde30'
+CALIBRATED_CANDIDATE = 'APCORE_DEEPSEEK_FLASH_GENERALIZED_EPISTEMIC_CALIBRATION_V1'
+CALIBRATED_DIRECTORY = 'persona_core/gpt6_optimization_v2/epistemic_calibration_20260921_01/'
+CALIBRATED_CONFIG_SHA = '0752ef9b3014d04082b10e52c01cc44a3fd65178b7732c1b91af97e4512b1df6'
 INPUT_ENVELOPE = 1_100_000
 CAPABILITIES = pc.Capabilities(('responses',), ('DIRECT_NO_PROXY',),
     'responses_terminal_or_explicit_http_rejection', supports_reasoning=True)
@@ -48,8 +51,21 @@ def verify_reference(value):
     ensure(reference(p)==value,'DEEPSEEK_REFERENCE_CHANGED')
     return p
 
-def configuration():
-    return strict_json(verify_reference({'path':CONFIG_PATH,'sha256':CONFIG_SHA}).read_bytes())
+def candidate_profile(candidate_id=CANDIDATE):
+    """Pinned registrations, never a caller-selected arbitrary configuration."""
+    if candidate_id == CANDIDATE:
+        return DIRECTORY, CONFIG_SHA, 'APCORE_DEEPSEEK_SUCCESSOR_CONFIGURATION_1'
+    ensure(candidate_id == CALIBRATED_CANDIDATE, 'DEEPSEEK_UNREGISTERED_CANDIDATE')
+    return CALIBRATED_DIRECTORY, CALIBRATED_CONFIG_SHA, 'APCORE_EPISTEMIC_CALIBRATION_CONFIGURATION_1'
+
+def configuration(candidate_id=CANDIDATE):
+    directory, digest, _ = candidate_profile(candidate_id)
+    cfg = strict_json(verify_reference({'path':directory+'CONFIGURATION_PREREGISTRATION.json','sha256':digest}).read_bytes())
+    ensure(cfg['candidate_id'] == candidate_id, 'DEEPSEEK_CANDIDATE_CONFIGURATION_MISMATCH')
+    if candidate_id == CALIBRATED_CANDIDATE:
+        verify_reference(cfg['generation_calibration']['implementation'])
+        ensure(cfg['attempt_kind']=='POST_FAIL_PRODUCT_REPAIR_NEW_CANDIDATE', 'DEEPSEEK_ATTEMPT_KIND')
+    return cfg
 
 def generation_options():
     return {'stream':True,'max_output_tokens':32768,'reasoning':{'enabled':True,'effort':'max'},
@@ -72,7 +88,7 @@ def input_guard_receipt(scope,payload,slot_id):
     message_bytes=len(pc.canonical(messages))
     ensure(message_bytes<=24576 and len(payload)<=32768,'DEEPSEEK_INPUT_BYTES_EXCEEDED')
     ensure(any(s['id']==slot_id and s['model']==MODEL for s in scope['slots']),'DEEPSEEK_INPUT_SLOT')
-    return {'version':'APCORE_DEEPSEEK_HOST_BYTES_RECEIPT_1','candidate_id':CANDIDATE,'model':MODEL,
+    return {'version':'APCORE_DEEPSEEK_HOST_BYTES_RECEIPT_1','candidate_id':scope['candidate_id'],'model':MODEL,
         'slot_id':slot_id,'request_sha256':hashlib.sha256(payload).hexdigest(),'messages_sha256':pc.digest(messages),
         'canonical_message_bytes':message_bytes,'canonical_request_bytes':len(payload),
         'input_tokens_pre_request':None,'exact_token_proof':False,'automatic_truncation':False,
@@ -94,7 +110,8 @@ def check_spend(scope):
         and price.get('rates')==policy['rates']=={MODEL:{'input_miss':'2','output':'8','input_hit':'0.04'}},'DEEPSEEK_PRICE_CHANGED')
     ensure(price.get('sources') and all(s['url'].startswith('https://api-docs.deepseek.com/') for s in price['sources']), 'DEEPSEEK_PRICE_SOURCE')
     auth=strict_json(verify_reference(policy['authorization_identity']).read_bytes())
-    ensure(auth.get('status')=='PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED' and auth.get('candidate_id')==CANDIDATE
+    candidate_profile(scope.get('candidate_id'))
+    ensure(auth.get('status')=='PROJECT_COMPLETION_SPEND_AUTHORIZED_AS_NEEDED' and auth.get('candidate_id')==scope['candidate_id']
         and auth.get('max_fresh_revisions')==1 and auth.get('max_generation_requests')==44
         and auth.get('automatic_paid_retries')==auth.get('count_api_requests')==auth.get('readiness_requests')==0
         and auth.get('fallback_allowed') is False,'DEEPSEEK_AUTHORIZATION_CHANGED')
@@ -105,9 +122,11 @@ def check_spend(scope):
 def build_scope(revision,suite_data,pricing,transport_policy,network_route_policy,*,
                 authorization_file,pricing_file,acceptance_config_file,input_proof_file=None):
     ensure(input_proof_file is None,'DEEPSEEK_FOREIGN_INPUT_PROOF_FORBIDDEN')
-    cfg=configuration();acceptance=strict_json(acceptance_config_file.read_bytes())
-    refs={'configuration':{'path':CONFIG_PATH,'sha256':CONFIG_SHA},
-        'contract':reference(WORKSPACE/DIRECTORY/'CONFIGURATION_FREEZE.json'),
+    auth=strict_json(authorization_file.read_bytes());candidate=auth.get('candidate_id')
+    directory,digest,_=candidate_profile(candidate)
+    cfg=configuration(candidate);acceptance=strict_json(acceptance_config_file.read_bytes())
+    refs={'configuration':{'path':directory+'CONFIGURATION_PREREGISTRATION.json','sha256':digest},
+        'contract':reference(WORKSPACE/directory/'CONFIGURATION_FREEZE.json'),
         'quality_policy':cfg['model_quality_policy_identity'],'dataset':cfg['dataset_identity'],
         'rubric':cfg['rubric_identity'],'criterion_routing':cfg['criterion_routing_identity'],
         'source_manifest':acceptance['acceptance_source_manifest'],'acceptance_config':reference(acceptance_config_file),
@@ -115,7 +134,7 @@ def build_scope(revision,suite_data,pricing,transport_policy,network_route_polic
         'schedule':cfg['schedule_identity']}
     schedule=strict_json(verify_reference(refs['schedule']).read_bytes())['slots']
     safety=strict_json(verify_reference(refs['input_safety_policy']).read_bytes())
-    scope={'schema_version':SCOPE_VERSION,'provider_id':'deepseek','candidate_id':CANDIDATE,
+    scope={'schema_version':SCOPE_VERSION,'provider_id':'deepseek','candidate_id':candidate,
         'batch_design_id':'APCORE_DEEPSEEK_FLASH_EXTERNAL44_SINGLE_BATCH_1',
         'validation_purpose':'FORMAL_EXTERNAL44_CONFIGURATION_QUALIFICATION','formal_validation':True,
         'batch_id':'APCORE-G6-V2-'+revision,'principal_id':'APCORE_G6_V2_'+revision,
@@ -139,9 +158,10 @@ def build_scope(revision,suite_data,pricing,transport_policy,network_route_polic
 
 def check_scope(scope,adapter):
     from semantic_binding import validate_binding
-    cfg=configuration()
+    candidate=scope.get('candidate_id');directory,digest,freeze_id=candidate_profile(candidate)
+    cfg=configuration(candidate)
     ensure(scope.get('schema_version')==SCOPE_VERSION and scope.get('provider_id')=='deepseek'
-        and adapter.provider_id=='deepseek' and scope.get('candidate_id')==CANDIDATE,'DEEPSEEK_FORMAL_IDENTITY')
+        and adapter.provider_id=='deepseek' and cfg['candidate_id']==candidate,'DEEPSEEK_FORMAL_IDENTITY')
     ensure(scope.get('formal_validation') is True and scope.get('validation_purpose')=='FORMAL_EXTERNAL44_CONFIGURATION_QUALIFICATION','DEEPSEEK_FORMAL_PURPOSE')
     ensure(scope.get('source_binding')==pc.runtime_source_binding(),'PROVIDER_SOURCE_BINDING_CHANGED')
     ensure(scope.get('capabilities')==CAPABILITIES.declaration() and scope.get('transport_contract_version')==pc.TRANSPORT_VERSION,'DEEPSEEK_CAPABILITIES')
@@ -159,13 +179,13 @@ def check_scope(scope,adapter):
     ensure(set(refs)=={'configuration','contract','quality_policy','dataset','rubric','criterion_routing',
         'source_manifest','acceptance_config','policy_amendment','input_safety_policy','schedule'},'DEEPSEEK_IDENTITY_FIELDS')
     for v in refs.values():verify_reference(v)
-    ensure(refs['configuration']=={'path':CONFIG_PATH,'sha256':CONFIG_SHA},'DEEPSEEK_CONFIGURATION_CHANGED')
+    ensure(refs['configuration']=={'path':directory+'CONFIGURATION_PREREGISTRATION.json','sha256':digest},'DEEPSEEK_CONFIGURATION_CHANGED')
     for name,field in [('quality_policy','model_quality_policy_identity'),('dataset','dataset_identity'),('rubric','rubric_identity'),
         ('criterion_routing','criterion_routing_identity'),('policy_amendment','policy_amendment_identity'),
         ('input_safety_policy','input_safety_policy_identity'),('schedule','schedule_identity')]:
         ensure(refs[name]==cfg[field],'DEEPSEEK_PREREGISTERED_IDENTITY_CHANGED')
     frozen=strict_json(verify_reference(refs['contract']).read_bytes())
-    ensure(frozen.get('freeze_id')=='APCORE_DEEPSEEK_SUCCESSOR_CONFIGURATION_1','DEEPSEEK_CONFIGURATION_FREEZE')
+    ensure(frozen.get('freeze_id')==freeze_id,'DEEPSEEK_CONFIGURATION_FREEZE')
     for p,h in frozen['files'].items():verify_reference({'path':p,'sha256':h})
     safety=strict_json(verify_reference(refs['input_safety_policy']).read_bytes())
     ensure(scope.get('input_safety_policy')==safety and safety['pre_request_exact_proof_required'] is False,'DEEPSEEK_INPUT_POLICY_CHANGED')

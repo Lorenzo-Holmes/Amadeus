@@ -605,9 +605,9 @@ def prepare(revision, suite="heldout", *, offline=False, pricing_record=None,
                 'OPENAI_FORMAL_PREFLIGHT_NOT_READY')
             # Exclusive allocation survives an interrupted preparation; never
             # opens a replacement revision under the same authorization.
-            require(not any(process_alive(read(p).get('pid')) for p in EVIDENCE.glob('G6_V2_*/ACTIVE_RUN.json')),
-                'ACTIVE_PAID_DRIVER_PRESENT')
-            allocation=EVIDENCE/('SUCCESSOR_ALLOCATION_'+oa.CANDIDATE+'.json')
+            from formal_binding_preflight import active_paid_driver_count
+            require(active_paid_driver_count(EVIDENCE)==0, 'ACTIVE_PAID_DRIVER_PRESENT')
+            allocation=EVIDENCE/('SUCCESSOR_ALLOCATION_'+scope['candidate_id']+'.json')
             write_new(allocation,{'revision':revision,'scope_sha256':value_sha(scope),'preflight':oa.reference(preflight_file)})
     root.mkdir(parents=False, exist_ok=False)
     write_new(root / "PREPARATION_INTENT.json", {"revision_id": revision, "at_utc": now(), "provider_calls": 0})

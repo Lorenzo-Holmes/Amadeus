@@ -85,7 +85,7 @@ def deepseek_successor_preflight(acceptance_config_file,transport_policy_file,ne
             active=active_paid_driver_count()
             assert active==0
             result={'status':'READY','kind':'ZERO_PROVIDER_FORMAL_BINDING_PREFLIGHT','formal_preflight_executed':True,
-                'candidate_id':ds.CANDIDATE,'scope_version':ds.SCOPE_VERSION,'provider_identity':binding['provider_config_identity'],
+                'candidate_id':scope['candidate_id'],'scope_version':ds.SCOPE_VERSION,'provider_identity':binding['provider_config_identity'],
                 'source_freeze':binding['acceptance_source_freeze'],'offline_work_path':runner.relative(root),
                 'provider_call_invocations':0,'provider_call_rows':0,'token_count_request_invocations':0,
                 'generation_request_invocations':0,'readiness_requests':0,'credential_reads':0,

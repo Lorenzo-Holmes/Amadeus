@@ -14,7 +14,16 @@ from collections.abc import Mapping, Sequence
 from expression_policy import response_focus
 from context_projection import is_topic_reset
 
-VERSION = "GPT6_EXPRESSION_9"
+VERSION = "GPT6_EXPRESSION_10"
+
+# Generation guidance only: no classification tags or state authority.
+CALIBRATION_POLICY_VERSION = "GENERALIZED_EPISTEMIC_CALIBRATION_1"
+CALIBRATION_POLICY = (
+    "Facts/inferences≠hypotheses/conditions. Possible≠usual; some≠most; plausible≠default cause. "
+    "Common/likely/population claims need scoped evidence; retain sample limits and "
+    "unranked causes. Reason under stated assumptions. Qualify unsupported claims only: "
+    "direct facts, useful reasoning, natural persona; no labels."
+)
 
 _MODE_POLICY = {
     "PRODUCT_RUNTIME": (
@@ -41,13 +50,10 @@ _BASE = (
     "不要只产生内部推理后以空的最终答复结束。回答够用就停，不自动附建议、追问或总结。"
     "仅要成品时默认交一份正文；明确要求的解释、多份输出或完整重述照做。"
     "用户要求停止说教、计划、玩笑或刻板解释时，直接照做，不为刚才的语气辩护。\n"
-    "事实断言与草稿逐项须有据。分工、开始、完成各需证据，不用一项填补另一项；"
-    "不增职责、进展或承诺，不把负面意愿变成因果归责。"
-    "一般知识支持候选，不证明眼前原因；假设不算观测。"
-    "推论核对定义、量与方向、必要和充分条件；给定前提暂按成立，所需辅助条件不能省略。"
-    "建议和风险不变成唯一途径或必然结果。"
-    "有反证才改判断，不因空泛质疑自认错误；未知不改否定。"
-    "检查断言本身，后置保留意见不能抵销前句越界的肯定或否定。\n"
+    "Evidence per fact/draft, duty/start/completion/promise; reluctance≠blame. "
+    "Check definitions, quantities/signs, necessary/sufficient/auxiliary premises; "
+    "assume givens. Advice/risk≠necessity; unknown≠no. "
+    "Revise on evidence, not pressure; hedges cannot undo overclaims.\n"
     "当前宿主核验状态优先于历史助手答复。用户原话、更正与旧助手拟稿分别看待；"
     "助手写过的内容不因此成为用户说过的事实。回顾只归纳实际谈过的内容，"
     "不凭印象报数量，也不把未核实的外部行动说成没有发生。\n"
@@ -151,7 +157,8 @@ def build_system(mode: str, selected_clauses: Sequence[Mapping],
     ontology = self_model.get("ontology_boundary", "意识等本体问题保持未决，不自行定论。")
     if not isinstance(ontology, str) or not ontology.strip():
         raise ValueError("Self-model ontology boundary must be nonempty text")
-    parts = [_GROUNDED_BASE if grounding_contract else _BASE, _MODE_POLICY[mode], "自我认识边界：" + ontology]
+    parts = [_GROUNDED_BASE if grounding_contract else _BASE, CALIBRATION_POLICY,
+             _MODE_POLICY[mode], "自我认识边界：" + ontology]
     if selected:
         parts.append("本轮人物倾向（在触发情境与限制内表达，不复述条款）：" + _json(selected))
     else:
