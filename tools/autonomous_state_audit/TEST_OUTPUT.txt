@@ -1,0 +1,43 @@
+test_as_of_not_inferred_from_clock (test_audit.AuditTests.test_as_of_not_inferred_from_clock) ... ok
+test_auditor_imports_no_runtime_provider_network_or_database (test_audit.AuditTests.test_auditor_imports_no_runtime_provider_network_or_database) ... ok
+test_bad_active_json_is_unknown_not_crash (test_audit.AuditTests.test_bad_active_json_is_unknown_not_crash) ... ok
+test_blank_active_field_cannot_consume_next_line (test_audit.AuditTests.test_blank_active_field_cannot_consume_next_line) ... ok
+test_clean_observations_do_not_grant_acceptance_or_authenticity (test_audit.AuditTests.test_clean_observations_do_not_grant_acceptance_or_authenticity) ... ok
+test_cli_json_and_status_codes (test_audit.AuditTests.test_cli_json_and_status_codes) ... ok
+test_counter_drift_is_conflict (test_audit.AuditTests.test_counter_drift_is_conflict) ... ok
+test_dependency_without_done_evidence_blocks (test_audit.AuditTests.test_dependency_without_done_evidence_blocks) ... ok
+test_different_phase_is_unknown_not_historical_failure (test_audit.AuditTests.test_different_phase_is_unknown_not_historical_failure) ... ok
+test_duplicate_active_field_is_unknown (test_audit.AuditTests.test_duplicate_active_field_is_unknown) ... ok
+test_duplicate_keys_and_nonfinite_numbers_are_rejected (test_audit.AuditTests.test_duplicate_keys_and_nonfinite_numbers_are_rejected) ... ok
+test_duplicate_task_ids_and_owner_collision (test_audit.AuditTests.test_duplicate_task_ids_and_owner_collision) ... ok
+test_expired_lease_stays_active_until_reconciled (test_audit.AuditTests.test_expired_lease_stays_active_until_reconciled) ... ok
+test_gate_empty_evidence_and_duplicate_ids_not_pass (test_audit.AuditTests.test_gate_empty_evidence_and_duplicate_ids_not_pass) ... ok
+test_internal_parent_reference_is_allowed_but_only_available (test_audit.AuditTests.test_internal_parent_reference_is_allowed_but_only_available) ... ok
+test_invalid_tasks_and_bool_counters_do_not_pass (test_audit.AuditTests.test_invalid_tasks_and_bool_counters_do_not_pass) ... ok
+test_matching_protected_hash_is_only_byte_observation (test_audit.AuditTests.test_matching_protected_hash_is_only_byte_observation) ... ok
+test_mismatched_unknown_count_is_conflict (test_audit.AuditTests.test_mismatched_unknown_count_is_conflict) ... ok
+test_missing_branch_row_is_unknown_not_absence (test_audit.AuditTests.test_missing_branch_row_is_unknown_not_absence) ... ok
+test_missing_canonical_and_cursor_are_blocked (test_audit.AuditTests.test_missing_canonical_and_cursor_are_blocked) ... ok
+test_missing_duplicate_reversed_markers_are_unknown (test_audit.AuditTests.test_missing_duplicate_reversed_markers_are_unknown) ... ok
+test_missing_invalid_utf8_oversize_and_wrong_json_shape (test_audit.AuditTests.test_missing_invalid_utf8_oversize_and_wrong_json_shape) ... ok
+test_missing_inventory_never_becomes_empty_success (test_audit.AuditTests.test_missing_inventory_never_becomes_empty_success) ... ok
+test_missing_optional_inputs_are_unknown (test_audit.AuditTests.test_missing_optional_inputs_are_unknown) ... ok
+test_naive_or_reversed_lease_unknown (test_audit.AuditTests.test_naive_or_reversed_lease_unknown) ... ok
+test_old_trailing_status_does_not_override_active (test_audit.AuditTests.test_old_trailing_status_does_not_override_active) ... ok
+test_output_determinism_independent_of_absolute_root (test_audit.AuditTests.test_output_determinism_independent_of_absolute_root) ... ok
+test_overlap_is_detected_and_adjacent_path_is_not (test_audit.AuditTests.test_overlap_is_detected_and_adjacent_path_is_not) ... ok
+test_pass_gate_missing_evidence_is_blocked (test_audit.AuditTests.test_pass_gate_missing_evidence_is_blocked) ... ok
+test_pr_branch_and_declared_head_mismatch (test_audit.AuditTests.test_pr_branch_and_declared_head_mismatch) ... ok
+test_protected_mismatch_missing_and_bad_digest (test_audit.AuditTests.test_protected_mismatch_missing_and_bad_digest) ... ok
+test_read_only_integration_preserves_all_input_bytes_and_mtimes (test_audit.AuditTests.test_read_only_integration_preserves_all_input_bytes_and_mtimes) ... ok
+test_snapshot_wrong_repo_malformed_sha_and_duplicate_pr (test_audit.AuditTests.test_snapshot_wrong_repo_malformed_sha_and_duplicate_pr) ... ok
+test_stale_future_or_invalid_snapshot_not_used_for_conflict (test_audit.AuditTests.test_stale_future_or_invalid_snapshot_not_used_for_conflict) ... ok
+test_symlink_and_traversal_are_not_read_as_evidence (test_audit.AuditTests.test_symlink_and_traversal_are_not_read_as_evidence) ... ok
+test_unresolved_request_survives_missing_journal (test_audit.AuditTests.test_unresolved_request_survives_missing_journal) ... ok
+test_unsupported_glob_is_unknown_not_safely_disjoint (test_audit.AuditTests.test_unsupported_glob_is_unknown_not_safely_disjoint) ... ok
+test_unsupported_schema_and_bad_nested_shapes (test_audit.AuditTests.test_unsupported_schema_and_bad_nested_shapes) ... ok
+
+----------------------------------------------------------------------
+Ran 38 tests in 2.356s
+
+OK
