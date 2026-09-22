@@ -1,0 +1,45 @@
+test_asserted_authority_never_becomes_granted_authority (test_semantic_contract.SemanticContractTests.test_asserted_authority_never_becomes_granted_authority) ... ok
+test_condition_is_not_erased (test_semantic_contract.SemanticContractTests.test_condition_is_not_erased) ... ok
+test_duplicate_json_keys_rejected (test_semantic_contract.SemanticContractTests.test_duplicate_json_keys_rejected) ... ok
+test_each_evidence_scope_mismatch_rejects (test_semantic_contract.SemanticContractTests.test_each_evidence_scope_mismatch_rejects) ... ok
+test_evidence_id_mismatch_rejects (test_semantic_contract.SemanticContractTests.test_evidence_id_mismatch_rejects) ... ok
+test_expression_depth_and_cycles_rejected (test_semantic_contract.SemanticContractTests.test_expression_depth_and_cycles_rejected) ... ok
+test_expression_node_budget_rejected (test_semantic_contract.SemanticContractTests.test_expression_node_budget_rejected) ... ok
+test_extra_fields_rejected_at_each_level (test_semantic_contract.SemanticContractTests.test_extra_fields_rejected_at_each_level) ... ok
+test_generated_operator_phase_and_speaker_matrix (test_semantic_contract.SemanticContractTests.test_generated_operator_phase_and_speaker_matrix) ... ok
+test_hash_mismatch_rejects (test_semantic_contract.SemanticContractTests.test_hash_mismatch_rejects) ... ok
+test_input_size_limit_rejected (test_semantic_contract.SemanticContractTests.test_input_size_limit_rejected) ... ok
+test_inspection_functions_do_not_mutate_inputs (test_semantic_contract.SemanticContractTests.test_inspection_functions_do_not_mutate_inputs) ... ok
+test_intervals_require_timezone_and_positive_range (test_semantic_contract.SemanticContractTests.test_intervals_require_timezone_and_positive_range) ... ok
+test_invalid_record_is_not_host_authority (test_semantic_contract.SemanticContractTests.test_invalid_record_is_not_host_authority) ... ok
+test_invalid_version_and_unhashable_operator_rejected (test_semantic_contract.SemanticContractTests.test_invalid_version_and_unhashable_operator_rejected) ... ok
+test_malformed_and_extreme_json_rejected (test_semantic_contract.SemanticContractTests.test_malformed_and_extreme_json_rejected) ... ok
+test_missing_evidence_holds (test_semantic_contract.SemanticContractTests.test_missing_evidence_holds) ... ok
+test_missing_legacy_dimensions_not_defaulted (test_semantic_contract.SemanticContractTests.test_missing_legacy_dimensions_not_defaulted) ... ok
+test_missing_ref_cannot_mask_other_corrupt_evidence (test_semantic_contract.SemanticContractTests.test_missing_ref_cannot_mask_other_corrupt_evidence) ... ok
+test_mutations_to_all_six_dimensions_change_fingerprint (test_semantic_contract.SemanticContractTests.test_mutations_to_all_six_dimensions_change_fingerprint) ... ok
+test_nested_phase_is_not_replaced_by_current_phase (test_semantic_contract.SemanticContractTests.test_nested_phase_is_not_replaced_by_current_phase) ... ok
+test_nonfinite_json_rejected (test_semantic_contract.SemanticContractTests.test_nonfinite_json_rejected) ... ok
+test_projection_is_lossless_and_independent (test_semantic_contract.SemanticContractTests.test_projection_is_lossless_and_independent) ... ok
+test_projection_rejects_each_scope_dimension (test_semantic_contract.SemanticContractTests.test_projection_rejects_each_scope_dimension) ... ok
+test_quote_mismatch_rejects (test_semantic_contract.SemanticContractTests.test_quote_mismatch_rejects) ... ok
+test_reference_has_only_reviewed_stdlib_imports (test_semantic_contract.SemanticContractTests.test_reference_has_only_reviewed_stdlib_imports) ... ok
+test_representation_fingerprint_not_truth_equivalence (test_semantic_contract.SemanticContractTests.test_representation_fingerprint_not_truth_equivalence) ... ok
+test_revoked_evidence_holds_without_destroying_record (test_semantic_contract.SemanticContractTests.test_revoked_evidence_holds_without_destroying_record) ... ok
+test_roundtrip_preserves_every_dimension (test_semantic_contract.SemanticContractTests.test_roundtrip_preserves_every_dimension) ... ok
+test_said_not_and_not_said_stay_distinct (test_semantic_contract.SemanticContractTests.test_said_not_and_not_said_stay_distinct) ... ok
+test_span_types_bounds_and_duplicates_rejected (test_semantic_contract.SemanticContractTests.test_span_types_bounds_and_duplicates_rejected) ... ok
+test_speaker_is_not_proposition_subject (test_semantic_contract.SemanticContractTests.test_speaker_is_not_proposition_subject) ... ok
+test_speaker_mismatch_rejects (test_semantic_contract.SemanticContractTests.test_speaker_mismatch_rejects) ... ok
+test_unicode_offsets_are_codepoints_not_bytes (test_semantic_contract.SemanticContractTests.test_unicode_offsets_are_codepoints_not_bytes) ... ok
+test_unknown_claim_speaker_holds (test_semantic_contract.SemanticContractTests.test_unknown_claim_speaker_holds) ... ok
+test_unknown_not_equivalent_to_known_negation (test_semantic_contract.SemanticContractTests.test_unknown_not_equivalent_to_known_negation) ... ok
+test_unknown_phase_holds (test_semantic_contract.SemanticContractTests.test_unknown_phase_holds) ... ok
+test_unknown_source_speaker_holds (test_semantic_contract.SemanticContractTests.test_unknown_source_speaker_holds) ... ok
+test_valid_offset_interval_roundtrips (test_semantic_contract.SemanticContractTests.test_valid_offset_interval_roundtrips) ... ok
+test_valid_reference_is_bound_not_proven (test_semantic_contract.SemanticContractTests.test_valid_reference_is_bound_not_proven) ... ok
+
+----------------------------------------------------------------------
+Ran 40 tests in 0.037s
+
+OK
