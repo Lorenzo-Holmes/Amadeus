@@ -1,0 +1,122 @@
+{
+  "schema_version": "amadeus-orchestrator-run-1",
+  "ORCHESTRATOR_RUN_ID": "ORCH-20260918T070240+0800-06",
+  "observed_at_utc": "2026-09-17T23:06:26Z",
+  "repository": "Lorenzo-Holmes/Amadeus",
+  "BASE_SHA": "a6ffaa388ebdab03620070c3990ffc9788425e8f",
+  "PERSONA_SNAPSHOT_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+  "CONTROL_BRANCH": "autonomous/orchestrator-state",
+  "CONTROL_PR": 3,
+  "CONTROL_HEAD_BEFORE_RUN_RECORD": "988dc75135c17ec2bb0d8a2e7ceb9bda5560fb65",
+  "CANONICAL_TASK_STATE_BLOB": "06791760284f0ab3167d5550f283c570deb49412",
+  "TARGET_CONCURRENCY": 4,
+  "ACTIVE_WORKERS": 1,
+  "AVAILABLE_SLOTS": 3,
+  "RUNNING_TASKS": [
+    {
+      "TASK_ID": "AUTO-20260918-C02",
+      "OWNER": "WORKER-C",
+      "STATUS": "RUNNING",
+      "LEASE_STARTED_AT": "2026-09-17T19:27:00Z",
+      "LEASE_EXPIRES_AT": "2026-09-17T23:27:00Z",
+      "BRANCH": "test/worker-c-memory-poisoning-eval-20260918",
+      "OBSERVED_HEAD": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+      "PR": null,
+      "DISPOSITION": "Lease was unexpired at observation. Baseline-only branch and no PR are not release evidence; inspect branch/commit/PR/output again after expiry before any release."
+    }
+  ],
+  "READY_TASKS": [
+    "AUTO-20260918-D01",
+    "AUTO-20260918-A02",
+    "AUTO-20260918-B02"
+  ],
+  "REVIEW_TASKS": [
+    "AUTO-20260918-A01 / PR #2",
+    "AUTO-20260918-B01 / PR #4",
+    "AUTO-20260918-C01 / PR #5",
+    "REVIEW-PR-1 / PR #1",
+    "REVIEW-PR-3 / PR #3"
+  ],
+  "BLOCKED_TASKS": [
+    "HOLD-G6-07-CANONICAL"
+  ],
+  "PHASE_RECONCILIATION": {
+    "operations": "BUILD_SCOPE_COMPLETE_VALIDATION_PENDING / R047-04 is historical Operations state",
+    "current_g6": "LAST_COMPLETED G6-06 / GPT6_PARTIAL_REVIEW_BOUND_CAPABILITY_REPAIR_IN_PROGRESS",
+    "revision07_public_checkpoint": "15 displayed replies; 46 PASS / 14 FAIL of 60 reviewed criteria; 116 unjudged; N06_T4 remains UNKNOWN",
+    "current_g6_build_scope_complete": false,
+    "product_acceptance_complete": false,
+    "production_activated": false,
+    "rule": "Protect R044-R047 but do not inherit Operations PASS, old semantic evidence, or old natural days into current G6."
+  },
+  "RESEARCH_FINDINGS": [
+    {
+      "id": "R-20260918-17",
+      "source": "arXiv:2607.25656 / OrchBench",
+      "source_date": "2026-07-28",
+      "disposition": "FOLD_INTO_D01",
+      "reason": "Deterministic orchestration-plan simulation and critical-information retention are useful evaluation evidence, but D01 already owns observability/durable-orchestration research."
+    },
+    {
+      "id": "R-20260918-18",
+      "source": "arXiv:2608.25553 / When Stale Constraints Go Unchecked",
+      "source_date": "2026-08-26",
+      "disposition": "DUPLICATE_WITH_B01_SCOPE",
+      "reason": "Freshness/supersession verification strengthens B01 growth-basis freshness; it does not justify a second stale-memory task."
+    },
+    {
+      "id": "R-20260918-19",
+      "source": "arXiv:2605.25869 / MemIR",
+      "source_date": "2026-05-25",
+      "disposition": "FOLD_INTO_B01_AND_PR2_REVIEW",
+      "reason": "Typed evidence/cue/claim separation is comparative source-monitoring evidence, not a new memory authority or distinct implementation gap."
+    },
+    {
+      "id": "R-20260918-20",
+      "source": "kontext-security/kontext",
+      "source_date": "observed 2026-09-18",
+      "license": "MIT verified from repository LICENSE",
+      "disposition": "FOLD_INTO_A02",
+      "reason": "Concrete pre-action hook and authorization-vs-sandbox separation directly supports A02; no production broker or tool runtime import is authorized."
+    }
+  ],
+  "RESEARCH_EVIDENCE_FILE": ".autonomous/research/ORCHESTRATOR_SCAN_20260918T070240+0800.md",
+  "RESEARCH_EVIDENCE_COMMIT": "988dc75135c17ec2bb0d8a2e7ceb9bda5560fb65",
+  "DUPLICATES_REJECTED": [
+    "Reimplement completed R044-R047",
+    "Simulate or manufacture natural-day validation",
+    "Create a separate stale-memory task from R-20260918-18 because B01 already owns freshness/supersession evaluation",
+    "Create a new typed-memory authority from MemIR because existing admission/provenance boundaries and PR #2/B01 already cover the relevant evaluation boundary",
+    "Create a second permission/tool-security task from Kontext because A02 already owns prose-to-enforcement coverage",
+    "Create a separate orchestration simulator task from OrchBench because D01 already owns durable-orchestration research"
+  ],
+  "WRITE_CONFLICTS": [],
+  "OPEN_PRS": [
+    {"number": 1, "status": "open", "head": "codex/persona-core-operations-v1-20260917", "base": "main"},
+    {"number": 2, "status": "open_draft", "head": "feat/amadeus-runtime-vnext-foundation", "base": "codex/persona-core-operations-v1-20260917"},
+    {"number": 3, "status": "open_draft", "head": "autonomous/orchestrator-state", "base": "codex/persona-core-operations-v1-20260917"},
+    {"number": 4, "status": "open_draft", "head": "research/worker-b-memory-transition-provenance-20260918", "base": "codex/persona-core-operations-v1-20260917"},
+    {"number": 5, "status": "open_draft", "head": "feat/worker-c-state-drift-auditor-20260918", "base": "codex/persona-core-operations-v1-20260917"}
+  ],
+  "RECENTLY_MERGED_PRS": [],
+  "CONTROL_PLANE_OBSERVATIONS": [
+    "Concurrent additive governance metadata was published on the same control branch: governance bootstrap map, final reconciliation, human-readable governance README, and Issue #6.",
+    "Issue #6 and governance files explicitly state that they are not a second task registry; live AUTONOMOUS_TASK_STATE plus GitHub refs/PR/commits remain allocation authority.",
+    "Canonical task-state blob remained unchanged after the concurrent governance additions and after the fresh research scan; no new Worker claim was inferred or fabricated.",
+    "Current user concurrency rule remains TARGET_CONCURRENCY=4 across valid CLAIMED+RUNNING implementation/research Worker tasks; advisory governance wording does not silently change that rule."
+  ],
+  "PROTECTED_WORK": [
+    "R044-R047 historical evidence and completed work",
+    "Genesis AMADEUS-KURISU-GENESIS-R035",
+    "Persona Constitution and identity authority",
+    "Memory Cutoff and autobiographical-memory authority",
+    "source provenance authority and locked decisions",
+    "all SUBMITTED_STATUS_UNKNOWN including N06_T4",
+    "genuine natural-day validation",
+    "production activation"
+  ],
+  "TASK_STATE_MUTATION": "NONE: allocation/status did not change; this run records an immutable reconciliation instead of rewriting the canonical task registry during concurrent additive governance writes.",
+  "DECISION_LOG_MUTATION": "NONE: no new authority or durable policy decision was required; existing AUTO-DEC-001..011 already cover concurrency authority, evaluation-only research, permission enforcement, forgetting, and non-authoritative observations.",
+  "NEW_TASK_DECISION": "NO_SAFE_NEW_TASK",
+  "NEXT_ACTION": "Keep C02 reserved until lease expiry or evidence-backed handoff; after expiry, reread owner/branch/commit/PR/output before release. D01, A02 and B02 remain READY and may only be claimed from the latest canonical task blob with disjoint leases/write sets. Continue REVIEW for PR #1-#5. Keep G6 canonical hold BLOCKED; do not replay N06_T4 or any UNKNOWN, do not inherit Operations evidence into G6, do not fake natural days, do not auto-merge, and do not activate production."
+}

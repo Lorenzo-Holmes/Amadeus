@@ -1,0 +1,125 @@
+{
+  "schema_version": "amadeus-governance-final-reconciliation-1",
+  "GOVERNANCE_VERSION": "AMADEUS_AUTONOMOUS_RD_GOVERNANCE_V1",
+  "GOVERNANCE_RUN_ID": "GOV-20260918T035326+0900-BOOTSTRAP-01",
+  "OBSERVATION_PHASE": "FINAL_READBACK_ADDENDUM",
+  "AS_OF_UTC": "2026-09-17T23:02:49Z",
+  "TIMEZONE": "Asia/Tokyo",
+  "CURRENT_BASE_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+  "DEFAULT_BRANCH_SHA": "a6ffaa388ebdab03620070c3990ffc9788425e8f",
+  "CONTROL_BRANCH": "autonomous/orchestrator-state",
+  "CONTROL_ISSUE": 6,
+  "CONTROL_PR": 3,
+  "CONTROL_PLANE_HEALTH": "DEGRADED_SCHEMA_REVIEW_AND_EVIDENCE_GAPS",
+  "SOURCE_REF": "abcb6dd7be5f8312b10889b2f5545ffd143c65d0",
+  "SOURCE_BINDINGS": {
+    "task_state_path": ".autonomous/AUTONOMOUS_TASK_STATE.json",
+    "task_state_blob": "06791760284f0ab3167d5550f283c570deb49412",
+    "task_state_generated_at_utc": "2026-09-17T22:00:51Z",
+    "research_ledger_path": ".autonomous/AUTONOMOUS_RESEARCH_LEDGER.md",
+    "research_ledger_blob": "8089de6b7530222762a1ec0e5441d10a903cb23c",
+    "decision_log_path": ".autonomous/AUTONOMOUS_DECISION_LOG.md",
+    "decision_log_blob": "fef155a679876eb37c28dd0b67a2b646fc5f41f4",
+    "bootstrap_map_path": ".autonomous/governance/GOVERNANCE_BOOTSTRAP_20260918.json",
+    "bootstrap_map_blob": "5f39df34f39bff83c21ce002e1cd788b0ea7df9a"
+  },
+  "RECONCILIATION_RULE": "The initial bootstrap maps preserve their 18:53:26Z observation. This addendum supersedes only their live task counts, source-ledger inventory and changed governance observations. Neither file allocates work or replaces the canonical current task registry. Read current GitHub before every action. All Persona code and PR1/2/4/5 heads observed at final readback still match the initial snapshot.",
+  "TARGET_IMPLEMENTATION_CONCURRENCY": 4,
+  "ACTIVE_IMPLEMENTATION_TASKS": [
+    {
+      "TASK_ID": "AUTO-20260918-C02",
+      "OWNER": "WORKER-C",
+      "STATUS": "RUNNING",
+      "CLASSIFICATION": "Code-writing offline security evaluation; counts toward implementation concurrency despite its evaluation purpose",
+      "WRITE_SET": ["tests/security_memory_poisoning/**", "docs/autonomous/PERSISTENT_MEMORY_POISONING_EVAL.md"],
+      "LEASE_STARTED_AT": "2026-09-17T19:27:00Z",
+      "LEASE_EXPIRES_AT": "2026-09-17T23:27:00Z",
+      "LAST_HEARTBEAT": null,
+      "BRANCH": "test/worker-c-memory-poisoning-eval-20260918",
+      "OBSERVED_HEAD_SHA": "34ae8a3d95dbe1cc565893b81306be235a36a4cb",
+      "PR": null,
+      "LEASE_DISPOSITION": "UNEXPIRED_AT_AS_OF; keep reservation. Branch is still at baseline and no PR/delivery is observed; that does not establish liveness or justify release. After expiry, refresh owner/branch/commit/PR/output before any lease disposition."
+    }
+  ],
+  "ACTIVE_RESEARCH_TASKS": [],
+  "ACTIVE_IMPLEMENTATION_COUNT": 1,
+  "AVAILABLE_IMPLEMENTATION_SLOTS": 3,
+  "READY_TASKS": ["AUTO-20260918-D01", "AUTO-20260918-A02", "AUTO-20260918-B02"],
+  "REVIEW_TASKS": ["AUTO-20260918-A01", "AUTO-20260918-B01", "AUTO-20260918-C01", "REVIEW-PR-1", "REVIEW-PR-3"],
+  "BLOCKED_TASKS": ["HOLD-G6-07-CANONICAL"],
+  "CANONICAL_TASK_COUNT": 10,
+  "STALE_LEASES": [],
+  "STALE_LEASE_SCOPE": "No expired active lease at AS_OF. Missing heartbeat and baseline-only branch are observability limitations, not proof of abandonment. Governance made no lease changes.",
+  "WRITE_SET_CONFLICTS": [],
+  "WRITE_SET_SCOPE": "One active code-writing task; its declared paths are disjoint from A01/B01/C01 review paths and A02/B02/D01 ready paths. Renewed work requires a fresh check, not inherited clearance.",
+  "DUPLICATE_TASKS_FOUND": [],
+  "DUPLICATE_SCOPE": "No new semantic duplicate established by this governance run. The current registry preserves ten historical duplicate-rejection policy entries, not ten newly discovered duplicate tasks. A02/C02/B02 are distinct declared objectives; their novelty and acceptance are not independently approved by this observation.",
+  "SUPERSEDED_TASKS": [],
+  "SUPERSEDED_OBSERVATIONS": ["Initial bootstrap active task count 0 and ready list containing only D01", "Initial six-source research inventory as a complete current inventory", "Initial seven-entry autonomous decision inventory as a complete current inventory"],
+  "CURRENT_NEW_TASKS_NOT_CREATED_BY_GOVERNANCE": [
+    {"TASK_ID":"AUTO-20260918-C02","declared_delta":"Cross-session persistent-memory-poisoning evaluation","status":"RUNNING","delivered_capability":false},
+    {"TASK_ID":"AUTO-20260918-A02","declared_delta":"Read-only permission-enforcement coverage audit","status":"READY","delivered_capability":false},
+    {"TASK_ID":"AUTO-20260918-B02","declared_delta":"Verified-forgetting/deletion-fidelity research","status":"READY","delivered_capability":false}
+  ],
+  "CAPABILITY_MAP_CHANGES": {
+    "initial_records": 30,
+    "status_upgrades_from_new_tasks": 0,
+    "cross_reference_addenda": [
+      {"capabilities":["CAP-04","CAP-22"],"task":"AUTO-20260918-C02","meaning":"Pending evaluation, not validated memory security"},
+      {"capabilities":["CAP-19","CAP-22"],"task":"AUTO-20260918-A02","meaning":"Planned control-coverage audit, not a new production permission system"},
+      {"capabilities":["CAP-08","CAP-14"],"task":"AUTO-20260918-B02","meaning":"Research-only forgetting semantics, not authorized ledger deletion"},
+      {"capabilities":["CAP-20"],"task":"AUTO-20260918-D01","meaning":"Additional trace-integrity reference, not a second authoritative journal"}
+    ]
+  },
+  "ARCHITECTURE_DRIFT": [
+    {"id":"ARCH-COUPLING-01","status":"STRUCTURAL_COUPLING_NOT_PROVEN_SEMANTIC_DRIFT","finding":"Generic canonical/digest imports from provider.py remain visible in trusted runtime modules. No provider-specific identity corruption inferred; no cosmetic refactor proposed."},
+    {"id":"CONTROL-SEMANTICS-01","status":"RECONCILIATION_REQUIRED","finding":"Current task NEXT_ACTION and AUTO-DEC-011 count research-only D01/B02 toward a four-worker cap, whereas user Governance V1 caps code-writing implementation workers and excludes pure research/read-only audit. Record both meanings; do not silently change leases or spawn work to fill either target."},
+    {"id":"CONTROL-TRACEABILITY-01","status":"SCHEMA_AND_LINEAGE_GAP","finding":"The current compact A01/B01/C01 records omit detailed EVIDENCE and lease-history fields present in the earlier observed task blob. History remains in Git/PRs; this is loss of direct current-record traceability, not proof that original evidence was destroyed. Add source-bound historical pointers during the separately reviewed registry update."}
+  ],
+  "EVALUATION_GAPS": [
+    {"id":"EVAL-12","status":"BLOCKED","reason":"Actual current G6 canonical source and original private provider/persisted evidence remain unavailable; N06_T4 UNKNOWN and R005 provenance uncertainty are not resolved by metadata."},
+    {"id":"EVAL-08","status":"NOT_ACCEPTED","reason":"Current published G6 revision07 remains 46 PASS/14 FAIL/116 unjudged with 15 displayed replies; earlier revision06 is 159 PASS/17 FAIL, not the same run. No new raw semantic evaluation executed here."},
+    {"id":"EVAL-07","status":"WEAK_MODULE_BOUNDARY_EVIDENCE","reason":"B01 support-freshness observations require an authentic assembled-runtime oracle and applicability review before an implementation proposal."},
+    {"id":"EVAL-09","status":"WAITING_EXTERNAL_AND_REAL_TIME","reason":"Current-source independent acceptance and new candidate natural days remain outstanding; reported new G6 days 0/3."},
+    {"id":"EVAL-02","status":"PENDING_C02_NOT_CLOSED","reason":"A task marked RUNNING with no delivered tests is not new security acceptance evidence."},
+    {"id":"EVAL-10","status":"PENDING_A02_NOT_CLOSED","reason":"READY control-coverage work is not proof that future tools or permissions are enforced."}
+  ],
+  "RESEARCH_LEDGER_CHANGES": {
+    "current_canonical_record_ids":"R-20260918-01 through R-20260918-16",
+    "current_record_count":16,
+    "initial_governance_annotations":6,
+    "new_records_added_by_other_runs":10,
+    "bibliographic_conflicts_retained":["R-20260918-01","R-20260918-02","R-20260918-03"],
+    "current_linkage":{"R07_R08":"C02","R09_R10_R11":"A02","R12_R13":"B02","R14_R15":"deferred until a real multimodal surface exists","R16":"existing D01"},
+    "verification_scope":"Read current repository research records, not independent verification of those papers, project claims, dates or licenses. The first six source annotations are not a replacement for the current 16-entry ledger. No source adopted and no external code imported by governance.",
+    "disposition":"Preserve existing findings; no duplicate Flight Recorder, state-drift auditor, forgetting implementation or speculative multimodal task created."
+  },
+  "DECISION_LOG_CHANGES": {
+    "current_original_decisions":"AUTO-DEC-001 through AUTO-DEC-011",
+    "governance_addenda":"GOV-DEC-001 through GOV-DEC-003 in the initial bootstrap JSON, indexed by governance/README.md",
+    "decision_scope":"GOV-DEC-002's initial zero-active observation is superseded by this late readback. Its rule to preserve history and refresh live task state remains. Original decision-log bytes are not replaced.",
+    "new_addendum":"GOV-DEC-004",
+    "question":"How should concurrent Orchestrator updates affect a long bootstrap?",
+    "selected_option":"Preserve the early source-bound map and append this current reconciliation; do not overwrite task registry or earlier findings.",
+    "alternatives":["Publish early zero-worker state as current","Overwrite current registry from the early snapshot"],
+    "evidence":["task blob 06791760284f0ab3167d5550f283c570deb49412","research blob 8089de6b7530222762a1ec0e5441d10a903cb23c","decision blob fef155a679876eb37c28dd0b67a2b646fc5f41f4","live branch collection"],
+    "why_selected":"Preserves concurrent owner/lease/research work and distinguishes observation time from publication time.",
+    "why_rejected":"Alternatives misreport activity or destroy concurrent control updates.",
+    "risks":"The addendum is itself a time-bounded observation; it must not become a shadow allocator.",
+    "reversibility":"Append a newer source-bound reconciliation; never force-push or erase prior evidence.",
+    "revisit_trigger":"New current task/ref/PR/evidence changes, lease expiry or authentic handoff.",
+    "affected_components":["Control Plane Issue6","governance maps","Task Registry lineage"],
+    "related_tasks":["AUTO-20260918-C02","AUTO-20260918-A02","AUTO-20260918-B02","REVIEW-PR-3"],
+    "approval_level":"User-directed metadata governance only; no runtime or merge approval."
+  },
+  "SECURITY_ALERTS": ["Final branch collection contains 11 branches, all protected=false; previously read rulesets were empty. No enforcement settings changed or independently certified.","Missing public raw evidence is intentionally privacy-scoped; use authorized private evidence access, never publish secrets/transcripts to satisfy a map."],
+  "IDENTITY_ALERTS": ["R005 provenance closure remains reported NOT_ENOUGH_EVIDENCE","G6 semantic acceptance and product activation remain false","No new identity mutation performed; source inspection does not certify all possible execution paths."],
+  "PENDING_USER_DECISIONS": {"new_concrete_RED_proposals":[],"rule":"Any future Genesis/Constitution/cutoff/autobiographical or provenance authority change, destructive migration or production activation requires an explicit applicable user decision. No such action was activated by this run."},
+  "STOP_CONDITIONS": ["WAITING_FOR_DEPENDENCY","WAITING_FOR_REVIEW","WAITING_FOR_REAL_WORLD_EVIDENCE","WAITING_FOR_NATURAL_TIME","NO_SAFE_NEW_TASK for unverified new implementation work"],
+  "TOP_NEXT_ACTIONS": [
+    "Resolve the existing canonical-source/private-evidence dependency with exact source/revision/ledger bindings; preserve N06_T4 UNKNOWN and R005 uncertainty.",
+    "Review existing PR1-5 and reconcile registry schema, lineage and implementation-only concurrency semantics. Keep C02 reserved while valid; do not duplicate C01/A02/C02 or create work to fill slots.",
+    "Review B01 before any authentic-runtime freshness experiment; use existing B02/D01 research scopes, with source/novelty/value/oracle gates and no direct research-to-production promotion."
+  ],
+  "EXECUTION_LIMITS": {"business_code_changes":0,"Persona_state_changes":0,"historical_evidence_changes":0,"project_provider_calls":0,"UNKNOWN_replays":0,"runtime_or_product_tests_executed":0,"automatic_merges":0,"new_implementation_tasks_created_by_governance":0,"new_governance_priority_groups":3,"full_checkout":"NOT_AVAILABLE_DNS_FAILURE","inspection":"Authorized GitHub reads and exact-commit readback; no programmatic full-JSON validation or full protected-tree certification claimed."}
+}
